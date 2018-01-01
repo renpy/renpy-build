@@ -17,7 +17,10 @@ class Join:
     have been completed.
     """
 
-    def __init__(self):
+    def __init__(self, blocked=None, blocks=None):
+        self.blocked = blocked
+        self.blocks = blocks
+
         queue.append(self)
 
 
@@ -65,25 +68,39 @@ class Queue:
                     if renpybuild.machine.all_idle():
                         break
 
-                if isinstance(self.queue[0], Join):
-                    if renpybuild.machine.all_idle():
-                        self.queue.pop(0)
-                        continue
+                busy = renpybuild.machine.busy_platforms()
 
                 wait = True
 
                 for task in self.queue:
 
                     if isinstance(task, Join):
-                        break
+                        blocked = task.blocked or renpybuild.machine.all_platforms()
+                        blocks = task.blocks or renpybuild.machine.all_platforms()
+                        blocks = blocked | blocks
 
-                    m = renpybuild.machine.find(task.platform)
+                        if not (busy & blocked):
+                            wait = False
+                            self.queue.remove(task)
+                            break
 
-                    if not m.busy:
-                        wait = False
-                        self.queue.remove(task)
-                        m.run(task)
-                        break
+                        else:
+                            busy = busy | blocks
+
+                        continue
+
+                    if task.platform not in busy:
+
+                        m = renpybuild.machine.find(task.platform)
+                        if not m.busy:
+
+                            wait = False
+                            self.queue.remove(task)
+                            m.run(task)
+
+                            busy = busy | renpybuild.machine.busy_platforms()
+
+                            break
 
                 if wait:
                     self.lock.wait()

@@ -47,6 +47,28 @@ class Machine:
         threading.Thread(target=self.run_task_wrapper, args=(task,)).start()
 
 
+def all_platforms():
+    """
+    Returns a set of all the platforms we know about.
+    """
+
+    return set(machines.keys())
+
+
+def busy_platforms():
+    """
+    Returns a set of all platforms that are currently busy.
+    """
+
+    rv = set()
+
+    for p, m in machines.items():
+        if m.busy:
+            rv.add(p)
+
+    return rv
+
+
 def all_idle():
     """
     Returns true if all machines are idle.
