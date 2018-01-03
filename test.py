@@ -1,20 +1,20 @@
-from renpybuild.task import NamedTask, Join, run
+from renpybuild.task import Task, Join, Platform, run
 from renpybuild.machine import Machine
 
 Machine([ "linux", "android" ])
 Machine([ "mac" ])
 
 
-NamedTask("a", "linux")
-NamedTask("a", "mac")
-NamedTask("a", "android")
-NamedTask("b", "linux")
-NamedTask("b", "mac")
-NamedTask("b", "android")
+for p in [ "linux", "mac", "android" ]:
+    Platform(p)
+    Task("a", once=True)
+    Task("b", once=True)
+
 Join()
-NamedTask("c", "linux")
-NamedTask("c", "mac")
-NamedTask("c", "android")
-Join()
+
+for p in [ "linux", "mac", "android" ]:
+    Platform(p)
+    Task("c", deps={"a", "b"}, once=True)
+
 
 run()
