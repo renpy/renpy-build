@@ -1,10 +1,8 @@
-import os
-import sys
-import inspect
-import enum
-import threading
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
-from renpybuild import BASE
+import threading
 import renpybuild.machine
 
 # The list of tasks that need to be run to build a project.
@@ -54,7 +52,7 @@ class Queue:
     def append(self, task):
         self.queue.append(task)
 
-    def notify(self):
+    def finish(self, task, update_deps=True):
         with self.lock:
             self.lock.notify()
 

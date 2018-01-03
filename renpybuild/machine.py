@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import threading
 import renpybuild.task
 import traceback
@@ -39,7 +43,7 @@ class Machine:
 
         self.busy = False
 
-        renpybuild.task.queue.notify()
+        renpybuild.task.queue.finish(task)
 
     def run(self, task):
 
