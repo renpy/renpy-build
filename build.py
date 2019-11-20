@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
+import sys
 import argparse
 from pathlib import Path
 
-from model import task
-import model
+sys.path.insert(1, Path(__file__).parent / 'deps')
+
+from renpybuild.model import task
+import renpybuild.model
 
 
 @task()
@@ -32,11 +35,11 @@ def main():
     archs = [ i.strip() for i in args.arch.split(",") ]
     pythons = [ i.strip() for i in args.python.split(",") ]
 
-    for task in model.tasks:
+    for task in renpybuild.model.tasks:
         for platform in platforms:
             for arch in archs:
                 for python in pythons:
-                    context = model.Context(platform, arch, python, tmp)
+                    context = renpybuild.model.Context(platform, arch, python, tmp)
                     task.run(context)
 
 
