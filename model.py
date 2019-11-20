@@ -19,9 +19,31 @@ class Context:
         # The python version, one of "2" or "3".
         self.python = python
 
-        # The path to where completed work is stored.
-        self.built = tmp / "built"
-        self.built.mkdir(parents=True, exist_ok=True)
+        # The local temporary directory.
+        self.tmp = tmp
+
+    def set_names(self, kind, task, name):
+        """
+        This is used to past the task-specific names into the context.
+
+        """
+
+        # These store the task and name, just short words that are constant.
+        self.task = task
+        self.name = name
+
+        # These store the task_name and dir_name, as computed by Task.context.
+        self.task_name = ""
+        self.dir_name = ""
+
+        if kind == "platform":
+            self.dir_name = f"{self.name}.{self.platform}"
+        elif kind == "arch":
+            self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
+        elif kind == "python":
+            self.dir_name = f"{self.name}.{self.platform}-{self.arch}-py{self.python}"
+
+        self.task_name = f"{self.task}-{self.dir_name}"
 
 
 class Task:
@@ -30,57 +52,106 @@ class Task:
     proceed.
     """
 
-    def __init__(self, name, kind="arch", always=False):
-        """
-        `name`
-            A unique name for this task.
+    def __init__(self, task, name, *, function=None, kind="arch", always=False, platforms=None, archs=None, pythons=None):
 
-        `kind`
-            How often should the task run?
-            "platform" - Once per platform.
-            "arch" - Once per per platform, architecture pair.
-            "python" - Once per (platform, architecture, python) triple.
-
-        `always`
-            If true, the task is always run during the current session.
-            If false, only run if the task has not been run during prior
-            sessions.
-        """
-
+        self.task = task
         self.name = name
         self.kind = kind
         self.always = always
 
+        def split(v):
+            if v is None:
+                return v
+
+            return { i.strip() for i in v.split(",") }
+
+        self.platforms = split(platforms)
+        self.archs = split(archs)
+        self.pythons = split(pythons)
+
+        self.function = function
+
         tasks.append(self)
 
     def context_name(self, context):
-        if self.kind == "platform":
-            return f"{self.name}.{context.platform}"
-        elif self.kind == "arch":
-            return f"{self.name}.{context.platform}-{context.arch}"
-        elif self.kind == "python":
-            return f"{self.name}.{context.platform}-{context.arch}-py{context.python}"
-
-    def run_task(self, context):
-        name = self.context_name(context)
-
-        if name in ran_tasks:
-            return
-
-        if (context.built / name).exists():
-            return
-
-        print("")
-        print(f"Running {name}.")
-        print("")
-
-        self.run(context)
-
-        ran_tasks.add(name)
-        (context.built / name).write_text(str(time.time()))
+        """
+        Returns a task_name, dir_name tuple.
+        """
 
     def run(self, context):
-        return
+        if (self.platforms is not None) and (context.platform not in self.platforms):
+            return
+
+        if (self.archs is not None) and (context.archs not in self.archs):
+            return
+
+        if (self.pythons is not None) and (context.python not in self.pythons):
+            return
+
+        context.set_names(self.kind, self.task, self.name)
+
+        built = context.tmp / "built"
+        built.mkdir(parents=True, exist_ok=True)
+        built /= context.task_name
+
+        if context.task_name in ran_tasks:
+            return
+
+        if (not self.always) and built.exists():
+            return
+
+        print("")
+        print(f"Running {context.task_name}.")
+        print("")
+
+        self.function(context)
+
+        ran_tasks.add(context.task_name)
+
+        if not self.always:
+            built.write_text(str(time.time()))
+
+
+def task(**kwargs):
+    """
+    This is a decorator that wraps a function to define a task. The function must
+    have a name of the form `task`_`name`. For example, "build_libz" or "unpack_python_38".
+
+    This also takes optional keyword arguments.
+
+    `kind`
+        Determines how often this task shold run. One of:
+
+        "platform" - Once per platform.
+        "arch" - Once per platform/architecture pair.
+        "python" - Once per platform/architecture/python version triple.
+
+        This defaults to "arch"
+
+    `always`
+        If True, this task will run even if it has been run as part of a
+        previous build.
+
+    `platforms`
+        If not None, a string giving a comma-separated list of platforms that
+        the task should be run on.
+
+    `archs`
+        If not None, a string giving a comma-separated architectures that the
+        task should be run on.
+
+    `pythons`
+        If not None, a string giving a comma-separated list of python major
+        versions the task should run on. ("3", "2", or "3,2")
+    """
+
+    def create_task(f):
+        task, _, name = f.__name__.partition("_")
+        Task(task, name, function=f, **kwargs)
+
+        return f
+
+    return create_task
 
 
 # A list of tasks that are known.

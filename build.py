@@ -3,12 +3,18 @@
 import argparse
 from pathlib import Path
 
+from model import task
 import model
 
-tasks = [ ]
 
-model.Task("end_world", "arch")
-model.Task("pymod", "python")
+@task()
+def unpack_python(c):
+    print("Test.")
+
+
+@task(kind="python")
+def build_python(c):
+    print("Build.")
 
 
 def main():
@@ -31,7 +37,7 @@ def main():
             for arch in archs:
                 for python in pythons:
                     context = model.Context(platform, arch, python, tmp)
-                    task.run_task(context)
+                    task.run(context)
 
 
 if __name__ == "__main__":
