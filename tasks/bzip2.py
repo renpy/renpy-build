@@ -14,14 +14,10 @@ def build_bzip2(c):
     c.var("version", version)
     c.chdir("bzip2-{{version}}")
 
-    c.env("CC", "ccache gcc")
-    c.env("CFLAGS", "{{ CFLAGS }} -D_FILE_OFFSET_BITS=64")
-    c.env("PREFIX", "{{ install }}")
-
     c.run("""
 make
     CC="{{ CC }}"
-    CFLAGS="{{ CFLAGS }}"
+    CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64"
 """)
 
     c.run("""

@@ -75,6 +75,8 @@ class Context:
         self.cwd = build
         self.var("build", build)
 
+        renpybuild.run.build_environment(self)
+
     def expand(self, s):
         """
         Expands `s` as a jinja template.

@@ -8,6 +8,7 @@ sys.path.insert(1, Path(__file__).parent / 'deps')
 
 import renpybuild.model
 
+import tasks.sysroot
 import tasks.zlib
 import tasks.bzip2
 
@@ -17,7 +18,7 @@ def main():
     ap.add_argument("platform")
     ap.add_argument("arch")
     ap.add_argument("python")
-    ap.add_argument("--tmp", default="/tmp/renpy-build")
+    ap.add_argument("--tmp", default="tmp")
 
     args = ap.parse_args()
 
