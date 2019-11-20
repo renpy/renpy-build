@@ -6,18 +6,10 @@ from pathlib import Path
 
 sys.path.insert(1, Path(__file__).parent / 'deps')
 
-from renpybuild.model import task
 import renpybuild.model
 
-
-@task()
-def unpack_python(c):
-    print("Test.")
-
-
-@task(kind="python")
-def build_python(c):
-    print("Build.")
+import tasks.zlib
+import tasks.bzip2
 
 
 def main():
@@ -29,7 +21,8 @@ def main():
 
     args = ap.parse_args()
 
-    tmp = Path(args.tmp)
+    tmp = Path(args.tmp).resolve()
+    root = Path(__file__).parent.resolve()
 
     platforms = [ i.strip() for i in args.platform.split(",")  ]
     archs = [ i.strip() for i in args.arch.split(",") ]
@@ -39,7 +32,7 @@ def main():
         for platform in platforms:
             for arch in archs:
                 for python in pythons:
-                    context = renpybuild.model.Context(platform, arch, python, tmp)
+                    context = renpybuild.model.Context(platform, arch, python, root, tmp)
                     task.run(context)
 
 

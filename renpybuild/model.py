@@ -1,5 +1,9 @@
-# A list of platforms.
 import time
+import os
+
+import jinja2
+
+import renpybuild.run
 
 
 class Context:
@@ -8,7 +12,7 @@ class Context:
     current build.
     """
 
-    def __init__(self, platform, arch, python, tmp):
+    def __init__(self, platform, arch, python, root, tmp):
 
         # The platform. One of "linux", "windows", "mac", "android", "ios", or "emscripten".
         self.platform = platform
@@ -19,8 +23,27 @@ class Context:
         # The python version, one of "2" or "3".
         self.python = python
 
+        # The root directory.
+        self.root = root
+
         # The local temporary directory.
         self.tmp = tmp
+
+        # The environment dictionary.
+        self.environ = dict(os.environ)
+
+        # The non-environment variables dictionary.
+        self.variables = { }
+
+        self.var("platform", platform)
+        self.var("arch", arch)
+        self.var("source", self.root / "source")
+
+        install = self.tmp / f"install.{platform}-{arch}"
+        install.mkdir(parents=True, exist_ok=True)
+
+        self.install = install
+        self.var("install", install)
 
     def set_names(self, kind, task, name):
         """
@@ -44,6 +67,58 @@ class Context:
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}-py{self.python}"
 
         self.task_name = f"{self.task}-{self.dir_name}"
+
+        build = self.tmp / "build" / self.dir_name
+        build.mkdir(parents=True, exist_ok=True)
+
+        self.build = build
+        self.cwd = build
+        self.var("build", build)
+
+    def expand(self, s):
+        """
+        Expands `s` as a jinja template.
+        """
+
+        template = jinja2.Template(s)
+
+        kwargs = dict()
+        kwargs.update(self.environ)
+        kwargs.update(self.variables)
+
+        return template.render(**kwargs)
+
+    def env(self, variable, value):
+        """
+        Adds environment variable `variable` with `value`.
+        """
+
+        self.environ[variable] = self.expand(str(value))
+
+    def var(self, variable, value):
+        """
+        Adds a non-environment `variable` with `value`.
+        """
+
+        self.variables[variable] = self.expand(str(value))
+
+    def chdir(self, d):
+        self.cwd = self.cwd / self.expand(d)
+
+    def run(self, command):
+        """
+        Runs `command`, and checks that the result is 0.
+
+        `command`
+            Is a string that is interpreted as a jinja2 template. The environment
+            variables created with environ and the variables created with var
+            are available for substitution into the template.
+
+            Once substitution has occured, the command is split using shlex.split,
+            and then is run using popen.
+        """
+
+        renpybuild.run.run(self.expand(command), self)
 
 
 class Task:
@@ -90,26 +165,27 @@ class Task:
 
         context.set_names(self.kind, self.task, self.name)
 
-        built = context.tmp / "built"
-        built.mkdir(parents=True, exist_ok=True)
-        built /= context.task_name
-
         if context.task_name in ran_tasks:
             return
 
-        if (not self.always) and built.exists():
+        complete = context.tmp / "complete"
+        complete.mkdir(parents=True, exist_ok=True)
+        complete /= context.task_name
+
+        if (not self.always) and complete.exists():
+            print(f"{context.task_name} already finished.")
+            ran_tasks.add(context.task_name)
             return
 
-        print("")
-        print(f"Running {context.task_name}.")
-        print("")
+        print(f"{context.task_name} running...")
 
         self.function(context)
 
+        print("")
+
         ran_tasks.add(context.task_name)
 
-        if not self.always:
-            built.write_text(str(time.time()))
+        complete.write_text(str(time.time()))
 
 
 def task(**kwargs):
