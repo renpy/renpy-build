@@ -5,6 +5,8 @@ version = "1.0.8"
 
 @task()
 def unpack_bzip2(c):
+    c.clean()
+
     c.var("version", version)
     c.run("tar xzf {{source}}/bzip2-{{version}}.tar.gz")
 

@@ -1,7 +1,11 @@
 from renpybuild.model import task
 
+PACKAGES = [
+    "build-essential",
+]
 
-@task(platforms="linux")
+
+@task(platforms="linux", archs="x86_64,i686")
 def install_sysroot(c):
 
     if c.arch == "i686":
@@ -10,10 +14,9 @@ def install_sysroot(c):
         deb_arch = "amd64"
 
     c.var("deb_arch", deb_arch)
+    c.var("packages", ",".join(PACKAGES))
 
-    c.run("""
-sudo debootstrap
-    --arch {{deb_arch}}
-    --include build-essential
-    trusty "{{ sysroot }}"
-    """)
+    c.clean("{{ sysroot }}")
+
+    c.run("""sudo debootstrap --arch {{deb_arch}} --include {{packages}} trusty "{{ sysroot }}" """)
+

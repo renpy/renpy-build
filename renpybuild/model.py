@@ -1,5 +1,7 @@
 import time
 import os
+import shutil
+import pathlib
 
 import jinja2
 
@@ -122,6 +124,21 @@ class Context:
 
         renpybuild.run.run(self.expand(command), self)
 
+    def clean(self, d="{{build}}"):
+        """
+        Empties the named directory.
+        """
+
+        d = self.expand(d)
+        if not d:
+            raise Exception("Not deleting empty-string directory.")
+
+        d = pathlib.Path(d)
+        if d.is_dir():
+            shutil.rmtree(d)
+
+        d.mkdir(exist_ok=True, parents=True)
+
 
 class Task:
     """
@@ -159,7 +176,7 @@ class Task:
         if (self.platforms is not None) and (context.platform not in self.platforms):
             return
 
-        if (self.archs is not None) and (context.archs not in self.archs):
+        if (self.archs is not None) and (context.arch not in self.archs):
             return
 
         if (self.pythons is not None) and (context.python not in self.pythons):

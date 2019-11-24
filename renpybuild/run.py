@@ -18,6 +18,13 @@ def build_environment(c):
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
 
+    elif (c.platform == "linux") and (c.arch == "i686"):
+
+        c.env("CC", "ccache gcc -m32 -O3 --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache g++ -m32 -O3 --sysroot {{ sysroot }}")
+        c.env("LD", "{{ CC }}")
+        c.env("LDXX", "{{ CXX }}")
+
 
 def run(command, context):
     args = shlex.split(command)

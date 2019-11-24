@@ -5,6 +5,8 @@ version = "1.2.11"
 
 @task()
 def unpack_zlib(c):
+    c.clean()
+
     c.var("version", version)
     c.run("tar xzf {{source}}/zlib-{{version}}.tar.gz")
 
