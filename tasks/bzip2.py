@@ -11,7 +11,7 @@ def unpack_bzip2(c):
     c.run("tar xzf {{source}}/bzip2-{{version}}.tar.gz")
 
 
-@task(always=True)
+@task()
 def build_bzip2(c):
     c.var("version", version)
     c.chdir("bzip2-{{version}}")

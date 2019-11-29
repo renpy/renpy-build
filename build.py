@@ -12,14 +12,14 @@ import renpybuild.model
 __import__("tasks.sysroot")
 __import__("tasks.zlib")
 __import__("tasks.bzip2")
+__import__("tasks.openssl")
+__import__("tasks.nasm")
 
 
 def build(args):
     platforms = [ i.strip() for i in args.platforms.split(",")  ]
     archs = [ i.strip() for i in args.archs.split(",") ]
     pythons = [ i.strip() for i in args.pythons.split(",") ]
-
-    print(platforms, archs, pythons)
 
     for task in renpybuild.model.tasks:
         for platform in platforms:

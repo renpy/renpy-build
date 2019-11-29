@@ -13,15 +13,15 @@ def build_environment(c):
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
 
-        c.env("CC", "ccache gcc -O3 --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache g++ -O3 --sysroot {{ sysroot }}")
+        c.env("CC", "ccache gcc -O3 -fPIC --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache g++ -O3 -fPIC --sysroot {{ sysroot }}")
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
-        c.env("CC", "ccache gcc -m32 -O3 --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache g++ -m32 -O3 --sysroot {{ sysroot }}")
+        c.env("CC", "ccache gcc -m32 -fPIC -O3 --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache g++ -m32 -fPIC -O3 --sysroot {{ sysroot }}")
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
 

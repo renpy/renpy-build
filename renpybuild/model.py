@@ -41,12 +41,6 @@ class Context:
         self.var("arch", arch)
         self.var("source", self.root / "source")
 
-        install = self.tmp / f"install.{platform}-{arch}"
-        install.mkdir(parents=True, exist_ok=True)
-
-        self.install = install
-        self.var("install", install)
-
     def set_names(self, kind, task, name):
         """
         This is used to past the task-specific names into the context.
@@ -61,7 +55,9 @@ class Context:
         self.task_name = ""
         self.dir_name = ""
 
-        if kind == "platform":
+        if kind == "host":
+            self.dir_name = f"{self.name}.host"
+        elif kind == "platform":
             self.dir_name = f"{self.name}.{self.platform}"
         elif kind == "arch":
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
@@ -76,6 +72,19 @@ class Context:
         self.build = build
         self.cwd = build
         self.var("build", build)
+
+        host = self.tmp / "install.host"
+        self.var("host", host)
+
+        if kind == "host":
+            install = host
+        else:
+            install = self.tmp / f"install.{self.platform}-{self.arch}"
+
+        install.mkdir(parents=True, exist_ok=True)
+
+        self.install = install
+        self.var("install", install)
 
         renpybuild.run.build_environment(self)
 
@@ -173,14 +182,17 @@ class Task:
         """
 
     def run(self, context):
-        if (self.platforms is not None) and (context.platform not in self.platforms):
-            return
 
-        if (self.archs is not None) and (context.arch not in self.archs):
-            return
+        if not self.kind == "host":
 
-        if (self.pythons is not None) and (context.python not in self.pythons):
-            return
+            if (self.platforms is not None) and (context.platform not in self.platforms):
+                return
+
+            if (self.archs is not None) and (context.arch not in self.archs):
+                return
+
+            if (self.pythons is not None) and (context.python not in self.pythons):
+                return
 
         context.set_names(self.kind, self.task, self.name)
 
