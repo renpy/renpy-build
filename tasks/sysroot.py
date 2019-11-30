@@ -1,7 +1,30 @@
 from renpybuild.model import task
 
 PACKAGES = [
-    "build-essential",
+    'build-essential',
+    'libasound2-dev',
+    'libpulse-dev',
+    'libaudio-dev',
+    'libx11-dev',
+    'libxext-dev',
+    'libxrandr-dev',
+    'libxcursor-dev',
+    'libxi-dev',
+    'libxinerama-dev',
+    'libxxf86vm-dev',
+    'libxss-dev',
+    'libgl1-mesa-dev',
+    'libesd0-dev',
+    'libdbus-1-dev',
+    'libudev-dev',
+    'libgles1-mesa-dev',
+    'libgles2-mesa-dev',
+    'libegl1-mesa-dev',
+    'libibus-1.0-dev',
+    'fcitx-libs-dev',
+    'libsamplerate0-dev',
+    'libsndio-dev',
+    'libxkbcommon-dev',
 ]
 
 
@@ -18,16 +41,16 @@ def install_sysroot(c):
 
     c.clean("{{ sysroot }}")
 
-    c.run("""sudo debootstrap --arch {{deb_arch}} --include {{packages}} trusty "{{ sysroot }}" """)
+    c.run("""mkdir -p "{{ tmp }}/debs" """)
+    c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
+
+    c.run("""sudo rm -f {{sysroot}}/etc/resolv.conf""")
+    c.run("""sudo cp /etc/resolv.conf {{sysroot}}/etc/resolv.conf""")
+    c.run("""sudo systemd-nspawn -D {{sysroot}} apt update""")
 
 
 @task(platforms="linux", archs="x86_64,i686", always=True)
 def update_sysroot(c):
 
-    c.var("packages", ",".join(PACKAGES))
-
-    c.run("""
-    sudo
-    systemd-nspawn -D {{ sysroot}}
-    apt install -y {{ packages }}
-    """)
+    c.var("packages", " ".join(PACKAGES))
+    c.run("""sudo systemd-nspawn -D {{sysroot}} apt install -y {{ packages }} """)

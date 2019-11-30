@@ -37,6 +37,8 @@ class Context:
         # The non-environment variables dictionary.
         self.variables = { }
 
+        self.var("tmp", tmp)
+
         self.var("platform", platform)
         self.var("arch", arch)
         self.var("source", self.root / "source")
