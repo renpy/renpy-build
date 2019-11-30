@@ -14,6 +14,7 @@ __import__("tasks.zlib")
 __import__("tasks.bzip2")
 __import__("tasks.openssl")
 __import__("tasks.nasm")
+__import__("tasks.sdl")
 
 
 def build(args):

@@ -2,6 +2,7 @@ import jinja2
 import shlex
 import subprocess
 import sys
+import sysconfig
 
 
 def build_environment(c):
@@ -10,8 +11,11 @@ def build_environment(c):
     """
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
+    c.var("build_platform", sysconfig.get_config_var("host"))
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
+
+        c.var("host_platform", "x86_64-pc-linux-gnu")
 
         c.env("CC", "ccache gcc -O3 -fPIC --sysroot {{ sysroot }}")
         c.env("CXX", "ccache g++ -O3 -fPIC --sysroot {{ sysroot }}")
@@ -20,10 +24,14 @@ def build_environment(c):
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
+        c.var("host_platform", "i686-pc-linux-gnu")
+
         c.env("CC", "ccache gcc -m32 -fPIC -O3 --sysroot {{ sysroot }}")
         c.env("CXX", "ccache g++ -m32 -fPIC -O3 --sysroot {{ sysroot }}")
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
+
+    c.var("cross_config", "--host={{ host_platform }} --build {{ build_platform }}")
 
 
 def run(command, context):

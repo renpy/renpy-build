@@ -20,3 +20,14 @@ def install_sysroot(c):
 
     c.run("""sudo debootstrap --arch {{deb_arch}} --include {{packages}} trusty "{{ sysroot }}" """)
 
+
+@task(platforms="linux", archs="x86_64,i686", always=True)
+def update_sysroot(c):
+
+    c.var("packages", ",".join(PACKAGES))
+
+    c.run("""
+    sudo
+    systemd-nspawn -D {{ sysroot}}
+    apt install -y {{ packages }}
+    """)
