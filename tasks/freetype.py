@@ -1,0 +1,49 @@
+from renpybuild.model import task
+
+version = "2.10.1"
+
+
+@task(kind="host")
+def hostunpack_freetype(c):
+    c.clean()
+
+    c.var("version", version)
+    c.run("tar xzf {{source}}/freetype-{{version}}.tar.gz")
+
+
+@task()
+def unpack_freetype(c):
+    c.clean()
+
+    c.var("version", version)
+    c.run("tar xzf {{source}}/freetype-{{version}}.tar.gz")
+
+
+@task(kind="host")
+def hostbuild_freetype(c):
+    c.var("version", version)
+    c.chdir("freetype-{{version}}")
+
+    c.run("""./configure --prefix="{{ install }}" --with-harfbuzz=no""")
+    c.run("""cp {{source}}/ftoption.h builds/unix/""")
+    c.run("""cp {{source}}/ftoption.h builds/mac/""")
+    c.run("""cp {{source}}/ftoption.h builds/windows/""")
+    c.run("""{{ make }}""")
+    c.run("""cp objs/apinames {{host}}/freetype-apinames""")
+
+
+@task()
+def build_freetype(c):
+    c.var("version", version)
+    c.chdir("freetype-{{version}}")
+
+    c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" --with-harfbuzz=no""")
+    c.run("""cp {{source}}/ftoption.h builds/unix/""")
+    c.run("""cp {{source}}/ftoption.h builds/mac/""")
+    c.run("""cp {{source}}/ftoption.h builds/windows/""")
+    c.run("""mkdir -p objs""")
+    c.run("""cp {{host}}/freetype-apinames objs/apinames""")
+    c.run("""cp {{host}}/freetype-apinames objs/apinames.exe""")
+    c.run("""touch objs/apinames objs/apinames.exe""")
+    c.run("""{{ make }}""")
+    c.run("""make install""")
