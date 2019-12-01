@@ -14,7 +14,11 @@ __import__("tasks.zlib")
 __import__("tasks.bzip2")
 __import__("tasks.openssl")
 __import__("tasks.nasm")
-__import__("tasks.sdl")
+__import__("tasks.sdl2")
+__import__("tasks.libpng")
+__import__("tasks.libjpeg_turbo")
+__import__("tasks.libwebp")
+__import__("tasks.sdl2_image")
 
 
 def build(args):

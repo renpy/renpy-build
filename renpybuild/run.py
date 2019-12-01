@@ -11,7 +11,10 @@ def build_environment(c):
     """
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
-    c.var("build_platform", sysconfig.get_config_var("host"))
+    c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
+
+    c.env("CFLAGS", "-I{{ install }}/include")
+    c.env("LDFLAGS", "-L{{ install }}/lib")
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
 
@@ -31,7 +34,7 @@ def build_environment(c):
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
 
-    c.var("cross_config", "--host={{ host_platform }} --build {{ build_platform }}")
+    c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
 
 
 def run(command, context):
