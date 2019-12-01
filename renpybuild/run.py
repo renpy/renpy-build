@@ -25,6 +25,9 @@ def build_environment(c):
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
 
+        c.env("AR", "ccache ar")
+        c.env("RANLIB", "ccache ranlib")
+
     elif (c.platform == "linux") and (c.arch == "i686"):
 
         c.var("host_platform", "i686-pc-linux-gnu")
@@ -33,6 +36,9 @@ def build_environment(c):
         c.env("CXX", "ccache g++ -m32 -fPIC -O3 --sysroot {{ sysroot }}")
         c.env("LD", "{{ CC }}")
         c.env("LDXX", "{{ CXX }}")
+
+        c.env("AR", "ccache ar")
+        c.env("RANLIB", "ccache ranlib")
 
     c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
 
