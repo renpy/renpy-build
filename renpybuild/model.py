@@ -49,6 +49,8 @@ class Context:
 
         """
 
+        self.kind = kind
+
         # These store the task and name, just short words that are constant.
         self.task = task
         self.name = name
@@ -149,6 +151,13 @@ class Context:
             shutil.rmtree(d)
 
         d.mkdir(exist_ok=True, parents=True)
+
+    def path(self, p):
+        """
+        Returns a path object for `p`.
+        """
+
+        return pathlib.Path(self.expand(p))
 
 
 class Task:

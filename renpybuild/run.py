@@ -10,21 +10,30 @@ def build_environment(c):
     Sets up the build environment inside the context.
     """
 
+    c.var("make", "make -j 6")
+
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
 
+    c.env("CPPFLAGS", "-I{{ install }}/include")
     c.env("CFLAGS", "-I{{ install }}/include")
     c.env("LDFLAGS", "-L{{ install }}/lib")
 
-    if (c.platform == "linux") and (c.arch == "x86_64"):
+    if c.kind == "host":
+
+        c.env("CC", "ccache gcc -O3 -fPIC")
+        c.env("CXX", "ccache g++ -O3 -fPIC")
+        c.env("CPP", "ccache gcc -E")
+        c.env("AR", "ccache ar")
+        c.env("RANLIB", "ccache ranlib")
+
+    elif (c.platform == "linux") and (c.arch == "x86_64"):
 
         c.var("host_platform", "x86_64-pc-linux-gnu")
 
         c.env("CC", "ccache gcc -O3 -fPIC --sysroot {{ sysroot }}")
         c.env("CXX", "ccache g++ -O3 -fPIC --sysroot {{ sysroot }}")
-        c.env("LD", "{{ CC }}")
-        c.env("LDXX", "{{ CXX }}")
-
+        c.env("CPP", "ccache gcc -E --sysroot {{ sysroot }}")
         c.env("AR", "ccache ar")
         c.env("RANLIB", "ccache ranlib")
 
@@ -34,13 +43,15 @@ def build_environment(c):
 
         c.env("CC", "ccache gcc -m32 -fPIC -O3 --sysroot {{ sysroot }}")
         c.env("CXX", "ccache g++ -m32 -fPIC -O3 --sysroot {{ sysroot }}")
-        c.env("LD", "{{ CC }}")
-        c.env("LDXX", "{{ CXX }}")
-
+        c.env("CPP", "ccache gcc -m32 -E --sysroot {{ sysroot }}")
         c.env("AR", "ccache ar")
         c.env("RANLIB", "ccache ranlib")
 
-    c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
+    c.env("LD", "{{ CC }}")
+    c.env("LDXX", "{{ CXX }}")
+
+    if c.kind != "host":
+        c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
 
 
 def run(command, context):

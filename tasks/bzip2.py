@@ -16,13 +16,5 @@ def build_bzip2(c):
     c.var("version", version)
     c.chdir("bzip2-{{version}}")
 
-    c.run("""
-make
-    CC="{{ CC }}"
-    CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64"
-""")
-
-    c.run("""
-make install
-    PREFIX="{{ install }}"
-""")
+    c.run("""{{ make }} CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)
+    c.run("""make install PREFIX="{{ install }}" """)

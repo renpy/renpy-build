@@ -18,4 +18,5 @@ def build_sdl2(c):
 
     c.run("""./configure {{ config_cross }} --disable-shared --disable-dependency-tracking --prefix="{{ install }}" """)
     c.run("""mkdir build""")
+    c.run("""{{ make }}""")
     c.run("""make install""")

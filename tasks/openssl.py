@@ -23,5 +23,5 @@ def build_openssl(c):
     ./Configure cc no-shared no-asm --prefix="{{ install }}"
     """)
 
-    c.run("""make""")
+    c.run("""{{ make }}""")
     c.run("""make install_sw""")

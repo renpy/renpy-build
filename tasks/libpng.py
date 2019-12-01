@@ -17,4 +17,5 @@ def build_libpng(c):
     c.chdir("libpng-{{version}}")
 
     c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
+    c.run("""{{ make }}""")
     c.run("""make install """)

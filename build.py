@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import shutil
 from pathlib import Path
 
 sys.path.insert(1, Path(__file__).parent / 'deps')
@@ -56,12 +57,21 @@ def rebuild(args):
     build(args)
 
 
+def clean(args):
+    shutil.rmtree(tmp / "build")
+    shutil.rmtree(tmp / "complete")
+
+    for i in tmp.glob("install.*"):
+        shutil.rmtree(i)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tmp", default="tmp")
     ap.add_argument("--platforms", "--platform", default="linux")
     ap.add_argument("--archs", "--arch", default="x86_64")
     ap.add_argument("--pythons", "--python", default="3,2")
+    ap.set_defaults(function=build)
 
     subparsers = ap.add_subparsers()
 
@@ -71,6 +81,9 @@ def main():
     sp = subparsers.add_parser("rebuild")
     sp.add_argument("tasks", nargs='+')
     sp.set_defaults(function=rebuild)
+
+    sp = subparsers.add_parser("clean")
+    sp.set_defaults(function=clean)
 
     global tmp
     global root

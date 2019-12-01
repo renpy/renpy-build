@@ -37,20 +37,21 @@ def install_sysroot(c):
         deb_arch = "amd64"
 
     c.var("deb_arch", deb_arch)
+
+    if c.path("{{ sysroot }}").exists():
+
+        c.run("""sudo rm -f {{sysroot}}/etc/resolv.conf""")
+        c.run("""sudo cp /etc/resolv.conf {{sysroot}}/etc/resolv.conf""")
+
+        c.run("""sudo systemd-nspawn -D {{sysroot}} apt update""")
+
+        c.var("packages", " ".join(PACKAGES))
+
+        c.run("""sudo systemd-nspawn -D {{sysroot}} apt install -y {{ packages }} """)
+        return
+
     c.var("packages", ",".join(PACKAGES))
 
-    c.clean("{{ sysroot }}")
-
     c.run("""mkdir -p "{{ tmp }}/debs" """)
-    c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
+    c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
 
-    c.run("""sudo rm -f {{sysroot}}/etc/resolv.conf""")
-    c.run("""sudo cp /etc/resolv.conf {{sysroot}}/etc/resolv.conf""")
-    c.run("""sudo systemd-nspawn -D {{sysroot}} apt update""")
-
-
-@task(platforms="linux", archs="x86_64,i686", always=True)
-def update_sysroot(c):
-
-    c.var("packages", " ".join(PACKAGES))
-    c.run("""sudo systemd-nspawn -D {{sysroot}} apt install -y {{ packages }} """)

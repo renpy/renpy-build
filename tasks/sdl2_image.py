@@ -28,5 +28,5 @@ def build_sdl2image(c):
     --disable-xcf
     """)
 
-    c.run("""make""")
+    c.run("""{{ make }}""")
     c.run("""make install""")

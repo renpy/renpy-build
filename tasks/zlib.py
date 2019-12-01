@@ -17,5 +17,5 @@ def build_zlib(c):
     c.chdir("zlib-{{version}}")
 
     c.run("./configure {{ configure_cross }} --static --prefix={{install}}")
-    c.run("make")
+    c.run("{{ make }}")
     c.run("make install")

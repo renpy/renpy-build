@@ -17,5 +17,5 @@ def build_nasm(c):
 
     c.chdir("nasm-{{version}}")
     c.run("""./configure --prefix="{{install}}" """)
-    c.run("""make""")
+    c.run("""{{ make }}""")
     c.run("""make install""")

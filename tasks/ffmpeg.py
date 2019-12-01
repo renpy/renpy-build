@@ -135,4 +135,5 @@ def build_ffmpeg(c):
         --disable-videotoolbox
     """)
 
-    c.run("""make install V=1""")
+    c.run("""{{ make }} V=1""")
+    c.run("""make install""")

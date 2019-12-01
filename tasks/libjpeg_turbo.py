@@ -18,4 +18,5 @@ def build_libjpegturbo(c):
     c.chdir("libjpeg-turbo-{{version}}")
 
     c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
+    c.run("""{{ make }}""")
     c.run("""make install """)
