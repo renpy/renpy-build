@@ -11,3 +11,4 @@ from . import libjpeg_turbo
 from . import libwebp
 from . import sdl2_image
 from . import ffmpeg
+from . import fribidi
