@@ -7,6 +7,7 @@ from pathlib import Path
 sys.path.insert(1, Path(__file__).parent / 'deps')
 
 import renpybuild.model
+import tasks as _
 
 # The tasks to run, in order.
 __import__("tasks.sysroot")
