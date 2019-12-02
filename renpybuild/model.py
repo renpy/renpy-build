@@ -2,6 +2,7 @@ import time
 import os
 import shutil
 import pathlib
+import subprocess
 
 import jinja2
 
@@ -157,7 +158,19 @@ class Context:
         Returns a path object for `p`.
         """
 
-        return pathlib.Path(self.expand(p))
+        return self.cwd / self.expand(p)
+
+    def patch(self, fn):
+        """
+        Applies the patch in `fn`.
+        """
+
+        fn = self.expand(fn)
+
+        with open(fn, "rb") as f:
+            patch = f.read()
+
+        subprocess.run([ "patch", "-p1" ], input=patch, cwd=self.cwd, check=True)
 
 
 class Task:

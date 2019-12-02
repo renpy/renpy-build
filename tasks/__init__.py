@@ -13,3 +13,4 @@ from . import sdl2_image
 from . import ffmpeg
 from . import fribidi
 from . import freetype
+from . import python
