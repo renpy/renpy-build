@@ -3,6 +3,7 @@ import os
 import shutil
 import pathlib
 import subprocess
+import shutil
 
 import jinja2
 
@@ -171,6 +172,13 @@ class Context:
             patch = f.read()
 
         subprocess.run([ "patch", "-p1" ], input=patch, cwd=self.cwd, check=True)
+
+    def copy(self, src, dst):
+        """
+        Copies `src` to `dst`.
+        """
+
+        shutil.copy(self.path(src), self.path(dst))
 
 
 class Task:
