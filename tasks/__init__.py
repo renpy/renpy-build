@@ -15,3 +15,4 @@ from . import fribidi
 from . import freetype
 from . import libffi
 from . import python
+from . import glew
