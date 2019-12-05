@@ -45,6 +45,12 @@ class Context:
         self.var("arch", arch)
         self.var("source", self.root / "source")
 
+        self.pygame_sdl2 = pathlib.Path("/home/tom/ab/pygame_sdl2")
+        self.var("pygame_sdl2", self.pygame_sdl2)
+
+        self.renpy = pathlib.Path("/home/tom/ab/renpy")
+        self.var("renpy", self.renpy)
+
     def set_names(self, kind, task, name):
         """
         This is used to past the task-specific names into the context.
@@ -92,6 +98,8 @@ class Context:
         self.install = install
         self.var("install", install)
 
+        self.var("hostpython", "{{ install }}/bin/hostpython{{ c.python }}")
+
         renpybuild.run.build_environment(self)
 
     def expand(self, s):
@@ -104,6 +112,7 @@ class Context:
         kwargs = dict()
         kwargs.update(self.environ)
         kwargs.update(self.variables)
+        kwargs.update({ "c" : self })
 
         return template.render(**kwargs)
 

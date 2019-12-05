@@ -70,7 +70,7 @@ def main():
     ap.add_argument("--tmp", default="tmp")
     ap.add_argument("--platforms", "--platform", default="linux")
     ap.add_argument("--archs", "--arch", default="x86_64")
-    ap.add_argument("--pythons", "--python", default="3,2")
+    ap.add_argument("--pythons", "--python", default="2")
     ap.set_defaults(function=build)
 
     subparsers = ap.add_subparsers()
