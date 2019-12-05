@@ -1,0 +1,8 @@
+from renpybuild.model import task
+
+
+@task(kind="python")
+def install_pygame_sdl2(c):
+
+    c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install --no-extensions")
+    c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install_headers")
