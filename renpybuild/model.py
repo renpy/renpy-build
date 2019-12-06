@@ -54,7 +54,6 @@ class Context:
     def set_names(self, kind, task, name):
         """
         This is used to past the task-specific names into the context.
-
         """
 
         self.kind = kind
@@ -69,6 +68,8 @@ class Context:
 
         if kind == "host":
             self.dir_name = f"{self.name}.host"
+        elif kind == "cross":
+            self.dir_name = f"{self.name}.cross-{self.platform}-{self.arch}"
         elif kind == "platform":
             self.dir_name = f"{self.name}.{self.platform}"
         elif kind == "arch":
@@ -85,11 +86,16 @@ class Context:
         self.cwd = build
         self.var("build", build)
 
-        host = self.tmp / "install.host"
+        host = self.tmp / "host"
         self.var("host", host)
+
+        cross = self.tmp / f"cross.{self.platform}-{self.arch}"
+        self.var("cross", cross)
 
         if kind == "host":
             install = host
+        elif kind == "cross":
+            install = cross
         else:
             install = self.tmp / f"install.{self.platform}-{self.arch}"
 

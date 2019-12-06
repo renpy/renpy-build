@@ -1,6 +1,7 @@
 # The tasks to run, in order.
 
 from . import sysroot
+from . import toolchain
 from . import nasm
 from . import zlib
 from . import bzip2
@@ -18,4 +19,4 @@ from . import python
 from . import glew
 from . import pygame_sdl2
 from . import librenpy
-
+from . import renpython
