@@ -17,3 +17,5 @@ from . import libffi
 from . import python
 from . import glew
 from . import pygame_sdl2
+from . import librenpy
+

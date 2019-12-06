@@ -1,6 +1,11 @@
-from renpybuild.model import task
+from renpybuild.model import task, annotator
 
 version = "2.0.10"
+
+
+@annotator
+def annotate(c):
+    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/SDL2" """)
 
 
 @task()

@@ -6,9 +6,11 @@ python2_version = "2.7.17"
 @annotator
 def annotate(c):
     if c.python == "2":
-        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/python2.7" """)
+        c.var("pythonver", "python2.7")
+        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/{{ pythonver }}" """)
     else:
-        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/python3.8" """)
+        c.var("pythonver", "python3.8")
+        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/{{ pythonver }}" """)
 
 
 @task(kind="host", pythons="2")

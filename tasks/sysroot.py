@@ -19,6 +19,7 @@ PACKAGES = [
     'libudev-dev',
     'libgles1-mesa-dev',
     'libgles2-mesa-dev',
+    'libglu1-mesa-dev',
     'libegl1-mesa-dev',
     'libibus-1.0-dev',
     'fcitx-libs-dev',

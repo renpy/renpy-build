@@ -102,19 +102,30 @@ class Context:
 
         renpybuild.run.build_environment(self)
 
-    def expand(self, s):
+    def expand(self, s, **kwargs):
         """
         Expands `s` as a jinja template.
         """
 
         template = jinja2.Template(s)
 
-        kwargs = dict()
-        kwargs.update(self.environ)
-        kwargs.update(self.variables)
-        kwargs.update({ "c" : self })
+        variables = dict()
+        variables.update(self.environ)
+        variables.update(self.variables)
+        variables.update({ "c" : self })
+        variables.update(kwargs)
 
-        return template.render(**kwargs)
+        return template.render(**variables)
+
+    def generate(self, src, dest, **kwargs):
+        """
+        Loads in `src`, a template file, substitutes in ``kwargs`` and all
+        the other variables that are define, and writes it out into ``dest``.
+        """
+
+        template = self.path(src).read_text()
+        text = self.expand(template, **kwargs)
+        self.path(dest).write_text(text)
 
     def env(self, variable, value):
         """
@@ -133,7 +144,7 @@ class Context:
     def chdir(self, d):
         self.cwd = self.cwd / self.expand(d)
 
-    def run(self, command):
+    def run(self, command, verbose=False):
         """
         Runs `command`, and checks that the result is 0.
 
@@ -146,7 +157,8 @@ class Context:
             and then is run using popen.
         """
 
-        renpybuild.run.run(self.expand(command), self)
+        command = self.expand(command)
+        renpybuild.run.run(command, self, verbose)
 
     def clean(self, d="{{build}}"):
         """

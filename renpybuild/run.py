@@ -54,8 +54,11 @@ def build_environment(c):
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
 
 
-def run(command, context):
+def run(command, context, verbose=False):
     args = shlex.split(command)
+
+    if verbose:
+        print(" ".join(shlex.quote(i) for i in args))
 
     p = subprocess.run(args, cwd=context.cwd, env=context.environ)
 
