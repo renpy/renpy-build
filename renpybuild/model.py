@@ -249,6 +249,9 @@ class Task:
             ran_tasks.add(context.task_name)
             return
 
+        for a in annotators:
+            a(context)
+
         print(f"{context.task_name} running...")
 
         self.function(context)
@@ -300,6 +303,19 @@ def task(**kwargs):
         return f
 
     return create_task
+
+
+# A list of annotation functions.
+annotators = [ ]
+
+
+def annotator(f):
+    """
+    Marks this function to be called before each task.
+    """
+
+    annotators.append(f)
+    return f
 
 
 # A list of tasks that are known.

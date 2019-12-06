@@ -1,6 +1,14 @@
-from renpybuild.model import task
+from renpybuild.model import task, annotator
 
 python2_version = "2.7.17"
+
+
+@annotator
+def annotate(c):
+    if c.python == "2":
+        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/python2.7" """)
+    else:
+        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/python3.8" """)
 
 
 @task(kind="host", pythons="2")
