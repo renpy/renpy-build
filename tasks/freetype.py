@@ -5,7 +5,8 @@ version = "2.10.1"
 
 @annotator
 def annotate(c):
-    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/freetype2" """)
+    if c.path("{{ install }}/include/freetype2").exists():
+        c.env("CFLAGS", """{{ CFLAGS }} -I{{ install }}/include/freetype2 """)
 
 
 @task(kind="host")

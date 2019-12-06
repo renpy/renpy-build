@@ -7,10 +7,11 @@ python2_version = "2.7.17"
 def annotate(c):
     if c.python == "2":
         c.var("pythonver", "python2.7")
-        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/{{ pythonver }}" """)
     else:
         c.var("pythonver", "python3.8")
-        c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/{{ pythonver }}" """)
+
+    if c.path("{{ install }}/include/{{ pythonver }}").exists():
+       c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/{{ pythonver }}" """)
 
 
 @task(kind="host", pythons="2")
