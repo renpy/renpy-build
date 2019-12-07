@@ -39,20 +39,21 @@ def install_sysroot(c):
 
     c.var("deb_arch", deb_arch)
 
-    if c.path("{{ sysroot }}").exists():
+    if not c.path("{{ sysroot }}").exists():
 
-        c.run("""sudo rm -f {{sysroot}}/etc/resolv.conf""")
-        c.run("""sudo cp /etc/resolv.conf {{sysroot}}/etc/resolv.conf""")
+    #     c.run("""sudo rm -f {{sysroot}}/etc/resolv.conf""")
+    #     c.run("""sudo cp /etc/resolv.conf {{sysroot}}/etc/resolv.conf""")
+    #
+    #     c.run("""sudo systemd-nspawn -D {{sysroot}} apt update""")
+    #
+    #     c.var("packages", " ".join(PACKAGES))
+    #
+    #     c.run("""sudo systemd-nspawn -D {{sysroot}} apt install -y {{ packages }} """)
+    #
+    # else:
 
-        c.run("""sudo systemd-nspawn -D {{sysroot}} apt update""")
+        c.var("packages", ",".join(PACKAGES))
 
-        c.var("packages", " ".join(PACKAGES))
-
-        c.run("""sudo systemd-nspawn -D {{sysroot}} apt install -y {{ packages }} """)
-        return
-
-    c.var("packages", ",".join(PACKAGES))
-
-    c.run("""mkdir -p "{{ tmp }}/debs" """)
-    c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
-
+        c.run("""mkdir -p "{{ tmp }}/debs" """)
+        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
+        c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")

@@ -10,19 +10,6 @@ sys.path.insert(1, Path(__file__).parent / 'deps')
 import renpybuild.model
 import tasks as _
 
-# The tasks to run, in order.
-__import__("tasks.sysroot")
-__import__("tasks.zlib")
-__import__("tasks.bzip2")
-__import__("tasks.openssl")
-__import__("tasks.nasm")
-__import__("tasks.sdl2")
-__import__("tasks.libpng")
-__import__("tasks.libjpeg_turbo")
-__import__("tasks.libwebp")
-__import__("tasks.sdl2_image")
-
-
 def build(args):
     platforms = [ i.strip() for i in args.platforms.split(",")  ]
     archs = [ i.strip() for i in args.archs.split(",") ]
@@ -98,4 +85,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -25,8 +25,8 @@ def build_environment(c):
 
     if (c.kind == "host") or (c.kind == "cross"):
 
-        c.env("CC", "ccache gcc")
-        c.env("CXX", "ccache g++")
+        c.env("CC", "ccache gcc -fPIC")
+        c.env("CXX", "ccache g++ -fPIC")
         c.env("CPP", "ccache gcc -E")
         c.env("AR", "ccache ar")
         c.env("RANLIB", "ccache ranlib")
@@ -38,8 +38,6 @@ def build_environment(c):
         c.env("CPP", "ccache gcc -m64 -E --sysroot {{ sysroot }}")
         c.env("AR", "ccache ar")
         c.env("RANLIB", "ccache ranlib")
-
-        c.env("LDFLAGS", "-L{{ install }}/lib -L{{ install }}/lib64 -L{{ sysroot }}/lib -L{{ sysroot }}/usr/lib  -L{{ sysroot }}/usr/lib/x86_64-linux-gnu")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
@@ -68,4 +66,3 @@ def run(command, context, verbose=False):
         print(f"{context.task_name}: process failed with {p.returncode}.")
         print("args:", args)
         sys.exit(1)
-

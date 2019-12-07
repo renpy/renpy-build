@@ -1,13 +1,16 @@
 from renpybuild.model import task
 
 binutils_version = "2.33.1"
-gcc_version = "5.3.0"
+gcc_version = "9.2.0"
 
 
 @task(kind="cross")
 def build_toolchain(c):
     c.var("binutils_version", binutils_version)
     c.var("gcc_version", gcc_version)
+
+    if c.path("{{ install }}/bin/{{ host_platform }}-gcc").exists():
+        return
 
     c.clean()
 
@@ -40,6 +43,3 @@ def build_toolchain(c):
 
     c.run("{{ make }}")
     c.run("make install")
-
-    import sys
-    sys.exit(0)
