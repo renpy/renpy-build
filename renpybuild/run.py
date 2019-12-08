@@ -33,11 +33,13 @@ def build_environment(c):
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
-        c.env("CC", "ccache gcc -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache g++ -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
-        c.env("CPP", "ccache gcc -m64 -E --sysroot {{ sysroot }}")
-        c.env("AR", "ccache ar")
-        c.env("RANLIB", "ccache ranlib")
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform}}-")
+
+        c.env("CC", "ccache {{ crossbin }}gcc -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache {{ crossbin }}g++ -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
+        c.env("CPP", "ccache {{ crossbin }}gcc -m64 -E --sysroot {{ sysroot }}")
+        c.env("AR", "ccache {{ crossbin }}gcc-ar")
+        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
@@ -49,6 +51,8 @@ def build_environment(c):
 
     c.env("LD", "{{ CC }}")
     c.env("LDXX", "{{ CXX }}")
+
+    c.env("LDFLAGS", "-L{{install}}/lib -L{{install}}/lib64")
 
     if c.kind != "host":
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")

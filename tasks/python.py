@@ -11,7 +11,7 @@ def annotate(c):
         c.var("pythonver", "python3.8")
 
     if c.path("{{ install }}/include/{{ pythonver }}").exists():
-       c.env("CFLAGS", """{{ CFLAGS }} "-I{{ install }}/include/{{ pythonver }}" """)
+       c.env("CFLAGS", """{{ CFLAGS }} -I{{ install }}/include/{{ pythonver }} """)
 
 
 @task(kind="host", pythons="2")
@@ -86,4 +86,3 @@ def build_python2(c):
 #     c.chdir("Python-{{ version }}")
 #     c.env("PYTHONPATH", ".")
 #     c.run("""./python "{{source}}/all_modules_static.py" """)
-

@@ -17,6 +17,7 @@ PACKAGES = [
     'libesd0-dev',
     'libdbus-1-dev',
     'libudev-dev',
+    'libgl1-mesa-dev',
     'libgles1-mesa-dev',
     'libgles2-mesa-dev',
     'libglu1-mesa-dev',

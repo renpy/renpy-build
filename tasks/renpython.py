@@ -27,7 +27,6 @@ def build_renpython(c):
     -lSDL2_image
     -lSDL2
     -lGLEW
-    -lGLX
     -lGL
     -ljpeg
     -lpng
