@@ -31,6 +31,7 @@ def build_renpython(c):
     -ljpeg
     -lpng
     -lwebp
+    -lfribidi
     -lfreetype
     -lffi
     -ldl

@@ -1,6 +1,12 @@
-from renpybuild.model import task
+from renpybuild.model import task, annotator
 
 version = "1.0.7"
+
+
+@annotator
+def annotate(c):
+    if c.path("{{ install }}/include/fribidi").exists():
+        c.env("CFLAGS", """{{ CFLAGS }} -I{{ install }}/include/fribidi """)
 
 
 @task()
