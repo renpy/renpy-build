@@ -80,6 +80,17 @@ def build_python2(c):
 
     c.run("{{ install }}/bin/hostpython2 -m ensurepip")
 
+
+@task(kind="python", pythons="2")
+def run_pip2(c):
+    c.run("{{ install }}/bin/hostpython2 -m pip install --upgrade pip future")
+
+
+@task(kind="python", pythons="2", always=True)
+def install_sitecustomize(c):
+    c.run("install {{ source }}/sitecustomize.py {{ install }}/lib/{{ pythonver }}/sitecustomize.py")
+    c.run("{{ install }}/bin/hostpython2 -m compileall {{ install }}/lib/{{ pythonver }}/sitecustomize.py")
+
 # @task(kind="python", pythons="2")
 # def setup_python2(c):
 #     c.var("version", python2_version)
