@@ -10,7 +10,7 @@ def build_environment(c):
     Sets up the build environment inside the context.
     """
 
-    c.var("make", "make -j 6")
+    c.var("make", "nice make -j 12")
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -23,6 +23,8 @@ def build_environment(c):
     elif (c.platform == "linux") and (c.arch == "i686"):
         c.var("host_platform", "i686-pc-linux-gnu")
 
+    c.env("LDFLAGS", "-L{{install}}/lib")
+
     if (c.kind == "host") or (c.kind == "cross"):
 
         c.env("CC", "ccache gcc -fPIC")
@@ -30,6 +32,8 @@ def build_environment(c):
         c.env("CPP", "ccache gcc -E")
         c.env("AR", "ccache ar")
         c.env("RANLIB", "ccache ranlib")
+
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
@@ -41,18 +45,27 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
 
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
     elif (c.platform == "linux") and (c.arch == "i686"):
 
-        c.env("CC", "ccache gcc -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache g++ -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
-        c.env("CPP", "ccache gcc -m32 -E --sysroot {{ sysroot }}")
-        c.env("AR", "ccache ar")
-        c.env("RANLIB", "ccache ranlib")
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
+
+        c.env("CC", "ccache {{ crossbin }}gcc -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache {{ crossbin }}g++ -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
+        c.env("CPP", "ccache {{ crossbin }}gcc -m32 -E --sysroot {{ sysroot }}")
+        c.env("AR", "ccache {{ crossbin }}gcc-ar")
+        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+
+        # Lib64 is needed since GLEW winds up in the wrong place.
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/i386-linux-gnu")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/i386-linux-gnu")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32 -L{{install}}/lib64")
 
     c.env("LD", "{{ CC }}")
     c.env("LDXX", "{{ CXX }}")
-
-    c.env("LDFLAGS", "-L{{install}}/lib -L{{install}}/lib64")
 
     if c.kind != "host":
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")

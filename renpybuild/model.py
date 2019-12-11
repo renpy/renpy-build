@@ -207,6 +207,17 @@ class Context:
 
         shutil.copy(self.path(src), self.path(dst))
 
+    def include(self, path):
+
+        if self.kind == "host":
+            return
+
+        if self.kind == "cross":
+            return
+
+        if self.path(path).exists():
+            self.env("CFLAGS", "{{ CFLAGS }} -I" + path)
+
 
 class Task:
     """

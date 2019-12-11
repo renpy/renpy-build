@@ -5,8 +5,7 @@ version = "2.0.10"
 
 @annotator
 def annotate(c):
-    if c.path("{{ install }}/include/SDL2").exists():
-        c.env("CFLAGS", """{{ CFLAGS }} -I{{ install }}/include/SDL2""")
+    c.include("{{ install }}/include/SDL2")
 
 
 @task()

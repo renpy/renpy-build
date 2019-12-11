@@ -3,8 +3,7 @@ from renpybuild.model import task, annotator
 
 @annotator
 def annotate(c):
-    if c.path("{{ install }}/include/{{ pythonver }}/pygame_sdl2").exists():
-        c.env("CFLAGS", """{{ CFLAGS }} -I{{ install }}/include/{{ pythonver }}/pygame_sdl2 """)
+    c.include("{{ install }}/include/{{ pythonver }}/pygame_sdl2")
 
 
 @task(kind="python", always=True)

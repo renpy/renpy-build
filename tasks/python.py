@@ -10,8 +10,7 @@ def annotate(c):
     else:
         c.var("pythonver", "python3.8")
 
-    if c.path("{{ install }}/include/{{ pythonver }}").exists():
-       c.env("CFLAGS", """{{ CFLAGS }} -I{{ install }}/include/{{ pythonver }} """)
+    c.include("{{ install }}/include/{{ pythonver }}")
 
 
 @task(kind="host", pythons="2")
@@ -78,22 +77,14 @@ def build_python2(c):
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
-    c.run("{{ install }}/bin/hostpython2 -m ensurepip")
-
 
 @task(kind="python", pythons="2")
-def run_pip2(c):
+def pip_python2(c):
+    c.run("{{ install }}/bin/hostpython2 -m ensurepip")
     c.run("{{ install }}/bin/hostpython2 -m pip install --upgrade pip future")
 
 
 @task(kind="python", pythons="2", always=True)
-def install_sitecustomize(c):
+def sitecustomize_python2(c):
     c.run("install {{ source }}/sitecustomize.py {{ install }}/lib/{{ pythonver }}/sitecustomize.py")
     c.run("{{ install }}/bin/hostpython2 -m compileall {{ install }}/lib/{{ pythonver }}/sitecustomize.py")
-
-# @task(kind="python", pythons="2")
-# def setup_python2(c):
-#     c.var("version", python2_version)
-#     c.chdir("Python-{{ version }}")
-#     c.env("PYTHONPATH", ".")
-#     c.run("""./python "{{source}}/all_modules_static.py" """)
