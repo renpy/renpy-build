@@ -16,7 +16,7 @@ def build_sdl2image(c):
     c.var("version", version)
     c.chdir("SDL2_image-{{version}}")
 
-    c.run("""./configure {{ config_cross }} --prefix="{{ install }}"
+    c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
 
     --disable-tif

@@ -23,6 +23,10 @@ def build_ffmpeg(c):
 
     if c.platform == "linux":
         c.var("os", "linux")
+    elif (c.platform == "windows") and (c.arch == "x86_64"):
+        c.var("os", "mingw64")
+    elif (c.platform == "windows") and (c.arch == "i686"):
+        c.var("os", "mingw32")
     else:
         raise Exception(f"Unknown os: {c.platform}")
 
@@ -49,6 +53,7 @@ def build_ffmpeg(c):
 
         --enable-pic
 
+        --enable-cross-compile
         --enable-runtime-cpudetect
 
         --disable-all
@@ -64,7 +69,6 @@ def build_ffmpeg(c):
         --enable-avfilter
         --enable-avresample
 
-        --enable-pthreads
         --disable-bzlib
 
         --enable-demuxer=au

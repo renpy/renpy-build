@@ -19,9 +19,10 @@ def build_openssl(c):
     if c.platform == "mac":
         c.environ("KERNEL_BITS", "64")
 
-    c.run("""
-    ./Configure cc no-shared no-asm --prefix="{{ install }}"
-    """)
+    if (c.platform == "windows") and (c.arch == "x86_64"):
+        c.run("""./Configure mingw64 no-shared no-asm --prefix="{{ install }}" """)
+    else:
+        c.run("""./Configure cc no-shared no-asm --prefix="{{ install }}" """)
 
     c.run("""{{ make }}""")
     c.run("""make install_sw""")

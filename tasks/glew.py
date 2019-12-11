@@ -17,4 +17,4 @@ def build_glew(c):
     c.chdir("glew-{{version}}")
 
     # LN= prevents the shared library symlink from being madse.
-    c.run("""{{ make }} install LIB.DEVLNK=libglew_shared.so OPT='{{ CFLAGS }} {{ LDFLAGS }}' CC='{{ CC }}' LD='{{ LD }}' GLEW_DEST="{{ install }}" """)
+    c.run("""{{ make }} install LIB.DEVLNK=libglew_shared.so OPT='{{ CFLAGS }} {{ LDFLAGS }}' CC='{{ CC }}' LD='{{ CC }}' GLEW_DEST="{{ install }}" """)

@@ -10,6 +10,9 @@ def unpack_bzip2(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/bzip2-{{version}}.tar.gz")
 
+    c.chdir("bzip2-{{version}}")
+    c.patch("{{ source }}/bzip2-{{ version }}-no-tests.diff")
+
 
 @task()
 def build_bzip2(c):
@@ -17,4 +20,5 @@ def build_bzip2(c):
     c.chdir("bzip2-{{version}}")
 
     c.run("""{{ make }} CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)
-    c.run("""make install PREFIX="{{ install }}" """)
+    c.run("""touch bzip2 bunzip2 bzip2recover bzgrep bzmore bzdiff""")
+    c.run("""make install PREFIX="{{ install }}" CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)

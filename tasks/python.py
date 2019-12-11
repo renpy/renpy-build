@@ -69,7 +69,7 @@ def build_python2(c):
 
     c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
 
-    c.run("""./configure {{ config_cross }} --prefix="{{ install }}" --enable-ipv6""")
+    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --enable-ipv6""")
 
     c.copy("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 

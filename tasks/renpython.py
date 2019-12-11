@@ -12,7 +12,7 @@ def build_renpython(c):
     c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
 
     c.run("""
-    {{ LD }} {{ LDFLAGS }}
+    {{ CC }} {{ LDFLAGS }}
     -o renpython{{ c.python }}
     renpython.o
     -lrenpy

@@ -4,7 +4,7 @@ binutils_version = "2.33.1"
 gcc_version = "9.2.0"
 
 
-@task(kind="cross")
+@task(kind="cross", platforms="linux")
 def build_toolchain(c):
     c.var("binutils_version", binutils_version)
     c.var("gcc_version", gcc_version)
