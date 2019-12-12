@@ -1,0 +1,2 @@
+The patches required to crossbuild windows using mingw originate at:
+https://github.com/msys2/MINGW-packages/ .
