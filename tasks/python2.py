@@ -20,12 +20,27 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
+
+@task(kind="python", pythons="2", platforms="linux")
+def patch_linux(c):
+    c.var("version", version)
+
     c.chdir("Python-{{ version }}")
     c.patch("python2-no-multiarch.diff")
 
 
-@task(kind="python", pythons="2")
-def build(c):
+@task(kind="python", pythons="2", platforms="windows")
+def patch_windows(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patchdir("mingw-w64-python2")
+
+    c.run(""" autoreconf -vfi """)
+
+
+@task(kind="python", pythons="2", platforms="linux")
+def build_posix(c):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -40,11 +55,30 @@ def build(c):
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --enable-ipv6""")
 
-    c.copy("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
+
+
+@task(kind="python", pythons="2", platforms="windows")
+def build_windows(c):
+
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+
+    c.env("MSYSTEM", "MINGW")
+
+    c.run("""./configure {{ cross_config }} --enable-static --disable-shared --prefix="{{ install }}" --with-threads """)
+
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+    c.run(""" make """)
+
+    import sys
+    sys.exit(1)
 
 
 @task(kind="python", pythons="2")

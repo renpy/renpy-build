@@ -10,10 +10,10 @@ _json _json.c
 _locale _localemodule.c
 _lsprof _lsprof.c rotatingtree.c
 _multibytecodec cjkcodecs/multibytecodec.c
-_multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/socket_connection.c _multiprocessing/semaphore.c -IModules/_multiprocessing
+# _multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/socket_connection.c _multiprocessing/semaphore.c -IModules/_multiprocessing
 _random _randommodule.c
-_socket socketmodule.c timemodule.c -lm
-_ssl _ssl.c -lssl -lcrypto
+_socket socketmodule.c timemodule.c {% if c.platform == "windows" %}-lws2_32{% endif %} -lm
+_ssl _ssl.c -lssl -lcrypto {% if c.platform == "windows" %}-lcrypt32{% endif %}
 _struct _struct.c
 _testcapi _testcapimodule.c
 array arraymodule.c
@@ -24,30 +24,33 @@ cPickle cPickle.c
 cStringIO cStringIO.c
 cmath cmathmodule.c Modules/_math.o -lm
 datetime datetimemodule.c timemodule.c -lm
-dl dlmodule.c
-fcntl fcntlmodule.c
 future_builtins future_builtins.c
-grp grpmodule.c
 itertools itertoolsmodule.c
 imageop imageop.c
-linuxaudiodev linuxaudiodev.c
 math mathmodule.c Modules/_math.o -lm
 mmap mmapmodule.c
 operator operator.c
-ossaudiodev ossaudiodev.c
 parser parsermodule.c
-pwd pwdmodule.c
-resource resource.c
 select selectmodule.c
-spwd spwdmodule.c
 strop stropmodule.c
-syslog syslogmodule.c
-termios termios.c
 time timemodule.c -lm
 unicodedata unicodedata.c
 zlib zlibmodule.c -lz
 
+{% if c.platform != "windows" %}
+dl dlmodule.c
+fcntl fcntlmodule.c
+linuxaudiodev linuxaudiodev.c
+ossaudiodev ossaudiodev.c
+grp grpmodule.c
+pwd pwdmodule.c
+spwd spwdmodule.c
+resource resource.c
+syslog syslogmodule.c
+termios termios.c
+{% endif %}
+
 pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat
 _elementtree _elementtree.c -I$(srcdir)/Modules/expat
 
-_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi {% if c.platform == "windows" %}-loleaut32 -lole32 -luuid{% endif %}

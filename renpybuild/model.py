@@ -201,12 +201,44 @@ class Context:
 
         subprocess.run([ "patch", "-p1" ], input=patch, cwd=self.cwd, check=True)
 
+    def patchdir(self, dn):
+        """
+        Applies all the patches in `dn`.
+        """
+
+        dn = self.path("{{ patches }}") / self.expand(dn)
+
+        patches = list(dn.glob("*.diff")) + list(dn.glob("*.patch"))
+        patches.sort()
+
+        for fn in patches:
+
+            print("Applying", fn.name)
+
+            with open(fn, "rb") as f:
+                patch = f.read()
+
+            subprocess.run([ "patch", "-p1" ], input=patch, cwd=self.cwd, check=True)
+
     def copy(self, src, dst):
         """
         Copies `src` to `dst`.
         """
 
         shutil.copy(self.path(src), self.path(dst))
+
+    def generate(self, src, dst):
+        src = self.path(src)
+        dst = self.path(dst)
+
+        with open(src) as f:
+            data = f.read()
+
+        data = self.expand(data)
+
+        with open(dst, "w") as f:
+            f.write(data)
+            f.write("\n")
 
     def include(self, path):
 
