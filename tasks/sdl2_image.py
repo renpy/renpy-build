@@ -4,7 +4,7 @@ version = "2.0.5"
 
 
 @task()
-def unpack_sdl2image(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_sdl2image(c):
 
 
 @task()
-def build_sdl2image(c):
+def build(c):
     c.var("version", version)
     c.chdir("SDL2_image-{{version}}")
 

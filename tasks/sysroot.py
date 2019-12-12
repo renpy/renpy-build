@@ -31,7 +31,7 @@ PACKAGES = [
 
 
 @task(platforms="linux", archs="x86_64,i686")
-def install_sysroot(c):
+def install(c):
 
     if c.arch == "i686":
         deb_arch = "i386"

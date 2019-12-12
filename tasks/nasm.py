@@ -4,7 +4,7 @@ version = "2.14.02"
 
 
 @task(kind="host")
-def unpack_nasm(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_nasm(c):
 
 
 @task(kind="host")
-def build_nasm(c):
+def build(c):
     c.var("version", version)
 
     c.chdir("nasm-{{version}}")

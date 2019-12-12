@@ -9,7 +9,7 @@ def annotate(c):
 
 
 @task(kind="host")
-def hostunpack_freetype(c):
+def hostunpack(c):
     c.clean()
 
     c.var("version", version)
@@ -17,7 +17,7 @@ def hostunpack_freetype(c):
 
 
 @task()
-def unpack_freetype(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -25,7 +25,7 @@ def unpack_freetype(c):
 
 
 @task(kind="host")
-def hostbuild_freetype(c):
+def hostbuild(c):
     c.var("version", version)
     c.chdir("freetype-{{version}}")
 
@@ -38,7 +38,7 @@ def hostbuild_freetype(c):
 
 
 @task()
-def build_freetype(c):
+def build(c):
     c.var("version", version)
     c.chdir("freetype-{{version}}")
 

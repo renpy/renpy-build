@@ -2,12 +2,12 @@ from renpybuild.model import task
 
 
 @task(kind="python", always=True)
-def clean_renpython(c):
+def clean(c):
     c.clean()
 
 
 @task(kind="python", always=True)
-def build_renpython(c):
+def build(c):
 
     c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
 

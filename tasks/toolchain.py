@@ -5,7 +5,7 @@ gcc_version = "9.2.0"
 
 
 @task(kind="cross", platforms="linux")
-def build_toolchain(c):
+def build(c):
     c.var("binutils_version", binutils_version)
     c.var("gcc_version", gcc_version)
 

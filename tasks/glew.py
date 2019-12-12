@@ -4,7 +4,7 @@ version = "2.1.0"
 
 
 @task()
-def unpack_glew(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_glew(c):
 
 
 @task()
-def build_glew(c):
+def build(c):
     c.var("version", version)
     c.chdir("glew-{{version}}")
 

@@ -9,7 +9,7 @@ def annotate(c):
 
 
 @task()
-def unpack_fribidi(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -17,7 +17,7 @@ def unpack_fribidi(c):
 
 
 @task()
-def build_fribidi(c):
+def build(c):
     c.var("version", version)
     c.chdir("fribidi-{{version}}")
 

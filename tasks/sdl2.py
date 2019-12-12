@@ -9,7 +9,7 @@ def annotate(c):
 
 
 @task()
-def unpack_sdl2(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -17,7 +17,7 @@ def unpack_sdl2(c):
 
 
 @task()
-def build_sdl2(c):
+def build(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 

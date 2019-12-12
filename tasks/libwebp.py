@@ -4,7 +4,7 @@ version = "1.0.3"
 
 
 @task()
-def unpack_libwebp(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_libwebp(c):
 
 
 @task()
-def build_libwebp(c):
+def build(c):
     c.var("version", version)
     c.chdir("libwebp-{{version}}")
 

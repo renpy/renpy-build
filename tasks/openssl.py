@@ -4,7 +4,7 @@ version = "1.1.1d"
 
 
 @task()
-def unpack_openssl(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_openssl(c):
 
 
 @task()
-def build_openssl(c):
+def build(c):
     c.var("version", version)
     c.chdir("openssl-{{version}}")
 

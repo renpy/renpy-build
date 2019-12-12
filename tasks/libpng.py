@@ -4,7 +4,7 @@ version = "1.6.37"
 
 
 @task()
-def unpack_libpng(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_libpng(c):
 
 
 @task()
-def build_libpng(c):
+def build(c):
     c.var("version", version)
     c.chdir("libpng-{{version}}")
 

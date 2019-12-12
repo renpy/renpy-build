@@ -15,7 +15,8 @@ from . import ffmpeg
 from . import fribidi
 from . import freetype
 from . import libffi
-from . import python
+from . import hostpython2
+from . import python2
 from . import glew
 from . import pygame_sdl2
 from . import librenpy

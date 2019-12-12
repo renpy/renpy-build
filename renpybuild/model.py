@@ -327,7 +327,8 @@ def task(**kwargs):
     """
 
     def create_task(f):
-        task, _, name = f.__name__.partition("_")
+        task = f.__name__
+        name = f.__module__.split(".")[-1]
         Task(task, name, function=f, **kwargs)
 
         return f

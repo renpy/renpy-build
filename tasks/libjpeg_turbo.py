@@ -5,7 +5,7 @@ version = "1.5.3"
 
 
 @task()
-def unpack_libjpegturbo(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -13,7 +13,7 @@ def unpack_libjpegturbo(c):
 
 
 @task()
-def build_libjpegturbo(c):
+def build(c):
     c.var("version", version)
     c.chdir("libjpeg-turbo-{{version}}")
 

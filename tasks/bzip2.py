@@ -4,7 +4,7 @@ version = "1.0.8"
 
 
 @task()
-def unpack_bzip2(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -15,7 +15,7 @@ def unpack_bzip2(c):
 
 
 @task()
-def build_bzip2(c):
+def build(c):
     c.var("version", version)
     c.chdir("bzip2-{{version}}")
 

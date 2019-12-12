@@ -4,7 +4,7 @@ version = "4.2.1"
 
 
 @task()
-def unpack_ffmpeg(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_ffmpeg(c):
 
 
 @task()
-def build_ffmpeg(c):
+def build(c):
 
     if c.arch == "i686":
         c.var("arch", "x86")

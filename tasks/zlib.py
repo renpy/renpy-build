@@ -4,7 +4,7 @@ version = "1.2.11"
 
 
 @task()
-def unpack_zlib(c):
+def unpack(c):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +12,7 @@ def unpack_zlib(c):
 
 
 @task()
-def build_zlib(c):
+def build(c):
     c.var("version", version)
     c.chdir("zlib-{{version}}")
 

@@ -2,12 +2,12 @@ from renpybuild.model import task
 
 
 @task(kind="python")
-def clean_librenpy(c):
+def clean(c):
     c.clean()
 
 
 @task(kind="python", always=True)
-def build_librenpy(c):
+def build(c):
 
     c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/module" """)
 

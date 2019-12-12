@@ -7,7 +7,6 @@ def annotate(c):
 
 
 @task(kind="python", always=True)
-def install_pygame_sdl2(c):
-
+def install(c):
     c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install --no-extensions")
     c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install_headers")
