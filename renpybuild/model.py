@@ -44,6 +44,7 @@ class Context:
         self.var("platform", platform)
         self.var("arch", arch)
         self.var("source", self.root / "source")
+        self.var("patches", self.root / "patches")
 
         self.pygame_sdl2 = pathlib.Path("/home/tom/ab/pygame_sdl2")
         self.var("pygame_sdl2", self.pygame_sdl2)
@@ -193,7 +194,7 @@ class Context:
         Applies the patch in `fn`.
         """
 
-        fn = self.expand(fn)
+        fn = self.path("{{ patches }}") / self.expand(fn)
 
         with open(fn, "rb") as f:
             patch = f.read()

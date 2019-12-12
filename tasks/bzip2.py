@@ -11,7 +11,7 @@ def unpack_bzip2(c):
     c.run("tar xzf {{source}}/bzip2-{{version}}.tar.gz")
 
     c.chdir("bzip2-{{version}}")
-    c.patch("{{ source }}/bzip2-{{ version }}-no-tests.diff")
+    c.patch("bzip2-no-tests.diff")
 
 
 @task()

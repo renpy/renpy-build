@@ -52,7 +52,7 @@ def unpack_python2(c):
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
     c.chdir("Python-{{ version }}")
-    c.patch("{{ source }}/Python-{{ version }}-no-multiarch.diff")
+    c.patch("python2-no-multiarch.diff")
 
 
 @task(kind="python", pythons="2")
