@@ -35,6 +35,7 @@ def patch_windows(c):
 
     c.chdir("Python-{{ version }}")
     c.patchdir("mingw-w64-python2")
+    c.patch("python2-no-dllmain.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -71,14 +72,14 @@ def build_windows(c):
 
     c.env("MSYSTEM", "MINGW")
 
-    c.run("""./configure {{ cross_config }} --enable-static --disable-shared --prefix="{{ install }}" --with-threads """)
+    c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-threads --with-system-ffi""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
-    c.run(""" make """)
+    c.run(""" {{ make }} """)
+    c.run(""" make install """)
 
-    import sys
-    sys.exit(1)
+    c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
 
 @task(kind="python", pythons="2")

@@ -1,0 +1,57 @@
+diff -ur Python-2.7.17.old/Modules/_ctypes/callbacks.c Python-2.7.17/Modules/_ctypes/callbacks.c
+--- Python-2.7.17.old/Modules/_ctypes/callbacks.c	2019-10-19 14:38:44.000000000 -0400
++++ Python-2.7.17/Modules/_ctypes/callbacks.c	2019-12-13 00:15:51.375828719 -0500
+@@ -648,18 +648,6 @@
+     return result;
+ }
+ 
+-#ifndef Py_NO_ENABLE_SHARED
+-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvRes)
+-{
+-    switch(fdwReason) {
+-    case DLL_PROCESS_ATTACH:
+-        DisableThreadLibraryCalls(hinstDLL);
+-        break;
+-    }
+-    return TRUE;
+-}
+-#endif
+-
+ #endif
+ 
+ /*
+diff -ur Python-2.7.17.old/PC/dl_nt.c Python-2.7.17/PC/dl_nt.c
+--- Python-2.7.17.old/PC/dl_nt.c	2019-10-19 14:38:44.000000000 -0400
++++ Python-2.7.17/PC/dl_nt.c	2019-12-13 00:16:11.807828530 -0500
+@@ -93,12 +93,16 @@
+                 if ((*pfnGetCurrentActCtx)(&PyWin_DLLhActivationContext))
+                     if (!(*pfnAddRefActCtx)(PyWin_DLLhActivationContext))
+                         OutputDebugString("Python failed to load the default activation context\n");
++
++            DisableThreadLibraryCalls(hInst);
++
+             break;
+ 
+         case DLL_PROCESS_DETACH:
+             if (pfnReleaseActCtx)
+                 (*pfnReleaseActCtx)(PyWin_DLLhActivationContext);
+             break;
++
+     }
+     return TRUE;
+ }
+diff -ur Python-2.7.17.old/Tools/msi/msisupport.c Python-2.7.17/Tools/msi/msisupport.c
+--- Python-2.7.17.old/Tools/msi/msisupport.c	2019-10-19 14:38:44.000000000 -0400
++++ Python-2.7.17/Tools/msi/msisupport.c	2019-12-13 00:15:51.375828719 -0500
+@@ -83,11 +83,3 @@
+     result = MsiSetComponentStateA(hInstall, "REGISTRY.tcl", reg_new);
+     return result;
+ }
+-
+-BOOL APIENTRY DllMain(HANDLE hModule,
+-                      DWORD  ul_reason_for_call,
+-                      LPVOID lpReserved)
+-{
+-    return TRUE;
+-}
+-

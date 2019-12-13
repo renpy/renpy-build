@@ -15,7 +15,7 @@ _random _randommodule.c
 _socket socketmodule.c timemodule.c {% if c.platform == "windows" %}-lws2_32{% endif %} -lm
 _ssl _ssl.c -lssl -lcrypto {% if c.platform == "windows" %}-lcrypt32{% endif %}
 _struct _struct.c
-_testcapi _testcapimodule.c
+
 array arraymodule.c
 audioop audioop.c
 binascii binascii.c -DUSE_ZLIB_CRC32 -lz
@@ -37,20 +37,31 @@ time timemodule.c -lm
 unicodedata unicodedata.c
 zlib zlibmodule.c -lz
 
+pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat
+_elementtree _elementtree.c -I$(srcdir)/Modules/expat
+
 {% if c.platform != "windows" %}
 dl dlmodule.c
 fcntl fcntlmodule.c
-linuxaudiodev linuxaudiodev.c
-ossaudiodev ossaudiodev.c
+# linuxaudiodev linuxaudiodev.c
+# ossaudiodev ossaudiodev.c
 grp grpmodule.c
 pwd pwdmodule.c
 spwd spwdmodule.c
 resource resource.c
-syslog syslogmodule.c
+# syslog syslogmodule.c
 termios termios.c
+
+_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
 {% endif %}
 
-pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat
-_elementtree _elementtree.c -I$(srcdir)/Modules/expat
+{% if c.platform == "windows" %}
 
-_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi {% if c.platform == "windows" %}-loleaut32 -lole32 -luuid{% endif %}
+_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi -loleaut32 -lole32 -luuid
+msvcrt ../PC/msvcrtmodule.c
+_subprocess ../PC/_subprocess.c
+
+{% endif %}
+
+msvcrt
+_subprocess

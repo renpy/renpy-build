@@ -70,8 +70,8 @@ def build_environment(c):
 
         c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
-        c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}g++-fPIC -O3 -pthread")
+        c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++-fPIC -O3")
         c.env("CPP", "ccache {{ crossbin }}gcc -E")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
