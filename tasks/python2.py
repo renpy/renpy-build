@@ -71,10 +71,20 @@ def build_windows(c):
     c.chdir("Python-{{ version }}")
 
     c.env("MSYSTEM", "MINGW")
+    c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python2")
 
     c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-threads --with-system-ffi""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+    with open(c.path("Lib/plat-generic/regen"), "w") as f:
+        f.write("""\
+#! /bin/sh
+set -v
+CCINSTALL=$($1 -print-search-dirs | head -1 | cut -d' ' -f2)
+REGENHEADER=${CCINSTALL}/include/stddef.h
+eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
+""")
 
     c.run(""" {{ make }} """)
     c.run(""" make install """)
