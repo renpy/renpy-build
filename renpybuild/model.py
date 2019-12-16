@@ -227,19 +227,6 @@ class Context:
 
         shutil.copy(self.path(src), self.path(dst))
 
-    def generate(self, src, dst):
-        src = self.path(src)
-        dst = self.path(dst)
-
-        with open(src) as f:
-            data = f.read()
-
-        data = self.expand(data)
-
-        with open(dst, "w") as f:
-            f.write(data)
-            f.write("\n")
-
     def include(self, path):
 
         if self.kind == "host":

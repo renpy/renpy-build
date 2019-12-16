@@ -32,6 +32,7 @@ def build_environment(c):
         c.env("CC", "ccache gcc -fPIC")
         c.env("CXX", "ccache g++ -fPIC")
         c.env("CPP", "ccache gcc -E")
+        c.env("LD", "ccache ld")
         c.env("AR", "ccache ar")
         c.env("RANLIB", "ccache ranlib")
 
@@ -44,6 +45,7 @@ def build_environment(c):
         c.env("CC", "ccache {{ crossbin }}gcc -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
         c.env("CXX", "ccache {{ crossbin }}g++ -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
         c.env("CPP", "ccache {{ crossbin }}gcc -m64 -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
 
@@ -58,6 +60,7 @@ def build_environment(c):
         c.env("CC", "ccache {{ crossbin }}gcc -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
         c.env("CXX", "ccache {{ crossbin }}g++ -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
         c.env("CPP", "ccache {{ crossbin }}gcc -m32 -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
 
@@ -73,6 +76,7 @@ def build_environment(c):
         c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3")
         c.env("CXX", "ccache {{ crossbin }}g++-fPIC -O3")
         c.env("CPP", "ccache {{ crossbin }}gcc -E")
+        c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
@@ -81,6 +85,8 @@ def build_environment(c):
     # c.env("LDXX", "{{ CXX }}")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+
+    c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
 
     if c.kind != "host":
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
