@@ -132,6 +132,10 @@ class Context:
 
         template = self.path(src).read_text()
         text = self.expand(template, **kwargs)
+
+        if not text.endswith("\n"):
+            text = text + "\n"
+
         self.path(dest).write_text(text)
 
     def env(self, variable, value):

@@ -12,8 +12,6 @@ _lsprof _lsprof.c rotatingtree.c
 _multibytecodec cjkcodecs/multibytecodec.c
 # _multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/socket_connection.c _multiprocessing/semaphore.c -IModules/_multiprocessing
 _random _randommodule.c
-_socket socketmodule.c timemodule.c {% if c.platform == "windows" %}-lws2_32{% endif %} -lm
-_ssl _ssl.c -lssl -lcrypto {% if c.platform == "windows" %}-lcrypt32{% endif %}
 _struct _struct.c
 
 array arraymodule.c
@@ -40,7 +38,11 @@ zlib zlibmodule.c -lz
 pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat
 _elementtree _elementtree.c -I$(srcdir)/Modules/expat
 
-{% if c.platform != "windows" %}
+{% if (c.kind == "host") or (c.platform != "windows") %}
+_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+_socket socketmodule.c timemodule.c -lm
+_ssl _ssl.c -lssl -lcrypto
+
 dl dlmodule.c
 fcntl fcntlmodule.c
 # linuxaudiodev linuxaudiodev.c
@@ -52,16 +54,13 @@ resource resource.c
 # syslog syslogmodule.c
 termios termios.c
 
-_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
 {% endif %}
 
-{% if c.platform == "windows" %}
-
+{% if (c.kind != "host") and (c.platform == "windows") %}
 _ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi -loleaut32 -lole32 -luuid
-msvcrt ../PC/msvcrtmodule.c
+_socket socketmodule.c timemodule.c -lws2_32 -lm
 _subprocess ../PC/_subprocess.c
+_ssl _ssl.c -lssl -lcrypto -lcrypt32
 
+msvcrt ../PC/msvcrtmodule.c
 {% endif %}
-
-msvcrt
-_subprocess

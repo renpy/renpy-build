@@ -29,6 +29,6 @@ def build_host(c):
 
     c.run("""./configure --prefix="{{ host }}" --enable-ipv6""")
 
-    c.copy("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }} install""")

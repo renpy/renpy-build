@@ -42,7 +42,7 @@ def build(c):
 
         --cc="{{ CC }}"
         --cxx="{{ CXX }}"
-        --ld="{{ LD }}"
+        --ld="{{ CC }}"
         --ar="{{ AR }}"
         --ranlib="{{ RANLIB }}"
 
@@ -52,6 +52,11 @@ def build(c):
         --ranlib="{{ RANLIB }}"
 
         --enable-pic
+
+{% if c.platform == "windows" %}
+        --disable-pthreads
+        --enable-w32threads
+{% endif %}
 
         --enable-cross-compile
         --enable-runtime-cpudetect
