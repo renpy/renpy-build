@@ -16,6 +16,9 @@ def build(c):
     c.var("version", version)
     c.chdir("SDL2_image-{{version}}")
 
+    if c.platform == "windows":
+        c.env("ac_cv_lib_jpeg_jpeg_CreateDecompress", "yes")
+
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
 
@@ -30,3 +33,4 @@ def build(c):
 
     c.run("""{{ make }}""")
     c.run("""make install""")
+
