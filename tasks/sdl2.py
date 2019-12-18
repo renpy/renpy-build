@@ -21,6 +21,6 @@ def build(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 
-    c.run("""./configure {{ cross_config }} --disable-shared --disable-dependency-tracking --prefix="{{ install }}" """)
+    c.run("""./configure {{ cross_config }} --disable-shared --disable-dependency-tracking --disable-wasapi --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
     c.run("""make install""")
