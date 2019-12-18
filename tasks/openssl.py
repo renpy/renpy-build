@@ -21,6 +21,8 @@ def build(c):
 
     if (c.platform == "windows") and (c.arch == "x86_64"):
         c.run("""./Configure mingw64 no-shared no-asm --prefix="{{ install }}" """)
+    if (c.platform == "windows") and (c.arch == "i686"):
+        c.run("""./Configure mingw no-shared no-asm --prefix="{{ install }}" """)
     else:
         c.run("""./Configure cc no-shared no-asm --prefix="{{ install }}" """)
 

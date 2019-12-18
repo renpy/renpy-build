@@ -24,6 +24,8 @@ def build_environment(c):
         c.var("host_platform", "i686-pc-linux-gnu")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
+    elif (c.platform == "windows") and (c.arch == "i686"):
+        c.var("host_platform", "i586-mingw32msvc")
 
     c.env("LDFLAGS", "-L{{install}}/lib")
 
@@ -79,6 +81,18 @@ def build_environment(c):
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+        c.env("WINDRES", "ccache {{ crossbin }}windres")
+
+    elif (c.platform == "windows") and (c.arch == "i686"):
+
+        c.var("crossbin", "/usr/bin/{{ host_platform }}-")
+
+        c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++-fPIC -O3")
+        c.env("CPP", "ccache {{ crossbin }}gcc -E")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}ar")
+        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
 
     # c.env("LD", "{{ CC }}")

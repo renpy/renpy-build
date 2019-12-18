@@ -82,7 +82,9 @@ def build_windows(c):
     -lm
     -lpthread
     -lws2_32
+
     -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion -luuid
+
     """)
 
     c.run("""install renpython{{ c.python }}.exe {{ install }}/bin/renpython{{ c.python }}.exe""")

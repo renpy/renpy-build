@@ -72,6 +72,7 @@ def build_windows(c):
 
     c.env("MSYSTEM", "MINGW")
     c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python2")
+    c.env("LDFLAGS", "{{ LDFLAGS }} -static-libgcc")
 
     c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-threads --with-system-ffi""")
 
