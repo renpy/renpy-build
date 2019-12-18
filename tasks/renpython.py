@@ -26,7 +26,6 @@ def build_posix(c):
 
     -lSDL2_image
     -lSDL2
-    -lGLEW
     -lGL
     -ljpeg
     -lpng
