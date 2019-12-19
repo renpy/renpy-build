@@ -87,9 +87,7 @@ REGENHEADER=${CCINSTALL}/include/stddef.h
 eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 """)
 
-    c.run(""" {{ make }} """)
-    c.run(""" make install """)
-
+    c.run("""{{ make }} install DLLLIBRARY={{ pythonver }}-{{ c.arch }}.dll""")
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
 
