@@ -18,6 +18,8 @@ def build(c):
         c.var("arch", "x86")
     elif c.arch == "x86_64":
         c.var("arch", "x86_64")
+    elif c.arch == "armhf":
+        c.var("arch", "armhf")
     else:
         raise Exception(f"Unknown arch: {c.arch}")
 
@@ -45,6 +47,7 @@ def build(c):
         --ld="{{ CC }}"
         --ar="{{ AR }}"
         --ranlib="{{ RANLIB }}"
+        --strip="{{ STRIP }}"
 
         --extra-cflags="{{ CFLAGS }}"
         --extra-cxxflags="{{ CXCFLAGS }}"

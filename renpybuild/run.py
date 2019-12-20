@@ -22,6 +22,8 @@ def build_environment(c):
         c.var("host_platform", "x86_64-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "i686"):
         c.var("host_platform", "i686-pc-linux-gnu")
+    elif (c.platform == "linux") and (c.arch == "armhf"):
+        c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -50,6 +52,7 @@ def build_environment(c):
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu")
@@ -65,11 +68,27 @@ def build_environment(c):
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
 
-        # Lib64 is needed since GLEW winds up in the wrong place.
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/i386-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/i386-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32 -L{{install}}/lib64")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32")
+
+    elif (c.platform == "linux") and (c.arch == "armhf"):
+
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
+
+        c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3 -pthread --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache {{ crossbin }}g++ -fPIC -O3 -pthread --sysroot {{ sysroot }}")
+        c.env("CPP", "ccache {{ crossbin }}gcc -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}gcc-ar")
+        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
+
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/arm-linux-gnueabihf")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/arm-linux-gnueabihf")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32 ")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
@@ -82,6 +101,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -94,6 +114,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
 
     # c.env("LD", "{{ CC }}")
     # c.env("LDXX", "{{ CXX }}")
