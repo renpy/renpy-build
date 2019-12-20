@@ -58,3 +58,60 @@ def install(c):
         c.run("""mkdir -p "{{ tmp }}/debs" """)
         c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
+
+
+RASPI_PACKAGES = [
+    'build-essential',
+    'libasound2-dev',
+    'libpulse-dev',
+    'libaudio-dev',
+    'libx11-dev',
+    'libxext-dev',
+    'libxrandr-dev',
+    'libxcursor-dev',
+    'libxi-dev',
+    'libxinerama-dev',
+    'libxxf86vm-dev',
+    'libxss-dev',
+    'libgl1-mesa-dev',
+    'libesd0-dev',
+    'libdbus-1-dev',
+    'libudev-dev',
+    'libgles2-mesa-dev',
+    'libegl1-mesa-dev',
+    'libibus-1.0-dev',
+    'fcitx-libs-dev',
+    'libsamplerate0-dev',
+    'libsndio-dev',
+    'libxkbcommon-dev',
+]
+
+
+@task(platforms="linux", archs="armhf")
+def install(c):
+
+    if not c.path("{{ sysroot }}").exists():
+
+        c.var("packages", ",".join(RASPI_PACKAGES))
+
+        c.run("""mkdir -p "{{ tmp }}/debs" """)
+
+        c.run("""
+        sudo debootstrap
+        --foreign
+        --no-check-gpg
+        --cache-dir={{ tmp }}/debs
+        --variant=minbase
+        --include={{ packages }}
+        --components=main,contrib,firmware,rpi
+        --arch armhf
+        buster
+        {{ sysroot }}
+        http://archive.raspbian.org/raspbian
+        """)
+
+        c.run("""sudo cp /usr/bin/qemu-arm-static {{ sysroot }}/usr/bin """)
+
+        c.run("""sudo chroot {{ sysroot }} /debootstrap/debootstrap --second-stage """)
+
+        c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
