@@ -1,0 +1,76 @@
+--- Python-2.7.17/configure	2020-01-02 01:05:14.633923519 -0500
++++ Python-2.7.17/configure.new	2020-01-02 01:09:00.190087284 -0500
+@@ -3283,16 +3283,21 @@
+ 	case "$host" in
+ 	*-*-linux*)
+ 		ac_sys_system=Linux
++    ac_sys_release=
+ 		;;
+ 	*-*-cygwin*)
+ 		ac_sys_system=Cygwin
++    ac_sys_release=
++		;;
++	*-*-darwin*)
++		ac_sys_system=Darwin
++    ac_sys_release=10.0
+ 		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+ 		as_fn_error $? "cross build not supported for $host" "$LINENO" 5
+ 	esac
+-	ac_sys_release=
+     else
+ 	ac_sys_system=`uname -s`
+ 	if test "$ac_sys_system" = "AIX" \
+@@ -3333,6 +3338,15 @@
+ 	*-*-cygwin*)
+ 		_host_cpu=
+ 		;;
++  *-*-darwin*)
++  		case "$host_cpu" in
++  		arm*)
++  			_host_cpu=arm
++  			;;
++  		*)
++  			_host_cpu=$host_cpu
++  		esac
++  		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -8453,33 +8467,7 @@
+   conftest.$ac_objext conftest.beam conftest.$ac_ext
+ fi
+ 
+-
+-    if test "${ac_osx_32bit}" = "yes"; then
+-    	case `/usr/bin/arch` in
+-    	i386)
+-    		MACOSX_DEFAULT_ARCH="i386"
+-    		;;
+-    	ppc)
+-    		MACOSX_DEFAULT_ARCH="ppc"
+-    		;;
+-    	*)
+-    		as_fn_error $? "Unexpected output of 'arch' on OSX" "$LINENO" 5
+-    		;;
+-    	esac
+-    else
+-    	case `/usr/bin/arch` in
+-    	i386)
+-    		MACOSX_DEFAULT_ARCH="x86_64"
+-    		;;
+-    	ppc)
+-    		MACOSX_DEFAULT_ARCH="ppc64"
+-    		;;
+-    	*)
+-    		as_fn_error $? "Unexpected output of 'arch' on OSX" "$LINENO" 5
+-    		;;
+-    	esac
+-
+-    fi
++    MACOSX_DEFAULT_ARCH="x86_64"
+ 
+     LIBTOOL_CRUFT=$LIBTOOL_CRUFT" -lSystem -lSystemStubs -arch_only ${MACOSX_DEFAULT_ARCH}"
+     LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
