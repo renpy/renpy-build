@@ -21,12 +21,13 @@ def unpack(c):
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 
-@task(kind="python", pythons="2", platforms="linux")
-def patch_linux(c):
+@task(kind="python", pythons="2", platforms="linux,mac")
+def patch_posix(c):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
     c.patch("python2-no-multiarch.diff")
+    c.patch("python2-cross-darwin.diff")
 
 
 @task(kind="python", pythons="2", platforms="windows")
@@ -40,7 +41,7 @@ def patch_windows(c):
     c.run(""" autoreconf -vfi """)
 
 
-@task(kind="python", pythons="2", platforms="linux")
+@task(kind="python", pythons="2", platforms="linux,mac")
 def build_posix(c):
     c.var("version", version)
 

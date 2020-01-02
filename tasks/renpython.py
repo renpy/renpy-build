@@ -7,7 +7,7 @@ def clean(c):
 
 
 @task(kind="python", always=True, platforms="linux")
-def build_posix(c):
+def build_linux(c):
 
     c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
 
@@ -41,6 +41,52 @@ def build_posix(c):
     -lz
     -lpthread
     -lm
+    """)
+
+    c.run("""install renpython{{ c.python }} {{ install }}/bin/renpython{{ c.python }}""")
+
+
+@task(kind="python", always=True, platforms="mac")
+def build_mac(c):
+
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
+
+    c.run("""
+    {{ CC }} {{ LDFLAGS }}
+    -o renpython{{ c.python }}
+    renpython.o
+    -lrenpy
+    -l{{ pythonver }}
+
+    -lavformat
+    -lavcodec
+    -lswscale
+    -lswresample
+    -lavutil
+
+    -lSDL2_image
+    -lSDL2
+    -ljpeg
+    -lpng
+    -lwebp
+    -lfribidi
+    -lfreetype
+    -lffi
+    -lssl
+    -lcrypto
+    -lbz2
+    -lz
+    -lm
+
+    -liconv
+    -Wl,-framework,CoreAudio
+    -Wl,-framework,AudioToolbox
+    -Wl,-framework,ForceFeedback
+    -lobjc
+    -Wl,-framework,CoreVideo
+    -Wl,-framework,Cocoa
+    -Wl,-framework,Carbon
+    -Wl,-framework,IOKit
     """)
 
     c.run("""install renpython{{ c.python }} {{ install }}/bin/renpython{{ c.python }}""")

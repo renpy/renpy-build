@@ -49,7 +49,7 @@ fcntl fcntlmodule.c
 # ossaudiodev ossaudiodev.c
 grp grpmodule.c
 pwd pwdmodule.c
-spwd spwdmodule.c
+# spwd spwdmodule.c
 resource resource.c
 # syslog syslogmodule.c
 termios termios.c

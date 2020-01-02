@@ -79,6 +79,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu")
@@ -95,6 +96,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/i386-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/i386-linux-gnu")
@@ -111,6 +113,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/arm-linux-gnueabihf")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/arm-linux-gnueabihf")
@@ -128,6 +131,7 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -141,6 +145,7 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
@@ -155,8 +160,10 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+    c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
 

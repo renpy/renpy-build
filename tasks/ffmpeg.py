@@ -29,6 +29,8 @@ def build(c):
         c.var("os", "mingw64")
     elif (c.platform == "windows") and (c.arch == "i686"):
         c.var("os", "mingw32")
+    elif c.platform == "mac":
+        c.var("os", "darwin")
     else:
         raise Exception(f"Unknown os: {c.platform}")
 
@@ -48,6 +50,7 @@ def build(c):
         --ar="{{ AR }}"
         --ranlib="{{ RANLIB }}"
         --strip="{{ STRIP }}"
+        --nm="{{ NM }}"
 
         --extra-cflags="{{ CFLAGS }}"
         --extra-cxxflags="{{ CXCFLAGS }}"
