@@ -47,3 +47,28 @@ def build(c):
 
     c.run("{{ make }}")
     c.run("make install")
+
+
+@task(kind="cross", platforms="mac")
+def build(c):
+
+    print("XXX", c.path("{{ install }}/bin/{{ host_platform }}-cc"))
+
+    if c.path("{{ install }}/bin/{{ host_platform }}-cc").exists():
+        return
+
+    c.clean()
+
+    c.run("git clone https://github.com/tpoechtrager/osxcross")
+    c.chdir("osxcross")
+
+    c.copy("{{ tars }}/MacOSX10.15.sdk.tar.xz", "tarballs")
+
+    c.env("TARGET_DIR", "{{ install }}")
+    c.env("UNATTENDED", "1")
+    c.env("MAKE", "{{ make }}")
+
+    c.run("./build.sh")
+
+    import sys
+    sys.exit(0)

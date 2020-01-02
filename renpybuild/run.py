@@ -28,10 +28,12 @@ def build_environment(c):
         c.var("host_platform", "x86_64-w64-mingw32")
     elif (c.platform == "windows") and (c.arch == "i686"):
         c.var("host_platform", "i586-mingw32msvc")
+    elif (c.platform == "mac") and (c.arch == "x86_64"):
+        c.var("host_platform", "x86_64-apple-darwin19")
 
     c.env("LDFLAGS", "-L{{install}}/lib")
 
-    if (c.kind == "host") or (c.kind == "cross"):
+    if c.kind == "host":
 
         c.env("CC", "ccache gcc -fPIC")
         c.env("CXX", "ccache g++ -fPIC")
@@ -41,6 +43,30 @@ def build_environment(c):
         c.env("RANLIB", "ccache ranlib")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
+    elif c.kind == "cross":
+
+        if c.platform == "mac":
+
+            c.env("CC", "ccache clang")
+            c.env("CXX", "ccache clang++")
+            c.env("CPP", "ccache clang -E")
+            c.env("LD", "ccache llvm-ld")
+            c.env("AR", "ccache llvm-ar")
+            c.env("RANLIB", "ccache llvm-ranlib")
+
+            c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
+        else:
+
+            c.env("CC", "ccache gcc -fPIC")
+            c.env("CXX", "ccache g++ -fPIC")
+            c.env("CPP", "ccache gcc -E")
+            c.env("LD", "ccache ld")
+            c.env("AR", "ccache ar")
+            c.env("RANLIB", "ccache ranlib")
+
+            c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
@@ -116,8 +142,19 @@ def build_environment(c):
         c.env("WINDRES", "ccache {{ crossbin }}windres")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
 
-    # c.env("LD", "{{ CC }}")
-    # c.env("LDXX", "{{ CXX }}")
+    elif (c.platform == "mac") and (c.arch == "x86_64"):
+
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
+
+        c.env("MACOSX_DEPLOYMENT_TARGET", "10.6")
+
+        c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
+        c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
+        c.env("CPP", "ccache {{ crossbin }}clang -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}ar")
+        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
