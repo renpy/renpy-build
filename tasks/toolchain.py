@@ -14,7 +14,7 @@ def build(c):
 
     c.clean()
 
-    c.run("tar xaf {{ source }}/binutils-{{ binutils_version }}.tar.gz")
+    c.run("tar xaf {{ tars }}/binutils-{{ binutils_version }}.tar.gz")
     c.chdir("binutils-{{ binutils_version }}")
 
     c.run("./configure --target={{ host_platform }} --prefix={{ install }}")
@@ -23,7 +23,7 @@ def build(c):
 
     c.chdir("{{ build }}")
 
-    c.run("tar xaf {{ source }}/gcc-{{ gcc_version }}.tar.gz")
+    c.run("tar xaf {{ tars }}/gcc-{{ gcc_version }}.tar.gz")
     c.path("{{ build }}/gcc-{{ gcc_version }}/build").mkdir()
     c.chdir("{{ build }}/gcc-{{ gcc_version }}/build")
 

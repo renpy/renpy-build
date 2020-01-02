@@ -44,6 +44,7 @@ class Context:
         self.var("platform", platform)
         self.var("arch", arch)
         self.var("source", self.root / "source")
+        self.var("tars", self.root / "tars")
         self.var("patches", self.root / "patches")
 
         self.pygame_sdl2 = pathlib.Path("/home/tom/ab/pygame_sdl2")
