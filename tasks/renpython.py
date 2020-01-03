@@ -87,6 +87,10 @@ def build_mac(c):
     -Wl,-framework,Cocoa
     -Wl,-framework,Carbon
     -Wl,-framework,IOKit
+    -Wl,-framework,SystemConfiguration
+    -Wl,-framework,CoreFoundation
+
+
     """)
 
     c.run("""install renpython{{ c.python }} {{ install }}/bin/renpython{{ c.python }}""")
