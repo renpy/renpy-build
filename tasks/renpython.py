@@ -9,12 +9,14 @@ def clean(c):
 @task(kind="python", always=True, platforms="linux")
 def build_linux(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ csource }}/librenpython.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
-    -o renpython{{ c.python }}
-    renpython.o
+    -shared
+    -Wl,-Bsymbolic
+    -o librenpython{{ c.python }}.so
+    librenpython.o
     -lrenpy
     -l{{ pythonver }}
 
@@ -43,18 +45,17 @@ def build_linux(c):
     -lm
     """)
 
-    c.run("""install renpython{{ c.python }} {{ install }}/bin/renpython{{ c.python }}""")
-
 
 @task(kind="python", always=True, platforms="mac")
 def build_mac(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ csource }}/librenpython.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
-    -o renpython{{ c.python }}
-    renpython.o
+    -shared
+    -o librenpython{{ c.python }}.dylib
+    librenpython.o
     -lrenpy
     -l{{ pythonver }}
 
@@ -89,22 +90,19 @@ def build_mac(c):
     -Wl,-framework,IOKit
     -Wl,-framework,SystemConfiguration
     -Wl,-framework,CoreFoundation
-
-
     """)
-
-    c.run("""install renpython{{ c.python }} {{ install }}/bin/renpython{{ c.python }}""")
 
 
 @task(kind="python", always=True, platforms="windows")
 def build_windows(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o renpython.o {{ source }}/renpython.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ source }}/librenpython.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
-    -o renpython{{ c.python }}
-    renpython.o
+    -shared
+    -o librenpython{{ c.python }}.dll
+    librenpython.o
     -lrenpy
 
     {{install}}/lib/libfribidi.a
@@ -134,7 +132,4 @@ def build_windows(c):
     -lws2_32
 
     -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion -luuid
-
     """)
-
-    c.run("""install renpython{{ c.python }}.exe {{ install }}/bin/renpython{{ c.python }}.exe""")

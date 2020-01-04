@@ -53,11 +53,12 @@ def build(c):
         --nm="{{ NM }}"
 
         --extra-cflags="{{ CFLAGS }}"
-        --extra-cxxflags="{{ CXCFLAGS }}"
+        --extra-cxxflags="{{ CFLAGS }}"
         --extra-ldflags="{{ LDFLAGS }}"
         --ranlib="{{ RANLIB }}"
 
         --enable-pic
+        --enable-static
 
 {% if c.platform == "windows" %}
         --disable-pthreads
