@@ -9,14 +9,16 @@ def clean(c):
 @task(kind="python", always=True, platforms="linux")
 def build_linux(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ csource }}/librenpython.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ csource }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
     -shared
     -Wl,-Bsymbolic
+
     -o librenpython{{ c.python }}.so
-    librenpython.o
+    librenpython{{ c.python }}.o
+
     -lrenpy
     -l{{ pythonver }}
 
@@ -45,17 +47,31 @@ def build_linux(c):
     -lm
     """)
 
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -o python{{ c.python }}
+    {{ csource }}/renpython{{ c.python }}_posix.c
+
+
+    librenpython{{ c.python }}.so
+    -Wl,-rpath -Wl,.
+    """)
+
+    c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython{{ c.python }}.so python{{c.python}} {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+
 
 @task(kind="python", always=True, platforms="mac")
 def build_mac(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ csource }}/librenpython.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ csource }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
     -shared
     -o librenpython{{ c.python }}.dylib
-    librenpython.o
+    librenpython{{ c.python }}.o
+
     -lrenpy
     -l{{ pythonver }}
 
@@ -96,13 +112,13 @@ def build_mac(c):
 @task(kind="python", always=True, platforms="windows")
 def build_windows(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ source }}/librenpython.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ csource }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
     -shared
     -o librenpython{{ c.python }}.dll
-    librenpython.o
+    librenpython{{ c.python }}.o
     -lrenpy
 
     {{install}}/lib/libfribidi.a
@@ -131,5 +147,17 @@ def build_windows(c):
     -lpthread
     -lws2_32
 
-    -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lsetupapi -lversion -luuid
+    -ldinput8
+    -ldxguid
+    -ldxerr8
+    -luser32
+    -lgdi32
+    -lwinmm
+    -limm32
+    -lole32
+    -loleaut32
+    -lshell32
+    -lsetupapi
+    -lversion
+    -luuid
     """)

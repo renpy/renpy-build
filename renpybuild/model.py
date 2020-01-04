@@ -48,6 +48,8 @@ class Context:
         self.var("tars", self.root / "tars")
         self.var("patches", self.root / "patches")
 
+        self.var("dist", self.root / "dist")
+
         self.pygame_sdl2 = pathlib.Path("/home/tom/ab/pygame_sdl2")
         self.var("pygame_sdl2", self.pygame_sdl2)
 
