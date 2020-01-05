@@ -81,6 +81,8 @@ class Context:
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
         elif kind == "python":
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}-py{self.python}"
+        elif kind == "python-only":
+            self.dir_name = f"{self.name}.py{self.python}"
 
         self.task_name = f"{self.task}-{self.dir_name}"
 

@@ -95,7 +95,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 @task(kind="python", pythons="2")
 def pip(c):
     c.run("{{ install }}/bin/hostpython2 -m ensurepip")
-    c.run("{{ install }}/bin/hostpython2 -m pip install --upgrade pip future")
+    c.run("{{ install }}/bin/hostpython2 -m pip install --upgrade pip future rsa pyasn1 future")
 
 
 @task(kind="python", pythons="2", always=True)

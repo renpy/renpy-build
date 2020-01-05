@@ -8,5 +8,5 @@ def annotate(c):
 
 @task(kind="python", always=True)
 def install(c):
-    c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install --no-extensions")
+    c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install --single-version-externally-managed --record files.txt --no-extensions")
     c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install_headers")
