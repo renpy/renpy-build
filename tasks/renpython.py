@@ -54,7 +54,7 @@ def build_linux(c):
 
 
     librenpython{{ c.python }}.so
-    -Wl,-rpath -Wl,.
+    -Wl,-rpath -Wl,$ORIGIN
     """)
 
     c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
