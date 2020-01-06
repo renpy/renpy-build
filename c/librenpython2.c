@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <libgen.h>
 #include "Python.h"
 
@@ -10,12 +11,16 @@ void init_librenpy(void);
 #define EXPORT
 #endif
 
-
 static int check_file(const char *argv0, const char *relpath) {
+    char *base;
     char path[4096];
     FILE *f;
 
-    snprintf(path, 4096, "%s%s", dirname(argv0), relpath);
+
+    base = strdup(argv0);
+    snprintf(path, 4096, "%s%s", dirname(base), relpath);
+    free(base);
+
     f = fopen(path, "r");
     if (f) {
         fclose(f);
@@ -26,9 +31,13 @@ static int check_file(const char *argv0, const char *relpath) {
 }
 
 static void set_python_home(const char *argv0, const char *relpath) {
+    char *base;
     char path[4096];
 
-    snprintf(path, 4096, "%s%s", dirname(argv0), relpath);
+    base = strdup(argv0);
+    snprintf(path, 4096, "%s%s", dirname(base), relpath);
+    free(base);
+
     Py_SetPythonHome(path);
 }
 
