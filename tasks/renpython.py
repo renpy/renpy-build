@@ -108,6 +108,19 @@ def build_mac(c):
     -Wl,-framework,CoreFoundation
     """)
 
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -o python{{ c.python }}
+    {{ csource }}/renpython{{ c.python }}_posix.c
+
+
+    librenpython{{ c.python }}.dylib
+    -Wl,-rpath -Wl,@executable_path
+    """)
+
+    c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython{{ c.python }}.dylib python{{c.python}} {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+
 
 @task(kind="python", always=True, platforms="windows")
 def build_windows(c):
@@ -161,3 +174,14 @@ def build_windows(c):
     -lversion
     -luuid
     """)
+
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -o python{{ c.python }}.exe
+    {{ csource }}/renpython{{ c.python }}_win.c
+    librenpython{{ c.python }}.dll
+    """)
+
+    c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython{{ c.python }}.dll  python{{c.python}}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
