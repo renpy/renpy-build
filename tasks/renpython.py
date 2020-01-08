@@ -182,6 +182,14 @@ def build_windows(c):
     librenpython{{ c.python }}.dll
     """)
 
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -mwindows
+    -o pythonw{{ c.python }}.exe
+    {{ csource }}/renpython{{ c.python }}_win.c
+    librenpython{{ c.python }}.dll
+    """)
+
     c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython{{ c.python }}.dll  python{{c.python}}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython{{ c.python }}.dll python{{c.python}}.exe pythonw{{c.python}}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
     c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
