@@ -190,11 +190,25 @@ def build_windows(c):
     librenpython{{ c.python }}.dll
     """)
 
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -mwindows
+    -DPLATFORM=\\"{{ c.platform }}\\"
+    -DARCH=\\"{{ c.arch }}\\"
+    -o renpy{{ c.python }}-{{ c.arch }}.exe
+    {{ csource }}/launcher{{ c.python }}_win.c
+    """)
+
     c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
     c.run("""install librenpython{{ c.python }}.dll python{{c.python}}.exe pythonw{{c.python}}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
     c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install renpy{{ c.python }}-{{ c.arch }}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install renpy{{ c.python }}-{{ c.arch }}.exe {{dist}}""")
 
     if c.arch == "i686":
         c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{dist}}/lib/{{ c.platform }}-{{ c.arch }}/libgcc_s_sjlj-1.dll")
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{dist}}/lib/{{ c.platform }}-{{ c.arch }}/libwinpthread-1.dll")
+
+        if c.python == "2":
+            c.run("""install renpy{{ c.python }}-{{ c.arch }}.exe {{dist}}/renpy.exe""")
 

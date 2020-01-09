@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <libgen.h>
+#include <stdlib.h>
 #include "Python.h"
 
 void init_librenpy(void);
@@ -55,4 +56,33 @@ int EXPORT renpython_main(int argc, char **argv) {
 
     init_librenpy();
     return Py_Main(argc, argv);
+}
+
+
+/**
+ * This is called from the launcher executable, to start Ren'Py running.
+ */
+int EXPORT launcher_main(int argc, char **argv) {
+
+    Py_SetProgramName(argv[0]);
+
+#ifdef MS_WINDOWS
+    set_python_home(argv[0], "");
+#endif
+
+    char **new_argv = (char **) alloca((argc + 1) * sizeof(char *));
+
+    new_argv[0] = argv[0];
+    new_argv[1] = strdup(argv[0]);
+
+    for (int i = 1; i < argc; i++) {
+        new_argv[i + 1] = argv[i];
+    }
+
+    int l = strlen(new_argv[1]);
+    new_argv[1][l - 3] = 'p';
+    new_argv[1][l - 2] = 'y';
+    new_argv[1][l - 1] = 0;
+
+    return Py_Main(argc + 1, new_argv);
 }
