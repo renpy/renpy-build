@@ -193,3 +193,8 @@ def build_windows(c):
     c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
     c.run("""install librenpython{{ c.python }}.dll python{{c.python}}.exe pythonw{{c.python}}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
     c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+
+    if c.arch == "i686":
+        c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{dist}}/lib/{{ c.platform }}-{{ c.arch }}/libgcc_s_sjlj-1.dll")
+        c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{dist}}/lib/{{ c.platform }}-{{ c.arch }}/libwinpthread-1.dll")
+
