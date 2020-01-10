@@ -10,6 +10,7 @@ sys.path.insert(1, Path(__file__).parent / 'deps')
 import renpybuild.model
 import tasks as _
 
+
 def build(args):
     platforms = [ i.strip() for i in args.platforms.split(",")  ]
     archs = [ i.strip() for i in args.archs.split(",") ]
@@ -19,8 +20,18 @@ def build(args):
         for platform in platforms:
             for arch in archs:
                 for python in pythons:
-                    context = renpybuild.model.Context(platform, arch, python, root, tmp)
+
+                    context = renpybuild.model.Context(
+                        platform, arch, python,
+                        root,
+                        tmp,
+                        dist,
+                        pygame_sdl2,
+                        renpy)
                     task.run(context)
+
+    print("")
+    print("Build finished successfully.")
 
 
 def remove_complete(args):
@@ -55,6 +66,10 @@ def clean(args):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tmp", default="tmp")
+    ap.add_argument("--dist", default="dist")
+    ap.add_argument("--pygame_sdl2", default="pygame_sdl2")
+    ap.add_argument("--renpy", default="renpy")
+
     ap.add_argument("--platforms", "--platform", default="linux")
     ap.add_argument("--archs", "--arch", default="x86_64")
     ap.add_argument("--pythons", "--python", default="2")
@@ -74,11 +89,18 @@ def main():
 
     global tmp
     global root
+    global dist
+    global pygame_sdl2
+    global renpy
 
     args = ap.parse_args()
 
     tmp = Path(args.tmp).resolve()
     root = Path(__file__).parent.resolve()
+
+    dist = Path(args.dist).resolve()
+    pygame_sdl2 = Path(args.pygame_sdl2).resolve()
+    renpy = Path(args.renpy).resolve()
 
     args.function(args)
 

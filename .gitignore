@@ -2,5 +2,7 @@ __pycache__
 .project
 .pydevproject
 deps
-tmp
-dist/
+/tmp
+/dist
+/renpy
+/pygame_sdl2
