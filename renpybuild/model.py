@@ -43,7 +43,7 @@ class Context:
 
         self.var("platform", platform)
         self.var("arch", arch)
-        self.var("csource", self.root / "c")
+        self.var("runtime", self.root / "runtime")
         self.var("source", self.root / "source")
         self.var("tars", self.root / "tars")
         self.var("patches", self.root / "patches")

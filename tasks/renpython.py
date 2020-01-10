@@ -9,7 +9,7 @@ def clean(c):
 @task(kind="python", always=True, platforms="linux")
 def build_linux(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ csource }}/librenpython{{ c.python }}.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ runtime }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -50,7 +50,7 @@ def build_linux(c):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o python{{ c.python }}
-    {{ csource }}/renpython{{ c.python }}_posix.c
+    {{ runtime }}/renpython{{ c.python }}_posix.c
 
 
     librenpython{{ c.python }}.so
@@ -64,7 +64,7 @@ def build_linux(c):
 @task(kind="python", always=True, platforms="mac")
 def build_mac(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ csource }}/librenpython{{ c.python }}.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ runtime }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -111,7 +111,7 @@ def build_mac(c):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o python{{ c.python }}
-    {{ csource }}/renpython{{ c.python }}_posix.c
+    {{ runtime }}/renpython{{ c.python }}_posix.c
 
 
     librenpython{{ c.python }}.dylib
@@ -125,7 +125,7 @@ def build_mac(c):
 @task(kind="python", always=True, platforms="windows")
 def build_windows(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ csource }}/librenpython{{ c.python }}.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ runtime }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -178,7 +178,7 @@ def build_windows(c):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o python{{ c.python }}.exe
-    {{ csource }}/renpython{{ c.python }}_win.c
+    {{ runtime }}/renpython{{ c.python }}_win.c
     librenpython{{ c.python }}.dll
     """)
 
@@ -186,7 +186,7 @@ def build_windows(c):
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -mwindows
     -o pythonw{{ c.python }}.exe
-    {{ csource }}/renpython{{ c.python }}_win.c
+    {{ runtime }}/renpython{{ c.python }}_win.c
     librenpython{{ c.python }}.dll
     """)
 
@@ -196,7 +196,7 @@ def build_windows(c):
     -DPLATFORM=\\"{{ c.platform }}\\"
     -DARCH=\\"{{ c.arch }}\\"
     -o renpy{{ c.python }}-{{ c.arch }}.exe
-    {{ csource }}/launcher{{ c.python }}_win.c
+    {{ runtime }}/launcher{{ c.python }}_win.c
     """)
 
     c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
