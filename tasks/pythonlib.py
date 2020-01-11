@@ -32,11 +32,13 @@ PYTHON27_MODULES = """
 ./bisect.pyo
 ./calendar.pyo
 ./cgi.pyo
+./CGIHTTPServer.pyo
 ./chunk.pyo
 ./cmd.pyo
 ./codecs.pyo
 ./collections.pyo
 ./colorsys.pyo
+./commands.pyo
 ./compileall.pyo
 ./contextlib.pyo
 ./cookielib.pyo
@@ -228,6 +230,8 @@ PYTHON27_MODULES = """
 ./urllib2.pyo
 ./urllib.pyo
 ./urlparse.pyo
+./UserList.pyo
+./UserString.pyo
 ./uuid.pyo
 ./uu.pyo
 ./wave.pyo
