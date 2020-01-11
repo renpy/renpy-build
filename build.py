@@ -25,7 +25,6 @@ def build(args):
                         platform, arch, python,
                         root,
                         tmp,
-                        dist,
                         pygame_sdl2,
                         renpy)
                     task.run(context)
@@ -66,13 +65,13 @@ def clean(args):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tmp", default="tmp")
-    ap.add_argument("--dist", default="dist")
     ap.add_argument("--pygame_sdl2", default="pygame_sdl2")
     ap.add_argument("--renpy", default="renpy")
 
     ap.add_argument("--platforms", "--platform", default="linux")
     ap.add_argument("--archs", "--arch", default="x86_64")
     ap.add_argument("--pythons", "--python", default="2")
+
     ap.set_defaults(function=build)
 
     subparsers = ap.add_subparsers()
@@ -89,7 +88,6 @@ def main():
 
     global tmp
     global root
-    global dist
     global pygame_sdl2
     global renpy
 
@@ -98,7 +96,6 @@ def main():
     tmp = Path(args.tmp).resolve()
     root = Path(__file__).parent.resolve()
 
-    dist = Path(args.dist).resolve()
     pygame_sdl2 = Path(args.pygame_sdl2).resolve()
     renpy = Path(args.renpy).resolve()
 

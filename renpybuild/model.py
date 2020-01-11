@@ -16,7 +16,7 @@ class Context:
     current build.
     """
 
-    def __init__(self, platform, arch, python, root, tmp, dist, pygame_sdl2, renpy):
+    def __init__(self, platform, arch, python, root, tmp, pygame_sdl2, renpy):
 
         # The platform. One of "linux", "windows", "mac", "android", "ios", or "emscripten".
         self.platform = platform
@@ -48,14 +48,13 @@ class Context:
         self.var("tars", self.root / "tars")
         self.var("patches", self.root / "patches")
 
-        self.var("dist", dist)
-        self.var("distlib", dist / ("lib" + python))
-
         self.pygame_sdl2 = pygame_sdl2
         self.var("pygame_sdl2", self.pygame_sdl2)
 
         self.renpy = renpy
         self.var("renpy", self.renpy)
+        self.var("dist", self.renpy)
+        self.var("distlib", self.renpy / ("lib" + python))
 
     def set_names(self, kind, task, name):
         """
