@@ -40,7 +40,7 @@ def build(c):
     --disable-multilib
     --disable-bootstrap
 
-    {% if (c.platform == "linux") and (c.arch == "armhf" ) %}
+    {% if (c.platform == "linux") and (c.arch == "armv7l" ) %}
     --with-arch=armv6 --with-fpu=vfp --with-float=hard
     {% endif %}
     """, verbose=True)

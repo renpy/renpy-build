@@ -87,7 +87,7 @@ RASPI_PACKAGES = [
 ]
 
 
-@task(platforms="linux", archs="armhf")
+@task(platforms="linux", archs="armv7l")
 def install(c):
 
     if not c.path("{{ sysroot }}").exists():

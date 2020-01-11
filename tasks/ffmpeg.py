@@ -18,7 +18,7 @@ def build(c):
         c.var("arch", "x86")
     elif c.arch == "x86_64":
         c.var("arch", "x86_64")
-    elif c.arch == "armhf":
+    elif c.arch == "armv7l":
         c.var("arch", "armhf")
     else:
         raise Exception(f"Unknown arch: {c.arch}")

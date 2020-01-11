@@ -22,7 +22,7 @@ def build_environment(c):
         c.var("host_platform", "x86_64-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "i686"):
         c.var("host_platform", "i686-pc-linux-gnu")
-    elif (c.platform == "linux") and (c.arch == "armhf"):
+    elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
@@ -104,7 +104,7 @@ def build_environment(c):
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/i386-linux-gnu/mesa")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32")
 
-    elif (c.platform == "linux") and (c.arch == "armhf"):
+    elif (c.platform == "linux") and (c.arch == "armv7l"):
 
         c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
 
