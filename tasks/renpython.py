@@ -6,10 +6,21 @@ def clean(c):
     c.clean()
 
 
-@task(kind="python", always=True, platforms="linux")
-def build_linux(c):
+@task(kind="python", always=True)
+def build(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ runtime }}/librenpython{{ c.python }}.c """)
+    c.run("""
+    {{ CC }} {{ CFLAGS }}
+
+    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
+
+    -c -o librenpython.o
+    {{ runtime }}/librenpython{{ c.python }}.c
+    """)
+
+
+@task(kind="python", always=True, platforms="linux")
+def link_linux(c):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -64,9 +75,7 @@ def build_linux(c):
 
 
 @task(kind="python", always=True, platforms="mac")
-def build_mac(c):
-
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ runtime }}/librenpython{{ c.python }}.c """)
+def link_mac(c):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -127,9 +136,7 @@ def build_mac(c):
 
 
 @task(kind="python", always=True, platforms="windows")
-def build_windows(c):
-
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ runtime }}/librenpython{{ c.python }}.c """)
+def link_windows(c):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -197,8 +204,7 @@ def build_windows(c):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -mwindows
-    -DPLATFORM=\\"{{ c.platform }}\\"
-    -DARCH=\\"{{ c.arch }}\\"
+    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o launcher.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
     """)

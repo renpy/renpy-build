@@ -43,12 +43,19 @@ static void set_python_home(const char *argv0, const char *relpath) {
 }
 
 
+static void set_renpy_platform() {
+    if (!getenv("RENPY_PLATFORM")) {
+        putenv("RENPY_PLATFORM=" PLATFORM "-" ARCH);
+    }
+}
 
 /**
  * This is the python command, and all it does is to modify the path to the
  * python library, and start python.
  */
 int EXPORT renpython_main(int argc, char **argv) {
+
+    set_renpy_platform();
 
     Py_SetProgramName(argv[0]);
 
@@ -67,6 +74,8 @@ int EXPORT renpython_main(int argc, char **argv) {
  * This is called from the launcher executable, to start Ren'Py running.
  */
 int EXPORT launcher_main(int argc, char **argv) {
+
+    set_renpy_platform();
 
     Py_SetProgramName(argv[0]);
 
