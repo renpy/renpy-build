@@ -403,5 +403,8 @@ def python2(c):
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(src, dst)
 
+    c.copy("{{ runtime }}/site.py", "{{ distlib }}/{{ pythonver }}/site.py")
+    c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
+
     print(lib, site)
 

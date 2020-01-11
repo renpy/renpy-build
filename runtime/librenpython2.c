@@ -43,6 +43,7 @@ static void set_python_home(const char *argv0, const char *relpath) {
 }
 
 
+
 /**
  * This is the python command, and all it does is to modify the path to the
  * python library, and start python.
@@ -53,6 +54,9 @@ int EXPORT renpython_main(int argc, char **argv) {
 
     /* Linux: The executable is lib/linux-(arch)/python. */
     set_python_home(argv[0], "/../..");
+
+    Py_OptimizeFlag = 2;
+    Py_NoUserSiteDirectory = 1;
 
     init_librenpy();
     return Py_Main(argc, argv);
@@ -83,6 +87,10 @@ int EXPORT launcher_main(int argc, char **argv) {
     new_argv[1][l - 3] = 'p';
     new_argv[1][l - 2] = 'y';
     new_argv[1][l - 1] = 0;
+
+    Py_OptimizeFlag = 2;
+    Py_IgnoreEnvironmentFlag = 1;
+    Py_NoUserSiteDirectory = 1;
 
     return Py_Main(argc + 1, new_argv);
 }
