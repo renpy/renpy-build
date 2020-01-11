@@ -386,7 +386,7 @@ winreg/__init__.pyo
 def python2(c):
     lib = c.path("{{ install }}/lib/{{ pythonver }}")
     site = lib / "site-packages"
-    dist = c.path("{{ dist }}/lib/{{ pythonver }}")
+    dist = c.path("{{ distlib }}/{{ pythonver }}")
 
     c.run("{{ hostpython }} -OO -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
 

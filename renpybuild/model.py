@@ -49,6 +49,7 @@ class Context:
         self.var("patches", self.root / "patches")
 
         self.var("dist", dist)
+        self.var("distlib", dist / ("lib" + python))
 
         self.pygame_sdl2 = pygame_sdl2
         self.var("pygame_sdl2", self.pygame_sdl2)

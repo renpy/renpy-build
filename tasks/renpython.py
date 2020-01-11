@@ -9,15 +9,15 @@ def clean(c):
 @task(kind="python", always=True, platforms="linux")
 def build_linux(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ runtime }}/librenpython{{ c.python }}.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ runtime }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
     -shared
     -Wl,-Bsymbolic
 
-    -o librenpython{{ c.python }}.so
-    librenpython{{ c.python }}.o
+    -o librenpython.so
+    librenpython.o
 
     -lrenpy
     -l{{ pythonver }}
@@ -49,28 +49,30 @@ def build_linux(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -o python{{ c.python }}
+    -o python
     {{ runtime }}/renpython{{ c.python }}_posix.c
 
-
-    librenpython{{ c.python }}.so
+    librenpython.so
     -Wl,-rpath -Wl,$ORIGIN
     """)
 
-    c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython{{ c.python }}.so python{{c.python}} {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install -d {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython.so {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/python""")
+    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/pythonw""")
+    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="mac")
 def build_mac(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ runtime }}/librenpython{{ c.python }}.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ runtime }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
     -shared
-    -o librenpython{{ c.python }}.dylib
-    librenpython{{ c.python }}.o
+    -o librenpython.dylib
+    librenpython.o
 
     -lrenpy
     -l{{ pythonver }}
@@ -110,28 +112,30 @@ def build_mac(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -o python{{ c.python }}
+    -o python
     {{ runtime }}/renpython{{ c.python }}_posix.c
 
-
-    librenpython{{ c.python }}.dylib
+    librenpython.dylib
     -Wl,-rpath -Wl,@executable_path
     """)
 
-    c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython{{ c.python }}.dylib python{{c.python}} {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install -d {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython.dylib {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/python""")
+    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/pythonw""")
+    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="windows")
 def build_windows(c):
 
-    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython{{ c.python }}.o {{ runtime }}/librenpython{{ c.python }}.c """)
+    c.run("""{{ CC }} {{ CFLAGS }} -c -o librenpython.o {{ runtime }}/librenpython{{ c.python }}.c """)
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
     -shared
-    -o librenpython{{ c.python }}.dll
-    librenpython{{ c.python }}.o
+    -o librenpython.dll
+    librenpython.o
     -lrenpy
 
     {{install}}/lib/libfribidi.a
@@ -177,17 +181,17 @@ def build_windows(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -o python{{ c.python }}.exe
+    -o python.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    librenpython{{ c.python }}.dll
+    librenpython.dll
     """)
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -mwindows
-    -o pythonw{{ c.python }}.exe
+    -o pythonw.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    librenpython{{ c.python }}.dll
+    librenpython.dll
     """)
 
     c.run("""
@@ -195,20 +199,16 @@ def build_windows(c):
     -mwindows
     -DPLATFORM=\\"{{ c.platform }}\\"
     -DARCH=\\"{{ c.arch }}\\"
-    -o renpy{{ c.python }}-{{ c.arch }}.exe
+    -o launcher.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
     """)
 
-    c.run("""install -d {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython{{ c.python }}.dll python{{c.python}}.exe pythonw{{c.python}}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install renpy{{ c.python }}-{{ c.arch }}.exe {{dist}}/lib/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install renpy{{ c.python }}-{{ c.arch }}.exe {{dist}}""")
+    c.run("""install -d {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install librenpython.dll python.exe pythonw.exe {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
+    c.run("""install launcher.exe {{distlib}}/{{ c.platform }}-{{ c.arch }}/launcher.exe""")
 
     if c.arch == "i686":
-        c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{dist}}/lib/{{ c.platform }}-{{ c.arch }}/libgcc_s_sjlj-1.dll")
-        c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{dist}}/lib/{{ c.platform }}-{{ c.arch }}/libwinpthread-1.dll")
-
-        if c.python == "2":
-            c.run("""install renpy{{ c.python }}-{{ c.arch }}.exe {{dist}}/renpy.exe""")
+        c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{distlib}}/{{ c.platform }}-{{ c.arch }}/libgcc_s_sjlj-1.dll")
+        c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{distlib}}/{{ c.platform }}-{{ c.arch }}/libwinpthread-1.dll")
 

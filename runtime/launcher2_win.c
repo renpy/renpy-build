@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     free(base);
 
     SetDllDirectory(path);
-    library = LoadLibrary("librenpython2.dll");
+    library = LoadLibrary("librenpython.dll");
 
     int (*launcher_main)(int, char **) = (int (*)(int, char **)) GetProcAddress(library, "launcher_main");
 
