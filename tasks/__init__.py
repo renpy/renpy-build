@@ -17,6 +17,9 @@ from . import freetype
 from . import libffi
 from . import hostpython2
 from . import python2
+
+from . import zsync
+
 from . import pygame_sdl2
 from . import librenpy
 from . import pythonlib

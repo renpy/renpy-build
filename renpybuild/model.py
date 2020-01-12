@@ -47,6 +47,7 @@ class Context:
         self.var("source", self.root / "source")
         self.var("tars", self.root / "tars")
         self.var("patches", self.root / "patches")
+        self.var("prebuilt", self.root / "prebuilt")
 
         self.pygame_sdl2 = pygame_sdl2
         self.var("pygame_sdl2", self.pygame_sdl2)
@@ -55,6 +56,7 @@ class Context:
         self.var("renpy", self.renpy)
         self.var("dist", self.renpy)
         self.var("distlib", self.renpy / ("lib" + python))
+        self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
 
     def set_names(self, kind, task, name):
         """
@@ -199,7 +201,7 @@ class Context:
 
         return self.cwd / self.expand(p)
 
-    def patch(self, fn):
+    def patch(self, fn, p=1):
         """
         Applies the patch in `fn`.
         """
@@ -209,7 +211,7 @@ class Context:
         with open(fn, "rb") as f:
             patch = f.read()
 
-        subprocess.run([ "patch", "-p1" ], input=patch, cwd=self.cwd, check=True)
+        subprocess.run([ "patch", "-p%d" % p ], input=patch, cwd=self.cwd, check=True)
 
     def patchdir(self, dn):
         """

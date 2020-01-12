@@ -1,0 +1,11 @@
+--- makegz.c	2010-09-16 13:17:49.000000000 -0400
++++ makegz.c.new	2018-03-18 14:05:21.988602254 -0400
+@@ -108,7 +108,7 @@
+         zs.total_out = 0;
+ 
+         /* windowBits is passed < 0 to suppress zlib header */
+-        err = deflateInit2(&zs, 9,
++        err = deflateInit2(&zs, 5,
+                            Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
+ 
+         /* Until end of file or error */

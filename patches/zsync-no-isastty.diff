@@ -1,0 +1,19 @@
+diff -ur zsync-0.6.2-pristine/client.c zsync-0.6.2/client.c
+--- zsync-0.6.2-pristine/client.c	2010-09-19 16:51:53.000000000 -0400
++++ zsync-0.6.2/client.c	2012-07-14 10:02:50.862423474 -0400
+@@ -519,8 +519,15 @@
+     }
+ 
+     /* No progress display except on terminal */
++    /*
++     * For Ren'Py, we want to show progress all the time. So comment this
++     * code out.
++     */
++    /*
+     if (!isatty(0))
+         no_progress = 1;
++	*/
++
+     {   /* Get proxy setting from the environment */
+         char *pr = getenv("http_proxy");
+ 
