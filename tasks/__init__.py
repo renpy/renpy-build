@@ -19,6 +19,7 @@ from . import hostpython2
 from . import python2
 
 from . import zsync
+from . import sayvbs
 
 from . import pygame_sdl2
 from . import librenpy
