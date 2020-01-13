@@ -3,7 +3,7 @@ from renpybuild.model import task
 version = "0.6.2"
 
 
-@task()
+@task(kind="python")
 def unpack(c):
     c.clean()
 
@@ -11,7 +11,7 @@ def unpack(c):
     c.run("tar xjf {{source}}/zsync-{{version}}.tar.bz2")
 
 
-@task(platforms="linux,mac")
+@task(kind="python", platforms="linux,mac")
 def build(c):
 
     c.var("version", version)
@@ -27,7 +27,7 @@ def build(c):
     c.run("install zsync zsyncmake {{ dlpa }}")
 
 
-@task(platforms="windows")
+@task(kind="python", platforms="windows")
 def install(c):
     c.run("install -d {{ dlpa }}")
     c.run("install {{ prebuilt }}/zsync.exe {{ prebuilt}}/zsyncmake.exe {{ dlpa }}")
