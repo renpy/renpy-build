@@ -67,11 +67,11 @@ def link_linux(c):
     -Wl,-rpath -Wl,$ORIGIN
     """)
 
-    c.run("""install -d {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython.so {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/python""")
-    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/pythonw""")
-    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/renpy""")
+    c.run("""install -d {{ dlpa }}""")
+    c.run("""install librenpython.so {{ dlpa }}""")
+    c.run("""install python {{ dlpa }}/python""")
+    c.run("""install python {{ dlpa }}/pythonw""")
+    c.run("""install python {{ dlpa }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="mac")
@@ -128,11 +128,11 @@ def link_mac(c):
     -Wl,-rpath -Wl,@executable_path
     """)
 
-    c.run("""install -d {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython.dylib {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/python""")
-    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/pythonw""")
-    c.run("""install python {{distlib}}/{{ c.platform }}-{{ c.arch }}/renpy""")
+    c.run("""install -d {{ dlpa }}""")
+    c.run("""install librenpython.dylib {{ dlpa }}""")
+    c.run("""install python {{ dlpa }}/python""")
+    c.run("""install python {{ dlpa }}/pythonw""")
+    c.run("""install python {{ dlpa }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="windows")
@@ -209,12 +209,12 @@ def link_windows(c):
     {{ runtime }}/launcher{{ c.python }}_win.c
     """)
 
-    c.run("""install -d {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install librenpython.dll python.exe pythonw.exe {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{distlib}}/{{ c.platform }}-{{ c.arch }}""")
-    c.run("""install launcher.exe {{distlib}}/{{ c.platform }}-{{ c.arch }}/launcher.exe""")
+    c.run("""install -d {{ dlpa }}""")
+    c.run("""install librenpython.dll python.exe pythonw.exe {{ dlpa }}""")
+    c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{ dlpa }}""")
+    c.run("""install launcher.exe {{ dlpa }}/launcher.exe""")
 
     if c.arch == "i686":
-        c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{distlib}}/{{ c.platform }}-{{ c.arch }}/libgcc_s_sjlj-1.dll")
-        c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{distlib}}/{{ c.platform }}-{{ c.arch }}/libwinpthread-1.dll")
+        c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
+        c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
