@@ -322,5 +322,3 @@ if "RENPY_PLATFORM" in os.environ:
     sys.path.append(os.path.join(os.path.dirname(__file__), "../" + os.environ["RENPY_PLATFORM"]))
 
 sys.path = [ os.path.abspath(i) for i in sys.path ]
-
-print(sys.path)
