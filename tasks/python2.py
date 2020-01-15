@@ -28,6 +28,7 @@ def patch_posix(c):
     c.chdir("Python-{{ version }}")
     c.patch("python2-no-multiarch.diff")
     c.patch("python2-cross-darwin.diff")
+    c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
 
 
 @task(kind="python", pythons="2", platforms="windows")
