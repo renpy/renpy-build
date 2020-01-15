@@ -316,9 +316,14 @@ def _renpy_argv_emulation():
 
             break
 
-
 # Platform specific python path. ###############################################
+
+
+pythonlib = os.path.dirname(__file__)
+sys.path = [ pythonlib + "/site-packages", pythonlib ]
+
 if "RENPY_PLATFORM" in os.environ:
-    sys.path.append(os.path.join(os.path.dirname(__file__), "../" + os.environ["RENPY_PLATFORM"]))
+    sys.path.append(pythonlib + "/../" + os.environ["RENPY_PLATFORM"])
 
 sys.path = [ os.path.abspath(i) for i in sys.path ]
+
