@@ -102,6 +102,7 @@ PYTHON27_MODULES = """
 ./encodings/utf_32_be.pyo
 ./encodings/utf_8.pyo
 ./encodings/zlib_codec.pyo
+./encodings/cp437.pyo
 
 ./fnmatch.pyo
 ./ftplib.pyo
@@ -124,12 +125,14 @@ PYTHON27_MODULES = """
 ./json/__init__.pyo
 ./json/scanner.pyo
 ./keyword.pyo
+./list2cmdline.pyo
 ./locale.pyo
 ./logging/__init__.pyo
 ./_LWPCookieJar.pyo
 ./mimetools.pyo
 ./mimetypes.pyo
 ./_MozillaCookieJar.pyo
+./ntpath.pyo
 ./nturl2path.pyo
 ./numbers.pyo
 ./opcode.pyo
