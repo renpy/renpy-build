@@ -101,5 +101,6 @@ int EXPORT launcher_main(int argc, char **argv) {
     Py_IgnoreEnvironmentFlag = 1;
     Py_NoUserSiteDirectory = 1;
 
+    init_librenpy();
     return Py_Main(argc + 1, new_argv);
 }
