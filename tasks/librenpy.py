@@ -6,6 +6,14 @@ def clean(c):
     c.clean()
 
 
+@task(kind="python-only", always=True)
+def gen_static(c):
+
+    c.chdir("{{ renpy }}/module")
+    c.env("RENPY_STATIC", "1")
+    c.run("{{ hostpython }} setup.py generate")
+
+
 @task(kind="python", always=True)
 def build(c):
 
