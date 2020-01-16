@@ -128,11 +128,21 @@ def link_mac(c):
     -Wl,-rpath -Wl,@executable_path
     """)
 
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -o launcher
+    {{ runtime }}/launcher{{ c.python }}_mac.c
+
+    librenpython.dylib
+    -Wl,-rpath -Wl,@executable_path
+    """)
+
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dylib {{ dlpa }}""")
     c.run("""install python {{ dlpa }}/python""")
     c.run("""install python {{ dlpa }}/pythonw""")
     c.run("""install python {{ dlpa }}/renpy""")
+    c.run("""install launcher {{ dlpa }}/launcher""")
 
 
 @task(kind="python", always=True, platforms="windows")
