@@ -228,3 +228,4 @@ def link_windows(c):
         c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
+        c.run("""install launcher.exe {{ renpy }}/renpy.exe""")
