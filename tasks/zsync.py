@@ -26,6 +26,12 @@ def build(c):
     c.run("install -d {{ dlpa }}")
     c.run("install zsync zsyncmake {{ dlpa }}")
 
+    # renpy.app/Contents/MacOS:
+    if c.platform == "mac":
+        c.var("acm", "{{ renpy }}/renpy.app/Contents/MacOS")
+        c.run("install -d {{ acm }}")
+        c.run("install zsync zsyncmake {{ acm }}")
+
 
 @task(kind="python", platforms="windows")
 def install(c):

@@ -142,6 +142,15 @@ def link_mac(c):
     c.run("""install python {{ dlpa }}/pythonw""")
     c.run("""install launcher {{ dlpa }}/renpy""")
 
+    # renpy.app/Contents/MacOS:
+    c.var("acm", "{{ renpy }}/renpy.app/Contents/MacOS")
+
+    c.run("""install -d {{ acm }}""")
+    c.run("""install librenpython.dylib {{ acm }}""")
+    c.run("""install python {{ acm }}/python""")
+    c.run("""install python {{ acm }}/pythonw""")
+    c.run("""install launcher {{ acm }}/renpy""")
+
 
 @task(kind="python", always=True, platforms="windows")
 def link_windows(c):
