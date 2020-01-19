@@ -71,7 +71,6 @@ def link_linux(c):
     c.run("""install librenpython.so {{ dlpa }}""")
     c.run("""install python {{ dlpa }}/python""")
     c.run("""install python {{ dlpa }}/pythonw""")
-    c.run("""install python {{ dlpa }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="mac")
@@ -141,8 +140,7 @@ def link_mac(c):
     c.run("""install librenpython.dylib {{ dlpa }}""")
     c.run("""install python {{ dlpa }}/python""")
     c.run("""install python {{ dlpa }}/pythonw""")
-    c.run("""install python {{ dlpa }}/renpy""")
-    c.run("""install launcher {{ dlpa }}/launcher""")
+    c.run("""install launcher {{ dlpa }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="windows")
@@ -222,7 +220,7 @@ def link_windows(c):
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dll python.exe pythonw.exe {{ dlpa }}""")
     c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{ dlpa }}""")
-    c.run("""install launcher.exe {{ dlpa }}/launcher.exe""")
+    c.run("""install renpy.exe {{ dlpa }}/renpy.exe""")
 
     if c.arch == "i686":
         c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
