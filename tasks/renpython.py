@@ -80,6 +80,7 @@ def link_mac(c):
     {{ CC }} {{ LDFLAGS }}
     -shared
     -o librenpython.dylib
+    -install_name @executable_path/librenpython.dylib
     librenpython.o
 
     -lrenpy
@@ -124,7 +125,6 @@ def link_mac(c):
     {{ runtime }}/renpython{{ c.python }}_posix.c
 
     librenpython.dylib
-    -Wl,-rpath -Wl,@executable_path
     """)
 
     c.run("""
@@ -133,7 +133,6 @@ def link_mac(c):
     {{ runtime }}/launcher{{ c.python }}_mac.c
 
     librenpython.dylib
-    -Wl,-rpath -Wl,@executable_path
     """)
 
     c.run("""install -d {{ dlpa }}""")
