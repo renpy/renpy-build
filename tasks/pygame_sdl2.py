@@ -9,7 +9,7 @@ def annotate(c):
 @task(kind="python-only", always=True)
 def gen_static(c):
 
-    c.chdir("{{ renpy }}/module")
+    c.chdir("{{ pygame_sdl2 }}")
     c.env("PYGAME_SDL2_STATIC", "1")
     c.run("{{ hostpython }} setup.py generate")
 
