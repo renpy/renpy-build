@@ -129,7 +129,7 @@ def link_mac(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -o launcher
+    -o renpy
     {{ runtime }}/launcher{{ c.python }}_mac.c
 
     librenpython.dylib
@@ -139,7 +139,7 @@ def link_mac(c):
     c.run("""install librenpython.dylib {{ dlpa }}""")
     c.run("""install python {{ dlpa }}/python""")
     c.run("""install python {{ dlpa }}/pythonw""")
-    c.run("""install launcher {{ dlpa }}/renpy""")
+    c.run("""install renpy {{ dlpa }}/renpy""")
 
     # renpy.app/Contents/MacOS:
     c.var("acm", "{{ renpy }}/renpy.app/Contents/MacOS")
@@ -148,7 +148,7 @@ def link_mac(c):
     c.run("""install librenpython.dylib {{ acm }}""")
     c.run("""install python {{ acm }}/python""")
     c.run("""install python {{ acm }}/pythonw""")
-    c.run("""install launcher {{ acm }}/renpy""")
+    c.run("""install renpy {{ acm }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="windows")
@@ -221,7 +221,7 @@ def link_windows(c):
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -mwindows
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
-    -o launcher.exe
+    -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
     """)
 
@@ -234,4 +234,4 @@ def link_windows(c):
         c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
-        c.run("""install launcher.exe {{ renpy }}/renpy.exe""")
+        c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
