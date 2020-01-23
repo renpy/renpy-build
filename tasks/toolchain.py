@@ -69,6 +69,3 @@ def build(c):
     c.env("MAKE", "{{ make }}")
 
     c.run("./build.sh")
-
-    import sys
-    sys.exit(0)
