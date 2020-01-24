@@ -76,6 +76,8 @@ def link_linux(c):
     -Wl,-rpath -Wl,$ORIGIN
     """)
 
+    c.run("""{{ STRIP }} --strip-unneeded librenpython.so python renpy""")
+
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.so {{ dlpa }}""")
     c.run("""install python {{ dlpa }}/python""")
@@ -144,6 +146,8 @@ def link_mac(c):
 
     librenpython.dylib
     """)
+
+    c.run("""{{ STRIP }} -S -x librenpython.dylib python renpy""")
 
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dylib {{ dlpa }}""")
@@ -235,9 +239,12 @@ def link_windows(c):
     {{ runtime }}/launcher{{ c.python }}_win.c
     """)
 
+    c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
+    c.run("""{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe""")
+
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dll python.exe pythonw.exe {{ dlpa }}""")
-    c.run("""install {{install}}/bin/lib{{ pythonver }}.dll  {{ dlpa }}""")
+    c.run("""install lib{{ pythonver }}.dll  {{ dlpa }}""")
     c.run("""install renpy.exe {{ dlpa }}/renpy.exe""")
 
     if c.arch == "i686":
