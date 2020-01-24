@@ -65,29 +65,7 @@ export RENPY_SIMPLE_EXCEPTIONS=1
 # popd
 
 # Build the distribution.
-./lib/linux-x86_64/python -O distribute.py "$RENPY_NIGHTLY" --pygame $BASE/pygame_sdl2 --nosign
+./lib/linux-x86_64/python -O distribute.py "$RENPY_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
 
 popd
 
-# Create a symlink to the current nightly.
-
-pushd $BASE/renpy/dl
-
-rm current
-ln -s "$RENPY_NIGHTLY" current
-
-rm renpy-nightly-sdk.zip
-rm renpy-nightly-sdk.tar.bz2
-ln -s current/renpy-*-sdk.zip renpy-nightly-sdk.zip
-ln -s current/renpy-*-sdk.tar.bz2 renpy-nightly-sdk.tar.bz2
-
-# Index the nightly.
-/home/tom/ab/renpy-deps/scripts/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/
-
-# Upload everything to the server.
-# rsync -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly --delete
-
-# Delete old nightlies.
-# find /home/tom/magnetic/ab/WWW.nightly/ -ctime +30.5 -delete || true
-
-popd

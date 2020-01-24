@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ren'Py Nightly Builds</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  </head>
+
+
+  <body>
+
+    <div class="container">
+
+      <h2>{{ date }} <span class="small">{{ name }}</span></h2>
+
+      <p>
+      <a href="../index.html">Return to the index of nightly builds.</a>
+      </p>
+
+
+      <p>
+      This is a nightly build of Ren'Py, primarily created to let you help
+      with testing and development of Ren'Py. DO NOT RELEASE GAMES WITH
+      THIS, as it may contain bugs and APIs that will not remain
+      supported.
+      <p>
+
+      <p>
+      If, while testing this build, you find a bug in Ren'Py, please let
+      us know by filing a bug at <a href="https://github.com/renpy/renpy/issues">https://github.com/renpy/renpy/issues</a>.
+      </p>
+
+      <p>
+      This build is temporary, it will be removed from the web after a few
+      days.
+      </p>
+
+
+      <h3>SDK Downloads</h3>
+        <table class="table">
+            {% for i, size, date in sdk %}
+            <tr>
+               <td style="width: 60%;"><a href="{{ i }}">{{ i }}</a></td>
+               <td style="width: 15%; text-align: right;">{{ size }} MiB</td>
+               <td style="width: 25%; text-align: right;">{{ date }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+      <h3>Other Downloads</h3>
+        <table class="table">
+            {% for i, size, date in other %}
+            <tr>
+               <td style="width: 60%;"><a href="{{ i }}">{{ i }}</a></td>
+               <td style="width: 15%; text-align: right;">{{ size }} MiB</td>
+               <td style="width: 25%; text-align: right;">{{ date }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+    </div>
+
+   </body>
+
+</html>

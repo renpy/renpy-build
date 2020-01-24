@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ren'Py Nightly Builds</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  </head>
+
+
+  <body>
+
+    <div class="container">
+
+
+      <h2>Ren'Py Nightly Builds</h2>
+
+      <p>
+      <a href="current/index.html">This link will always bring you to the current nightly build.</a>
+      </p>
+
+      <p>
+      These are nightly builds of Ren'Py, primarily created to let you help
+      with testing and development of Ren'Py. DO NOT RELEASE GAMES WITH
+      THESE, as they may contain bugs and APIs that will not remain
+      supported.
+      <p>
+
+      <p>
+      If, while testing these builds, you find a bug in Ren'Py, please let
+      us know by filing a bug at <a href="https://github.com/renpy/renpy/issues">https://github.com/renpy/renpy/issues</a>.
+      </p>
+
+      <p>
+      These builds are made on a best-effort basis, on computers that can be
+      used for other projects. A day's build may be missing if the master
+      git branch can't be built, or if the computers that build it are
+      not available. Please email pytom@bishoujo.us if a build you're
+      expecting is missing - I'll be able to give you a better status
+      update.
+      </p>
+
+
+      <h3>Builds</h3>
+
+        <table class="table">
+        {% for d, name in dirs %}
+
+        <tr>
+          <td><a href="{{ d }}/index.html">{{ name }}</a></td>
+          <td>{{ d }}</td>
+        </tr>
+
+        {% endfor %}
+        </table>
+
+
+    </div>
+
+  </body>
+
+
+</html>
