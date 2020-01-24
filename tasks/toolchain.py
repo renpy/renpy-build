@@ -52,8 +52,6 @@ def build(c):
 @task(kind="cross", platforms="mac")
 def build(c):
 
-    print("XXX", c.path("{{ install }}/bin/{{ host_platform }}-cc"))
-
     if c.path("{{ install }}/bin/{{ host_platform }}-cc").exists():
         return
 
