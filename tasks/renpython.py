@@ -67,10 +67,20 @@ def link_linux(c):
     -Wl,-rpath -Wl,$ORIGIN
     """)
 
+    c.run("""
+    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -o renpy
+    {{ runtime }}/launcher{{ c.python }}_posix.c
+
+    librenpython.so
+    -Wl,-rpath -Wl,$ORIGIN
+    """)
+
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.so {{ dlpa }}""")
     c.run("""install python {{ dlpa }}/python""")
     c.run("""install python {{ dlpa }}/pythonw""")
+    c.run("""install renpy {{ dlpa }}/renpy""")
 
 
 @task(kind="python", always=True, platforms="mac")
@@ -130,7 +140,7 @@ def link_mac(c):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o renpy
-    {{ runtime }}/launcher{{ c.python }}_mac.c
+    {{ runtime }}/launcher{{ c.python }}_posix.c
 
     librenpython.dylib
     """)

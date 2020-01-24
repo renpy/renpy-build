@@ -58,4 +58,4 @@ if ! test -d "$LIB"; then
     exit 1
 fi
 
-exec $RENPY_GDB "$LIB/$BASEFILE" $RENPY_PYARGS -EO "$ROOT/$BASEFILE.py" "$@"
+exec $RENPY_GDB "$LIB/$BASEFILE" "$@"
