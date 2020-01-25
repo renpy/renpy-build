@@ -17,3 +17,9 @@ Xcode
 
 Created as described at https://github.com/tpoechtrager/osxcross#packaging-the-sdk .
 
+Android NDK
+-----------
+
+* android-ndk-r21-linux-x86_64.zip
+
+Downloaded from https://developer.android.com/ndk/downloads
