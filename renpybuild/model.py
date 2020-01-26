@@ -313,7 +313,7 @@ class Task:
         for a in annotators:
             a(context)
 
-        print(f"{context.task_name} running...")
+        print(f"{context.task_name} running in {context.build} ...")
 
         self.function(context)
 

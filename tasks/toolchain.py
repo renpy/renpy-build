@@ -1,4 +1,5 @@
 from renpybuild.model import task
+import zipfile
 
 binutils_version = "2.33.1"
 gcc_version = "9.2.0"
@@ -67,3 +68,30 @@ def build(c):
     c.env("MAKE", "{{ make }}")
 
     c.run("./build.sh")
+
+
+from zipfile import ZipFile, ZipInfo
+import os
+
+
+class ZipFileWithPermissions(ZipFile):
+    """ Custom ZipFile class handling file permissions. """
+
+    def _extract_member(self, member, targetpath, pwd):
+        if not isinstance(member, ZipInfo):
+            member = self.getinfo(member)
+
+        targetpath = super()._extract_member(member, targetpath, pwd)
+
+        attr = member.external_attr >> 16
+        if attr != 0:
+            os.chmod(targetpath, attr)
+        return targetpath
+
+
+@task(kind="cross", platforms="android")
+def build(c):
+
+    zf = ZipFileWithPermissions(c.path("{{ tars }}/android-ndk-r21-linux-x86_64.zip"))
+    zf.extractall(c.path("{{ install }}"))
+    zf.close()

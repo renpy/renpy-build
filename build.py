@@ -33,6 +33,8 @@ Platform("windows", "i686")
 
 Platform("mac", "x86_64")
 
+Platform("android", "x86_64")
+
 # Python Registry ##############################################################
 
 known_pythons = [ ]
