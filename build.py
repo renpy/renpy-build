@@ -10,24 +10,94 @@ sys.path.insert(1, Path(__file__).parent / 'deps')
 import renpybuild.model
 import tasks as _
 
+known_platforms = [ ]
+
+# Platform Registry ############################################################
+
+
+class Platform:
+
+    def __init__(self, platform, arch):
+        self.platform = platform
+        self.arch = arch
+
+        known_platforms.append(self)
+
+
+Platform("linux", "x86_64")
+Platform("linux", "i686")
+Platform("linux", "armv7l")
+
+Platform("windows", "x86_64")
+Platform("windows", "i686")
+
+Platform("mac", "x86_64")
+
+# Python Registry ##############################################################
+
+known_pythons = [ ]
+
+
+class Python:
+
+    def __init__(self, python):
+        self.python = python
+        known_pythons.append(self)
+
+
+Python("2")
+
 
 def build(args):
-    platforms = [ i.strip() for i in args.platforms.split(",")  ]
-    archs = [ i.strip() for i in args.archs.split(",") ]
-    pythons = [ i.strip() for i in args.pythons.split(",") ]
+    platforms = set(i.strip() for i in args.platforms.split(",") if i)
+    archs = set(i.strip() for i in args.archs.split(",") if i)
+    pythons = set(i.strip() for i in args.pythons.split(",") if i)
+
+    # Check that the platforms, archs, and pythons are known.
+
+    for i in platforms:
+        if i not in { j.platform for j in known_platforms }:
+            print("Platform", i, "is not known.", file=sys.stderr)
+            sys.exit(1)
+
+    for i in archs:
+        if i not in { j.arch for j in known_platforms }:
+            print("Architecture", i, "is not known.", file=sys.stderr)
+            sys.exit(1)
+
+    for i in pythons:
+        if i not in { j.python for j in known_pythons }:
+            print("Python", i, "is not known.", file=sys.stderr)
+            sys.exit(1)
+
+    # Actually build everything.
 
     for task in renpybuild.model.tasks:
-        for platform in platforms:
-            for arch in archs:
-                for python in pythons:
+        for p in known_platforms:
 
-                    context = renpybuild.model.Context(
-                        platform, arch, python,
-                        root,
-                        tmp,
-                        pygame_sdl2,
-                        renpy)
-                    task.run(context)
+            if platforms and (p.platform not in platforms):
+                continue
+
+            if archs and (p.arch not in archs):
+                continue
+
+            platform = p.platform
+            arch = p.arch
+
+            for py in known_pythons:
+
+                if pythons and (py.python not in pythons):
+                    continue
+
+                python = py.python
+
+                context = renpybuild.model.Context(
+                    platform, arch, python,
+                    root,
+                    tmp,
+                    pygame_sdl2,
+                    renpy)
+                task.run(context)
 
     print("")
     print("Build finished successfully.")
@@ -68,9 +138,9 @@ def main():
     ap.add_argument("--pygame_sdl2", default="pygame_sdl2")
     ap.add_argument("--renpy", default="renpy")
 
-    ap.add_argument("--platforms", "--platform", default="linux")
-    ap.add_argument("--archs", "--arch", default="x86_64")
-    ap.add_argument("--pythons", "--python", default="2")
+    ap.add_argument("--platforms", "--platform", default="")
+    ap.add_argument("--archs", "--arch", default="")
+    ap.add_argument("--pythons", "--python", default="")
 
     ap.set_defaults(function=build)
 
