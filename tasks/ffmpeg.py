@@ -31,6 +31,8 @@ def build(c):
         c.var("os", "mingw32")
     elif c.platform == "mac":
         c.var("os", "darwin")
+    elif c.platform == "android":
+        c.var("os", "android")
     else:
         raise Exception(f"Unknown os: {c.platform}")
 
