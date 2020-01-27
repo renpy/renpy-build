@@ -188,12 +188,14 @@ def build_environment(c):
 
         c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread")
         c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossclang }}clang -E --sysroot {{ sysroot }}")
+        c.env("CPP", "ccache {{ crossclang }}clang -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
+
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")
