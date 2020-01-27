@@ -21,6 +21,31 @@ def build(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 
-    c.run("""./configure {{ cross_config }} --disable-shared --disable-dependency-tracking --disable-wasapi --disable-render-metal --prefix="{{ install }}" """)
+    c.run("""
+    ./configure {{ cross_config }}
+    --disable-shared
+    --prefix="{{ install }}"
+
+    --disable-dependency-tracking
+    --disable-wasapi
+    --disable-render-metal
+
+{% if c.platform == "android" %}
+    --disable-video-wayland
+    --disable-video-x11
+
+    --disable-oss
+    --disable-alsa
+    --disable-jack
+    --disable-esd
+    --disable-pulseaudio
+    --disable-arts
+    --disable-nas
+    --disable-sndio
+    --disable-fusionsound
+{% endif %}
+
+    """)
+
     c.run("""{{ make }}""")
     c.run("""make install""")
