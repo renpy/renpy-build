@@ -48,6 +48,7 @@ def patch_android(c):
 
     c.chdir("Python-{{ version }}")
     c.patchdir("android-python2")
+    c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
 
     c.run(""" autoreconf -vfi """)
 
