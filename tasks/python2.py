@@ -42,6 +42,16 @@ def patch_windows(c):
     c.run(""" autoreconf -vfi """)
 
 
+@task(kind="python", pythons="2", platforms="android")
+def patch_android(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patchdir("android-python2")
+
+    c.run(""" autoreconf -vfi """)
+
+
 @task(kind="python", pythons="2", platforms="linux,mac")
 def build_posix(c):
     c.var("version", version)
@@ -51,6 +61,31 @@ def build_posix(c):
     with open(c.path("config.site"), "w") as f:
         f.write("ac_cv_file__dev_ptmx=no\n")
         f.write("ac_cv_file__dev_ptc=no\n")
+
+    c.env("CONFIG_SITE", "config.site")
+
+    c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
+
+    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --enable-ipv6""")
+
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+    c.run("""{{ make }} install""")
+
+    c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
+
+
+@task(kind="python", pythons="2", platforms="android")
+def build_android(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+
+    with open(c.path("config.site"), "w") as f:
+        f.write("ac_cv_file__dev_ptmx=no\n")
+        f.write("ac_cv_file__dev_ptc=no\n")
+        f.write("ac_cv_little_endian_double=yes\n")
+        f.write("ac_cv_header_langinfo_h=no\n")
 
     c.env("CONFIG_SITE", "config.site")
 

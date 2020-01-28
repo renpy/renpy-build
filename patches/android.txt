@@ -1,0 +1,2 @@
+The patches required to crossbuild android are from:
+https://github.com/kivy/python-for-android/

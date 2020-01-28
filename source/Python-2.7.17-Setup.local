@@ -45,13 +45,14 @@ _ssl _ssl.c -lssl -lcrypto
 
 dl dlmodule.c
 fcntl fcntlmodule.c
-# linuxaudiodev linuxaudiodev.c
-# ossaudiodev ossaudiodev.c
+
+{% if c.platform != "android" %}
 grp grpmodule.c
+{% endif %}
+
 pwd pwdmodule.c
-# spwd spwdmodule.c
+
 resource resource.c
-# syslog syslogmodule.c
 termios termios.c
 
 {% endif %}
