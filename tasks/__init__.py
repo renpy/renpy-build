@@ -21,6 +21,8 @@ from . import python2
 from . import zsync
 from . import sayvbs
 
+from . import pyjnius
+
 from . import pygame_sdl2
 from . import librenpy
 from . import pythonlib

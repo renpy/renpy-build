@@ -58,6 +58,8 @@ class Context:
         self.var("distlib", self.renpy / ("lib" + python))
         self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
 
+        self.var("pytmp", self.tmp / ("py" + python))
+
     def set_names(self, kind, task, name):
         """
         This is used to past the task-specific names into the context.

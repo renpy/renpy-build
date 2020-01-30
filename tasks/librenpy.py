@@ -48,6 +48,9 @@ def build(c):
     read_setup(c.pygame_sdl2)
     read_setup(c.renpy / "module")
 
+    if c.platform == "android":
+        read_setup(c.path("{{ pytmp }}/pyjnius"))
+
     objects = [ ]
 
     for source in sources:
