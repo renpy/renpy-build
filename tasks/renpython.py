@@ -85,6 +85,59 @@ def link_linux(c):
     c.run("""install renpy {{ dlpa }}/renpy""")
 
 
+@task(kind="python", always=True, platforms="android")
+def link_android(c):
+
+    c.run("""
+    {{ CC }} {{ LDFLAGS }}
+    -shared
+    -Wl,-Bsymbolic
+    -Wl,--no-undefined
+
+    -o librenpython.so
+    librenpython.o
+
+    -lrenpy
+    -l{{ pythonver }}
+
+    -lavformat
+    -lavcodec
+    -lswscale
+    -lswresample
+    -lavutil
+
+    -lSDL2_image
+    -lSDL2
+
+     -lGLESv1_CM
+     -lGLESv2
+
+    -ljpeg
+    -lpng
+    -lwebp
+    -lfribidi
+    -lfreetype
+    -lffi
+    -ldl
+    -lssl
+    -lcrypto
+    -lbz2
+    -lz
+    -lm
+
+    -llog
+    -landroid
+    """)
+
+    c.run("""{{ STRIP }} --strip-unneeded librenpython.so""")
+
+#     c.run("""install -d {{ dlpa }}""")
+#     c.run("""install librenpython.so {{ dlpa }}""")
+#     c.run("""install python {{ dlpa }}/python""")
+#     c.run("""install python {{ dlpa }}/pythonw""")
+#     c.run("""install renpy {{ dlpa }}/renpy""")
+
+
 @task(kind="python", always=True, platforms="mac")
 def link_mac(c):
 
