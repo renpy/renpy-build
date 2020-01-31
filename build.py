@@ -34,6 +34,7 @@ Platform("windows", "i686")
 Platform("mac", "x86_64")
 
 Platform("android", "x86_64")
+Platform("android", "arm64_v8a")
 
 # Python Registry ##############################################################
 
