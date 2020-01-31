@@ -386,6 +386,11 @@ queue/__init__.pyo
 reprlib/__init__.pyo
 socketserver/__init__.pyo
 winreg/__init__.pyo
+
+jnius/__init__.pyo
+jnius/env.pyo
+jnius/reflect.pyo
+jnius/signatures.pyo
 """
 
 
@@ -394,6 +399,7 @@ def python2(c):
     lib = c.path("{{ install }}/lib/{{ pythonver }}")
     site = lib / "site-packages"
     dist = c.path("{{ distlib }}/{{ pythonver }}")
+    pyjnius = c.path("{{ pytmp }}/pyjnius")
 
     c.run("{{ hostpython }} -OO -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
 
@@ -403,6 +409,8 @@ def python2(c):
             src = lib / i
         elif (site / i).exists():
             src = site / i
+        elif (pyjnius / i).exists():
+            src = pyjnius / i
         else:
             raise Exception(f"Can't find {i}.")
 

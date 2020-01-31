@@ -109,8 +109,8 @@ def link_android(c):
     -lSDL2_image
     -lSDL2
 
-     -lGLESv1_CM
-     -lGLESv2
+    -lGLESv1_CM
+    -lGLESv2
 
     -ljpeg
     -lpng
