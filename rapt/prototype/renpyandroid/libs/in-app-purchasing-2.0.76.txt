@@ -1,0 +1,5 @@
+This software is licensed as "Program Materials" under the Program Materials License Agreement (the "License") of the Amazon Mobile App Distribution program, which is available at https://developer.amazon.com/sdk/pml.html. See the License for the specific language governing permissions and limitations under the License.
+
+These materials may include third party software that is copyrighted by other parties and is subject to separate license terms. Information on that software and the applicable copyright notices and license terms are included in the separate NOTICE.txt accompanying the applicable materials. You acknowledge and agree that your license to use and distribute these materials is conditioned on your providing to your users the notices and disclaimers that are specified by such license terms.
+
+These materials are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.

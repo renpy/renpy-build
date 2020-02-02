@@ -1,0 +1,9 @@
+<resources>
+    <string name="appName">{{ config.name }}</string>
+    <string name="app_name">{{ config.name }}</string>
+    <string name="iconName">{{ config.icon_name }}</string>
+    {% if private_version %}
+    <string name="private_version">{{ private_version }}</string>
+    {% endif %}
+
+</resources>

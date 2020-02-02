@@ -1,0 +1,12 @@
+/lib
+/include
+
+**~
+**.bak
+**.rpy
+**.swp
+**.pyc
+**.pyx
+**.pxd
+
+**/.**
