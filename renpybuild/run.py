@@ -34,6 +34,8 @@ def build_environment(c):
         c.var("host_platform", "x86_64-linux-android")
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
         c.var("host_platform", "aarch64-linux-android")
+    elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
+        c.var("host_platform", "armv7a-linux-androideabi")
 
     c.env("LDFLAGS", "-L{{install}}/lib")
 
@@ -202,6 +204,22 @@ def build_environment(c):
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
 
         c.var("crossbin", "{{ cross }}/android-ndk-r21/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}-")
+        c.var("crossclang", "{{ cross }}/android-ndk-r21/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}21-")
+
+        c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread")
+        c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread")
+        c.env("CPP", "ccache {{ crossclang }}clang -E")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}ar")
+        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
+
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+
+    elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
+
+        c.var("crossbin", "{{ cross }}/android-ndk-r21/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-")
         c.var("crossclang", "{{ cross }}/android-ndk-r21/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}21-")
 
         c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread")

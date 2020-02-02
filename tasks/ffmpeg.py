@@ -24,6 +24,9 @@ def build(c):
         c.var("arch", "armhf")
     elif c.arch == "arm64_v8a":
         c.var("arch", "aarch64")
+    elif c.arch == "armeabi_v7a":
+        c.var("arch", "arm")
+
     else:
         raise Exception(f"Unknown arch: {c.arch}")
 
