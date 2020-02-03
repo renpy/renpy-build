@@ -63,3 +63,10 @@ cdef JNIEnv *get_platform_jnienv():
 jnius.jnius jnius.c
 """))
 
+
+@task(kind="python-only", platforms="android", always=True)
+def rapt(c):
+    c.var("version", version)
+    c.chdir("pyjnius-{{version}}/jnius")
+
+    c.copytree("src/org/jnius", "{{ rapt }}{{ c.python }}/prototype/renpyandroid/src/main/java/org/jnius")

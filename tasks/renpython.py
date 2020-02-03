@@ -131,11 +131,13 @@ def link_android(c):
 
     c.run("""{{ STRIP }} --strip-unneeded librenpython.so""")
 
-#     c.run("""install -d {{ dlpa }}""")
-#     c.run("""install librenpython.so {{ dlpa }}""")
-#     c.run("""install python {{ dlpa }}/python""")
-#     c.run("""install python {{ dlpa }}/pythonw""")
-#     c.run("""install renpy {{ dlpa }}/renpy""")
+    if "arm" in c.arch:
+        c.var("instarch", c.arch.replace("_", "-"))
+    else:
+        c.var("instarch", c.arch)
+
+    c.run("install -d {{rapt}}{{ c.python }}/prototype/renpyandroid/src/main/jniLibs/{{instarch}}")
+    c.run("install librenpython.so {{rapt}}{{ c.python }}/prototype/renpyandroid/src/main/jniLibs/{{instarch}}")
 
 
 @task(kind="python", always=True, platforms="mac")

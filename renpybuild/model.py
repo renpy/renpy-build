@@ -43,6 +43,7 @@ class Context:
 
         self.var("platform", platform)
         self.var("arch", arch)
+        self.var("root", root)
         self.var("runtime", self.root / "runtime")
         self.var("source", self.root / "source")
         self.var("tars", self.root / "tars")
@@ -57,6 +58,7 @@ class Context:
         self.var("dist", self.renpy)
         self.var("distlib", self.renpy / ("lib" + python))
         self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
+        self.var("rapt", "{{ renpy }}/rapt")
 
         self.var("pytmp", self.tmp / ("py" + python))
 
@@ -251,6 +253,15 @@ class Context:
 
         if self.path(path).exists():
             self.env("CFLAGS", "{{ CFLAGS }} -I" + path)
+
+    def copytree(self, src, dst):
+        src = self.path(src)
+        dst = self.path(dst)
+
+        if dst.exists():
+            shutil.rmtree(dst)
+
+        shutil.copytree(src, dst)
 
 
 class Task:

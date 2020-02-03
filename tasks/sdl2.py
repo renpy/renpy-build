@@ -1,4 +1,5 @@
 from renpybuild.model import task, annotator
+import shutil
 
 version = "2.0.10"
 
@@ -49,3 +50,12 @@ def build(c):
 
     c.run("""{{ make }}""")
     c.run("""make install""")
+
+
+@task(platforms="android", always=True)
+def rapt(c):
+    c.var("version", version)
+    c.chdir("SDL2-{{version}}")
+
+    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ rapt }}2/prototype/renpyandroid/src/main/java/org/libsdl")
+    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ rapt }}3/prototype/renpyandroid/src/main/java/org/libsdl")
