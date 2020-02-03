@@ -329,6 +329,10 @@ def split_renpy(directory):
             plat.rename(full_fn, os.path.join(private, fn))
             continue
 
+        if fn == "lib":
+            plat.rename(full_fn, os.path.join(private, fn))
+            continue
+
         plat.rename(full_fn, os.path.join(assets, fn))
 
     return private, assets
@@ -345,7 +349,6 @@ GENERATED = [
 
 COPIED = [
     "renpyandroid/src/main/jniLibs",
-    "renpyandroid/src/main/private",
 ]
 
 
