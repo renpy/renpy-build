@@ -391,6 +391,10 @@ jnius/__init__.pyo
 jnius/env.pyo
 jnius/reflect.pyo
 jnius/signatures.pyo
+
+android/__init__.pyo
+android/apk.pyo
+
 """
 
 

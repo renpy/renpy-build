@@ -4,8 +4,6 @@ from . import sysroot
 from . import toolchain
 from . import nasm
 
-from . import rapt
-
 from . import zlib
 from . import bzip2
 from . import openssl
@@ -25,6 +23,7 @@ from . import zsync
 from . import sayvbs
 
 from . import pyjnius
+from . import rapt
 
 from . import pygame_sdl2
 from . import librenpy
