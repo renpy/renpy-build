@@ -315,6 +315,14 @@ def split_renpy(directory):
 
     plat.rename(os.path.join(directory, "renpy", "common"), os.path.join(assets, "renpy", "common"))
 
+    lib = os.path.join(directory, "lib")
+
+    for i in os.listdir(lib):
+        if i.startswith("python"):
+            python = os.path.join(lib, i)
+            for j in os.listdir(python):
+                plat.rename(os.path.join(python, j), os.path.join(private, j))
+
     for fn in filenames:
         full_fn = os.path.join(directory, fn)
 
@@ -330,7 +338,6 @@ def split_renpy(directory):
             continue
 
         if fn == "lib":
-            plat.rename(full_fn, os.path.join(private, fn))
             continue
 
         plat.rename(full_fn, os.path.join(assets, fn))
