@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
+
+
+import com.android.build.OutputFile
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "org.renpy.the_question"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 70000
+        versionName "7.0.0"
+    }
+
+    splits {
+        abi {
+            enable true;
+            reset();
+
+            include "x86_64", "armeabi-v7a", "arm64-v8a"
+            universalApk true
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(localProperties["key.store"])
+            storePassword localProperties["key.store.password"]
+            keyAlias localProperties['key.alias']
+            keyPassword localProperties["key.alias.password"]
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
+    }
+
+    project.ext.versionCodes = ['armeabi-v7a': 0, 'arm64-v8a': 1, 'x86_64': 8]
+
+    android.applicationVariants.all { variant ->
+        // assign different version code for each output
+        variant.outputs.each { output ->
+            output.versionCodeOverride =
+                    project.ext.versionCodes.get(output.getFilter(com.android.build.OutputFile.ABI), 0) * 100000000 + android.defaultConfig.versionCode;
+
+            output.outputFileName =
+                    output.outputFileName.replace("app-", "app-" + output.versionCodeOverride + "-");
+        }
+    }
+
+}
+
+dependencies {
+    api project (':renpyandroid')
+}
