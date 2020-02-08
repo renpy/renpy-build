@@ -183,7 +183,6 @@ int EXPORT renpython_main(int argc, char **argv) {
     return Py_Main(argc, argv);
 }
 
-
 /**
  * This is called from the launcher executable, to start Ren'Py running.
  */

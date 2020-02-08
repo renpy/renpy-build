@@ -57,15 +57,7 @@ public class PythonSDLActivity extends SDLActivity {
 
     protected String[] getLibraries() {
         return new String[] {
-            "png16",
-            "SDL2",
-            "SDL2_image",
-            "SDL2_ttf",
-            "SDL2_gfx",
-            "SDL2_mixer",
-            "python2.7",
-            "pymodules",
-            "main",
+            "renpython",
         };
     }
 
@@ -262,16 +254,8 @@ public class PythonSDLActivity extends SDLActivity {
             externalStorage = oldExternalStorage;
         }
 
-        if (resourceManager.getString("public_version") != null) {
-            path = externalStorage;
-        } else {
-            path = getFilesDir();
-        }
-
         unpackData("private", getFilesDir());
-        // unpackData("public", externalStorage);
 
-        nativeSetEnv("ANDROID_ARGUMENT", path.getAbsolutePath());
         nativeSetEnv("ANDROID_PRIVATE", getFilesDir().getAbsolutePath());
         nativeSetEnv("ANDROID_PUBLIC",  externalStorage.getAbsolutePath());
         nativeSetEnv("ANDROID_OLD_PUBLIC", oldExternalStorage.getAbsolutePath());
@@ -295,10 +279,6 @@ public class PythonSDLActivity extends SDLActivity {
         if (expansionFile != null) {
             nativeSetEnv("ANDROID_EXPANSION", expansionFile);
         }
-
-        nativeSetEnv("PYTHONOPTIMIZE", "2");
-        nativeSetEnv("PYTHONHOME", getFilesDir().getAbsolutePath());
-        nativeSetEnv("PYTHONPATH", path.getAbsolutePath() + ":" + getFilesDir().getAbsolutePath() + "/lib");
 
         Log.v("python", "Finished preparePython.");
 

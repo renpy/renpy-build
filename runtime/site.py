@@ -25,6 +25,13 @@
 #
 # (py2app is also under the MIT license.)
 
+import os
+import time
+
+# A variable giving the Ren'Py platform ########################################
+
+RENPY_PLATFORM = os.environ.get("RENPY_PLATFORM", "unknown-unknown")
+
 # Submodule importing ##########################################################
 
 # Allow Python to import submodules.
@@ -53,11 +60,36 @@ class BuiltinSubmoduleImporter(object):
 
 sys.meta_path.append(BuiltinSubmoduleImporter())
 
+# Android Startup ##############################################################
+
+if RENPY_PLATFORM.startswith("android-"):
+    import androidembed
+
+    class LogFile(object):
+
+        def __init__(self):
+            self.buffer = ''
+
+        def write(self, s):
+            s = s.replace("\0", "\\0")
+            s = self.buffer + s
+
+            lines = s.split("\n")
+
+            for l in lines[:-1]:
+                androidembed.log(l)
+
+            self.buffer = lines[-1]
+
+        def flush(self):
+            return
+
+    sys.stdout = sys.stderr = LogFile()
+
+    print("Logging start.")
+
 # Mac Argv Emulation ###########################################################
 # Taken from py2app.
-
-import os
-import time
 
 if sys.version_info[0] == 3:
 

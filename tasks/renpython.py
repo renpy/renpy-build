@@ -19,6 +19,19 @@ def build(c):
     """)
 
 
+@task(kind="python", always=True, platforms="android")
+def build_android(c):
+
+    c.run("""
+    {{ CC }} {{ CFLAGS }}
+
+    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
+
+    -c -o librenpython_android.o
+    {{ runtime }}/librenpython{{ c.python }}_android.c
+    """)
+
+
 @task(kind="python", always=True, platforms="linux")
 def link_linux(c):
 
@@ -95,7 +108,7 @@ def link_android(c):
     -Wl,--no-undefined
 
     -o librenpython.so
-    librenpython.o
+    librenpython_android.o
 
     -lrenpy
     -l{{ pythonver }}
@@ -137,7 +150,7 @@ def link_android(c):
         c.var("instarch", c.arch)
 
     c.run("install -d {{rapt}}{{ c.python }}/prototype/renpyandroid/src/main/jniLibs/{{instarch}}")
-    c.run("install librenpython.so {{rapt}}{{ c.python }}/prototype/renpyandroid/src/main/jniLibs/{{instarch}}")
+    c.run("install librenpython.so {{rapt}}{{ c.python }}/prototype/renpyandroid/src/main/jniLibs/{{instarch}}", verbose=True)
 
 
 @task(kind="python", always=True, platforms="mac")
