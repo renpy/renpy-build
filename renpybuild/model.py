@@ -55,10 +55,21 @@ class Context:
 
         self.renpy = renpy
         self.var("renpy", self.renpy)
+
         self.var("dist", self.renpy)
         self.var("distlib", self.renpy / ("lib" + python))
         self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
+
         self.var("rapt", "{{ renpy }}/rapt")
+        self.var("raptver", "{{ rapt }}" + self.python)
+
+        if "arm" in self.arch:
+            jni_arch = self.arch.replace("_", "-")
+        else:
+            jni_arch = self.arch
+
+        self.var("jni_arch", jni_arch)
+        self.var("jniLibs", "{{ raptver }}/prototype/renpyandroid/src/main/jniLibs/{{ jni_arch }}")
 
         self.var("pytmp", self.tmp / ("py" + python))
 
@@ -77,20 +88,31 @@ class Context:
         self.task_name = ""
         self.dir_name = ""
 
+        per_python = False
+
         if kind == "host":
             self.dir_name = f"{self.name}.host"
+        elif kind == "host-python":
+            self.dir_name = f"{self.name}.py{self.python}"
         elif kind == "cross":
             self.dir_name = f"{self.name}.cross-{self.platform}-{self.arch}"
         elif kind == "platform":
             self.dir_name = f"{self.name}.{self.platform}"
+        elif kind == "platform-python":
+            self.dir_name = f"{self.name}.{self.platform}"
+            per_python = True
         elif kind == "arch":
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
+        elif kind == "arch-python":
+            self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
+            per_python = True
         elif kind == "python":
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}-py{self.python}"
-        elif kind == "python-only":
-            self.dir_name = f"{self.name}.py{self.python}"
 
         self.task_name = f"{self.task}-{self.dir_name}"
+
+        if per_python:
+            self.task_name += "-py" + self.python
 
         build = self.tmp / "build" / self.dir_name
         build.mkdir(parents=True, exist_ok=True)

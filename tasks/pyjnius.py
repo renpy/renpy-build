@@ -4,7 +4,7 @@ import re
 version = "1.2.1"
 
 
-@task(kind="python-only", always=True)
+@task(kind="host-python", always=True)
 def unpack(c):
     c.clean()
 
@@ -12,7 +12,7 @@ def unpack(c):
     c.run("tar xzf {{source}}/pyjnius-{{version}}.tar.gz")
 
 
-@task(kind="python-only", always=True)
+@task(kind="host-python", always=True)
 def build(c):
 
     c.var("version", version)
@@ -64,7 +64,7 @@ jnius.jnius jnius.c
 """))
 
 
-@task(kind="python-only", platforms="android", always=True)
+@task(kind="host-python", platforms="android", always=True)
 def rapt(c):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")

@@ -253,4 +253,6 @@ def run(command, context, verbose=False):
     if p.returncode != 0:
         print(f"{context.task_name}: process failed with {p.returncode}.")
         print("args:", args)
+        import traceback
+        traceback.print_stack()
         sys.exit(1)

@@ -6,7 +6,7 @@ def annotate(c):
     c.include("{{ install }}/include/{{ pythonver }}/pygame_sdl2")
 
 
-@task(kind="python-only", always=True)
+@task(kind="host-python", always=True)
 def gen_static(c):
 
     c.chdir("{{ pygame_sdl2 }}")

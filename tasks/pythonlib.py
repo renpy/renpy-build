@@ -398,7 +398,7 @@ android/apk.pyo
 """
 
 
-@task(kind="python-only", pythons="2", always=True)
+@task(kind="host-python", pythons="2", always=True)
 def python2(c):
     lib = c.path("{{ install }}/lib/{{ pythonver }}")
     site = lib / "site-packages"

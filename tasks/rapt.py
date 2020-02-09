@@ -4,41 +4,37 @@ import time
 import os
 
 
-@task(kind="platform", platforms="android", always=True)
+@task(kind="platform-python", platforms="android", always=True)
 def copy(c):
 
-    for i in [ "2", "3" ]:
+    c.copytree("{{ root }}/rapt", "{{ raptver }}")
 
-        c.var("raptver", "{{ rapt }}" + i)
+    with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
+        f.write(time.ctime())
 
-        c.copytree("{{ root }}/rapt", "{{ raptver }}")
+    shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius"))
 
-        with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
-            f.write(time.ctime())
+    os.unlink(c.path("{{ raptver }}/prototype/app/build.gradle"))
+    os.unlink(c.path("{{ raptver }}/prototype/app/src/main/AndroidManifest.xml"))
+    os.unlink(c.path("{{ raptver }}/prototype/app/src/main/res/values/strings.xml"))
+    os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/AndroidManifest.xml"))
+    os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/res/values/strings.xml"))
+    os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/renpy/android/Constants.java"))
 
-        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl"))
-        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius"))
+    os.unlink(c.path("{{ raptver }}/prototype/local.properties"))
 
-        os.unlink(c.path("{{ raptver }}/prototype/app/build.gradle"))
-        os.unlink(c.path("{{ raptver }}/prototype/app/src/main/AndroidManifest.xml"))
-        os.unlink(c.path("{{ raptver }}/prototype/app/src/main/res/values/strings.xml"))
-        os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/AndroidManifest.xml"))
-        os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/res/values/strings.xml"))
-        os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/renpy/android/Constants.java"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-mdpi"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-hdpi"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xhdpi"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xxhdpi"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xxxhdpi"))
 
-        os.unlink(c.path("{{ raptver }}/prototype/local.properties"))
-
-        shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-mdpi"))
-        shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-hdpi"))
-        shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xhdpi"))
-        shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xxhdpi"))
-        shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xxxhdpi"))
-
-        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/build/"))
-        shutil.rmtree(c.path("{{ raptver }}/prototype/app/build/"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/build/"))
+    shutil.rmtree(c.path("{{ raptver }}/prototype/app/build/"))
 
 
-@task(kind="python-only", always=True)
+@task(kind="host-python", always=True)
 def android_module(c):
     c.run("""install -d {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/__init__.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")
