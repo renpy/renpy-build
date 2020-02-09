@@ -395,6 +395,7 @@ jnius/signatures.pyo
 android/__init__.pyo
 android/apk.pyo
 
+six.pyo
 """
 
 
