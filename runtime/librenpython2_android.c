@@ -160,6 +160,9 @@ int SDL_main(int argc, char **argv) {
 		return 1;
 	}
 
+	/** By allowing SDL to use all the orientations, the manifest's value wins out. **/
+	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight Portrait PortraitUpsideDown");
+
 	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
 
 	window = SDL_CreateWindow("presplash", 0, 0, 0, 0, SDL_WINDOW_SHOWN);
