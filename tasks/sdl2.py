@@ -52,10 +52,16 @@ def build(c):
     c.run("""make install""")
 
 
-@task(platforms="android", always=True)
+@task(kind="arch-python", platforms="android", always=True)
 def rapt(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 
-    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ rapt }}2/prototype/renpyandroid/src/main/java/org/libsdl")
-    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ rapt }}3/prototype/renpyandroid/src/main/java/org/libsdl")
+    c.run("""{{ CXX }} -std=c++11 -shared -o libhidapi.so src/hidapi/android/hid.cpp -llog""")
+    c.run("""{{ STRIP }} --strip-unneeded libhidapi.so""")
+
+    c.run("""install -d {{ jniLibs }}""")
+    c.run("""install libhidapi.so {{ jniLibs }}""")
+    c.run("""install {{ cross }}/android-ndk-r21/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
+
+    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
