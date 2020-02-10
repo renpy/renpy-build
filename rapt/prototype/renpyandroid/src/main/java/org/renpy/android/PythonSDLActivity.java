@@ -86,51 +86,13 @@ public class PythonSDLActivity extends SDLActivity {
     }
 
 
-    private void setupMainWindowDisplayMode() {
-        View decorView = setSystemUiVisibilityMode();
-        decorView.setOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
-                setSystemUiVisibilityMode(); // Needed to avoid exiting immersive_sticky when keyboard is displayed
-            }
-        });
-    }
-
-    private View setSystemUiVisibilityMode() {
-        View decorView = getWindow().getDecorView();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
-            int options;
-            options =
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-
-            decorView.setSystemUiVisibility(options);
-
-        }
-
-        return decorView;
-    }
-
+    // Overriding this makes SDL respect the orientation given in the Android
+    // manifest.
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-        if (hasFocus) {
-            setupMainWindowDisplayMode();
-        }
+    public void setOrientationBis(int w, int h, boolean resizable, String hint) {
+        return;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setupMainWindowDisplayMode();
-    }
 
     // Code to unpack python and get things running ///////////////////////////
 
