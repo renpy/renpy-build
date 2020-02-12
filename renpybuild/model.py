@@ -9,6 +9,16 @@ import jinja2
 
 import renpybuild.run
 
+# Monkeypatch copytree to fix a problem with ignore_dangling_symnlinks.
+old_copytree = shutil.copytree
+
+
+def copytree(*args, ignore_dangling_symlinks=True, **kwargs):
+    return old_copytree(*args, ignore_dangling_symlinks=ignore_dangling_symlinks, **kwargs)
+
+
+shutil.copytree = copytree
+
 
 class Context:
     """
