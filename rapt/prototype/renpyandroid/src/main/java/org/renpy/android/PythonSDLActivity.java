@@ -248,16 +248,26 @@ public class PythonSDLActivity extends SDLActivity {
 
     // Code to support devicePurchase. /////////////////////////////////////////
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v("python", "onCreate()");
         super.onCreate(savedInstanceState);
         Store.create(this);
     }
 
     @Override
     protected void onDestroy() {
+        Log.v("python", "onDestroy()");
+
         super.onDestroy();
         Store.getStore().destroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.v("python", "onNewIntent()");
+        setIntent(intent);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
