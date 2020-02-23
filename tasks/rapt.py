@@ -12,8 +12,15 @@ def copy(c):
     with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
         f.write(time.ctime())
 
-    shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl"))
-    shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius"))
+    try:
+        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl"))
+    except FileNotFoundError:
+        pass
+
+    try:
+        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius"))
+    except FileNotFoundError:
+        pass
 
     os.unlink(c.path("{{ raptver }}/prototype/app/build.gradle"))
     os.unlink(c.path("{{ raptver }}/prototype/app/src/main/AndroidManifest.xml"))
