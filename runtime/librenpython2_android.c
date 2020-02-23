@@ -155,6 +155,7 @@ int SDL_main(int argc, char **argv) {
 
 	init_environ();
     setenv_workaround("RENPY_PLATFORM", PLATFORM "-" ARCH);
+    SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return 1;
