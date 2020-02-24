@@ -98,6 +98,18 @@ class Context:
         self.task_name = ""
         self.dir_name = ""
 
+        host = self.tmp / "host"
+        self.var("host", host)
+
+        if self.platform == "android":
+            cross = self.tmp / f"cross.{self.platform}"
+        elif self.platform == "ios":
+            cross = self.tmp / "cross.mac"
+        else:
+            cross = self.tmp / f"cross.{self.platform}-{self.arch}"
+
+        self.var("cross", cross)
+
         per_python = False
 
         if kind == "host":
@@ -130,12 +142,6 @@ class Context:
         self.build = build
         self.cwd = build
         self.var("build", build)
-
-        host = self.tmp / "host"
-        self.var("host", host)
-
-        cross = self.tmp / f"cross.{self.platform}-{self.arch}"
-        self.var("cross", cross)
 
         if kind == "host":
             install = host
