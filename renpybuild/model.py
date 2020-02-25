@@ -103,8 +103,6 @@ class Context:
 
         if self.platform == "android":
             cross = self.tmp / f"cross.{self.platform}"
-        elif self.platform == "ios":
-            cross = self.tmp / "cross.mac"
         else:
             cross = self.tmp / f"cross.{self.platform}-{self.arch}"
 

@@ -37,6 +37,9 @@ Platform("android", "x86_64")
 Platform("android", "arm64_v8a")
 Platform("android", "armeabi_v7a")
 
+Platform("ios", "arm64")
+Platform("ios", "armv6s")
+
 # Python Registry ##############################################################
 
 known_pythons = [ ]

@@ -36,6 +36,8 @@ def build_environment(c):
         c.var("host_platform", "aarch64-linux-android")
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
         c.var("host_platform", "armv7a-linux-androideabi")
+    elif (c.platform == "ios") and (c.arch == "arm64"):
+        c.var("host_platform", "arm-apple-darwin")
 
     c.env("LDFLAGS", "-L{{install}}/lib")
 
@@ -52,7 +54,7 @@ def build_environment(c):
 
     elif c.kind == "cross":
 
-        if c.platform == "mac":
+        if (c.platform == "mac") or (c.platform == "ios"):
 
             c.env("CC", "ccache clang")
             c.env("CXX", "ccache clang++")
@@ -232,6 +234,21 @@ def build_environment(c):
         c.env("NM", "{{ crossbin}}nm")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+
+    elif (c.platform == "ios") and (c.arch == "arm64"):
+
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "9.0")
+
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
+
+        c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
+        c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
+        c.env("CPP", "ccache {{ crossbin }}clang -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}ar")
+        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")

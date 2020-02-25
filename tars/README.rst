@@ -17,9 +17,14 @@ Xcode
 
 Created as described at https://github.com/tpoechtrager/osxcross#packaging-the-sdk .
 
+* iPhoneOS13.2.sdk.tar.gz
+* iPhoneSimulator13.2.sdk.tar.gz
+
+Run ./ios_toolchains.sh /path/to/Xcode.app
+
 Android NDK
 -----------
 
 * android-ndk-r21-linux-x86_64.zip
 
-Downloaded from https://developer.android.com/ndk/downloads
+Downloaded from https://developer.android.com/ndk/downloads .

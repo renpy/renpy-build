@@ -95,3 +95,19 @@ def build(c):
     zf = ZipFileWithPermissions(c.path("{{ tars }}/android-ndk-r21-linux-x86_64.zip"))
     zf.extractall(c.path("{{ install }}"))
     zf.close()
+
+
+@task(kind="cross", platforms="ios", archs="armv7s,arm64")
+def build(c):
+
+    c.clean("{{ cross }}")
+    c.chdir("{{ cross }}")
+
+    c.run("git clone https://github.com/tpoechtrager/cctools-port")
+    c.chdir("cctools-port/usage_examples/ios_toolchain")
+
+    c.run("./build.sh {{tars}}/iPhoneOS13.2.sdk.tar.gz arm64")
+
+    c.chdir("{{ cross }}")
+    c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
+
