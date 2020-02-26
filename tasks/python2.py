@@ -21,7 +21,7 @@ def unpack(c):
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 
-@task(kind="python", pythons="2", platforms="linux,mac")
+@task(kind="python", pythons="2", platforms="linux,mac,ios")
 def patch_posix(c):
     c.var("version", version)
 
@@ -29,6 +29,14 @@ def patch_posix(c):
     c.patch("python2-no-multiarch.diff")
     c.patch("python2-cross-darwin.diff")
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
+
+
+@task(kind="python", pythons="2", platforms="ios")
+def patch_ios(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patch("ios-python2/posixmodule.patch")
 
 
 @task(kind="python", pythons="2", platforms="windows")
@@ -63,11 +71,42 @@ def build_posix(c):
         f.write("ac_cv_file__dev_ptmx=no\n")
         f.write("ac_cv_file__dev_ptc=no\n")
 
+        if c.platform == "ios":
+            f.write("ac_cv_little_endian_double=yes\n")
+            f.write("ac_cv_header_langinfo_h=no\n")
+            f.write("ac_cv_func_getentropy=no\n")
+
     c.env("CONFIG_SITE", "config.site")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --enable-ipv6""")
+
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+    c.run("""{{ make }} install""")
+
+    c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
+
+
+@task(kind="python", pythons="2", platforms="ios")
+def build_ios(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+
+    with open(c.path("config.site"), "w") as f:
+        f.write("ac_cv_file__dev_ptmx=no\n")
+        f.write("ac_cv_file__dev_ptc=no\n")
+        f.write("ac_cv_little_endian_double=yes\n")
+        f.write("ac_cv_header_langinfo_h=no\n")
+        f.write("ac_cv_func_getentropy=no\n")
+
+    c.env("CONFIG_SITE", "config.site")
+
+    c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
+
+    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --disable-toolbox-glue --enable-ipv6""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
