@@ -39,6 +39,11 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "arm64"):
         c.var("host_platform", "arm-apple-darwin")
 
+    if (c.platform == "ios") and (c.arch == "arm64"):
+        c.var("sdl_host_platform", "arm-ios-darwin11")
+    else:
+        c.var("sdl_host_platform", "{{ host_platform }}")
+
     c.env("LDFLAGS", "-L{{install}}/lib")
 
     if c.kind == "host":
@@ -257,6 +262,7 @@ def build_environment(c):
 
     if c.kind != "host":
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
+        c.var("sdl_cross_config", "--host={{ sdl_host_platform }} --build={{ build_platform }}")
 
 
 def run(command, context, verbose=False):

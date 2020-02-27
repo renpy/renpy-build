@@ -22,8 +22,11 @@ def build(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 
+    if c.platform == "ios":
+        c.env("CFLAGS", "{{ CFLAGS }} -fobjc-arc")
+
     c.run("""
-    ./configure {{ cross_config }}
+    ./configure {{ sdl_cross_config }}
     --disable-shared
     --prefix="{{ install }}"
 
