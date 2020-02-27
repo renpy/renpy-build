@@ -16,6 +16,11 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
 
+    if c.platform == "ios":
+        c.chdir("SDL2-{{version}}")
+        c.patch("sdl2-ios-configure.diff")
+        c.run("./autogen.sh")
+
 
 @task()
 def build(c):

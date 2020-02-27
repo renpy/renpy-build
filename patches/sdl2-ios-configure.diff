@@ -1,0 +1,34 @@
+diff -ru -w SDL2-2.0.10.old/configure.ac SDL2-2.0.10.new/configure.ac
+--- SDL2-2.0.10.old/configure.ac	2019-07-25 00:32:36.000000000 -0400
++++ SDL2-2.0.10.new/configure.ac	2020-02-26 22:47:49.015074730 -0500
+@@ -3778,6 +3778,11 @@
+             SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
+             have_timers=yes
+         fi
++
++        # Coremotion.
++        SOURCES="$SOURCES $srcdir/src/sensor/coremotion/*.m"
++        AC_DEFINE(SDL_SENSOR_COREMOTION, 1, [ ])
++
+         # Set up other core UNIX files
+         SOURCES="$SOURCES $srcdir/src/core/unix/*.c"
+         # The iOS platform requires special setup.
+diff -ru -w SDL2-2.0.10.old/include/SDL_config.h.in SDL2-2.0.10.new/include/SDL_config.h.in
+--- SDL2-2.0.10.old/include/SDL_config.h.in	2019-07-25 00:32:36.000000000 -0400
++++ SDL2-2.0.10.new/include/SDL_config.h.in	2020-02-26 22:46:22.635234703 -0500
+@@ -296,6 +296,7 @@
+ /* Enable various sensor drivers */
+ #undef SDL_SENSOR_ANDROID
+ #undef SDL_SENSOR_DUMMY
++#undef SDL_SENSOR_COREMOTION
+ 
+ /* Enable various shared object loading systems */
+ #undef SDL_LOADSO_DLOPEN
+@@ -359,6 +360,7 @@
+ #undef SDL_VIDEO_DRIVER_VIVANTE
+ #undef SDL_VIDEO_DRIVER_VIVANTE_VDK
+ #undef SDL_VIDEO_DRIVER_QNX
++#undef SDL_VIDEO_DRIVER_UIKIT
+ 
+ #undef SDL_VIDEO_RENDER_D3D
+ #undef SDL_VIDEO_RENDER_D3D11
