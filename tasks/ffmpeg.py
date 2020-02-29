@@ -24,6 +24,8 @@ def build(c):
         c.var("arch", "armhf")
     elif c.arch == "arm64_v8a":
         c.var("arch", "aarch64")
+    elif c.arch == "arm64":
+        c.var("arch", "aarch64")
     elif c.arch == "armeabi_v7a":
         c.var("arch", "arm")
 
@@ -37,6 +39,8 @@ def build(c):
     elif (c.platform == "windows") and (c.arch == "i686"):
         c.var("os", "mingw32")
     elif c.platform == "mac":
+        c.var("os", "darwin")
+    elif c.platform == "ios":
         c.var("os", "darwin")
     elif c.platform == "android":
         c.var("os", "android")
