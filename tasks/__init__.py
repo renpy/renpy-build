@@ -18,6 +18,7 @@ from . import python2
 
 from . import rapt
 from . import pyjnius
+from . import pyobjus
 
 from . import sdl2
 from . import sdl2_image

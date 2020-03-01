@@ -51,6 +51,9 @@ def build(c):
     if c.platform == "android":
         read_setup(c.path("{{ pytmp }}/pyjnius"))
 
+    if c.platform == "ios":
+        read_setup(c.path("{{ install }}/pyobjus"))
+
     objects = [ ]
 
     for source in sources:
