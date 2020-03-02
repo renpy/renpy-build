@@ -395,27 +395,35 @@ jnius/signatures.pyo
 android/__init__.pyo
 android/apk.pyo
 
+pyobjus/__init__.py
+pyobjus/dylib_manager.py
+pyobjus/objc_py_types.py
+pyobjus/protocols.py
+
 six.pyo
 """
 
 
 @task(kind="host-python", pythons="2", always=True)
 def python2(c):
-    lib = c.path("{{ install }}/lib/{{ pythonver }}")
-    site = lib / "site-packages"
+
+    search = [
+        c.path("{{ install }}/lib/{{ pythonver }}"),
+        c.path("{{ install }}/lib/{{ pythonver }}/site-packages"),
+        c.path("{{ pytmp }}/pyjnius"),
+        c.path("{{ pytmp }}/pyobjus"),
+        ]
+
     dist = c.path("{{ distlib }}/{{ pythonver }}")
-    pyjnius = c.path("{{ pytmp }}/pyjnius")
 
     c.run("{{ hostpython }} -OO -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for i in PYTHON27_MODULES.split():
 
-        if (lib / i).exists():
-            src = lib / i
-        elif (site / i).exists():
-            src = site / i
-        elif (pyjnius / i).exists():
-            src = pyjnius / i
+        for d in search:
+            src = d / i
+            if src.exists():
+                break
         else:
             raise Exception(f"Can't find {i}.")
 
@@ -425,6 +433,4 @@ def python2(c):
 
     c.copy("{{ runtime }}/site.py", "{{ distlib }}/{{ pythonver }}/site.py")
     c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
-
-    print(lib, site)
 
