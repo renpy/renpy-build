@@ -400,6 +400,8 @@ pyobjus/dylib_manager.py
 pyobjus/objc_py_types.py
 pyobjus/protocols.py
 
+iossupport.pyo
+
 six.pyo
 """
 
