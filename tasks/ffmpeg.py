@@ -20,15 +20,14 @@ def build(c):
         c.var("arch", "x86_64")
     elif c.arch == "armv7l":
         c.var("arch", "armhf")
-    elif c.arch == "armv7l":
-        c.var("arch", "armhf")
     elif c.arch == "arm64_v8a":
         c.var("arch", "aarch64")
     elif c.arch == "arm64":
         c.var("arch", "aarch64")
     elif c.arch == "armeabi_v7a":
         c.var("arch", "arm")
-
+    elif c.arch == "armv7s":
+        c.var("arch", "arm")
     else:
         raise Exception(f"Unknown arch: {c.arch}")
 
@@ -69,6 +68,8 @@ def build(c):
         --extra-cxxflags="{{ CFLAGS }}"
         --extra-ldflags="{{ LDFLAGS }}"
         --ranlib="{{ RANLIB }}"
+
+        --disable-neon
 
         --enable-pic
         --enable-static

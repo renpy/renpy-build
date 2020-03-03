@@ -30,6 +30,8 @@ def build(c):
     if c.platform == "ios":
         c.env("CFLAGS", "{{ CFLAGS }} -fobjc-arc")
 
+    c.env("ac_cv_header_libunwind_h", "no")
+
     c.run("""
     ./configure {{ sdl_cross_config }}
     --disable-shared
