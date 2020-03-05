@@ -9,7 +9,7 @@ def annotate(c):
     c.env("CFLAGS", "{{ CFLAGS }} -DOBJC_OLD_DISPATCH_PROTOTYPES=1")
 
 
-@task(kind="python", always=True, platforms="mac,ios")
+@task(kind="python", platforms="mac,ios")
 def unpack(c):
     c.clean()
 
@@ -17,7 +17,7 @@ def unpack(c):
     c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
 
 
-@task(kind="host-python", always=True)
+@task(kind="host-python")
 def host_unpack(c):
     c.clean()
 
@@ -25,7 +25,7 @@ def host_unpack(c):
     c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
 
 
-@task(kind="python", always=True, platforms="mac,ios")
+@task(kind="python", platforms="mac,ios")
 def build(c):
 
     c.var("version", version)
@@ -66,7 +66,7 @@ pyobjus.pyobjus pyobjus.c
 """))
 
 
-@task(kind="host-python", always=True)
+@task(kind="host-python")
 def host_build(c):
 
     c.var("version", version)

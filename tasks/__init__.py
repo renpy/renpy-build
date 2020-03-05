@@ -34,5 +34,8 @@ from . import sayvbs
 from . import pygame_sdl2
 from . import librenpy
 from . import pythonlib
-from . import renpython
+
+from . import renios
+
 from . import renpysh
+

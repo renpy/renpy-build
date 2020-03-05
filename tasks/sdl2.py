@@ -62,7 +62,7 @@ def build(c):
     c.run("""make install""")
 
 
-@task(kind="arch-python", platforms="android", always=True)
+@task(kind="arch-python", platforms="android")
 def rapt(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
