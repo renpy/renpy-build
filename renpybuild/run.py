@@ -284,13 +284,17 @@ def build_environment(c):
         c.var("sdl_cross_config", "--host={{ sdl_host_platform }} --build={{ build_platform }}")
 
 
-def run(command, context, verbose=False):
+def run(command, context, verbose=False, quiet=False):
     args = shlex.split(command)
 
     if verbose:
         print(" ".join(shlex.quote(i) for i in args))
 
-    p = subprocess.run(args, cwd=context.cwd, env=context.environ)
+    if not quiet:
+        p = subprocess.run(args, cwd=context.cwd, env=context.environ)
+    else:
+        with open("/dev/null", "w") as f:
+            p = subprocess.run(args, cwd=context.cwd, env=context.environ, stdout=f, stderr=f)
 
     if p.returncode != 0:
         print(f"{context.task_name}: process failed with {p.returncode}.")

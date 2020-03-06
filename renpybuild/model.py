@@ -206,7 +206,7 @@ class Context:
     def chdir(self, d):
         self.cwd = self.cwd / self.expand(d)
 
-    def run(self, command, verbose=False):
+    def run(self, command, verbose=False, quiet=False):
         """
         Runs `command`, and checks that the result is 0.
 
@@ -220,7 +220,7 @@ class Context:
         """
 
         command = self.expand(command)
-        renpybuild.run.run(command, self, verbose)
+        renpybuild.run.run(command, self, verbose, quiet)
 
     def clean(self, d="{{build}}"):
         """
