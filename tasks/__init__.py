@@ -35,7 +35,7 @@ from . import pygame_sdl2
 from . import librenpy
 from . import pythonlib
 
-from . import renios
-
 from . import renpysh
+
+from . import renios
 

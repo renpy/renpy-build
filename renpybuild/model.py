@@ -81,6 +81,8 @@ class Context:
         self.var("jni_arch", jni_arch)
         self.var("jniLibs", "{{ raptver }}/prototype/renpyandroid/src/main/jniLibs/{{ jni_arch }}")
 
+        self.var("renios", "{{ renpy }}/renios" + self.python)
+
         self.var("pytmp", self.tmp / ("py" + python))
 
     def set_names(self, kind, task, name):

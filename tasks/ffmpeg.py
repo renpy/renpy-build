@@ -69,7 +69,9 @@ def build(c):
         --extra-ldflags="{{ LDFLAGS }}"
         --ranlib="{{ RANLIB }}"
 
+{% if (c.platform == "ios") and (c.arch == "arm7s") %}
         --disable-neon
+{% endif %}
 
         --enable-pic
         --enable-static
