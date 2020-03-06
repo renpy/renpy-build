@@ -106,7 +106,33 @@ def build(c):
     c.run("git clone https://github.com/tpoechtrager/cctools-port")
     c.chdir("cctools-port/usage_examples/ios_toolchain")
 
-    c.run("./build.sh {{tars}}/iPhoneOS13.2.sdk.tar.gz arm64")
+    c.run("./build.sh {{tars}}/iPhoneOS13.2.sdk.tar.gz {{ c.arch }}")
+
+    c.chdir("{{ cross }}")
+    c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
+
+
+@task(kind="cross", platforms="ios", archs="x86_64")
+def build(c):
+
+    c.clean("{{ cross }}")
+    c.chdir("{{ cross }}")
+
+    c.run("git clone https://github.com/tpoechtrager/cctools-port")
+    c.chdir("cctools-port/usage_examples/ios_toolchain")
+
+    c.run("ls")
+
+    with open(c.path("build.sh"), "r") as f:
+        data = f.read()
+
+    data = data.replace("iPhoneOS", "iPhoneSimulator")
+    data = data.replace("arm-apple-darwin11", "x86_64-apple-darwin11")
+
+    with open(c.path("build.sh"), "w") as f:
+        f.write(data)
+
+    c.run("./build.sh {{tars}}/iPhoneSimulator13.2.sdk.tar.gz {{ c.arch }}")
 
     c.chdir("{{ cross }}")
     c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")

@@ -40,11 +40,15 @@ def build_environment(c):
         c.var("host_platform", "arm-apple-darwin")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
         c.var("host_platform", "arm-apple-darwin")
+    elif (c.platform == "ios") and (c.arch == "x86_64"):
+        c.var("host_platform", "x86_64-apple-darwin")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin11")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
         c.var("sdl_host_platform", "arm-ios-darwin11")
+    elif (c.platform == "ios") and (c.arch == "x86_64"):
+        c.var("sdl_host_platform", "x86_64-ios-darwin11")
     else:
         c.var("sdl_host_platform", "{{ host_platform }}")
 
@@ -268,6 +272,19 @@ def build_environment(c):
         c.env("CC", "ccache {{ crossbin }}clang -arch armv7s -fPIC -O3 -pthread")
         c.env("CXX", "ccache {{ crossbin }}clang++ -arch armv7s -fPIC -O3 -pthread")
         c.env("CPP", "ccache {{ crossbin }}clang -arch armv7s -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}ar")
+        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
+
+    elif (c.platform == "ios") and (c.arch == "x86_64"):
+
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
+
+        c.env("CC", "ccache {{ crossbin }}clang -arch x86_64 -fPIC -O3 -pthread")
+        c.env("CXX", "ccache {{ crossbin }}clang++ -arch x86_64 -fPIC -O3 -pthread")
+        c.env("CPP", "ccache {{ crossbin }}clang -arch x86_64 -E --sysroot {{ sysroot }}")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")

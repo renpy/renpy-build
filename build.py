@@ -39,6 +39,7 @@ Platform("android", "armeabi_v7a")
 
 Platform("ios", "arm64")
 Platform("ios", "armv7s")
+Platform("ios", "x86_64")
 
 # Python Registry ##############################################################
 
