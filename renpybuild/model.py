@@ -193,12 +193,15 @@ class Context:
 
         self.environ[variable] = self.expand(str(value))
 
-    def var(self, variable, value):
+    def var(self, variable, value, expand=True):
         """
         Adds a non-environment `variable` with `value`.
         """
 
-        self.variables[variable] = self.expand(str(value))
+        if expand:
+            self.variables[variable] = self.expand(str(value))
+        else:
+            self.variables[variable] = value
 
     def chdir(self, d):
         self.cwd = self.cwd / self.expand(d)
