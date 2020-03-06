@@ -2,9 +2,9 @@ from renpybuild.model import task
 import os
 
 
-@task(kind="host-python", always=True)
+@task(kind="host-python")
 def copytree(c):
-    c.copytree("{{ runtime }}/ios", "{{ renios }}")
+    c.copytree("{{ root }}/renios", "{{ renios }}")
 
 
 def lipo_and_strip(c, namefilter):
