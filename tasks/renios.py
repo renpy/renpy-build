@@ -43,6 +43,39 @@ def lipo_and_strip(c, namefilter):
 
         c.run("{{ strip }} -S {{ renios }}/prototype/prebuilt/release/{{ i }}", quiet=True)
 
+    # debug.
+
+    paths = [
+        c.path("{{ tmp }}/install.ios-x86_64/lib"),
+        ]
+
+    c.var("paths", paths, expand=False)
+
+    c.run("install -d {{ renios }}/prototype/prebuilt/debug")
+
+    for i in paths[0].glob("*.a"):
+        if i.is_symlink():
+            continue
+
+        i = i.name
+
+        if not namefilter(i):
+            continue
+
+        c.var("i", i)
+        c.run("""
+        {{ lipo }}
+        -create
+{% for p in paths %}
+        {{ p }}/{{ i }}
+{% endfor %}
+        -output {{ renios }}/prototype/prebuilt/debug/{{ i }}
+        """)
+
+        os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
+
+        c.run("{{ strip }} -S {{ renios }}/prototype/prebuilt/debug/{{ i }}", quiet=True)
+
 
 @task(kind="host-python", platforms="ios")
 def lipo(c):
