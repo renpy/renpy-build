@@ -33,6 +33,7 @@ from . import sayvbs
 
 from . import pygame_sdl2
 from . import librenpy
+from . import renpython
 from . import pythonlib
 
 from . import renpysh

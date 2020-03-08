@@ -315,3 +315,11 @@ def link_windows(c):
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
         c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
+
+
+@task(kind="python", always=True, platforms="ios")
+def link_ios(c):
+
+    c.run("""{{ AR }} -r librenpython.a librenpython.o""")
+    c.run("""install -d {{install}}/lib""")
+    c.run("""install librenpython.a {{ install }}/lib""")

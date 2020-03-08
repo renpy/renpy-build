@@ -30,6 +30,8 @@ def lipo_and_strip(c, namefilter):
         if not namefilter(i):
             continue
 
+        print("(Release) Lipo and strip:", i)
+
         c.var("i", i)
         c.run("""
         {{ lipo }}
@@ -62,6 +64,8 @@ def lipo_and_strip(c, namefilter):
 
         if not namefilter(i):
             continue
+
+        print("(Debug) Lipo and strip:", i)
 
         c.var("i", i)
         c.run("""
