@@ -5,6 +5,7 @@ import os
 @task(kind="host-python")
 def copytree(c):
     c.copytree("{{ root }}/renios", "{{ renios }}")
+    c.rmtree("{{ renios }}/prototype/prebuilt")
 
 
 def lipo_and_strip(c, namefilter):
@@ -85,3 +86,8 @@ def lipo(c):
 @task(kind="host-python", platforms="ios", always=True)
 def lipo_renpy(c):
     lipo_and_strip(c, lambda n : "librenpy" in n)
+
+
+@task(kind="host-python", platforms="ios", always=True, pythons="2")
+def copyback(c):
+    c.copytree("{{ renios }}/prototype/prebuilt", "{{ root }}/renios/prototype/prebuilt")

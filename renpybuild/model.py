@@ -304,6 +304,11 @@ class Context:
 
         shutil.copytree(src, dst)
 
+    def rmtree(self, d):
+        d = self.path(d)
+        if d.exists():
+            shutil.rmtree(d)
+
 
 class Task:
     """
