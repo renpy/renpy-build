@@ -150,7 +150,16 @@ static void find_pyname(const char *p) {
     if (exists(p, pyname)) {
         found = 1;
         pyname = join(p, pyname);
+        return;
     }
+
+    if (exists(p, "main.py")) {
+        found = 1;
+        pyname = join(p, "main.py");
+        return;
+    }
+
+
 }
 
 
