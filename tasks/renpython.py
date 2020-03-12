@@ -12,7 +12,7 @@ def build(c):
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
-    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
+    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\" -D{{ c.platform|upper }}
 
     -c -o librenpython.o
     {{ runtime }}/librenpython{{ c.python }}.c

@@ -85,12 +85,18 @@ static exists(const char *p1, const char *p2) {
 
     FILE *f = fopen(path, "rb");
 
+#if 0
+    printf("%s", path);
+#endif
+
     free(path);
 
     if (f) {
         fclose(f);
+        printf(" exists.\n");
         return 1;
     } else {
+        printf(" does not exist.\n");
         return 0;
     }
 }
@@ -106,33 +112,58 @@ static void find_python_home(const char *p) {
         return;
     }
 
+
+#ifdef WINDOWS
     if (exists(p, "\\lib\\python2.7\\site.pyo") || exists(p, "\\lib\\python27.zip")) {
         found = 1;
         Py_SetPythonHome(join(p, NULL));
     }
+#else
+    if (exists(p, "/lib/python2.7/site.pyo") || exists(p, "/lib/python27.zip")) {
+        found = 1;
+        Py_SetPythonHome(join(p, NULL));
+    }
+#endif
 }
 
 /**
  * Searches for the python home directory in the platform-specific location.
  */
 static void search_python_home(void) {
-#ifdef MS_WINDOWS
+
+#ifdef LINUX
+    // Relative to the base directory.
+    find_python_home("");
+
+    // Relative to lib/linux-x86_64.
+    find_python_home("/../..");
+#endif
+
+#ifdef MAC
+    // Relative to the base directory.
+    find_python_home("");
+
+    // Relative to lib/mac-x86_64.
+    find_python_home("/../..");
+
+    // Relative to game.app/Contents/MacOS.
+    find_python_home("/../../..");
+#endif
+
+#ifdef WINDOWS
     // Relative to the base directory.
     find_python_home("");
 
     // Relative to lib/windows-i686.
     find_python_home("\\..\\..");
 
-#else
-    // Relative to the base directory.
-    find_python_home("");
-
-    // Relative to lib/linux-x86_64.
-    find_python_home("/../..");
-
-    // Relative to game.app/Contents/MacOS.
-    find_python_home("/../../..");
 #endif
+
+#ifdef IOS
+    // Relative to the base directory.
+    find_python_home("/base");
+#endif
+
 }
 
 
@@ -201,14 +232,15 @@ int EXPORT launcher_main(int argc, char **argv) {
     take_argv0(argv[0]);
     search_python_home();
 
-#ifdef MS_WINDOWS
+#ifdef LINUX
     // Relative to the base directory.
-    find_pyname("\\");
+    find_pyname("/");
 
-    // Relative to lib/windows-i686.
-    find_pyname("\\..\\..\\");
-#else
+    // Relative to lib/windows-i686
+    find_pyname("/../../");
+#endif
 
+#ifdef MAC
     // Relative to the base directory.
     find_pyname("/");
 
@@ -221,6 +253,20 @@ int EXPORT launcher_main(int argc, char **argv) {
 
     // Relative to renpy.app/Contents/MacOS.
     find_pyname("/../../../");
+#endif
+
+#ifdef WINDOWS
+    // Relative to the base directory.
+    find_pyname("\\");
+
+    // Relative to lib/windows-i686.
+    find_pyname("\\..\\..\\");
+#endif
+
+#ifdef IOS
+
+    find_pyname("/base/");
+
 #endif
 
     // Figure out argv.
