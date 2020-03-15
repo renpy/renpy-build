@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int renpython_main(int argc, char **argv);
+int launcher_main(int argc, char **argv);
 
 int main(int argc, char **argv) {
 
@@ -8,5 +8,5 @@ int main(int argc, char **argv) {
         printf("%d %s\n", i, argv[i]);
     }
 
-    return renpython_main(argc, argv);
+    return launcher_main(argc, argv);
 }
