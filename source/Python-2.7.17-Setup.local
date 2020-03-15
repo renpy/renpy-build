@@ -65,6 +65,10 @@ termios termios.c
 _scproxy ../Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation
 {% endif %}
 
+{% if (c.kind != "host") and (c.platform == "ios") %}
+_scproxy _scproxy.c
+{% endif %}
+
 
 {% if (c.kind != "host") and (c.platform == "windows") %}
 _ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi -loleaut32 -lole32 -luuid
