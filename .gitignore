@@ -7,3 +7,10 @@ deps
 /renpy
 /pygame_sdl2
 renios/prototype/prebuilt/
+
+._*
+renios/base/
+renios/prototype/base/
+renios/prototype/prototype.xcodeproj/project.xcworkspace/
+renios/prototype/prototype.xcodeproj/xcshareddata/
+renios/prototype/prototype.xcodeproj/xcuserdata/

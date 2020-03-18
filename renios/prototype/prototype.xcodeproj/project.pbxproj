@@ -16,12 +16,13 @@
 		E22EF5011A3352D900A74B9F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5001A3352D900A74B9F /* QuartzCore.framework */; };
 		E22EF5031A3352EA00A74B9F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5021A3352EA00A74B9F /* ImageIO.framework */; };
 		E22EF5051A3352F600A74B9F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */; };
+		E26D5A9A241A038B00D17256 /* base in Resources */ = {isa = PBXBuildFile; fileRef = E2F6E416241629FB00E81516 /* base */; };
 		E2845E1F1A350A57004BC3F8 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E2845E1E1A350A57004BC3F8 /* main.c */; };
-		E2845E261A35483D004BC3F8 /* base in Resources */ = {isa = PBXBuildFile; fileRef = E2845E251A35483D004BC3F8 /* base */; };
 		E2AFEA461A4A40F3001ED72C /* VideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */; };
 		E2BB98831A631363009C927E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2BB98821A631363009C927E /* Media.xcassets */; };
 		E2EF82F91B40D83600A94E16 /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EF82F81B40D83600A94E16 /* Log.m */; };
 		E2F6E4132414A79E00E81516 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */; };
+		E2F6E4152415908400E81516 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2F6E4142415908400E81516 /* GameController.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,16 +51,14 @@
 		E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		E22EF5071A33876B00A74B9F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E2845E1E1A350A57004BC3F8 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		E2845E211A352617004BC3F8 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = prebuilt/release/python/lib; sourceTree = "<group>"; };
-		E2845E231A353099004BC3F8 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = prebuilt/release/python/include; sourceTree = "<group>"; };
-		E2845E251A35483D004BC3F8 /* base */ = {isa = PBXFileReference; lastKnownFileType = folder; path = base; sourceTree = "<group>"; };
-		E2845E271A369E81004BC3F8 /* extend_inittab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = extend_inittab.c; sourceTree = "<group>"; };
 		E2845E291A36AD24004BC3F8 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayer.m; sourceTree = "<group>"; };
 		E2BB98821A631363009C927E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		E2EF82F81B40D83600A94E16 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
 		E2F6E4112414A76E00E81516 /* prebuilt */ = {isa = PBXFileReference; lastKnownFileType = folder; path = prebuilt; sourceTree = "<group>"; };
+		E2F6E4142415908400E81516 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		E2F6E416241629FB00E81516 /* base */ = {isa = PBXFileReference; lastKnownFileType = folder; path = base; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +68,7 @@
 			files = (
 				E2F6E4132414A79E00E81516 /* CoreMotion.framework in Frameworks */,
 				E22EF5051A3352F600A74B9F /* MobileCoreServices.framework in Frameworks */,
+				E2F6E4152415908400E81516 /* GameController.framework in Frameworks */,
 				E22EF5031A3352EA00A74B9F /* ImageIO.framework in Frameworks */,
 				E22EF5011A3352D900A74B9F /* QuartzCore.framework in Frameworks */,
 				E22EF4FF1A3352C500A74B9F /* AudioToolbox.framework in Frameworks */,
@@ -85,19 +85,16 @@
 		E22EF4BC1A33491100A74B9F = {
 			isa = PBXGroup;
 			children = (
+				E2F6E416241629FB00E81516 /* base */,
 				E2EF82F81B40D83600A94E16 /* Log.m */,
-				E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */,
 				E218D27C1A69F7DF00698833 /* IAPHelper.m */,
 				E2BB98821A631363009C927E /* Media.xcassets */,
 				E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */,
 				E2845E1E1A350A57004BC3F8 /* main.c */,
-				E2845E271A369E81004BC3F8 /* extend_inittab.c */,
-				E2845E251A35483D004BC3F8 /* base */,
-				E2845E231A353099004BC3F8 /* include */,
-				E2845E211A352617004BC3F8 /* lib */,
 				E20E170E1A34DF1900820124 /* Info.plist */,
 				E22EF5071A33876B00A74B9F /* libz.dylib */,
 				E2845E291A36AD24004BC3F8 /* libbz2.dylib */,
+				E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */,
 				E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */,
 				E22EF5021A3352EA00A74B9F /* ImageIO.framework */,
 				E22EF5001A3352D900A74B9F /* QuartzCore.framework */,
@@ -122,6 +119,7 @@
 		E2F6E4102414A76E00E81516 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E2F6E4142415908400E81516 /* GameController.framework */,
 				E2F6E4112414A76E00E81516 /* prebuilt */,
 			);
 			name = Frameworks;
@@ -185,7 +183,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E2845E261A35483D004BC3F8 /* base in Resources */,
+				E26D5A9A241A038B00D17256 /* base in Resources */,
 				E2BB98831A631363009C927E /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +313,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/prebuilt/debug/";
 				OTHER_LDFLAGS = (
+					"-lrenpython",
 					"-lrenpy",
 					"-lpython2.7",
 					"-lavformat",
@@ -333,6 +332,7 @@
 					"-lssl",
 					"-lcrypto",
 					"-lbz2",
+					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
@@ -359,6 +359,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/prebuilt/release/";
 				OTHER_LDFLAGS = (
+					"-lrenpython",
 					"-lrenpy",
 					"-lpython2.7",
 					"-lavformat",
@@ -377,6 +378,7 @@
 					"-lssl",
 					"-lcrypto",
 					"-lbz2",
+					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
