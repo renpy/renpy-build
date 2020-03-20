@@ -85,7 +85,7 @@ static exists(const char *p1, const char *p2) {
 
     FILE *f = fopen(path, "rb");
 
-#if 0
+#ifdef DEBUG_EXISTS
     printf("%s", path);
 #endif
 
@@ -93,10 +93,17 @@ static exists(const char *p1, const char *p2) {
 
     if (f) {
         fclose(f);
+
+#ifdef DEBUG_EXISTS
         printf(" exists.\n");
+#endif
+
         return 1;
     } else {
+#ifdef DEBUG_EXISTS
         printf(" does not exist.\n");
+#endif
+
         return 0;
     }
 }
@@ -287,3 +294,4 @@ int EXPORT launcher_main(int argc, char **argv) {
     init_librenpy();
     return Py_Main(argc + 1, new_argv);
 }
+
