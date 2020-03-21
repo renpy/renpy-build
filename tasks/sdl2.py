@@ -58,6 +58,27 @@ def build(c):
 
     """)
 
+    if c.platform == "ios":
+        with open(c.path("include/SDL_config.h"), "a") as f:
+            f.write("""
+/* Enable system power support */
+#define SDL_POWER_UIKIT 1
+
+/* enable iPhone keyboard support */
+#define SDL_IPHONE_KEYBOARD 1
+
+/* enable iOS extended launch screen */
+#define SDL_IPHONE_LAUNCHSCREEN 1
+
+/* Set max recognized G-force from accelerometer
+   See src/joystick/uikit/SDL_sysjoystick.m for notes on why this is needed
+ */
+#define SDL_IPHONE_MAX_GFORCE 5.0
+
+/* enable filesystem support */
+#define SDL_FILESYSTEM_COCOA   1
+""")
+
     c.run("""{{ make }}""")
     c.run("""make install""")
 
