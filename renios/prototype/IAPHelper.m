@@ -43,7 +43,7 @@
 
 @implementation IAPHelper
 
-UIAlertView *alert;
+UIAlertController *alert;
 
 - (id) init {
     self = [ super init ];
@@ -124,26 +124,27 @@ UIAlertView *alert;
         return;
     }
     
-    alert = [[UIAlertView alloc] initWithTitle:self.dialogTitle message:nil delegate:self cancelButtonTitle: nil otherButtonTitles: nil];
+    alert = [UIAlertController
+             alertControllerWithTitle:self.dialogTitle
+             message:nil
+             preferredStyle:UIAlertControllerStyleAlert ];
+ 
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 
-    [alert show];
+    // Adjust the indicator so it is up a few pixels from the bottom of the alert
 
-    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
-
-
-
-    // djust the indicator so it is up a few pixels from the bottom of the alert
-
-    indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
-
+    indicator.center = CGPointMake(alert.view.bounds.size.width / 2, alert.view.bounds.size.height - 50);
     [indicator startAnimating];
 
-    [alert addSubview: indicator];
+    [alert.view addSubview: indicator];
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alert animated:YES completion:nil];
+    
+
 }
 
 - (void) hideDialog {
     if (alert != nil) {
-        [alert dismissWithClickedButtonIndex:0 animated:YES];
+        [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
     }
 }
