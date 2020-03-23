@@ -16,11 +16,11 @@
 		E22EF5011A3352D900A74B9F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5001A3352D900A74B9F /* QuartzCore.framework */; };
 		E22EF5031A3352EA00A74B9F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5021A3352EA00A74B9F /* ImageIO.framework */; };
 		E22EF5051A3352F600A74B9F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */; };
-		E266353B2425B9C9005FA50B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E266353D2425B9C9005FA50B /* Launch Screen.storyboard */; };
 		E26635402425BD62005FA50B /* LaunchImage-foreground.png in Resources */ = {isa = PBXBuildFile; fileRef = E266353E2425BD61005FA50B /* LaunchImage-foreground.png */; };
 		E26635412425BD62005FA50B /* LaunchImage-background.png in Resources */ = {isa = PBXBuildFile; fileRef = E266353F2425BD61005FA50B /* LaunchImage-background.png */; };
 		E26D5A9A241A038B00D17256 /* base in Resources */ = {isa = PBXBuildFile; fileRef = E2F6E416241629FB00E81516 /* base */; };
 		E2845E1F1A350A57004BC3F8 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E2845E1E1A350A57004BC3F8 /* main.c */; };
+		E2907EC324284D42003439CC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2907EC224284D42003439CC /* Launch Screen.storyboard */; };
 		E2AFEA461A4A40F3001ED72C /* VideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */; };
 		E2BB98831A631363009C927E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2BB98821A631363009C927E /* Media.xcassets */; };
 		E2EF82F91B40D83600A94E16 /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EF82F81B40D83600A94E16 /* Log.m */; };
@@ -53,11 +53,11 @@
 		E22EF5021A3352EA00A74B9F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		E22EF5071A33876B00A74B9F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		E266353C2425B9C9005FA50B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = English; path = "English.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E266353E2425BD61005FA50B /* LaunchImage-foreground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage-foreground.png"; sourceTree = "<group>"; };
 		E266353F2425BD61005FA50B /* LaunchImage-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage-background.png"; sourceTree = "<group>"; };
 		E2845E1E1A350A57004BC3F8 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E2845E291A36AD24004BC3F8 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
+		E2907EC224284D42003439CC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayer.m; sourceTree = "<group>"; };
 		E2BB98821A631363009C927E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
@@ -91,9 +91,9 @@
 		E22EF4BC1A33491100A74B9F = {
 			isa = PBXGroup;
 			children = (
+				E2907EC224284D42003439CC /* Launch Screen.storyboard */,
 				E266353F2425BD61005FA50B /* LaunchImage-background.png */,
 				E266353E2425BD61005FA50B /* LaunchImage-foreground.png */,
-				E266353D2425B9C9005FA50B /* Launch Screen.storyboard */,
 				E2F6E416241629FB00E81516 /* base */,
 				E2EF82F81B40D83600A94E16 /* Log.m */,
 				E218D27C1A69F7DF00698833 /* IAPHelper.m */,
@@ -192,10 +192,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E266353B2425B9C9005FA50B /* Launch Screen.storyboard in Resources */,
 				E26635412425BD62005FA50B /* LaunchImage-background.png in Resources */,
 				E26D5A9A241A038B00D17256 /* base in Resources */,
 				E2BB98831A631363009C927E /* Media.xcassets in Resources */,
+				E2907EC324284D42003439CC /* Launch Screen.storyboard in Resources */,
 				E26635402425BD62005FA50B /* LaunchImage-foreground.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,17 +215,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		E266353D2425B9C9005FA50B /* Launch Screen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E266353C2425B9C9005FA50B /* English */,
-			);
-			name = "Launch Screen.storyboard";
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		E22EF4EA1A33491200A74B9F /* Debug */ = {
