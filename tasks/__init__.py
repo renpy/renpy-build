@@ -30,6 +30,7 @@ from . import freetype
 
 from . import zsync
 from . import sayvbs
+from . import angle
 
 from . import pygame_sdl2
 from . import librenpy
