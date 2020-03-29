@@ -42,6 +42,7 @@ def build(c):
     --disable-dependency-tracking
     --disable-wasapi
     --disable-render-metal
+    --disable-jack
 
 {% if c.platform == "android" %}
     --disable-video-wayland
@@ -49,7 +50,6 @@ def build(c):
 
     --disable-oss
     --disable-alsa
-    --disable-jack
     --disable-esd
     --disable-pulseaudio
     --disable-arts
