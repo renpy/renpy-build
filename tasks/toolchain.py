@@ -108,6 +108,7 @@ def build(c):
 
     c.run("git clone https://github.com/tpoechtrager/cctools-port")
     c.chdir("cctools-port/usage_examples/ios_toolchain")
+    c.run("git checkout 606eb7dcb21ea90df1d36cd6b67e04c23cafe705")
 
     c.run("./build.sh {{tars}}/iPhoneOS13.2.sdk.tar.gz {{ c.arch }}")
 
