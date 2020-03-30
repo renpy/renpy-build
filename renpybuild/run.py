@@ -59,6 +59,11 @@ def build_environment(c):
 
     c.env("LDFLAGS", "-L{{install}}/lib")
 
+    if (c.platform == "ios") and (c.arch == "arm64"):
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "9.0")
+    elif (c.platform == "ios") and (c.arch == "armv7s"):
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "9.0")
+
     if c.kind == "host":
 
         c.env("CC", "ccache gcc -fPIC")
@@ -255,8 +260,6 @@ def build_environment(c):
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "9.0")
-
         c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
 
         c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
@@ -270,13 +273,11 @@ def build_environment(c):
 
     elif (c.platform == "ios") and (c.arch == "armv7s"):
 
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "9.0")
-
         c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
 
-        c.env("CC", "ccache {{ crossbin }}clang -arch armv7s -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}clang++ -arch armv7s -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossbin }}clang -arch armv7s -E --sysroot {{ sysroot }}")
+        c.env("CC", "ccache {{ crossbin }}clang -arch armv7s -mfpu=neon -fPIC -O3 -pthread")
+        c.env("CXX", "ccache {{ crossbin }}clang++ -arch armv7s -mfpu=neon -fPIC -O3 -pthread")
+        c.env("CPP", "ccache {{ crossbin }}clang -arch armv7s -mfpu=neon -E --sysroot {{ sysroot }}")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
