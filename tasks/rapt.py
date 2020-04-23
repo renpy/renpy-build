@@ -29,16 +29,17 @@ def copy(c):
     os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/res/values/strings.xml"))
     os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/renpy/android/Constants.java"))
 
-    os.unlink(c.path("{{ raptver }}/prototype/local.properties"))
+    if c.path("{{ raptver }}/prototype/local.properties").exists():
+        os.unlink(c.path("{{ raptver }}/prototype/local.properties"))
 
-    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-mdpi"))
-    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-hdpi"))
-    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xhdpi"))
-    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xxhdpi"))
-    shutil.rmtree(c.path("{{ raptver }}/prototype/app/src/main/res/mipmap-xxxhdpi"))
+    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-mdpi")
+    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-hdpi")
+    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-xhdpi")
+    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-xxhdpi")
+    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-xxxhdpi")
 
-    shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/build/"))
-    shutil.rmtree(c.path("{{ raptver }}/prototype/app/build/"))
+    c.rmtree("{{ raptver }}/prototype/renpyandroid/build/")
+    c.rmtree("{{ raptver }}/prototype/app/build/")
 
 
 @task(kind="host-python", always=True)
