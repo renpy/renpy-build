@@ -13,7 +13,7 @@ fi
 
 # Build the dependencies.
 pushd $BASE
-./all.sh
+./build.py
 popd
 
 
@@ -24,6 +24,11 @@ link () {
 }
 
 pushd $BASE/renpy
+
+rm -f lib rapt renios
+ln -s lib2 lib
+ln -s rapt2 rapt
+ln -s renios2 renios
 
 # Update the README.
 cp /home/tom/ab/renpy-deps/scripts/README.nightly /home/tom/ab/WWW.nightly/README.txt
@@ -39,11 +44,6 @@ link /home/tom/ab/WWW.nightly dl
 link /home/tom/ab/renpy/atom atom
 link /home/tom/ab/renpy/jedit jedit
 link /home/tom/ab/renpy/editra editra
-
-# Rapt is needed to run distribute.py.
-mkdir -p rapt
-link /home/tom/ab/android/buildlib rapt/buildlib
-
 
 # Figure out a reasonable version name.
 REV=$(git rev-parse --short HEAD)
