@@ -4,6 +4,7 @@ update () {
 
     if [ -d "$BASE/$2/.git" ]; then
         pushd "$BASE/$2"
+        git reset --hard
         git pull
         popd
     else

@@ -280,9 +280,14 @@ def link_windows(c):
     """)
 
     c.run("""
+    {{ WINDRES }} {{ runtime }}/renpy_icon.rc renpy_icon.o
+    """)
+
+    c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o python.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
+    renpy_icon.o
     librenpython.dll
     """)
 
@@ -291,6 +296,7 @@ def link_windows(c):
     -mwindows
     -o pythonw.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
+    renpy_icon.o
     librenpython.dll
     """)
 
@@ -300,6 +306,7 @@ def link_windows(c):
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
+    renpy_icon.o
     """)
 
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
