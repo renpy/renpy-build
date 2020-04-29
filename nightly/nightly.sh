@@ -45,13 +45,14 @@ fi
 BASE="$1"
 VENV="$1/tmp/virtualenv.py2"
 
+export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
+
 mkdir -p "$BASE/tmp"
 
 . $SCRIPTS/git.sh
 
 # Python activates the venv, which is needed for the rest of it.
 . $SCRIPTS/python.sh
-
 
 . $SCRIPTS/rev.sh
 . $SCRIPTS/build.sh
