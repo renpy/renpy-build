@@ -43,9 +43,12 @@ if [ -z "$1" ]; then
 fi
 
 BASE="$1"
+VENV="$1/tmp/virtualenv.py2"
+
+mkdir -p "$BASE/tmp"
 
 . $SCRIPTS/git.sh
-
+. $SCRIPTS/python.sh
 . $SCRIPTS/rev.sh
 . $SCRIPTS/build.sh
 . $SCRIPTS/web.sh
