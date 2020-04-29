@@ -48,7 +48,11 @@ VENV="$1/tmp/virtualenv.py2"
 mkdir -p "$BASE/tmp"
 
 . $SCRIPTS/git.sh
+
+# Python activates the venv, which is needed for the rest of it.
 . $SCRIPTS/python.sh
+
+
 . $SCRIPTS/rev.sh
 . $SCRIPTS/build.sh
 . $SCRIPTS/web.sh
