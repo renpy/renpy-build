@@ -28,3 +28,11 @@ Android NDK
 * android-ndk-r21-linux-x86_64.zip
 
 Downloaded from https://developer.android.com/ndk/downloads .
+
+
+Live2D Cubism SDK
+-----------------
+
+* Cubism3SDKforNative-beta12.zip
+
+Will build if not present.

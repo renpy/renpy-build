@@ -311,19 +311,23 @@ class Context:
 
     def extension(self, source, cflags=""):
         source = self.path(source)
-
-        if self.platform == "windows":
-            so = source.stem + ".dll"
-        else:
-            so = source.stem + ".so"
-
         self.var("source", source)
-        self.var("so", "{{dlpa}}/" + so)
 
         if self.platform == "windows":
-            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -l{{ pythonver }} " + cflags, verbose=True)
+            self.var("so", "{{dlpa}}/" + source.stem + ".pyd")
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython -l{{ pythonver }} " + cflags, verbose=True)
+
+        elif self.platform == "ios":
+            # TODO.
+            pass
+
+        elif self.platform == "android":
+            self.var("so", source.stem + ".so")
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ jniLibs }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
         else:
-            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
+
+            self.var("so", source.stem + ".so")
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython" + cflags, verbose=True)
 
 
 class Task:

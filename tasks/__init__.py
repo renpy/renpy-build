@@ -41,3 +41,5 @@ from . import renpysh
 
 from . import renios
 
+from . import live2d
+

@@ -18,7 +18,7 @@ popd
 
 
 link () {
-    if [ ! -L $2 ]; then
+    if [ -e $1 -a ! -L $2 ]; then
         ln -s $1 $2
     fi
 }
@@ -40,6 +40,7 @@ cp /home/tom/ab/renpy-deps/scripts/README.nightly /home/tom/ab/WWW.nightly/READM
 # ./after_checkout.sh
 
 link $BASE/pygame_sdl2 pygame_sdl2
+link $BASE/live2d live2d
 link /home/tom/ab/WWW.nightly dl
 link /home/tom/ab/renpy/atom atom
 link /home/tom/ab/renpy/jedit jedit
