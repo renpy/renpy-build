@@ -8,7 +8,7 @@ modernize==0.5
 Pygments==2.2.0
 python-dateutil==2.8.0
 pytz==2018.9
-requests==2.18.4
+requests==2.20.0
 rsa==3.4.2
 six==1.12.0
 Sphinx==1.6.6
