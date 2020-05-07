@@ -90,6 +90,7 @@ def lipo(c):
 @task(kind="host-python", platforms="ios", always=True)
 def lipo_renpy(c):
     lipo_and_strip(c, lambda n : "librenpy" in n)
+    lipo_and_strip(c, lambda n : "live2d" in n)
 
 
 @task(kind="host-python", platforms="ios", always=True, pythons="2")

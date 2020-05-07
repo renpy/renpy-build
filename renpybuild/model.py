@@ -318,8 +318,39 @@ class Context:
             self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython -l{{ pythonver }} " + cflags, verbose=True)
 
         elif self.platform == "ios":
-            # TODO.
-            pass
+            self.var("name", source.stem)
+            self.var("cname", source.stem.replace(".", "_"))
+            self.var("o", source.stem + ".o")
+            self.var("a", source.stem + ".a")
+
+            self.var("initc", "init_" + source.stem + ".c")
+            self.var("inito", "init_" + source.stem + ".o")
+
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -c -o {{ o }} {{ source }} " + cflags, verbose=True)
+
+            with open(self.path("{{ initc }}"), "w") as f:
+                f.write(self.expand("""\
+#include "Python.h"
+
+PyMODINIT_FUNC init{{ cname }} (void);
+
+static struct _inittab {{cname}}_inittab[]  = {
+    { "{{ name }}", init{{ cname }} },
+    { NULL, NULL },
+};
+
+static void {{ cname }}_constructor() __attribute__((constructor));
+
+static void {{ cname }}_constructor() {
+    PyImport_ExtendInittab({{ cname }}_inittab);
+}
+"""))
+
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -c -o {{ inito }} {{ initc }}", verbose=True)
+
+            self.run("""{{ AR }} -r {{ a }} {{ o }} {{ inito }}""")
+            self.run("""install -d {{install}}/lib""")
+            self.run("""install {{ a }} {{ install }}/lib""")
 
         elif self.platform == "android":
             self.var("so", source.stem + ".so")

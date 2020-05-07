@@ -37,9 +37,8 @@ from . import librenpy
 from . import renpython
 from . import pythonlib
 
-from . import renpysh
-
-from . import renios
-
 from . import live2d
+
+from . import renpysh
+from . import renios
 
