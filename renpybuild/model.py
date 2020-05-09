@@ -358,7 +358,7 @@ static void {{ cname }}_constructor() {
         else:
 
             self.var("so", source.stem + ".so")
-            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython" + cflags, verbose=True)
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
 
 
 class Task:

@@ -5,8 +5,8 @@ from renpybuild.model import task, annotator
 def build(c):
     c.clean()
 
-    c.var("cubism_zip", "Cubism3SDKforNative-4-r.1.zip")
-    c.var("cubism_dir", "Cubism3SDKforNative-4-r.1")
+    c.var("cubism_zip", "CubismSdkForNative-4-r.1.zip")
+    c.var("cubism_dir", "CubismSdkForNative-4-r.1")
 
     c.var("live2d", c.path("{{ root }}/live2d"))
 
