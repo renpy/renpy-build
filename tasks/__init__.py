@@ -16,6 +16,8 @@ from . import libwebp
 from . import hostpython2
 from . import python2
 
+from . import live2d
+
 from . import rapt
 from . import pyjnius
 from . import pyobjus
@@ -36,8 +38,6 @@ from . import pygame_sdl2
 from . import librenpy
 from . import renpython
 from . import pythonlib
-
-from . import live2d
 
 from . import renpysh
 from . import renios
