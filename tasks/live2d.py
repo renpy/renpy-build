@@ -4,6 +4,7 @@ from renpybuild.model import task, annotator
 @annotator
 def annotate(c):
     c.include("{{ install }}/cubism/Core/include")
+    c.env("CUBISM", "{{ install }}/cubism")
 
 
 @task(always=True)
