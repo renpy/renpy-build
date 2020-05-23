@@ -25,8 +25,13 @@
 #
 # (py2app is also under the MIT license.)
 
+import sys
 import os
 import time
+
+# Set the default encoding to utf-8.
+
+sys.setdefaultencoding("utf-8")
 
 # A variable giving the Ren'Py platform ########################################
 
@@ -36,7 +41,6 @@ RENPY_PLATFORM = os.environ.get("RENPY_PLATFORM", "unknown-unknown")
 
 # Allow Python to import submodules.
 import imp
-import sys
 
 
 class BuiltinSubmoduleImporter(object):
