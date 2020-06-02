@@ -30,8 +30,15 @@ import os
 import time
 
 # Set the default encoding to utf-8.
-
 sys.setdefaultencoding("utf-8")
+
+# Ditto, for stdout and stderr.
+try:
+    import ctypes
+    ctypes.pythonapi.PyFile_SetEncodingAndErrors(ctypes.py_object(sys.stdout), b'utf-8', b'surrogateescape')
+    ctypes.pythonapi.PyFile_SetEncodingAndErrors(ctypes.py_object(sys.stderr), b'utf-8', b'surrogateescape')
+except:
+    pass
 
 # A variable giving the Ren'Py platform ########################################
 
