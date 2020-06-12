@@ -34,7 +34,7 @@ else:
 
 class PatternList(object):
     """
-    Used to load in the blacklist and whitelist patterns.
+    Used to load in the blocklist and keeplist patterns.
     """
 
     def __init__(self, *args):
@@ -148,10 +148,10 @@ def make_tar(iface, fn, source_dirs):
     def include(fn):
         rv = True
 
-        if blacklist.match(fn):
+        if blocklist.match(fn):
             rv = False
 
-        if whitelist.match(fn):
+        if keeplist.match(fn):
             rv = True
 
         return rv
@@ -219,9 +219,9 @@ def make_tree(src, dest):
 
             ignore = False
 
-            if blacklist.match(relfn):
+            if blocklist.match(relfn):
                 ignore = True
-            if whitelist.match(relfn):
+            if keeplist.match(relfn):
                 ignore = False
 
             if ignore:
@@ -431,11 +431,11 @@ def build(iface, directory, commands, launch=False, finished=None):
     if (config.store == "play" or config.store == "all") and ((config.google_play_key is None) or (len(config.google_play_key) < 32)):
         iface.fail(__("Google Play support is enabled, but build.google_play_key is not defined."))
 
-    global blacklist
-    global whitelist
+    global blocklist
+    global keeplist
 
-    blacklist = PatternList("blacklist.txt")
-    whitelist = PatternList("whitelist.txt")
+    blocklist = PatternList("blocklist.txt")
+    keeplist = PatternList("keeplist.txt")
 
     if RENPY:
         default_presplash = plat.path("templates/renpy-presplash.jpg")
