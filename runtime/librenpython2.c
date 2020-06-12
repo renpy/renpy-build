@@ -212,6 +212,12 @@ static void set_renpy_platform() {
 }
 
 
+/**
+ * This sets the PYTHONIOENCODING variable.
+ */
+static void set_python_io_encoding() {
+    putenv("PYTHONIOENCODING=utf-8:surrogateescape");
+}
 
 /**
  * This is the python command, and all it does is to modify the path to the
@@ -219,6 +225,7 @@ static void set_renpy_platform() {
  */
 int EXPORT renpython_main(int argc, char **argv) {
 
+    set_python_io_encoding();
     set_renpy_platform();
     take_argv0(argv[0]);
     search_python_home();
@@ -235,6 +242,7 @@ int EXPORT renpython_main(int argc, char **argv) {
  */
 int EXPORT launcher_main(int argc, char **argv) {
 
+    set_python_io_encoding();
     set_renpy_platform();
     take_argv0(argv[0]);
     search_python_home();
