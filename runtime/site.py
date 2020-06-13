@@ -28,9 +28,17 @@
 import sys
 import os
 import time
+import locale
 
 # Set the default encoding to utf-8.
 sys.setdefaultencoding("utf-8")
+
+
+def getpreferredencoding(do_setlocale=True):
+    return "utf-8"
+
+
+locale.getpreferredencoding = getpreferredencoding
 
 # A variable giving the Ren'Py platform ########################################
 
