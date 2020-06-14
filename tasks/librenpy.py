@@ -10,6 +10,7 @@ def clean(c):
 def gen_static(c):
 
     c.chdir("{{ renpy }}/module")
+    c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
     c.run("{{ hostpython }} setup.py generate")
 

@@ -18,6 +18,8 @@ def build_environment(c):
     c.env("CPPFLAGS", "-I{{ install }}/include")
     c.env("CFLAGS", "-I{{ install }}/include")
 
+    c.env("PATH", "{{ host }}/bin:{{ PATH }}")
+
     if (c.platform == "linux") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "i686"):
