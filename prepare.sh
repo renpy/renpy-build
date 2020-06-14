@@ -25,6 +25,8 @@ sudo apt install -y libgmp-dev libmpfr-dev libmpc-dev
 # Needed by hostpython.
 sudo apt install -y libssl-dev libbz2-dev lib
 
+# Needed for windows.
+sudo apt install -y mingw-w64 autoconf
 
 
 # Install the standard set of packages needed to build Ren'Py.
