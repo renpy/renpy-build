@@ -1,4 +1,5 @@
 from renpybuild.model import task
+import os
 
 
 @task(kind="python", always=True)
@@ -318,7 +319,11 @@ def link_windows(c):
     c.run("""install renpy.exe {{ dlpa }}/renpy.exe""")
 
     if c.arch == "i686":
-        c.copy("/usr/lib/gcc/i686-w64-mingw32/9.2-win32/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
+        for i in sorted(os.listdir("/usr/lib/gcc/i686-w64-mingw32")):
+            if i.endswith("-win32"):
+                c.var("mingw_version", i)
+
+        c.copy("/usr/lib/gcc/i686-w64-mingw32/{{ mingw_version }}/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
         c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
