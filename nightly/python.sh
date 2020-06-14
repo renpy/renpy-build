@@ -21,5 +21,10 @@ python setup.py install_headers
 popd
 
 pushd $BASE/renpy
+
+if [ ! -e pygame_sdl2 ]; then
+    ln -s $BASE/pygame_sdl2 .
+fi
+
 ./run.sh launcher quit
 popd
