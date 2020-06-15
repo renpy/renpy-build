@@ -28,6 +28,9 @@ sudo apt install -y libssl-dev libbz2-dev lib
 # Needed for windows.
 sudo apt install -y mingw-w64 autoconf
 
+# Needed for mac
+sudo apt install -y cmake clang libxml2-dev llvm
+
 
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt install -y \
