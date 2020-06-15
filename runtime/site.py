@@ -44,6 +44,22 @@ locale.getpreferredencoding = getpreferredencoding
 
 RENPY_PLATFORM = os.environ.get("RENPY_PLATFORM", "unknown-unknown")
 
+# Look for a better Python executable to set sys.executable to. ################
+
+base = os.path.dirname(sys.executable)
+
+PYTHON_SEARCH = [
+    os.path.join(base, "lib", RENPY_PLATFORM, "python"),
+    os.path.join(base, "lib", RENPY_PLATFORM, "python.exe"),
+    os.path.join(base, "python"),
+    os.path.join(base, "python.exe"),
+    ]
+
+for fn in PYTHON_SEARCH:
+    if os.path.exists(fn):
+        sys.executable = fn
+        break
+
 # Submodule importing ##########################################################
 
 # Allow Python to import submodules.
