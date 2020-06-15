@@ -8,7 +8,7 @@ REFS=$ROOT
 BASE="$ROOT"
 
 # Needed to build things.
-sudo apt install -y git buld-essential ccache python-dev python3-dev unzip
+sudo apt install -y git build-essential ccache python-dev python3-dev unzip
 
 # Needed to install python2 pip
 sudo apt install -y curl
@@ -17,13 +17,13 @@ sudo apt install -y curl
 sudo apt install -y python3-jinja2
 
 # Needed by sysroot.
-apt install -y debootstrap qemu-user-static
+sudo apt install -y debootstrap qemu-user-static
 
 # Needed by gcc.
 sudo apt install -y libgmp-dev libmpfr-dev libmpc-dev
 
 # Needed by hostpython.
-sudo apt install -y libssl-dev libbz2-dev lib
+sudo apt install -y libssl-dev libbz2-dev
 
 # Needed for windows.
 sudo apt install -y mingw-w64 autoconf
@@ -58,7 +58,4 @@ VENV="$ROOT/tmp/virtualenv.py2"
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
 . $BASE/nightly/git.sh
-
-cp /mnt/ab/renpy-build/nightly/python.sh nightly
-
 . $BASE/nightly/python.sh
