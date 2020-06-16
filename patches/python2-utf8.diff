@@ -1,0 +1,24 @@
+--- Python-2.7.17/Python/pythonrun.c	2019-10-19 14:38:44.000000000 -0400
++++ "Python-2.7.17/Python/pythonrun copy.c"	2020-06-15 21:14:50.100720983 -0400
+@@ -290,6 +290,13 @@
+     if (!Py_NoSiteFlag)
+         initsite(); /* Module site */
+ 
++
++    icodeset = codeset = "utf-8";
++    errors = "surrogatescape";
++    free_codeset = 0;
++    overridden = 1;
++
++# if 0
+     if ((p = Py_GETENV("PYTHONIOENCODING")) && *p != '\0') {
+         p = icodeset = codeset = strdup(p);
+         free_codeset = 1;
+@@ -300,6 +307,7 @@
+         }
+         overridden = 1;
+     }
++#endif
+ 
+ #if defined(Py_USING_UNICODE) && defined(HAVE_LANGINFO_H) && defined(CODESET)
+     /* On Unix, set the file system encoding according to the

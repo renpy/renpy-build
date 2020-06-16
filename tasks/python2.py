@@ -29,6 +29,7 @@ def patch_posix(c):
     c.patch("python2-no-multiarch.diff")
     c.patch("python2-cross-darwin.diff")
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
+    c.patch("python2-utf8.diff")
 
 
 @task(kind="python", pythons="2", platforms="ios")
@@ -37,6 +38,7 @@ def patch_ios(c):
 
     c.chdir("Python-{{ version }}")
     c.patch("ios-python2/posixmodule.patch")
+    c.patch("python2-utf8.diff")
 
     c.run("cp {{patches}}/ios-python2/_scproxy.pyx Modules")
     c.chdir("Modules")
@@ -50,6 +52,7 @@ def patch_windows(c):
     c.chdir("Python-{{ version }}")
     c.patchdir("mingw-w64-python2")
     c.patch("python2-no-dllmain.diff")
+    c.patch("python2-utf8.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -61,6 +64,7 @@ def patch_android(c):
     c.chdir("Python-{{ version }}")
     c.patchdir("android-python2")
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
+    c.patch("python2-utf8.diff")
 
     c.run(""" autoreconf -vfi """)
 
