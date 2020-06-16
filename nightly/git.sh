@@ -18,6 +18,4 @@ update https://github.com/renpy/renpy renpy
 
 update https://github.com/renpy/pygame_sdl2 pygame_sdl2
 
-update https://github.com/renpytom/live2dexperiment live2d
-
 
