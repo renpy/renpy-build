@@ -29,6 +29,7 @@ def patch_posix(c):
     c.patch("python2-no-multiarch.diff")
     c.patch("python2-cross-darwin.diff")
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
+    c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
     c.patch("python2-utf8.diff")
 
 
@@ -64,6 +65,7 @@ def patch_android(c):
     c.patchdir("android-python2")
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
     c.patch("python2-utf8.diff")
+    c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
 
     c.run(""" autoreconf -vfi """)
 
