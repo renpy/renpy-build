@@ -6,10 +6,13 @@ version = "2.0.10"
 
 @annotator
 def annotate(c):
+    if c.platform == "web":
+        return
+
     c.include("{{ install }}/include/SDL2")
 
 
-@task()
+@task(platforms="-web")
 def unpack(c):
     c.clean()
 
@@ -24,7 +27,7 @@ def unpack(c):
         c.run("./autogen.sh")
 
 
-@task()
+@task(platforms="-web")
 def build(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")

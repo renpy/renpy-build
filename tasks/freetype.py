@@ -5,10 +5,13 @@ version = "2.10.1"
 
 @annotator
 def annotate(c):
+    if c.platform == "web":
+        return
+        
     c.include("{{ install }}/include/freetype2")
 
 
-@task(kind="host")
+@task(kind="host", platforms="-web")
 def hostunpack(c):
     c.clean()
 
@@ -16,7 +19,7 @@ def hostunpack(c):
     c.run("tar xzf {{source}}/freetype-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="-web")
 def unpack(c):
     c.clean()
 
@@ -24,7 +27,7 @@ def unpack(c):
     c.run("tar xzf {{source}}/freetype-{{version}}.tar.gz")
 
 
-@task(kind="host")
+@task(kind="host", platforms="-web")
 def hostbuild(c):
     c.var("version", version)
     c.chdir("freetype-{{version}}")
@@ -37,7 +40,7 @@ def hostbuild(c):
     c.run("""cp objs/apinames {{host}}/freetype-apinames""")
 
 
-@task()
+@task(platforms="-web")
 def build(c):
     c.var("version", version)
     c.chdir("freetype-{{version}}")

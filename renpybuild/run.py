@@ -3,6 +3,7 @@ import shlex
 import subprocess
 import sys
 import sysconfig
+import renpybuild.emscripten
 
 
 def build_environment(c):
@@ -19,6 +20,9 @@ def build_environment(c):
     c.env("CFLAGS", "-I{{ install }}/include")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
+
+    if c.platform == "web":
+        renpybuild.emscripten.activate(c)
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-linux-gnu")
@@ -44,6 +48,9 @@ def build_environment(c):
         c.var("host_platform", "arm-apple-darwin")
     elif (c.platform == "ios") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-apple-darwin")
+    elif (c.platform == "web"):
+        c.var("host_platform", "asmjs-unknown-emscripten")
+
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin11")
@@ -298,6 +305,17 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
+
+    elif (c.platform == "web"):
+
+        c.env("CC", "emcc")
+        c.env("CXX", "em++")
+        c.env("CPP", "emcc -E")
+        c.env("LD", "wasm-ld")
+        c.env("AR", "emar")
+        c.env("RANLIB", "emranlib")
+        c.env("STRIP", "llvm-strip")
+        c.env("NM", "llvm-nm")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")
