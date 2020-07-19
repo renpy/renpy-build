@@ -41,6 +41,8 @@ Platform("ios", "arm64")
 Platform("ios", "armv7s")
 Platform("ios", "x86_64")
 
+Platform("web", "wasm")
+
 # Python Registry ##############################################################
 
 known_pythons = [ ]

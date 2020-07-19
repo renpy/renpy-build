@@ -141,3 +141,18 @@ def build(c):
     c.chdir("{{ cross }}")
     c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
 
+
+@task(kind="cross", platforms="web")
+def build(c):
+    c.clean("{{ cross }}")
+    c.chdir("{{ cross }}")
+
+    c.run("git clone https://github.com/emscripten-core/emsdk/")
+    c.chdir("emsdk")
+
+    c.run("./emsdk install 1.39.18")
+    c.run("./emsdk activate 1.39.18")
+
+    c.chdir("upstream/emscripten")
+    c.patch("{{ root }}/renpyweb/patches/emscripten.patch")
+
