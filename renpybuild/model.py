@@ -378,7 +378,18 @@ class Task:
             if v is None:
                 return v
 
-            return { i.strip() for i in v.split(",") }
+            if v[0] == "-":
+                negative = True
+                v = v[1:]
+            else:
+                negative = False
+
+            rv = { i.strip() for i in v.split(",") }
+
+            if negative:
+                rv.add("negative")
+
+            return rv
 
         self.platforms = split(platforms)
         self.archs = split(archs)
@@ -388,22 +399,26 @@ class Task:
 
         tasks.append(self)
 
-    def context_name(self, context):
-        """
-        Returns a task_name, dir_name tuple.
-        """
-
     def run(self, context):
+
+        def check(wanted, have):
+            if wanted is None:
+                return True
+
+            if "negative" in wanted:
+                return have not in wanted
+            else:
+                return have in wanted
 
         if not self.kind == "host":
 
-            if (self.platforms is not None) and (context.platform not in self.platforms):
+            if not check(self.platforms, context.platform):
                 return
 
-            if (self.archs is not None) and (context.arch not in self.archs):
+            if not check(self.archs, context.arch):
                 return
 
-            if (self.pythons is not None) and (context.python not in self.pythons):
+            if not check(self.pythons, context.python):
                 return
 
         context.set_names(self.kind, self.task, self.name)
