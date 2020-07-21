@@ -29,6 +29,7 @@ def build(c):
     --enable-webp
     --disable-webp-shared
     --disable-xcf
+    --disable-svg
     """)
 
     c.run("""{{ make }}""")
