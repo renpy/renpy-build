@@ -51,10 +51,7 @@ def activate(c):
     the environment.
     """
 
-    c.var("renpyweb", "{{ root }}/renpyweb")
-
     construct_env(c)
-
     c.env("CFLAGS", "{{ CFLAGS }} -s USE_SDL=2 -s USE_FREETYPE=1")
 
     # parse_makefile(c)

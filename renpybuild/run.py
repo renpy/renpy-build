@@ -11,7 +11,11 @@ def build_environment(c):
     Sets up the build environment inside the context.
     """
 
+    c.var("configure", "./configure")
+    c.var("emconfigure", "")
     c.var("make", "nice make -j 12")
+    c.var("hostconfigure", "./configure")
+    c.var("hostmake", "nice make -j 12")
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -21,8 +25,6 @@ def build_environment(c):
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
 
-    if c.platform == "web":
-        renpybuild.emscripten.activate(c)
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-linux-gnu")
@@ -120,11 +122,12 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("STRIP", "ccache {{ cross }}/bin/strip")
         c.env("NM", "{{ cross }}/bin/nm")
-
+ 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu/mesa")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
@@ -308,14 +311,23 @@ def build_environment(c):
 
     elif (c.platform == "web"):
 
+        renpybuild.emscripten.activate(c)
+
         c.env("CC", "emcc")
         c.env("CXX", "em++")
         c.env("CPP", "emcc -E")
-        c.env("LD", "wasm-ld")
+        c.env("LD", "emcc")
         c.env("AR", "emar")
         c.env("RANLIB", "emranlib")
         c.env("STRIP", "llvm-strip")
         c.env("NM", "llvm-nm")
+
+        c.var("emconfigure", "emconfigure")
+        c.var("configure", "emconfigure ./configure")
+        c.var("make", "nice emmake make -j 12")
+        
+        c.env("CFLAGS", "{{ CFLAGS }} -O3")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")
@@ -333,6 +345,9 @@ def run(command, context, verbose=False, quiet=False):
 
     if verbose:
         print(" ".join(shlex.quote(i) for i in args))
+
+    # for k, v in sorted(context.environ.items()):
+    #     print(k, v)
 
     if not quiet:
         p = subprocess.run(args, cwd=context.cwd, env=context.environ)

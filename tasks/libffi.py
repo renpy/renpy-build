@@ -3,7 +3,7 @@ from renpybuild.model import task
 version = "3.3"
 
 
-@task()
+@task(platforms="-web")
 def unpack(c):
     c.clean()
 
@@ -11,11 +11,11 @@ def unpack(c):
     c.run("tar xzf {{source}}/libffi-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="-web")
 def build(c):
     c.var("version", version)
     c.chdir("libffi-{{version}}")
 
-    c.run("""./configure {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """)
+    c.run("""{{ configure }} {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
-    c.run("""make install """)
+    c.run("""{{ make }} install """)

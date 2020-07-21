@@ -38,9 +38,10 @@ zlib zlibmodule.c -lz
 pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat
 _elementtree _elementtree.c -I$(srcdir)/Modules/expat
 
-{% if (c.kind == "host") or (c.platform != "windows") %}
+{% if (c.kind == "host") or (c.platform not in [ "windows", "web" ]) %}
 
 _ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+
 _socket socketmodule.c timemodule.c -lm
 _ssl _ssl.c -lssl -lcrypto
 
@@ -75,3 +76,18 @@ _ssl _ssl.c -lssl -lcrypto -lcrypt32
 
 msvcrt ../PC/msvcrtmodule.c
 {% endif %}
+
+
+{% if (c.kind != "host") and (c.platform == "web") %}
+_socket socketmodule.c timemodule.c -lm
+_ssl _ssl.c -lssl -lcrypto
+
+dl dlmodule.c
+fcntl fcntlmodule.c
+
+pwd pwdmodule.c
+
+resource resource.c
+termios termios.c
+{% endif %}
+

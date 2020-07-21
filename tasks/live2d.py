@@ -7,7 +7,7 @@ def annotate(c):
     c.env("CUBISM", "{{ install }}/cubism")
 
 
-@task(always=True)
+@task()
 def build(c):
     c.clean()
 

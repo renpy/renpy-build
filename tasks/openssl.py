@@ -27,5 +27,5 @@ def build(c):
     else:
         c.run("""./Configure cc no-shared no-asm no-engine --prefix="{{ install }}" """)
 
-    c.run("""{{ make }}""")
-    c.run("""make install_sw""")
+    c.run("""{{ hostmake }}""")
+    c.run("""{{ hostmake }} install_sw""")

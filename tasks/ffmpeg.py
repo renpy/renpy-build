@@ -50,7 +50,7 @@ def build(c):
     c.chdir("ffmpeg-{{version}}")
 
     c.run("""
-    ./configure
+    {{ configure }}
         --prefix="{{ install }}"
 
         --arch={{ arch }}

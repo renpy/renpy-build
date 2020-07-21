@@ -31,6 +31,7 @@ def patch_posix(c):
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
     c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
     c.patch("python2-utf8.diff")
+    c.patch("{{renpyweb}}/python-emscripten/2.7.10/patches/python2-webbrowser.patch")
 
 
 @task(kind="python", pythons="2", platforms="ios")
@@ -53,6 +54,7 @@ def patch_windows(c):
     c.patchdir("mingw-w64-python2")
     c.patch("python2-no-dllmain.diff")
     c.patch("python2-utf8.diff")
+    c.patch("{{renpyweb}}/python-emscripten/2.7.10/patches/python2-webbrowser.patch")
 
     c.run(""" autoreconf -vfi """)
 
@@ -64,10 +66,25 @@ def patch_android(c):
     c.chdir("Python-{{ version }}")
     c.patchdir("android-python2")
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
-    c.patch("python2-utf8.diff")
     c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
+    c.patch("python2-utf8.diff")
+    c.patch("{{renpyweb}}/python-emscripten/2.7.10/patches/python2-webbrowser.patch")
 
     c.run(""" autoreconf -vfi """)
+
+
+@task(kind="python", pythons="2", platforms="web")
+def patch_web(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
+    c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
+    c.patch("python2-utf8.diff")
+
+    c.patch("python2-cross-web.diff")
+    c.patch("{{renpyweb}}/python-emscripten/2.7.10/patches/python2-no_popen.patch")
+    c.patch("{{renpyweb}}/python-emscripten/2.7.10/patches/python2-webbrowser.patch")
 
 
 @task(kind="python", pythons="2", platforms="linux,mac")
@@ -175,6 +192,36 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
+
+
+@task(kind="python", pythons="2", platforms="web")
+def build_web(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+
+    with open(c.path("config.site"), "w") as f:
+        f.write("ac_cv_file__dev_ptmx=no\n")
+        f.write("ac_cv_file__dev_ptc=no\n")
+        f.write("ac_cv_func_dlopen=yes\n")
+
+    c.env("CONFIG_SITE", "config.site")
+
+    c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
+
+    c.run("""{{ configure }} {{ cross_config }} --prefix="{{ install }}" --without-threads --without-pymalloc --without-signal-module --disable-ipv6 --disable-shared""")
+
+    config = c.path("pyconfig.h").read_text()
+    config = config.replace("#define HAVE_EPOLL 1", "#undef HAVE_EPOLL")
+    c.path("pyconfig.h").write_text(config)
+
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+    c.run("""{{ make }} install""")
+
+    c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
+
+
 
 
 @task(kind="python", pythons="2")

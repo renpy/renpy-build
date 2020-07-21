@@ -19,7 +19,9 @@ def build(c):
     if c.platform == "windows":
         c.env("ac_cv_lib_jpeg_jpeg_CreateDecompress", "yes")
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
+    c.update_config_sub()
+
+    c.run("""{{ configure }} {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
 
     --disable-tif
@@ -32,5 +34,5 @@ def build(c):
     """)
 
     c.run("""{{ make }}""")
-    c.run("""make install""")
+    c.run("""{{ make }} install""")
 

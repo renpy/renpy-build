@@ -59,6 +59,7 @@ class Context:
         self.var("tars", self.root / "tars")
         self.var("patches", self.root / "patches")
         self.var("prebuilt", self.root / "prebuilt")
+        self.var("renpyweb", self.root / "renpyweb")
 
         self.pygame_sdl2 = pygame_sdl2
         self.var("pygame_sdl2", self.pygame_sdl2)
@@ -359,6 +360,15 @@ static void {{ cname }}_constructor() {
 
             self.var("so", source.stem + ".so")
             self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
+
+    def update_config_sub(self):
+        """
+        If running on the web platform, updates the config.guess and config.sub files.
+        """
+
+        if self.platform == "web":
+            self.copy("{{ renpyweb }}/patches/config.sub", "config.sub")
+            self.copy("{{ renpyweb }}/patches/config.guess", "config.guess")
 
 
 class Task:
