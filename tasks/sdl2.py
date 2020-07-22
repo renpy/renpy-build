@@ -6,9 +6,6 @@ version = "2.0.10"
 
 @annotator
 def annotate(c):
-    if c.platform == "web":
-        return
-
     c.include("{{ install }}/include/SDL2")
 
 

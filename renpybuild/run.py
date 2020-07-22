@@ -330,6 +330,8 @@ def build_environment(c):
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+    c.env("EM_PKG_CONFIG_PATH", "{{ PKG_CONFIG_PATH }}")
+
     c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
@@ -361,3 +363,4 @@ def run(command, context, verbose=False, quiet=False):
         import traceback
         traceback.print_stack()
         sys.exit(1)
+
