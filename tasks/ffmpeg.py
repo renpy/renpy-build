@@ -28,6 +28,8 @@ def build(c):
         c.var("arch", "arm")
     elif c.arch == "armv7s":
         c.var("arch", "arm")
+    elif c.arch == "wasm":
+        c.var("arch", "emscripten")
     else:
         raise Exception(f"Unknown arch: {c.arch}")
 
@@ -43,6 +45,8 @@ def build(c):
         c.var("os", "darwin")
     elif c.platform == "android":
         c.var("os", "android")
+    elif c.platform == "web":
+        c.var("os", "none")
     else:
         raise Exception(f"Unknown os: {c.platform}")
 
@@ -69,8 +73,17 @@ def build(c):
         --extra-ldflags="{{ LDFLAGS }}"
         --ranlib="{{ RANLIB }}"
 
-        --enable-pic
         --enable-static
+
+{% if c.platform != "web" %}
+        --enable-pic
+{% endif %}
+
+{% if c.platform == "web" %}
+        --disable-asm
+        --disable-pthreads
+        --disable-stripping
+{% endif %}
 
 {% if c.platform == "windows" %}
         --disable-pthreads
@@ -148,7 +161,6 @@ def build(c):
         --disable-sndio
         --disable-xlib
 
-
         --disable-amf
         --disable-audiotoolbox
         --disable-cuda-llvm
@@ -164,4 +176,4 @@ def build(c):
     """)
 
     c.run("""{{ make }} V=1""")
-    c.run("""make install""")
+    c.run("""{{ make }} install""")
