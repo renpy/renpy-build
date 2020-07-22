@@ -21,6 +21,8 @@ def build(c):
     c.var("version", version)
     c.chdir("fribidi-{{version}}")
 
+    c.update_config_sub()
+
     c.run("""{{ configure }} {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
     c.run("""{{ make }} install """)
