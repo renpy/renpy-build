@@ -249,8 +249,8 @@ def build_environment(c):
         c.var("crossbin", "{{ cross }}/android-ndk-r21/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-")
         c.var("crossclang", "{{ cross }}/android-ndk-r21/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}21-")
 
-        c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread")
+        c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread -fno-integrated-as")
+        c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread  -fno-integrated-as")
         c.env("CPP", "ccache {{ crossclang }}clang -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")
