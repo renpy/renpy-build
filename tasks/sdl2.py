@@ -1,7 +1,7 @@
 from renpybuild.model import task, annotator
 import shutil
 
-version = "2.0.10"
+version = "2.0.12"
 
 
 @annotator
@@ -15,8 +15,6 @@ def unpack(c):
 
     c.var("version", version)
     c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
-
-    # c.run("cp -a /tmp/SDL2-2.0.10 SDL2-2.0.10")
 
     if c.platform == "ios":
         c.chdir("SDL2-{{version}}")
