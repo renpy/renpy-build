@@ -1,6 +1,6 @@
 from renpybuild.model import task, annotator
 
-version = "2.7.17"
+version = "2.7.18"
 
 
 @annotator
@@ -180,7 +180,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 @task(kind="python", pythons="2")
 def pip(c):
     c.run("{{ install }}/bin/hostpython2 -s -m ensurepip")
-    c.run("{{ install }}/bin/hostpython2 -s -m pip install --upgrade pip future rsa pyasn1 future six")
+    c.run("{{ install }}/bin/hostpython2 -s -m pip install --upgrade pip future rsa pyasn1 six")
 
 # @task(kind="python", pythons="2", always=True)
 # def sitecustomize(c):
