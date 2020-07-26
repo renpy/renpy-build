@@ -25,7 +25,7 @@ Run ./ios_toolchains.sh /path/to/Xcode.app
 Android NDK
 -----------
 
-* android-ndk-r21-linux-x86_64.zip
+* android-ndk-r21d-linux-x86_64.zip
 
 Downloaded from https://developer.android.com/ndk/downloads .
 
