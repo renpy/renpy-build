@@ -9,8 +9,9 @@ pushd "$ROOT"
 ./build.py --platform android --arch x86_64
 popd
 
+rm -f "$ROOT/renpy/rapt/Sdk"
 ln -s "/home/tom/ab/android/Sdk" "$ROOT/renpy/rapt/Sdk"
-mkdir "$ROOT/renpy/rapt/project"
+mkdir -p "$ROOT/renpy/rapt/project"
 cp -a /home/tom/ab/android/local.properties "$ROOT/renpy/rapt/project"
 
 pushd "$ROOT/renpy/rapt"

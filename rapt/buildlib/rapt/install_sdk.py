@@ -128,7 +128,7 @@ def get_packages(interface):
 
     wanted_packages = [
         ("platform-tools", "platform-tools"),
-        ("platforms;android-28", "platforms/android-28"),
+        ("platforms;android-29", "platforms/android-29"),
         ]
 
     for i, j in wanted_packages:
@@ -138,6 +138,9 @@ def get_packages(interface):
     if packages:
 
         interface.info(__("I'm about to download and install the required Android packages. This might take a while."))
+
+        if not run_slow(interface, plat.sdkmanager, "--update", yes=True):
+            interface.fail(__("I was unable to accept the Android licenses."))
 
         if not run_slow(interface, plat.sdkmanager, "--licenses", yes=True):
             interface.fail(__("I was unable to accept the Android licenses."))

@@ -8,12 +8,12 @@ localProperties.load(new FileInputStream(localPropertiesFile))
 import com.android.build.OutputFile
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "{{ config.package }}"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode {{ config.numeric_version }}
         versionName "{{ config.version }}"
     }
