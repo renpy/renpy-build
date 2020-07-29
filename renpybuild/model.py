@@ -367,7 +367,7 @@ class Task:
     proceed.
     """
 
-    def __init__(self, task, name, *, function=None, kind="arch", always=False, platforms=None, archs=None, pythons=None):
+    def __init__(self, task, name, *, function=None, kind="arch", always=False, platforms="-web", archs=None, pythons=None):
 
         self.task = task
         self.name = name
