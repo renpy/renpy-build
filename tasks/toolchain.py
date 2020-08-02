@@ -81,9 +81,6 @@ class ZipFileWithPermissions(ZipFile):
         if not isinstance(member, ZipInfo):
             member = self.getinfo(member)
 
-        if os.path.exists(targetpath):
-            os.chmod(targetpath, 0o644)
-
         targetpath = super()._extract_member(member, targetpath, pwd)
 
         attr = member.external_attr >> 16
@@ -95,12 +92,13 @@ class ZipFileWithPermissions(ZipFile):
 @task(kind="cross", platforms="android")
 def build(c):
 
-    if c.path("{{cross}}/android-ndk-r21").exists():
+    if c.path("{{cross}}/android-ndk-r21d").exists():
         return
 
     zf = ZipFileWithPermissions(c.path("{{ tars }}/android-ndk-r21d-linux-x86_64.zip"))
     zf.extractall(c.path("{{ install }}"))
     zf.close()
+
 
 
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")

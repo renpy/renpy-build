@@ -174,6 +174,7 @@ email/
 copyreg/
 future/
 html/
+http/
 past/
 queue/
 reprlib/
@@ -220,6 +221,7 @@ def python2(c):
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
 
+    c.clean("{{ distlib }}/{{ pythonver }}")
     c.run("{{ hostpython }} -OO -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for i in PYTHON27_MODULES.split():

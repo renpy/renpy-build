@@ -93,6 +93,6 @@ def rapt(c):
 
     c.run("""install -d {{ jniLibs }}""")
     c.run("""install libhidapi.so {{ jniLibs }}""")
-    c.run("""install {{ cross }}/android-ndk-r21/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
+    c.run("""install {{ cross }}/android-ndk-r21d/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
 
     c.copytree("android-project/app/src/main/java/org/libsdl", "{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
