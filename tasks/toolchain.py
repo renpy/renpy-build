@@ -81,6 +81,9 @@ class ZipFileWithPermissions(ZipFile):
         if not isinstance(member, ZipInfo):
             member = self.getinfo(member)
 
+        if os.path.exists(targetpath):
+            os.chmod(targetpath, 0o644)
+
         targetpath = super()._extract_member(member, targetpath, pwd)
 
         attr = member.external_attr >> 16
