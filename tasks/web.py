@@ -5,11 +5,10 @@ import re
 
 @task(kind="host-python", platforms="web")
 def clean(c):
-    c.chdir("{{ renpyweb }}")
-    c.rmtree("build")
-    c.rmtree("install")
-    c.rmtree("toolchain")
-    c.rmtree("emsdk")
+    c.rmtree("{{ renpyweb }}/build")
+    c.rmtree("{{ renpyweb }}/install")
+    c.rmtree("{{ renpyweb }}/toolchain")
+    c.rmtree("{{ renpyweb }}/emsdk")
 
 @task(kind="host-python", platforms="web") 
 def links(c):
@@ -57,7 +56,6 @@ def read_environment(c):
 @task(kind="host-python", platforms="web", always=True)
 def build(c):
     environ = read_environment(c)
-    environ["EMCC"] = "ccache emcc"
     subprocess.check_call("make cythonemscriptenclean", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)    
-    subprocess.check_call("nice make", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
+    subprocess.check_call("nice make EMCC='ccache emcc'", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
     subprocess.check_call("scripts/install_in_renpy.sh", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
