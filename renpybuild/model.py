@@ -66,6 +66,9 @@ class Context:
         self.renpy = renpy
         self.var("renpy", self.renpy)
 
+        self.renpyweb = self.root / "renpyweb"
+        self.var("renpyweb", self.renpyweb)
+
         self.var("dist", self.renpy)
         self.var("distlib", self.renpy / ("lib" + python))
         self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
@@ -309,6 +312,17 @@ class Context:
         if d.exists():
             shutil.rmtree(d)
 
+    def unlink(self, fn):
+        fn = self.path(fn)
+        if fn.exists():
+            fn.unlink()
+
+    def symlink(self, src, dst):
+        src = self.path(src)
+        dst = self.path(dst)
+
+        dst.symlink_to(src)
+
     def extension(self, source, cflags=""):
         source = self.path(source)
         self.var("source", source)
@@ -377,6 +391,9 @@ class Task:
         def split(v):
             if v is None:
                 return v
+
+            if v == "all":
+                return None
 
             if v[0] == "-":
                 negative = True
