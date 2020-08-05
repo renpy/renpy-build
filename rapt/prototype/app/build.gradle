@@ -8,12 +8,12 @@ localProperties.load(new FileInputStream(localPropertiesFile))
 import com.android.build.OutputFile
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "org.renpy.the_question"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 70000
         versionName "7.0.0"
     }
