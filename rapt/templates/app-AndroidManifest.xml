@@ -9,7 +9,7 @@
         android:label="@string/appName"
         android:isGame="true"
         android:hardwareAccelerated="true"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         >
 
         <activity
