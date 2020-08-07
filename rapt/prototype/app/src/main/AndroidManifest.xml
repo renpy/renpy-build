@@ -10,7 +10,6 @@
         android:isGame="true"
         android:hardwareAccelerated="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        >
 
         <activity
             android:name="org.renpy.android.PythonSDLActivity"
