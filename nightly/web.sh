@@ -19,6 +19,9 @@ if [ "$UPLOAD" = 1 ]; then
 fi
 
 # Delete old nightlies.
-# find /home/tom/magnetic/ab/WWW.nightly/ -ctime +30.5 -delete || true
+
+if [ "$PRUNE" = 1 ]; then
+    find /home/tom/magnetic/ab/WWW.nightly/ -ctime +30.5 -delete || true
+fi
 
 popd

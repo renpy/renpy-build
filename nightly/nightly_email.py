@@ -12,7 +12,7 @@ os.chdir(os.path.dirname(sys.argv[0]))
 def build_nightly():
 
     with open("/tmp/build_nightly.txt", "w+") as f:
-        rv = subprocess.call([ "nice", "./nightly.sh", '/home/tom/ab/nightly-build/', "--upload" ], stdout=f, stderr=f)
+        rv = subprocess.call([ "nice", "./nightly.sh", '/home/tom/ab/nightly-build/', "--upload", "--prune" ], stdout=f, stderr=f)
 
         f.seek(max(f.tell() - 2500, 0))
         output = f.read()
