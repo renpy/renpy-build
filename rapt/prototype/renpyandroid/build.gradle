@@ -2,8 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
-
-
+    ndkVersion "21.3.6528147"
 
     defaultConfig {
         minSdkVersion 19
@@ -14,12 +13,24 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            packagingOptions {
+               doNotStrip '**/*.so'
+           } 
+        }
+
         release {
             minifyEnabled false
+            packagingOptions {
+               doNotStrip '**/*.so'
+           } 
         }
     }
 
+
 }
+
 
 dependencies {
     implementation files('libs/in-app-purchasing-2.0.76.jar')

@@ -9,6 +9,7 @@ import com.android.build.OutputFile
 
 android {
     compileSdkVersion 29
+    ndkVersion "21.3.6528147"
 
     defaultConfig {
         applicationId "{{ config.package }}"
@@ -38,18 +39,29 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            packagingOptions {
+                doNotStrip "**/*.so"
+            }
+        }
+
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
+            packagingOptions {
+                doNotStrip "**/*.so"
+            }
         }
     }
+
 
     project.ext.versionCodes = ['armeabi-v7a': 0, 'arm64-v8a': 1, 'x86_64': 8]
 
     android.applicationVariants.all { variant ->
         // assign different version code for each output
         variant.outputs.each { output ->
-            output.versionCode =
+            output.versionCodeOverride =
                     project.ext.versionCodes.get(output.getFilter(com.android.build.OutputFile.ABI), 0) * 100000000 + android.defaultConfig.versionCode;
 
             output.outputFileName =

@@ -6,7 +6,7 @@ set -e
 ROOT="$(dirname $(readlink -f $0))"
 
 pushd "$ROOT"
-./build.py --platform android --arch x86_64
+./build.py --platform android --arch x86_64 rebuild rapt
 popd
 
 rm -f "$ROOT/renpy/rapt/Sdk"

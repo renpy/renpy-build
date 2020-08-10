@@ -107,6 +107,10 @@ public class PlayStore extends Store {
             SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
             params.setSkusList(skus).setType(BillingClient.SkuType.INAPP);
 
+            for (String s : skus) {
+                Log.i("iap", "Trying to get prices for " + s);
+            }
+
             billingClient.querySkuDetailsAsync(params.build(),
                     new SkuDetailsResponseListener() {
                         @Override
@@ -126,7 +130,7 @@ public class PlayStore extends Store {
 
         } catch (Exception e) {
             finished = true;
-            Log.e("iap", "beginPurchase failed.", e);
+            Log.e("iap", "updatePrices failed.", e);
         }
     }
 
