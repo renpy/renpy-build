@@ -62,6 +62,8 @@ public class PlayStore extends Store {
                     }
                 }
             }
+
+            finished = true;
         }
     };
 
