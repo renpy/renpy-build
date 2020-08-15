@@ -24,5 +24,16 @@ if [ ! -e pygame_sdl2 ]; then
     ln -s $BASE/pygame_sdl2 .
 fi
 
+# Delete the generated files.
+rm -Rf renpy/module/gen-static
+rm -Rf renpy/module/gen3-static
+rm -Rf renpy/module/gen
+rm -Rf renpy/module/gen3
+
+rm -Rf pygame_sdl2/gen-static
+rm -Rf pygame_sdl2/gen3-static
+rm -Rf pygame_sdl2/gen
+rm -Rf pygame_sdl2/gen3
+
 ./run.sh launcher quit
 popd
