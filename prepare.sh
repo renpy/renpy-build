@@ -29,7 +29,7 @@ sudo apt-get install -y libssl-dev libbz2-dev
 sudo apt-get install -y mingw-w64 autoconf
 
 # Needed for mac
-sudo DEBIAN_FRONTEND=noninteractive apt install -y cmake clang libxml2-dev llvm
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
 
 
 # Install the standard set of packages needed to build Ren'Py.
