@@ -31,6 +31,9 @@ sudo apt-get install -y mingw-w64 autoconf
 # Needed for mac
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
 
+# Needed for web
+sudo apt-get install -y quilt
+
 
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt-get install -y \
