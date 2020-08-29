@@ -36,7 +36,17 @@ static void take_argv0(char *argv0) {
 
 #ifdef MS_WINDOWS
     // This removes the .exe suffix.
-    pyname[strlen(pyname) - 4] = 0;
+    if (strlen(pyname) > 4) {
+       pyname[strlen(pyname) - 4] = 0;
+    }
+
+    // This removes the -32 suffix, if it exists.
+    if (strlen(pyname) > 3) {
+        if (!strcmp("-32", &pyname[strlen(pyname) - 3])) {
+            pyname[strlen(pyname) - 3] = 0;
+        }
+    }
+
 #endif
 
     strncat(pyname, ".py", pyname_size);
