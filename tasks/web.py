@@ -20,10 +20,7 @@ def links(c):
 
 @task(kind="host-python", platforms="web")
 def download_emsdk(c):
-    README = c.path("{{ renpyweb }}/README.md").read_text("utf-8")
-
-    m = re.search(r"\./emsdk install ([\d\.]+)", README)
-    c.var("emsdk_version", m.group(1))
+    c.var("emsdk_version", "2.0.2")
 
     c.chdir("{{ renpyweb }}")
     c.run("git clone https://github.com/emscripten-core/emsdk/")
@@ -56,6 +53,6 @@ def read_environment(c):
 @task(kind="host-python", platforms="web", always=True)
 def build(c):
     environ = read_environment(c)
-    subprocess.check_call("make cythonemscriptenclean", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)    
+    subprocess.check_call("make cythonobjclean", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
     subprocess.check_call("nice make EMCC='ccache emcc'", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
     subprocess.check_call("scripts/install_in_renpy.sh", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
