@@ -6,7 +6,7 @@ def clean(c):
     c.clean()
 
 
-@task(kind="host-python", platforms="all", always=True)
+@task(kind="host-python", always=True)
 def gen_static(c):
 
     c.chdir("{{ renpy }}/module")
