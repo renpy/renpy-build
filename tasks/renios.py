@@ -14,7 +14,6 @@ def lipo_and_strip(c, namefilter):
 
     paths = [
         c.path("{{ tmp }}/install.ios-arm64/lib"),
-        c.path("{{ tmp }}/install.ios-armv7s/lib"),
         ]
 
     c.var("paths", paths, expand=False)
@@ -49,6 +48,7 @@ def lipo_and_strip(c, namefilter):
     # debug.
 
     paths = [
+        c.path("{{ tmp }}/install.ios-arm64/lib"),
         c.path("{{ tmp }}/install.ios-x86_64/lib"),
         ]
 
