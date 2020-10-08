@@ -109,9 +109,9 @@ def build(c):
 
     c.run("git clone https://github.com/tpoechtrager/cctools-port")
     c.chdir("cctools-port/usage_examples/ios_toolchain")
-    c.run("git checkout 606eb7dcb21ea90df1d36cd6b67e04c23cafe705")
+    # c.run("git checkout 606eb7dcb21ea90df1d36cd6b67e04c23cafe705")
 
-    c.run("./build.sh {{tars}}/iPhoneOS13.2.sdk.tar.gz {{ c.arch }}")
+    c.run("./build.sh {{tars}}/iPhoneOS14.0.sdk.tar.gz {{ c.arch }}")
 
     c.chdir("{{ cross }}")
     c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
@@ -137,7 +137,7 @@ def build(c):
     with open(c.path("build.sh"), "w") as f:
         f.write(data)
 
-    c.run("./build.sh {{tars}}/iPhoneSimulator13.2.sdk.tar.gz {{ c.arch }}")
+    c.run("./build.sh {{tars}}/iPhoneSimulator14.0.sdk.tar.gz {{ c.arch }}")
 
     c.chdir("{{ cross }}")
     c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")

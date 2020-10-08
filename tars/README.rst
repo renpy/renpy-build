@@ -17,8 +17,8 @@ Xcode
 
 Created as described at https://github.com/tpoechtrager/osxcross#packaging-the-sdk .
 
-* iPhoneOS13.2.sdk.tar.gz
-* iPhoneSimulator13.2.sdk.tar.gz
+* iPhoneOS14.0.sdk.tar.gz
+* iPhoneSimulator14.0.sdk.tar.gz
 
 Run ./ios_toolchains.sh /path/to/Xcode.app
 
