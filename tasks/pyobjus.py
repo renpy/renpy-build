@@ -13,23 +13,28 @@ def annotate(c):
 def unpack(c):
     c.clean()
 
-    c.var("version", version)
-    c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
+    # c.var("version", version)
+    # c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
+    c.run("git clone https://github.com/kivy/pyobjus pyobjus")
+    c.chdir("pyobjus")
+    c.run("git checkout ea4ef7c96dcc83d5f1f18d4b15f3709f32c47a24")
+
 
 
 @task(kind="host-python")
 def host_unpack(c):
     c.clean()
 
-    c.var("version", version)
-    c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
+    c.run("git clone https://github.com/kivy/pyobjus pyobjus")
+    c.chdir("pyobjus")
+    c.run("git checkout ea4ef7c96dcc83d5f1f18d4b15f3709f32c47a24")
 
 
 @task(kind="python", platforms="mac,ios")
 def build(c):
 
     c.var("version", version)
-    c.chdir("pyobjus-{{version}}/pyobjus")
+    c.chdir("pyobjus/pyobjus")
 
     with open(c.path("config.pxi"), "w") as f:
 
@@ -70,7 +75,7 @@ pyobjus.pyobjus pyobjus.c
 def host_build(c):
 
     c.var("version", version)
-    c.chdir("pyobjus-{{version}}/pyobjus")
+    c.chdir("pyobjus/pyobjus")
 
     c.run("""install -d {{ pytmp }}/pyobjus/pyobjus""")
     c.run("""install dylib_manager.py  __init__.py  objc_py_types.py  protocols.py {{ pytmp }}/pyobjus/pyobjus""")
