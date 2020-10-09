@@ -8,7 +8,7 @@ def copytree(c):
     c.rmtree("{{ renios }}/prototype/prebuilt")
 
 
-def lipo_and_strip(c, namefilter):
+def lipo_and_strip(c, namefilter, strip=True):
     c.var("lipo", "{{ tmp }}/cross.ios-arm64/bin/arm-apple-darwin11-lipo")
     c.var("strip", "{{ tmp }}/cross.ios-arm64/bin/arm-apple-darwin11-strip")
 
@@ -43,7 +43,8 @@ def lipo_and_strip(c, namefilter):
 
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/release/{{ i }}"), 0o755)
 
-        c.run("{{ strip }} -S {{ renios }}/prototype/prebuilt/release/{{ i }}", quiet=True)
+        if strip:
+            c.run("{{ strip }} -S {{ renios }}/prototype/prebuilt/release/{{ i }}", quiet=True)
 
     # debug.
 
@@ -79,8 +80,9 @@ def lipo_and_strip(c, namefilter):
 
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
 
-        c.run("{{ strip }} -S {{ renios }}/prototype/prebuilt/debug/{{ i }}", quiet=True)
-
+        if strip:
+            c.run("{{ strip }} -S {{ renios }}/prototype/prebuilt/debug/{{ i }}", quiet=True)
+ 
 
 @task(kind="host-python", platforms="ios")
 def lipo(c):
@@ -89,8 +91,7 @@ def lipo(c):
 
 @task(kind="host-python", platforms="ios", always=True)
 def lipo_renpy(c):
-    lipo_and_strip(c, lambda n : "librenpy" in n)
-    lipo_and_strip(c, lambda n : "live2d" in n)
+    lipo_and_strip(c, lambda n : "librenpy" in n, strip=False)
 
 
 @task(kind="host-python", platforms="ios", always=True, pythons="2")
