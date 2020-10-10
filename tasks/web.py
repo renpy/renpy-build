@@ -3,6 +3,7 @@ import subprocess
 import os
 import re
 
+
 @task(kind="host-python", platforms="web")
 def clean(c):
     c.rmtree("{{ renpyweb }}/build")
@@ -10,13 +11,15 @@ def clean(c):
     c.rmtree("{{ renpyweb }}/toolchain")
     c.rmtree("{{ renpyweb }}/emsdk")
 
-@task(kind="host-python", platforms="web") 
+
+@task(kind="host-python", platforms="web")
 def links(c):
     c.unlink("{{ renpyweb }}/renpy")
     c.unlink("{{ renpyweb }}/pygame_sdl2")
 
     c.symlink("{{ renpy }}", "{{ renpyweb }}/renpy")
     c.symlink("{{ pygame_sdl2 }}", "{{ renpyweb }}/pygame_sdl2")
+
 
 @task(kind="host-python", platforms="web")
 def download_emsdk(c):
@@ -28,10 +31,20 @@ def download_emsdk(c):
     c.run("./emsdk install {{ emsdk_version }}")
     c.run("./emsdk activate {{ emsdk_version }}")
 
+
 @task(kind="host-python", platforms="web")
 def patch_emsdk(c):
     c.chdir("{{ renpyweb }}/emsdk/upstream/emscripten/")
     c.patch("{{ renpyweb }}/patches/emscripten.patch")
+
+
+@task(kind="host-python", platforms="web")
+def force_python3(c):
+    p = c.path("{{ renpyweb }}/python-emscripten/2.7.18/package-pythonhome.sh")
+    text = p.read_text()
+    text = text.replace('FILE_PACKAGER="python ', 'FILE_PACKAGER="python3 ')
+    p.write_text(text)
+
 
 def read_environment(c):
     """
@@ -44,11 +57,12 @@ def read_environment(c):
     bash = subprocess.check_output([ str(c.path("{{ renpyweb }}/emsdk/emsdk")), "construct_env" ], env=rv, text=True)
 
     for l in bash.split("\n"):
-        m = re.match(r'export (\w+)=\"(.*?)\";$', l)
+        m = re.match(r'export (\w+)=\"(.*?)\";?$', l)
         if m:
             rv[m.group(1)] = m.group(2)
 
     return rv
+
 
 @task(kind="host-python", platforms="web", always=True)
 def build(c):
