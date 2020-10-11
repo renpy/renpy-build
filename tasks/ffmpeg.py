@@ -77,6 +77,10 @@ def build(c):
         --enable-w32threads
 {% endif %}
 
+{% if c.platform == "ios" and c.arch == "x86_64" %}
+        --disable-asm
+{% endif %}
+
         --enable-cross-compile
         --enable-runtime-cpudetect
 
