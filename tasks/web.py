@@ -38,12 +38,23 @@ def patch_emsdk(c):
     c.patch("{{ renpyweb }}/patches/emscripten.patch")
 
 
-@task(kind="host-python", platforms="web")
-def force_python3(c):
-    p = c.path("{{ renpyweb }}/python-emscripten/2.7.18/package-pythonhome.sh")
-    text = p.read_text()
-    text = text.replace('FILE_PACKAGER="python ', 'FILE_PACKAGER="python3 ')
-    p.write_text(text)
+@task(kind="host-python", platforms="web", always=True)
+def clean_python_emscripten(c):
+    newmakefile = c.path("{{ renpyweb }}/Makefile")
+    oldmakefile = c.path("{{ build }}/Makefile")
+
+    new = newmakefile.read_text()
+    if not oldmakefile.exists():
+        old = ''
+    else:
+        old = oldmakefile.read_text()
+
+    if new != old:
+        c.unlink("{{ renpyweb }}/python-emscripten.fossil")
+        c.rmtree("{{ renpyweb }}/python-emscripten")
+        c.rmtree("{{ renpyweb }}/build")
+        c.rmtree("{{ renpyweb }}/install")
+        oldmakefile.write_text(new)
 
 
 def read_environment(c):
