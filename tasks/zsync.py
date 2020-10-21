@@ -17,6 +17,7 @@ def build(c):
     c.var("version", version)
     c.chdir("zsync-{{ version }}")
 
+    c.patch("zsync-config-guess-sub.diff", p=1)
     c.patch("zsync-no-isastty.diff", p=1)
     c.patch("zsync-compress-5.diff", p=0)
 
