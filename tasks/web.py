@@ -23,7 +23,7 @@ def links(c):
 
 @task(kind="host-python", platforms="web")
 def download_emsdk(c):
-    c.var("emsdk_version", "2.0.2")
+    c.var("emsdk_version", "2.0.7")
 
     c.chdir("{{ renpyweb }}")
     c.run("git clone https://github.com/emscripten-core/emsdk/")
@@ -50,10 +50,13 @@ def clean_python_emscripten(c):
         old = oldmakefile.read_text()
 
     if new != old:
-        c.unlink("{{ renpyweb }}/python-emscripten.fossil")
-        c.rmtree("{{ renpyweb }}/python-emscripten")
-        c.rmtree("{{ renpyweb }}/build")
-        c.rmtree("{{ renpyweb }}/install")
+
+        if int(os.environ.get("RENPYWEB_CLEAN", "1")):
+            c.unlink("{{ renpyweb }}/python-emscripten.fossil")
+            c.rmtree("{{ renpyweb }}/python-emscripten")
+            c.rmtree("{{ renpyweb }}/build")
+            c.rmtree("{{ renpyweb }}/install")
+
         oldmakefile.write_text(new)
 
 
