@@ -3,4 +3,4 @@
 set -e
 
 ./build.py --platform ios
-./renpy/run.sh ./renpy/launcher ios_populate ./renpy/the_question ./renios/prototype/
+./renpy/run.sh ./renpy/launcher ios_populate ${1:-./renpy/the_question} ./renios/prototype/
