@@ -115,6 +115,11 @@ if RENPY_PLATFORM.startswith("android-"):
 
     print("Logging start.")
 
+# iOS Startup ##############################################################
+
+if RENPY_PLATFORM.startswith("ios-"):
+    import iossupport
+
 # Mac Argv Emulation ###########################################################
 # Taken from py2app.
 
