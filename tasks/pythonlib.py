@@ -1,6 +1,8 @@
 from renpybuild.model import task
 
 import shutil
+import zipfile
+import pathlib
 
 PYTHON27_MODULES = """
 genericpath.pyo
@@ -197,8 +199,7 @@ six.pyo
 
 """
 
-
-def pyo_copy(src, dst):
+def pyo_copy(src, dst, files):
     """
     Copies the pyo and pem files from `src` to `dst`.
 
@@ -207,18 +208,19 @@ def pyo_copy(src, dst):
 
     if src.is_dir():
         for i in src.iterdir():
-            pyo_copy(i, dst / i.name)
+            pyo_copy(i, f"{dst}/{i.name}", files)
         return
 
     if not (str(src).endswith(".pyo") or str(src).endswith(".pem")):
         return
 
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy(src, dst)
+    files[str(dst)] = src
 
 
 @task(kind="host-python", pythons="2", always=True)
 def python2(c):
+
+    files = {}
 
     search = [
         c.path("{{ install }}/lib/{{ pythonver }}"),
@@ -227,9 +229,8 @@ def python2(c):
         c.path("{{ pytmp }}/pyobjus"),
         ]
 
-    dist = c.path("{{ distlib }}/{{ pythonver }}")
+    dist = c.path("{{ distlib }}/{{ pythonver_nodot }}.zip")
 
-    c.clean("{{ distlib }}/{{ pythonver }}")
     c.run("{{ hostpython }} -OO -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for i in PYTHON27_MODULES.split():
@@ -241,9 +242,12 @@ def python2(c):
         else:
             raise Exception(f"Can't find {i}.")
 
-        dst = dist / i
-        pyo_copy(src, dst)
+        pyo_copy(src, i, files)
 
-    c.copy("{{ runtime }}/site.py", "{{ distlib }}/{{ pythonver }}/site.py")
-    c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
+    c.run("{{ hostpython }} -OO -m compileall {{ runtime }}/site.py")
+    pyo_copy(c.path("{{ runtime }}/site.pyo"), "site.pyo", files)
+
+    with zipfile.ZipFile(file=dist, mode="w", compression=zipfile.ZIP_DEFLATED) as modules_zipfile:
+        for dstfile in sorted(files.keys()):
+            modules_zipfile.write(files[dstfile], dstfile)
 
