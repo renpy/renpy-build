@@ -8,7 +8,7 @@ REFS=$ROOT
 BASE="$ROOT"
 
 # Needed to build things.
-sudo apt-get install -y git build-essential ccache python-dev python3-dev unzip
+sudo apt-get install -y git build-essential ccache python-dev-is-python2 python3-dev unzip
 
 # Needed to install python2 pip
 sudo apt-get install -y curl
@@ -37,7 +37,7 @@ sudo apt-get install -y quilt
 
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt-get install -y \
-    python-dev libavcodec-dev libavformat-dev \
+    python-dev-is-python2 libavcodec-dev libavformat-dev \
     libavresample-dev libswresample-dev libswscale-dev libfreetype6-dev libglew1.6-dev \
     libfribidi-dev libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev \
     libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-turbo8-dev
