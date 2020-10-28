@@ -7,8 +7,10 @@ version = "2.7.18"
 def annotate(c):
     if c.python == "2":
         c.var("pythonver", "python2.7")
+        c.var("pythonver_nodot", "python27")
     else:
         c.var("pythonver", "python3.8")
+        c.var("pythonver_nodot", "python38")
 
     c.include("{{ install }}/include/{{ pythonver }}")
 
