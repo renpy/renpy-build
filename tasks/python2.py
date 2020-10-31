@@ -181,7 +181,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 def pip(c):
     c.run("{{ install }}/bin/hostpython2 -s -m ensurepip")
     c.run("{{ install }}/bin/hostpython2 -s -m pip install --upgrade future==0.18.2 six==1.12.0 rsa==3.4.2 pyasn1==0.4.2")
-
+    c.run("{{ install }}/bin/hostpython2 -s -m pip install --upgrade urllib3==1.22 certifi idna==2.6 requests==2.20.0")
 
 # @task(kind="python", pythons="2", always=True)
 # def sitecustomize(c):

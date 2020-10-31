@@ -185,14 +185,22 @@ android
 jnius/
 pyobjus/
 
+urllib3/
+idna/
+certifi/
+chardet/
+requests/
+
 iossupport.pyo
 
 six.pyo
+
 """
+
 
 def pyo_copy(src, dst):
     """
-    Copies the pyo files from `src` to `dst`.
+    Copies the pyo and pem files from `src` to `dst`.
 
     `src` and `dst` may be either directories or files.
     """
@@ -202,7 +210,7 @@ def pyo_copy(src, dst):
             pyo_copy(i, dst / i.name)
         return
 
-    if not str(src).endswith(".pyo"):
+    if not (str(src).endswith(".pyo") or str(src).endswith(".pem")):
         return
 
     dst.parent.mkdir(parents=True, exist_ok=True)
