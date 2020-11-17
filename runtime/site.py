@@ -60,6 +60,20 @@ for fn in PYTHON_SEARCH:
         sys.executable = fn
         break
 
+# And the same thing for Ren'Py.
+
+RENPY_SEARCH = [
+    os.path.join(base, "lib", RENPY_PLATFORM, "renpy"),
+    os.path.join(base, "lib", RENPY_PLATFORM, "renpy.exe"),
+    os.path.join(base, "renpy"),
+    os.path.join(base, "renpy.exe"),
+    ]
+
+for fn in RENPY_SEARCH:
+    if os.path.exists(fn):
+        sys.renpy_executable = fn
+        break
+
 # Submodule importing ##########################################################
 
 # Allow Python to import submodules.
