@@ -54,6 +54,8 @@ then it will clone Ren'Py and pygame_sdl2. It will also create a python
 virtual environment with the tools in it. If this completes successfully,
 you are ready to build.
 
+Finally, a number of files need to be downloaded from third parties. These
+are listed in tars/README.rst.
 
 Building
 ---------
