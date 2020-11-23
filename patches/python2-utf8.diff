@@ -1,12 +1,30 @@
---- Python-2.7.17/Python/pythonrun.c	2019-10-19 14:38:44.000000000 -0400
-+++ "Python-2.7.17/Python/pythonrun copy.c"	2020-06-15 21:14:50.100720983 -0400
+diff -ru Python-2.7.18/Objects/unicodeobject.c Python-2.7.18.new/Objects/unicodeobject.c
+--- Python-2.7.18/Objects/unicodeobject.c	2020-04-19 17:13:39.000000000 -0400
++++ Python-2.7.18.new/Objects/unicodeobject.c	2020-11-22 19:11:02.201249812 -0500
+@@ -2228,6 +2228,13 @@
+                     }
+                     /* Fall through: handles isolated high surrogates */
+                 }
++
++                /* Handle Python 3-style surrogate escapes. */
++                if (0xDC80 <= ch && ch <= 0xDCFF) {
++                    *p++ = (char)(ch & 0xff);
++                    continue;
++                }
++
+                 *p++ = (char)(0xe0 | (ch >> 12));
+                 *p++ = (char)(0x80 | ((ch >> 6) & 0x3f));
+                 *p++ = (char)(0x80 | (ch & 0x3f));
+diff -ru Python-2.7.18/Python/pythonrun.c Python-2.7.18.new/Python/pythonrun.c
+--- Python-2.7.18/Python/pythonrun.c	2020-04-19 17:13:39.000000000 -0400
++++ Python-2.7.18.new/Python/pythonrun.c	2020-11-22 18:49:06.014578088 -0500
 @@ -290,6 +290,13 @@
      if (!Py_NoSiteFlag)
          initsite(); /* Module site */
  
 +
 +    icodeset = codeset = "utf-8";
-+    errors = "surrogatescape";
++    errors = "surrogateescape";
 +    free_codeset = 0;
 +    overridden = 1;
 +
