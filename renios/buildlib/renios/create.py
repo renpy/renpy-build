@@ -3,8 +3,9 @@ import shutil
 import os
 import plistlib
 import re
+import sys
 
-RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__.decode(sys.getfilesystemencoding())))))
 
 
 def replace_name(o, template, replacement, path=()):

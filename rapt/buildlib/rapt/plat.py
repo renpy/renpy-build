@@ -8,6 +8,7 @@ windows = False
 macintosh = False
 linux = False
 
+import sys
 import os
 import platform
 import traceback
@@ -141,9 +142,8 @@ else:
 
     gradlew = "project/gradlew"
 
-
 # The path to RAPT.
-RAPT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RAPT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__.decode(sys.getfilesystemencoding())))))
 
 
 def path(path, relative=False):
