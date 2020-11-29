@@ -303,7 +303,7 @@ def link_windows(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mwindows
+    -mconsole
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
@@ -330,7 +330,6 @@ def link_windows(c):
 
     elif c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
-
 
 
 @task(kind="python", always=True, platforms="ios")

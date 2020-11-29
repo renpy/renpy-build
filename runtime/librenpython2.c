@@ -18,10 +18,34 @@ static char *exedir;
 /* The name of the .py file to use */
 static char *pyname;
 
+
+/**
+ * Returns true if every character in a is equivalent to the characters in b0 or b1,
+ * and the strings are of the same length. (This exists because strcasecmp considers
+ * locale, and we don't want that.)
+ */
+static int compare(const char *a, const char *b0, const char *b1) {
+    while (1) {
+        if (*a != *b0 && *a != *b1) {
+            return 0;
+        }
+
+        if (!*a) {
+            return 1;
+        }
+
+        a += 1;
+        b0 += 1;
+        b1 += 1;
+    }
+}
+
 /**
  * This takes argv0 and sets the exedir and pyname variables.
  */
 static void take_argv0(char *argv0) {
+
+    printf("argv0: %s\n", argv0);
 
     Py_SetProgramName(argv0);
 
@@ -31,25 +55,34 @@ static void take_argv0(char *argv0) {
     char *exename = basename(argv0);
     int pyname_size = strlen(exename) + 3;
 
-    pyname = (const char *) malloc(pyname_size);
+    pyname = (char *) malloc(pyname_size);
     strncpy(pyname, exename, pyname_size);
 
 #ifdef MS_WINDOWS
     // This removes the .exe suffix.
     if (strlen(pyname) > 4) {
-       pyname[strlen(pyname) - 4] = 0;
+        if (compare(&pyname[strlen(pyname) - 4], ".exe", ".EXE")) {
+            pyname[strlen(pyname) - 4] = 0;
+        }
     }
+
+    printf("after .exe: %s\n", pyname);
 
     // This removes the -32 suffix, if it exists.
     if (strlen(pyname) > 3) {
-        if (!strcmp("-32", &pyname[strlen(pyname) - 3])) {
+        if (compare(&pyname[strlen(pyname) - 3], "-32", "-32")) {
             pyname[strlen(pyname) - 3] = 0;
         }
     }
 
+    printf("after -32: .py: %s\n", pyname);
+
 #endif
 
     strncat(pyname, ".py", pyname_size);
+
+    printf("after .py: %s\n", pyname);
+    sleep(5);
 
     exedir = strdup(dirname(argv0));
 

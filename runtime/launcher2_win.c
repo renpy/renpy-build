@@ -16,6 +16,8 @@ int main(int argc, char **argv) {
     snprintf(path, 4096, "%s\\lib\\" PLATFORM "-" ARCH, dirname(base));
     free(base);
 
+    printf("%s\n", path);
+
     SetDllDirectory(path);
     library = LoadLibrary("librenpython.dll");
 
