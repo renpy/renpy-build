@@ -303,7 +303,7 @@ def link_windows(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mconsole
+    -mwindows
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
