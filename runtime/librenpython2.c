@@ -45,8 +45,6 @@ static int compare(const char *a, const char *b0, const char *b1) {
  */
 static void take_argv0(char *argv0) {
 
-    printf("argv0: %s\n", argv0);
-
     Py_SetProgramName(argv0);
 
     // This copy is required because dirname can change its arguments.
@@ -66,8 +64,6 @@ static void take_argv0(char *argv0) {
         }
     }
 
-    printf("after .exe: %s\n", pyname);
-
     // This removes the -32 suffix, if it exists.
     if (strlen(pyname) > 3) {
         if (compare(&pyname[strlen(pyname) - 3], "-32", "-32")) {
@@ -75,14 +71,9 @@ static void take_argv0(char *argv0) {
         }
     }
 
-    printf("after -32: .py: %s\n", pyname);
-
 #endif
 
     strncat(pyname, ".py", pyname_size);
-
-    printf("after .py: %s\n", pyname);
-    sleep(5);
 
     exedir = strdup(dirname(argv0));
 
