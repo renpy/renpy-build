@@ -40,6 +40,7 @@ static int compare(const char *a, const char *b0, const char *b1) {
     }
 }
 
+
 /**
  * This takes argv0 and sets the exedir and pyname variables.
  */
@@ -50,13 +51,25 @@ static void take_argv0(char *argv0) {
     // This copy is required because dirname can change its arguments.
     argv0 = strdup(argv0);
 
-    char *exename = basename(argv0);
+    // Basename. This seems to be broken in certain locales, so it's
+    // reimplemented here.
+    char *exename = argv0 + strlen(argv0) -1;
+    while (exename > argv0) {
+        if (*exename == '\\') {
+            *exename = 0;
+            exename += 1;
+            break;
+        }
+        exename -= 1;
+    }
+
     int pyname_size = strlen(exename) + 3;
 
     pyname = (char *) malloc(pyname_size);
     strncpy(pyname, exename, pyname_size);
 
 #ifdef MS_WINDOWS
+
     // This removes the .exe suffix.
     if (strlen(pyname) > 4) {
         if (compare(&pyname[strlen(pyname) - 4], ".exe", ".EXE")) {
@@ -76,6 +89,11 @@ static void take_argv0(char *argv0) {
     strncat(pyname, ".py", pyname_size);
 
     exedir = strdup(dirname(argv0));
+    if (exename == argv0) {
+        exedir = strdup("");
+    } else {
+        exedir = strdup(argv0);
+    }
 
     free(argv0);
 }
@@ -114,7 +132,7 @@ static char *join(const char *p1, const char *p2) {
  * This comnbines exedir with the optional p1 and p2. It returns 1 if the
  * file exists, and 0 otherwise.
  */
-static exists(const char *p1, const char *p2) {
+static int exists(const char *p1, const char *p2) {
     char *path = join(p1, p2);
 
     FILE *f = fopen(path, "rb");
