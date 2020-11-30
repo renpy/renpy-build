@@ -90,7 +90,7 @@ static void take_argv0(char *argv0) {
 
     exedir = strdup(dirname(argv0));
     if (exename == argv0) {
-        exedir = strdup("");
+        exedir = strdup(".");
     } else {
         exedir = strdup(argv0);
     }
