@@ -247,3 +247,7 @@ def python2(c):
     c.copy("{{ runtime }}/site.py", "{{ distlib }}/{{ pythonver }}/site.py")
     c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
 
+    c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
+    with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
+        f.write("lib-dynload needs to exist to stop an exec_prefix error.\n")
+
