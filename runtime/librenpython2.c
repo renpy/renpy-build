@@ -12,6 +12,8 @@ void init_librenpy(void);
 #define EXPORT
 #endif
 
+/* #define DEBUG_EXISTS */
+
 /* The name of the directory containing the exe. */
 static char *exedir;
 
@@ -55,7 +57,7 @@ static void take_argv0(char *argv0) {
     // reimplemented here.
     char *exename = argv0 + strlen(argv0) -1;
     while (exename > argv0) {
-        if (*exename == '\\') {
+        if (*exename == '\\' || *exename == '/') {
             *exename = 0;
             exename += 1;
             break;
