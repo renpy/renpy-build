@@ -10,9 +10,6 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/ffmpeg-{{version}}.tar.gz")
 
-    c.chdir("ffmpeg-{{ version }}")
-    c.patch("ffmpeg-4.3.1-nobcrypt.diff")
-
 
 @task()
 def build(c):
