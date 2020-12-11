@@ -1,5 +1,6 @@
 #define WINDOWS_LEAN_AND_MEAN
 #include <windows.h>
+#include <versionhelpers.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +12,11 @@ int main(int argc, char **argv) {
     char *base;
     char path[4096];
     HMODULE library;
+
+    if (!IsWindowsVistaOrGreater()) {
+        MessageBox(NULL, "This program requires Windows Vista or greater to run.", "Version Not Supported", MB_OK);
+        return 0;
+    }
 
     base = strdup(argv[0]);
     snprintf(path, 4096, "%s\\lib\\" PLATFORM "-" ARCH, dirname(base));
