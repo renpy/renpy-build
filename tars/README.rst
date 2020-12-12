@@ -31,8 +31,17 @@ Downloaded from https://developer.android.com/ndk/downloads .
 
 
 Live2D Cubism SDK for Native
------------------
+----------------------------
 
 * CubismSDKforNative-4-r.1.zip
 
 Downloaded from https://www.live2d.com/en/download/cubism-sdk/ .
+
+Steamworks SDK
+--------------
+
+* steamworks_sdk_150.zip
+
+Downloaded from https://partner.steamgames.com/doc/sdk , which is only
+available to Steam partners. Ren'Py will build without the Steamworks
+SDK.
