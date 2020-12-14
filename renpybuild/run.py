@@ -159,7 +159,7 @@ def build_environment(c):
         c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
         c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++-fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++ -fPIC -O3")
         c.env("CPP", "ccache {{ crossbin }}gcc -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
@@ -173,7 +173,7 @@ def build_environment(c):
         c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
         c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++-fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++ -fPIC -O3")
         c.env("CPP", "ccache {{ crossbin }}gcc -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")

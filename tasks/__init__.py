@@ -42,4 +42,6 @@ from . import pythonlib
 from . import renpysh
 from . import renios
 
+from . import steam
+
 from . import web
