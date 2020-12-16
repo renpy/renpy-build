@@ -12,6 +12,7 @@ class IconMaker(object):
 
         if not pygame_sdl2.display.get_surface():
             pygame_sdl2.display.init()
+            pygame_sdl2.display.hint("PYGAME_SDL2_AVOID_GL", "1")
             pygame_sdl2.display.set_mode((640, 480))
             pygame_sdl2.event.pump()
 
@@ -113,9 +114,4 @@ class IconMaker(object):
 
 
 if __name__ == "__main__":
-
-    pygame_sdl2.display.init()
-    pygame_sdl2.display.set_mode((640, 480))
-    pygame_sdl2.event.pump()
-
     im = IconMaker("/home/tom/ab/renpy/the_question")
