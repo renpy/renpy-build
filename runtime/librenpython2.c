@@ -12,7 +12,7 @@ void init_librenpy(void);
 #define EXPORT
 #endif
 
-/* #define DEBUG_EXISTS */
+/* #define DEBUG_EXISTS /* */
 
 /* The name of the directory containing the exe. */
 static char *exedir;
@@ -90,7 +90,7 @@ static void take_argv0(char *argv0) {
 
     strncat(pyname, ".py", pyname_size);
 
-    exedir = strdup(dirname(argv0));
+    exedir = strdup(argv0);
     if (exename == argv0) {
         exedir = strdup(".");
     } else {
