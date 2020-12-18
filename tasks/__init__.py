@@ -42,6 +42,7 @@ from . import pythonlib
 from . import renpysh
 from . import renios
 
+from . import usb
 from . import steam
 
 from . import web
