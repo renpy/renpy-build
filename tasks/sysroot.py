@@ -27,6 +27,7 @@ PACKAGES = [
     'libsamplerate0-dev',
     'libsndio-dev',
     'libxkbcommon-dev',
+    "libusb-1.0-0-dev",
 ]
 
 
@@ -84,6 +85,7 @@ RASPI_PACKAGES = [
     'libsamplerate0-dev',
     'libsndio-dev',
     'libxkbcommon-dev',
+    'libusb-1.0-0-dev',
 ]
 
 

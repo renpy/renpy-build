@@ -37,10 +37,13 @@ def build(c):
     --disable-shared
     --prefix="{{ install }}"
 
-    --disable-dependency-tracking
     --disable-wasapi
     --disable-render-metal
     --disable-jack
+
+{% if c.platform in [ "linux", "windows", "mac" ] %}
+    --enable-hidapi
+{% endif %}
 
 {% if c.platform == "android" %}
     --disable-video-wayland
