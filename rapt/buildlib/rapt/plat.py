@@ -37,7 +37,6 @@ def __(s):
 def set_win32_java_home():
     """
     When run on Win32, this is used to set the JAVA_HOME environment variable.
-    It uses the
     """
 
     if "JAVA_HOME" in os.environ:
@@ -87,6 +86,19 @@ def set_win32_java_home():
             return
 
 
+def set_mac_java_home():
+    """
+    When run on macOS, this is used to set the JAVA_HOME environment variable.
+    """
+
+    if "JAVA_HOME" in os.environ:
+        return
+
+    java_home = subprocess.check_output("/usr/libexec/java_home -v 1.8", shell=True).strip()
+    if java_home:
+        os.environ["JAVA_HOME"] = java_home
+
+
 def maybe_java_home(s):
     """
     If JAVA_HOME is in the environ, return $JAVA_HOME/bin/s. Otherwise, return
@@ -119,14 +131,17 @@ if platform.win32_ver()[0]:
 elif platform.mac_ver()[0]:
     macintosh = True
 
+    try:
+        set_mac_java_home()
+    except:
+        traceback.print_exc()
+
     adb = "platform-tools/adb"
     sdkmanager = "tools/bin/sdkmanager"
 
     java = maybe_java_home("java")
     javac = maybe_java_home("javac")
     keytool = maybe_java_home("keytool")
-
-    os.environ.setdefault("JAVA_HOME", "/usr")
 
     gradlew = "project/gradlew"
 
