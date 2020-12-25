@@ -147,9 +147,9 @@ def configure(interface, directory, default_name=None, default_version=None):
             ], config.store)
 
     if config.store in [ "play", "none" ]:
-        config.expansion = interface.choice(__("Would you like to create an expansion APK?"), [
+        config.expansion = interface.choice(__("Would you like to create an expansion APK?") + "\n\n" + __("Automatically installing expansion APKs {a=https://issuetracker.google.com/issues/160942333}may not work on Android 11{/a}."), [
             (False, __("No. Size limit of 100 MB on Google Play, but can be distributed through other stores and sideloaded.")),
-            (True, __("Yes. 2 GB size limit, but won't work outside of Google Play. (Read the documentation to get this to work.)"))
+            (True, __("Yes. 2 GB size limit, but won't work outside of Google Play. (Read the documentation to get this to work)"))
             ], config.expansion)
 
     if not plat.renpy:
