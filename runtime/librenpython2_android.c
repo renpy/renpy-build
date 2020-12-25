@@ -158,7 +158,7 @@ int SDL_main(int argc, char **argv) {
     SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		return 1;
+	    return 1;
 	}
 
 	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
@@ -176,7 +176,8 @@ int SDL_main(int argc, char **argv) {
 	if (!rwops) goto done;
 
 	presplash = IMG_Load_RW(rwops, 1);
-	if (!presplash) goto done;
+
+    if (!presplash) goto done;
 
 	presplash2 = SDL_ConvertSurfaceFormat(presplash, SDL_PIXELFORMAT_RGB888, 0);
 	Uint8 *pp = (Uint8 *) presplash2->pixels;
@@ -200,9 +201,12 @@ done:
 		SDL_FreeSurface(presplash);
 	}
 
-	SDL_UpdateWindowSurface(window);
-
-	SDL_GL_MakeCurrent(NULL, NULL);
+    SDL_PumpEvents();
+    SDL_UpdateWindowSurface(window);
+    SDL_PumpEvents();
+    SDL_UpdateWindowSurface(window);
+    SDL_PumpEvents();
+    SDL_GL_MakeCurrent(NULL, NULL);
 
 	call_prepare_python();
 
