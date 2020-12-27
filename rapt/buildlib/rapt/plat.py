@@ -80,8 +80,6 @@ def set_win32_java_home():
         jh = key + "\\1.8\\JavaHome"
 
         if jh in keys:
-            print("Found", keys[jh])
-
             os.environ["JAVA_HOME"] = keys[jh]
             return
 
