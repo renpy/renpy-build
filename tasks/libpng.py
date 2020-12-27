@@ -12,9 +12,11 @@ def unpack(c):
 
 
 @task()
-def build(c):
+def build(c) :
     c.var("version", version)
     c.chdir("libpng-{{version}}")
+
+    c.env("CPPFLAGS", "{{ CPPFLAGS }} -DPNG_NO_CONSOLE_IO")
 
     c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
