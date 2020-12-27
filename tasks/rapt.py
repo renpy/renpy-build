@@ -4,7 +4,7 @@ import time
 import os
 
 
-@task(kind="platform-python", platforms="android")
+@task(kind="platform-python", platforms="android", always=True)
 def copy(c):
 
     c.copytree("{{ root }}/rapt", "{{ raptver }}")
