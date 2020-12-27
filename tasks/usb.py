@@ -18,8 +18,10 @@ def unpack(c):
     pick_version(c)
 
     c.clean()
-
     c.run("tar xjf {{source}}/libusb-{{version}}.tar.bz2")
+
+    c.chdir("libusb-{{version}}")
+    c.patch("usb-calling-convention.diff")
 
 
 @task(platforms="windows,mac")
