@@ -151,6 +151,8 @@ int SDL_main(int argc, char **argv) {
 	SDL_Surface *presplash = NULL;
 	SDL_Surface *presplash2 = NULL;
 	SDL_Rect pos;
+	SDL_Event event;
+
 	Uint32 pixel;
 
 	init_environ();
@@ -192,20 +194,35 @@ int SDL_main(int argc, char **argv) {
 
 done:
 
-	SDL_FillRect(surface, NULL, pixel);
 
-	if (presplash) {
-		pos.x = (surface->w - presplash->w) / 2;
-		pos.y = (surface->h - presplash->h) / 2;
-		SDL_BlitSurface(presplash, NULL, surface, &pos);
-		SDL_FreeSurface(presplash);
+	while (SDL_WaitEventTimeout(&event, 500)) {
+
+	    if (event.type == SDL_WINDOWEVENT) {
+
+	        if (event.window.event == SDL_WINDOWEVENT_RESIZED || event.window.event == SDL_WINDOWEVENT_SHOWN) {
+	            break;
+	        }
+	    }
 	}
 
+    SDL_FillRect(surface, NULL, pixel);
+
+    if (presplash) {
+        pos.x = (surface->w - presplash->w) / 2;
+        pos.y = (surface->h - presplash->h) / 2;
+        SDL_BlitSurface(presplash, NULL, surface, &pos);
+        SDL_FreeSurface(presplash);
+    }
+
+    SDL_UpdateWindowSurface(window);
+    SDL_PumpEvents();
+    SDL_UpdateWindowSurface(window);
     SDL_PumpEvents();
     SDL_UpdateWindowSurface(window);
     SDL_PumpEvents();
     SDL_UpdateWindowSurface(window);
     SDL_PumpEvents();
+
     SDL_GL_MakeCurrent(NULL, NULL);
 
 	call_prepare_python();
