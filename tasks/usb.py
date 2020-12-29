@@ -21,7 +21,9 @@ def unpack(c):
     c.run("tar xjf {{source}}/libusb-{{version}}.tar.bz2")
 
     c.chdir("libusb-{{version}}")
-    c.patch("usb-calling-convention.diff")
+
+    if c.platform == "windows":
+        c.patch("usb-calling-convention.diff")
 
 
 @task(platforms="windows,mac")
