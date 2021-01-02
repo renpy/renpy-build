@@ -23,6 +23,8 @@ from . import pyjnius
 from . import pyobjus
 from . import iossupport
 
+from . import usb
+
 from . import sdl2
 from . import sdl2_image
 
@@ -42,7 +44,6 @@ from . import pythonlib
 from . import renpysh
 from . import renios
 
-from . import usb
 from . import steam
 
 from . import web

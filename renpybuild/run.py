@@ -31,7 +31,7 @@ def build_environment(c):
     elif (c.platform == "windows") and (c.arch == "i686"):
         c.var("host_platform", "i686-w64-mingw32")
     elif (c.platform == "mac") and (c.arch == "x86_64"):
-        c.var("host_platform", "x86_64-apple-darwin19")
+        c.var("host_platform", "x86_64-apple-darwin14")
     elif (c.platform == "android") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-linux-android")
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):

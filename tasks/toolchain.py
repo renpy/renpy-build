@@ -61,7 +61,7 @@ def build(c):
     c.run("git clone https://github.com/tpoechtrager/osxcross")
     c.chdir("osxcross")
 
-    c.copy("{{ tars }}/MacOSX10.15.sdk.tar.xz", "tarballs")
+    c.copy("{{ tars }}/MacOSX10.10.sdk.tar.bz2", "tarballs")
 
     c.env("TARGET_DIR", "{{ install }}")
     c.env("UNATTENDED", "1")
@@ -98,7 +98,6 @@ def build(c):
     zf = ZipFileWithPermissions(c.path("{{ tars }}/android-ndk-r21d-linux-x86_64.zip"))
     zf.extractall(c.path("{{ install }}"))
     zf.close()
-
 
 
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")

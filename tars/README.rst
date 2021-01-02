@@ -13,9 +13,11 @@ Large GNU Files
 Xcode
 -----
 
-* MacOSX10.15.sdk.tar.xz
+* MacOSX10.10.sdk.tar.bz2
 
 Created as described at https://github.com/tpoechtrager/osxcross#packaging-the-sdk .
+This old version is required to ensure that Ren'Py runs on older versions of
+macOS.
 
 * iPhoneOS14.0.sdk.tar.gz
 * iPhoneSimulator14.0.sdk.tar.gz
