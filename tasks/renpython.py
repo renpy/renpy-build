@@ -90,7 +90,8 @@ def link_linux(c):
     -Wl,-rpath -Wl,$ORIGIN
     """)
 
-    c.run("""{{ STRIP }} --strip-unneeded librenpython.so python renpy""")
+    if not c.args.nostrip:
+        c.run("""{{ STRIP }} --strip-unneeded librenpython.so python renpy""")
 
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.so {{ dlpa }}""")
@@ -143,7 +144,8 @@ def link_android(c):
     -landroid
     """)
 
-    c.run("""{{ STRIP }} --strip-unneeded librenpython.so""")
+    if not c.args.nostrip:
+        c.run("""{{ STRIP }} --strip-unneeded librenpython.so""")
 
     c.run("install -d {{ jniLibs }}")
     c.run("install librenpython.so {{ jniLibs }}")
@@ -211,7 +213,8 @@ def link_mac(c):
     librenpython.dylib
     """)
 
-    c.run("""{{ STRIP }} -S -x librenpython.dylib python renpy""")
+    if not c.args.nostrip:
+        c.run("""{{ STRIP }} -S -x librenpython.dylib python renpy""")
 
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dylib {{ dlpa }}""")
@@ -311,7 +314,9 @@ def link_windows(c):
     """)
 
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
-    c.run("""{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe""")
+
+    if not c.args.nostrip:
+        c.run("""{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe""")
 
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dll python.exe pythonw.exe {{ dlpa }}""")

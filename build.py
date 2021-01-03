@@ -105,7 +105,9 @@ def build(args):
                     root,
                     tmp,
                     pygame_sdl2,
-                    renpy)
+                    renpy,
+                    args)
+
                 task.run(context)
 
     print("")
@@ -150,6 +152,8 @@ def main():
     ap.add_argument("--platforms", "--platform", default="")
     ap.add_argument("--archs", "--arch", default="")
     ap.add_argument("--pythons", "--python", default="")
+
+    ap.add_argument("--nostrip", action="store_true", default=False)
 
     ap.set_defaults(function=build)
 

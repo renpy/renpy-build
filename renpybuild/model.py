@@ -26,7 +26,7 @@ class Context:
     current build.
     """
 
-    def __init__(self, platform, arch, python, root, tmp, pygame_sdl2, renpy):
+    def __init__(self, platform, arch, python, root, tmp, pygame_sdl2, renpy, args):
 
         # The platform. One of "linux", "windows", "mac", "android", "ios", or "emscripten".
         self.platform = platform
@@ -42,6 +42,9 @@ class Context:
 
         # The local temporary directory.
         self.tmp = tmp
+
+        # Args.
+        self.args = args
 
         # The environment dictionary.
         self.environ = dict(os.environ)
