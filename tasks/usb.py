@@ -40,9 +40,9 @@ def build(c):
     c.run("""{{ make }}""")
 
     if c.platform == "windows":
-        c.run("""install {{ dlpa }}""")
+        c.run("""install -d {{ dlpa }}""")
         c.run("""install libusb/.libs/libusb-1.0.dll {{ dlpa }}""")
     elif c.platform == "mac":
-        c.run("""install {{ dlpa }}""")
+        c.run("""install -d {{ dlpa }}""")
         c.run("""install libusb/.libs/libusb-1.0.dylib {{ dlpa }}""")
 
