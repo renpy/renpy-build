@@ -10,6 +10,11 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/ffmpeg-{{version}}.tar.gz")
 
+    c.var("version", version)
+    c.chdir("ffmpeg-{{version}}")
+
+    c.patch("ffmpeg-4.3.1-sse.diff")
+
 
 @task()
 def build(c):
@@ -72,6 +77,12 @@ def build(c):
         --enable-pic
         --enable-static
 
+        --disable-all
+        --disable-everything
+
+        --enable-cross-compile
+        --enable-runtime-cpudetect
+
 {% if c.platform == "windows" %}
         --disable-pthreads
         --enable-w32threads
@@ -80,12 +91,6 @@ def build(c):
 {% if c.platform == "ios" and c.arch == "x86_64" %}
         --disable-asm
 {% endif %}
-
-        --enable-cross-compile
-        --enable-runtime-cpudetect
-
-        --disable-all
-        --disable-everything
 
         --enable-ffmpeg
         --enable-ffplay
