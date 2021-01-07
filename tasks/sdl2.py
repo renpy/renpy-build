@@ -11,13 +11,16 @@ def annotate(c):
 
 @task()
 def unpack(c):
+
     c.clean()
 
     c.var("version", version)
     c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
 
+    c.chdir("SDL2-{{version}}")
+    c.patch("sdl2-scp.diff")
+
     if c.platform == "ios":
-        c.chdir("SDL2-{{version}}")
         c.patch("sdl2-ios-configure.diff")
         c.run("./autogen.sh")
 
