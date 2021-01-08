@@ -56,7 +56,7 @@ PYTHON_SEARCH = [
     ]
 
 for fn in PYTHON_SEARCH:
-    if os.path.exists(fn):
+    if os.path.isfile(fn):
         sys.executable = fn
         break
 
@@ -70,7 +70,7 @@ RENPY_SEARCH = [
     ]
 
 for fn in RENPY_SEARCH:
-    if os.path.exists(fn):
+    if os.path.isfile(fn):
         sys.renpy_executable = fn
         break
 
