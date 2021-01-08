@@ -49,9 +49,13 @@ RENPY_PLATFORM = os.environ.get("RENPY_PLATFORM", "unknown-unknown")
 base = os.path.dirname(sys.executable)
 
 PYTHON_SEARCH = [
+    os.path.join(base, "lib", RENPY_PLATFORM, "pythonw"),
     os.path.join(base, "lib", RENPY_PLATFORM, "python"),
+    os.path.join(base, "lib", RENPY_PLATFORM, "pythonw.exe"),
     os.path.join(base, "lib", RENPY_PLATFORM, "python.exe"),
+    os.path.join(base, "pythonw"),
     os.path.join(base, "python"),
+    os.path.join(base, "pythonw.exe"),
     os.path.join(base, "python.exe"),
     ]
 
