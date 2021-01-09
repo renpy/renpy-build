@@ -19,6 +19,7 @@ def unpack(c):
 
     c.chdir("SDL2-{{version}}")
     c.patch("sdl2-scp.diff")
+    c.patch("sdl2-dinput.diff")
 
     if c.platform == "ios":
         c.patch("sdl2-ios-configure.diff")
