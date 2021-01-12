@@ -12,15 +12,8 @@ def copy(c):
     with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
         f.write(time.ctime())
 
-    try:
-        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl"))
-    except FileNotFoundError:
-        pass
-
-    try:
-        shutil.rmtree(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius"))
-    except FileNotFoundError:
-        pass
+    c.rmtree("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
+    c.rmtree("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius")
 
     os.unlink(c.path("{{ raptver }}/prototype/app/build.gradle"))
     os.unlink(c.path("{{ raptver }}/prototype/app/src/main/AndroidManifest.xml"))
@@ -42,7 +35,7 @@ def copy(c):
     c.rmtree("{{ raptver }}/prototype/app/build/")
 
 
-@task(kind="host-python", always=True)
+@task(kind="host-python", platforms="android", always=True)
 def android_module(c):
     c.run("""install -d {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/__init__.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")

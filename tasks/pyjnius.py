@@ -64,7 +64,7 @@ jnius.jnius jnius.c
 """))
 
 
-@task(kind="host-python", platforms="android")
+@task(kind="host-python", platforms="android", always=True)
 def rapt(c):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")

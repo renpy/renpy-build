@@ -302,17 +302,21 @@ class Context:
             self.env("CFLAGS", "{{ CFLAGS }} -I" + path)
 
     def copytree(self, src, dst):
+        self.rmtree(dst)
+
         src = self.path(src)
         dst = self.path(dst)
 
-        if dst.exists():
-            shutil.rmtree(dst)
+        if src.is_symlink():
+            src = src.readlink()
 
         shutil.copytree(src, dst)
 
     def rmtree(self, d):
         d = self.path(d)
-        if d.exists():
+        if d.is_symlink():
+            d.unlink()
+        elif d.exists():
             shutil.rmtree(d)
 
     def unlink(self, fn):
