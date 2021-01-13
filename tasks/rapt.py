@@ -35,7 +35,7 @@ def copy(c):
     c.rmtree("{{ raptver }}/prototype/app/build/")
 
 
-@task(kind="host-python", platforms="android", always=True)
+@task(kind="host-python", always=True)
 def android_module(c):
     c.run("""install -d {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/__init__.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")
