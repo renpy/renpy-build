@@ -63,11 +63,17 @@ def build(c):
 
     c.copy("{{ tars }}/MacOSX10.10.sdk.tar.bz2", "tarballs")
 
+    c.env("SDK_VERSION", "10.10")
     c.env("TARGET_DIR", "{{ install }}")
     c.env("UNATTENDED", "1")
     c.env("MAKE", "{{ make }}")
 
     c.run("./build.sh")
+
+    with open(c.path("{{install}}/SDK/MacOSX10.10.sdk/SDKSettings.json"), "w") as f:
+        f.write("""\
+{"Version":"10.10"}
+""")
 
 
 from zipfile import ZipFile, ZipInfo
