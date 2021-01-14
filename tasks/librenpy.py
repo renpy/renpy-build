@@ -52,7 +52,7 @@ def build(c):
     if c.platform == "android":
         read_setup(c.path("{{ pytmp }}/pyjnius"))
 
-    if c.platform == "ios":
+    if c.platform == "ios" or c.platform == "mac":
         read_setup(c.path("{{ install }}/pyobjus"))
 
     objects = [ ]
