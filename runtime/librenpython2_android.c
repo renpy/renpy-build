@@ -185,47 +185,42 @@ int SDL_main(int argc, char **argv) {
 	Uint8 *pp = (Uint8 *) presplash2->pixels;
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-	pixel = SDL_MapRGB(surface->format, pp[2], pp[1], pp[0]);
+	pixel = SDL_MapRGBA(surface->format, pp[2], pp[1], pp[0], 255);
 #else
-	pixel = SDL_MapRGB(surface->format, pp[0], pp[1], pp[2]);
+	pixel = SDL_MapRGBA(surface->format, pp[0], pp[1], pp[2], 255);
 #endif
 
 	SDL_FreeSurface(presplash2);
 
 done:
 
+    {
+        Uint32 start = SDL_GetTicks();
 
-	while (SDL_WaitEventTimeout(&event, 500)) {
+        while (SDL_GetTicks() < start + 520) {
+            surface = SDL_GetWindowSurface(window);
 
-	    if (event.type == SDL_WINDOWEVENT) {
+            SDL_FillRect(surface, NULL, pixel);
 
-	        if (event.window.event == SDL_WINDOWEVENT_RESIZED || event.window.event == SDL_WINDOWEVENT_SHOWN) {
-	            break;
-	        }
-	    }
-	}
+            if (presplash) {
+                pos.x = (surface->w - presplash->w) / 2;
+                pos.y = (surface->h - presplash->h) / 2;
+                SDL_BlitSurface(presplash, NULL, surface, &pos);
+                SDL_UpdateWindowSurface(window);
+            }
 
-    SDL_FillRect(surface, NULL, pixel);
-
-    if (presplash) {
-        pos.x = (surface->w - presplash->w) / 2;
-        pos.y = (surface->h - presplash->h) / 2;
-        SDL_BlitSurface(presplash, NULL, surface, &pos);
-        SDL_FreeSurface(presplash);
+            SDL_WaitEventTimeout(&event, 10);
+        }
     }
 
-    SDL_UpdateWindowSurface(window);
-    SDL_PumpEvents();
-    SDL_UpdateWindowSurface(window);
-    SDL_PumpEvents();
-    SDL_UpdateWindowSurface(window);
-    SDL_PumpEvents();
-    SDL_UpdateWindowSurface(window);
-    SDL_PumpEvents();
-
     SDL_GL_MakeCurrent(NULL, NULL);
+
+    if (presplash) {
+        SDL_FreeSurface(presplash);
+    }
 
 	call_prepare_python();
 
 	return start_python();
 }
+
