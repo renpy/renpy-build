@@ -15,6 +15,9 @@ class IconMaker(object):
             pygame_sdl2.display.hint("PYGAME_SDL2_AVOID_GL", "1")
             pygame_sdl2.display.set_mode((640, 480))
             pygame_sdl2.event.pump()
+            close = True
+        else:
+            close = False
 
         self.directory = directory
 
@@ -28,6 +31,9 @@ class IconMaker(object):
 
         for dpi, scale in sizes:
             self.write_dpi(dpi, scale)
+
+        if close:
+            pygame_sdl2.display.quit()
 
     def scale(self, surf, size):
 
