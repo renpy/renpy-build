@@ -1,0 +1,12 @@
+diff -ru SDL2-2.0.12/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java SDL2-2.0.12.new/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+--- SDL2-2.0.12/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java	2020-03-10 21:36:18.000000000 -0400
++++ SDL2-2.0.12.new/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java	2021-01-19 20:17:41.418695474 -0500
+@@ -245,7 +245,7 @@
+ 
+         mClipboardHandler = new SDLClipboardHandler_API11();
+ 
+-        mHIDDeviceManager = HIDDeviceManager.acquire(this);
++        // mHIDDeviceManager = HIDDeviceManager.acquire(this);
+ 
+         // Set up the surface
+         mSurface = new SDLSurface(getApplication());

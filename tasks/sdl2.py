@@ -20,6 +20,7 @@ def unpack(c):
     c.chdir("SDL2-{{version}}")
     c.patch("sdl2-scp.diff")
     c.patch("sdl2-dinput.diff")
+    c.patch("sdl2-no-android-hid.diff")
 
     if c.platform == "ios":
         c.patch("sdl2-ios-configure.diff")
@@ -91,12 +92,12 @@ def rapt(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 
-    c.run("""{{ CXX }} -std=c++11 -shared -o libhidapi.so src/hidapi/android/hid.cpp -llog""")
-    c.run("""{{ STRIP }} --strip-unneeded libhidapi.so""")
-
-    c.run("""install -d {{ jniLibs }}""")
-    c.run("""install libhidapi.so {{ jniLibs }}""")
-    c.run("""install {{ cross }}/android-ndk-r21d/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
+#     c.run("""{{ CXX }} -std=c++11 -shared -o libhidapi.so src/hidapi/android/hid.cpp -llog""")
+#     c.run("""{{ STRIP }} --strip-unneeded libhidapi.so""")
+#
+#     c.run("""install -d {{ jniLibs }}""")
+#     c.run("""install libhidapi.so {{ jniLibs }}""")
+#     c.run("""install {{ cross }}/android-ndk-r21d/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
 
     c.copytree("android-project/app/src/main/java/org/libsdl", "{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
 
