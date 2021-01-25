@@ -16,6 +16,14 @@ def build(c):
     c.var("version", version)
     c.chdir("libwebp-{{version}}")
 
-    c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
+    c.run("""
+    ./configure {{ cross_config }}
+    --disable-shared
+    --prefix="{{ install }}"
+
+{% if (c.platform == "linux") and (c.arch == "armv7l") %}
+    --disable-neon
+{% endif %}
+    """)
     c.run("""{{ make }}""")
     c.run("""make install """)
