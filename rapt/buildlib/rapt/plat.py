@@ -92,9 +92,28 @@ def set_mac_java_home():
     if "JAVA_HOME" in os.environ:
         return
 
-    java_home = subprocess.check_output("/usr/libexec/java_home -v 1.8", shell=True).strip()
-    if java_home:
+    try:
+        import plistlib
+
+        raw_plist = subprocess.check_output("/usr/libexec/java_home -X -v 1.8", shell=True)
+        plist = plistlib.readPlistFromString(raw_plist)
+
+        java_home = None
+
+        for d in plist:
+            if not d.get("JVMEnabled", True):
+                continue
+
+            java_home = d["JVMHomePath"]
+
+            if os.path.exists(os.path.join(java_home, "bin", "javac")):
+                break
+        else:
+            return
+
         os.environ["JAVA_HOME"] = java_home
+    except:
+        return
 
 
 def maybe_java_home(s):
