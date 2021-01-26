@@ -1,0 +1,17 @@
+diff -ru SDL2-2.0.12/src/video/cocoa/SDL_cocoawindow.m SDL2-2.0.12.new/src/video/cocoa/SDL_cocoawindow.m
+--- SDL2-2.0.12/src/video/cocoa/SDL_cocoawindow.m	2020-03-10 21:36:18.000000000 -0400
++++ SDL2-2.0.12.new/src/video/cocoa/SDL_cocoawindow.m	2021-01-26 02:38:14.765460671 -0500
+@@ -739,7 +739,12 @@
+         /* Unset the resizable flag. 
+            This is a workaround for https://bugzilla.libsdl.org/show_bug.cgi?id=3697
+          */
+-        SetWindowStyle(window, [nswindow styleMask] & (~NSWindowStyleMaskResizable));
++
++
++        /* RENPY: Comment this out. When a window isn't resizeable, the "Toggle Full Screen" 
++           button isn't active, which means that the window can go into fullscreen and not 
++           come out. */
++        /* SetWindowStyle(window, [nswindow styleMask] & (~NSWindowStyleMaskResizable));*/
+ 
+         if ((window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP) {
+             [NSMenu setMenuBarVisible:NO];

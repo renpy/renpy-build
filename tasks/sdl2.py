@@ -21,6 +21,7 @@ def unpack(c):
     c.patch("sdl2-scp.diff")
     c.patch("sdl2-dinput.diff")
     c.patch("sdl2-no-android-hid.diff")
+    c.patch("sdl2-mac-fix-toggle-fullscreen.diff")
 
     if c.platform == "ios":
         c.patch("sdl2-ios-configure.diff")
