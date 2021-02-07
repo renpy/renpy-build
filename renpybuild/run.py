@@ -172,14 +172,14 @@ def build_environment(c):
 
         c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
-        c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++ -fPIC -O3")
-        c.env("CPP", "ccache {{ crossbin }}gcc -E")
+        c.env("CC", "ccache {{ crossbin }}gcc -specs {{root}}/specs/i686-ucrt -fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++ -specs {{root}}/specs/i686-ucrt -fPIC -O3")
+        c.env("CPP", "ccache {{ crossbin }}gcc -specs {{root}}/specs/i686-ucrt -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("STRIP", "ccache llvm-strip")
         c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
