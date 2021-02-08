@@ -42,6 +42,8 @@ sudo apt-get install -y \
     libfribidi-dev libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev \
     libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-turbo8-dev
 
+# Unpack clang.
+sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/10/lib/
 
 mkdir -p "$BASE/tmp"
 
@@ -62,3 +64,4 @@ export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
 . $BASE/nightly/git.sh
 . $BASE/nightly/python.sh
+
