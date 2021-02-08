@@ -8,14 +8,15 @@
         android:icon="@mipmap/icon"
         android:label="@string/appName"
         android:isGame="true"
-        android:hardwareAccelerated="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        android:hardwareAccelerated="true"
         >
 
         <activity
             android:name="org.renpy.android.PythonSDLActivity"
             android:label="@string/iconName"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="layoutDirection|locale|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTop"
             android:screenOrientation="{{ config.orientation }}">
 
