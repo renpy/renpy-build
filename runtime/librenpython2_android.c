@@ -76,23 +76,9 @@ static PyObject *androidembed_log(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
-static PyObject *androidembed_close_window(PyObject *self, PyObject *args) {
-    char *logstr = NULL;
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
-
-    if (window) {
-		SDL_DestroyWindow(window);
-		window = NULL;
-    }
-
-    Py_RETURN_NONE;
-}
 
 static PyMethodDef AndroidEmbedMethods[] = {
-	    {"log", androidembed_log, METH_VARARGS, "Log on android platform."},
-	    {"close_window", androidembed_close_window, METH_VARARGS, "Close the initial window."},
+    {"log", androidembed_log, METH_VARARGS, "Log on android platform."},
     {NULL, NULL, 0, NULL}
 };
 
@@ -165,7 +151,7 @@ int SDL_main(int argc, char **argv) {
 
 	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
 
-	window = SDL_CreateWindow("presplash", 0, 0, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP| SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("", 0, 0, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
 	surface = SDL_GetWindowSurface(window);
 	pixel = SDL_MapRGB(surface->format, 128, 128, 128);
 
@@ -212,8 +198,6 @@ done:
             SDL_WaitEventTimeout(&event, 10);
         }
     }
-
-    SDL_GL_MakeCurrent(NULL, NULL);
 
     if (presplash) {
         SDL_FreeSurface(presplash);
