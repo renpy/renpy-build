@@ -1,7 +1,7 @@
 from renpybuild.model import task, annotator
 import shutil
 
-version = "2.0.12"
+version = "2.0.14"
 
 
 @annotator
@@ -18,7 +18,6 @@ def unpack(c):
     c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
 
     c.chdir("SDL2-{{version}}")
-    c.patch("sdl2-scp.diff")
     c.patch("sdl2-dinput.diff")
     c.patch("sdl2-no-android-hid.diff")
     c.patch("sdl2-mac-fix-toggle-fullscreen.diff")
@@ -82,6 +81,10 @@ def build(c):
 
 /* enable filesystem support */
 #define SDL_FILESYSTEM_COCOA   1
+
+/* Disable MFI */
+#undef SDL_JOYSTICK_MFI
+
 """)
 
     c.run("""{{ make }}""")
