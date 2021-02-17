@@ -2,7 +2,9 @@
 #include <string.h>
 
 #include <windows.h>
+
 #include "r440/nvapi.h"
+#include "r440/NvApiDriverSettings.h"
 
 static char *error = NULL;
 static void *(*QueryInterface)(unsigned int);
@@ -80,10 +82,94 @@ static void load_nvapi() {
 
 }
 
+static void check(const char *func, NvAPI_Status ret) {
+    if (ret) {
+        char msg[128];
+        snprintf(msg, 128, "%s() = %d.", func, ret);
+        error = strdup(msg);
+    }
+}
 
-int main(int argc, char **argv) {
+static unsigned int original;
+static unsigned int got_original = 0;
+
+void set_thread_optimization(unsigned value) {
+    int ret; 
+    NvDRSSessionHandle hSession;
+    NvDRSProfileHandle hProfile;
+    NVDRS_SETTING setting;
+    setting.version = NVDRS_SETTING_VER;
 
     load_nvapi();
 
-    printf("%s\n", error);
+    if (error) {
+        return;
+    }
+
+    check("Initialize", Initialize());
+    if (error) {
+        return;
+    }
+
+    check("DRS_CreateSession", DRS_CreateSession(&hSession));
+    if (error) {
+        return;
+    }
+
+    check("DRS_LoadSettings", DRS_LoadSettings(hSession));
+    if (error) {
+        goto fail;
+    }
+
+    check("DRS_GetBaseProfile", DRS_GetBaseProfile(hSession, &hProfile));
+    if (error) {
+        goto fail;
+    }
+
+    /* This can fail, if the setting hasn't been set yet. */
+    DRS_GetSetting(hSession, hProfile, OGL_THREAD_CONTROL_ID, &setting);
+
+    if (!got_original) {
+        original = setting.u32CurrentValue;
+        got_original = 1;
+    }
+
+    setting.version = NVDRS_SETTING_VER;
+    setting.settingId = OGL_THREAD_CONTROL_ID;
+    setting.settingType = NVDRS_DWORD_TYPE;
+    setting.u32CurrentValue = value;
+
+    check("DRS_SetSetting", DRS_SetSetting(hSession, hProfile, &setting));
+    if (error) {
+        goto fail;
+    }
+
+    check("DRS_SaveSettings", DRS_SaveSettings(hSession));
+    if (error) {
+        goto fail;
+    }
+
+fail:
+    DRS_DestroySession(hSession);
 }
+
+void disable_thread_optimization() {
+    set_thread_optimization(2);
+}
+
+void restore_thread_optimization() {
+    set_thread_optimization(original);
+}
+
+char *get_nvdrs_error() {
+    return error;
+}
+
+// int main(int argc, char **argv) {
+
+//     disable_thread_optimization();
+//     restore_thread_optimization();
+
+//     printf("original: %d\n", original);
+//     printf("result: %s\n", error);
+// }
