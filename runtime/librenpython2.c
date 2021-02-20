@@ -65,7 +65,7 @@ static void take_argv0(char *argv0) {
         exename -= 1;
     }
 
-    int pyname_size = strlen(exename) + 3;
+    int pyname_size = strlen(exename) + strlen(".py") + 1;
 
     pyname = (char *) malloc(pyname_size);
     strncpy(pyname, exename, pyname_size);
