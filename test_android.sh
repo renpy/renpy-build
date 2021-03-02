@@ -23,3 +23,9 @@ popd
 if [ "$1" != "" ]; then
     $ROOT/renpy/renpy.sh $ROOT/renpy/launcher android_build "$1" installDebug --launch
 fi
+
+# sleep 1
+# adb shell input keyevent KEYCODE_HOME
+
+# sleep 1
+# adb shell am start -n com.starcadets.themorningstar/org.renpy.android.PythonSDLActivity
