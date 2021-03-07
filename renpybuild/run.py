@@ -158,9 +158,9 @@ def build_environment(c):
 
         c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
-        c.env("CC", "ccache {{ crossbin }}gcc -specs {{root}}/specs/x86_64-ucrt -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++ -specs {{root}}/specs/x86_64-ucrt -fPIC -O3")
-        c.env("CPP", "ccache {{ crossbin }}gcc -specs {{root}}/specs/x86_64-ucrt -E")
+        c.env("CC", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++ --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
+        c.env("CPP", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
@@ -172,9 +172,9 @@ def build_environment(c):
 
         c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
-        c.env("CC", "ccache {{ crossbin }}gcc -specs {{root}}/specs/i686-ucrt -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++ -specs {{root}}/specs/i686-ucrt -fPIC -O3")
-        c.env("CPP", "ccache {{ crossbin }}gcc -specs {{root}}/specs/i686-ucrt -E")
+        c.env("CC", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/i686-ucrt -fPIC -O3")
+        c.env("CXX", "ccache {{ crossbin }}g++ --ccache-skip -specs --ccache-skip {{root}}/specs/i686-ucrt -fPIC -O3")
+        c.env("CPP", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/i686-ucrt -E")
         c.env("LD", "ccache {{ crossbin}}ld")
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
