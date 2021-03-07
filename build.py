@@ -154,6 +154,7 @@ def main():
     ap.add_argument("--pythons", "--python", default="")
 
     ap.add_argument("--nostrip", action="store_true", default=False)
+    ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")
 
     ap.set_defaults(function=build)
 

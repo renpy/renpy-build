@@ -12,19 +12,21 @@ def annotate(c):
 @task()
 def unpack(c):
 
-    c.clean()
+    if not c.args.sdl:
 
-    c.var("version", version)
-    c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
+        c.clean()
 
-    c.chdir("SDL2-{{version}}")
-    c.patch("sdl2-dinput.diff")
-    c.patch("sdl2-no-android-hid.diff")
-    c.patch("sdl2-mac-fix-toggle-fullscreen.diff")
+        c.var("version", version)
+        c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
 
-    if c.platform == "ios":
-        c.patch("sdl2-ios-configure.diff")
-        c.run("./autogen.sh")
+        c.chdir("SDL2-{{version}}")
+        c.patch("sdl2-dinput.diff")
+        c.patch("sdl2-no-android-hid.diff")
+        c.patch("sdl2-mac-fix-toggle-fullscreen.diff")
+
+        if c.platform == "ios":
+            c.patch("sdl2-ios-configure.diff")
+            c.run("./autogen.sh")
 
 
 @task()
@@ -37,30 +39,32 @@ def build(c):
 
     c.env("ac_cv_header_libunwind_h", "no")
 
-    c.run("""
-    ./configure {{ sdl_cross_config }}
-    --disable-shared
-    --prefix="{{ install }}"
+    if not c.args.sdl:
 
-    --disable-wasapi
-    --disable-render-metal
-    --disable-jack
+        c.run("""
+        ./configure {{ sdl_cross_config }}
+        --disable-shared
+        --prefix="{{ install }}"
 
-{% if c.platform == "android" %}
-    --disable-video-wayland
-    --disable-video-x11
+        --disable-wasapi
+        --disable-render-metal
+        --disable-jack
 
-    --disable-oss
-    --disable-alsa
-    --disable-esd
-    --disable-pulseaudio
-    --disable-arts
-    --disable-nas
-    --disable-sndio
-    --disable-fusionsound
-{% endif %}
+    {% if c.platform == "android" %}
+        --disable-video-wayland
+        --disable-video-x11
 
-    """)
+        --disable-oss
+        --disable-alsa
+        --disable-esd
+        --disable-pulseaudio
+        --disable-arts
+        --disable-nas
+        --disable-sndio
+        --disable-fusionsound
+    {% endif %}
+
+        """)
 
     if c.platform == "ios":
         with open(c.path("include/SDL_config.h"), "a") as f:
