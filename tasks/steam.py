@@ -7,7 +7,7 @@ def unpack_sdk(c):
 
     c.clean("{{ install }}/steam")
 
-    if not c.path("{{ tars }}/steamworks_sdk_150.zip").exists:
+    if not c.path("{{ tars }}/steamworks_sdk_150.zip").exists():
         return
 
     zf = zipfile.ZipFile(c.path("{{ tars }}/steamworks_sdk_150.zip"))
@@ -18,7 +18,7 @@ def unpack_sdk(c):
 @task(kind="host")
 def patch_sdk(c):
 
-    if not c.path("{{host}}/steam/sdk").exists:
+    if not c.path("{{host}}/steam/sdk").exists():
         return
 
     c.chdir("{{ install }}/steam/sdk")
@@ -28,7 +28,7 @@ def patch_sdk(c):
 @task(platforms="linux,windows,mac", archs="x86_64,i686", always=True)
 def build(c):
 
-    if not c.path("{{host}}/steam/sdk").exists:
+    if not c.path("{{host}}/steam/sdk").exists():
         return
 
     if c.platform == "linux" and c.arch == "x86_64":
