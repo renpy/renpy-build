@@ -1,6 +1,7 @@
 Building with Docker
 ============
-TODO
+Building with docker is similar to Podman.
+Just replace podman with docker in the commands and remove ``--privileged``
 
 Building with Podman
 ============
@@ -29,18 +30,18 @@ Building with Podman
 
 This is an example of a typical build path process.
 
-        # podman build -t renpy_build .
+        (host) # podman build -t renpy_build .
         
         "This runs the container and drops you into a shell as the rb user with renpy-build mounted"
-        # podman run --name renpy_build -i --privileged -v /path/to/renpy-build/:/renpy-build -t renpy_build /bin/bash
+        (host) # podman run --name renpy_build -i --privileged -v /path/to/renpy-build/:/renpy-build -t renpy_build /bin/bash
         
-        $ cd renpy-build
+        (container) $ cd renpy-build
         
-        $ ./prepare.sh
+        (container) $ ./prepare.sh
         
-        $ source tmp/virtualenv.py2/bin/activate
+        (container) $ source tmp/virtualenv.py2/bin/activate
         
         "Build for linux x86_64"
-        $ ./build.py --arch x86_64 --platform linux
+        (container) $ ./build.py --arch x86_64 --platform linux
 
 Once your build is done you can find the output in the path that you mounted.
