@@ -50,7 +50,7 @@ mkdir -p "$BASE/tmp"
 GET_PIP="$ROOT/tmp/get-pip.py"
 
 if [ ! -e $GET_PIP ]; then
-    curl https://bootstrap.pypa.io/get-pip.py -o $GET_PIP
+    curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o $GET_PIP
     sudo python2 $GET_PIP
 fi
 
