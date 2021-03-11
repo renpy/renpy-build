@@ -33,6 +33,7 @@ This is an example of a typical build path process.
         (host) # podman build -t renpy_build .
         
         "This runs the container and drops you into a shell as the rb user with renpy-build mounted"
+        
         (host) # podman run --name renpy_build -i --privileged -v /path/to/renpy-build/:/renpy-build -t renpy_build /bin/bash
         
         (container) $ cd renpy-build
@@ -42,6 +43,7 @@ This is an example of a typical build path process.
         (container) $ source tmp/virtualenv.py2/bin/activate
         
         "Build for linux x86_64"
+        
         (container) $ ./build.py --arch x86_64 --platform linux
 
 Once your build is done you can find the output in the path that you mounted.
