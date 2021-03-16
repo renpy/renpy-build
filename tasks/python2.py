@@ -160,6 +160,15 @@ def build_windows(c):
     c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python2")
     c.env("LDFLAGS", "{{ LDFLAGS }} -static-libgcc")
 
+    with open(c.path("config.site"), "w") as f:
+        f.write("ac_cv_func_mktime=yes")
+
+    # Force a recompile.
+    with open(c.path("Modules/timemodule.c"), "a") as f:
+        f.write("/* MKTIME FIX */\n")
+
+    c.env("CONFIG_SITE", "config.site")
+
     c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-threads --with-system-ffi""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
