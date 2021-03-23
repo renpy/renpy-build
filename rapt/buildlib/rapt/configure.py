@@ -86,7 +86,7 @@ def set_heap_size(config, value, gradle_dir):
     """
     config.heap_size = value
 
-    for open(gradle_dir, "w+") as g:
+    with open(gradle_dir, "w+") as g:
         g.writelines(["# The setting is particularly useful for tweaking memory settings.\n", "org.gradle.jvmargs=-Xmx" + value + "g\n", "# Disable the gradle daemon, so it doesn't waste ram.\n", "org.gradle.daemon = false"])
     
 
@@ -145,11 +145,11 @@ def configure(interface, directory, default_name=None, default_version=None):
     if config.heap_size is None:
         heap = open(plat.path("project/gradle.properties"), "r")
         for line in heap:
-            if "-Xmx" in line:
+            if "org.gradle.jvmargs" in line:
                 heapVal = line
         heap.close()
-        heapVal = heapVal.replace('-Xmx', "")
-        heapVal = heapVal.replace('g', "")
+        heapVal = heapVal.replace('org.gradle.jvmargs=-Xmx', "")
+        heapVal = heapVal.replace('g\n', "")
         config.heap_size = heapVal
 
     heap_size = interface.input(__("How much RAM do you want to allocate to Gradle?\n\nThis must be a positive number, and be between 3 to 8 GB in size."), config.heap_size)
