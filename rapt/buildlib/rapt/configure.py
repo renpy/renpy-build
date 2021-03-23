@@ -152,13 +152,10 @@ def configure(interface, directory, default_name=None, default_version=None):
         heapVal = heapVal.replace('g\n', "")
         config.heap_size = heapVal
 
-    heap_size = interface.input(__("How much RAM do you want to allocate to Gradle?\n\nThis must be a positive number, and be between 3 to 8 GB in size."), config.heap_size)
+    heap_size = interface.input(__("How much RAM do you want to allocate to Gradle?\n\nThis must be a positive integer number."), config.heap_size)
 
     if not re.match(r'^[\d]+$', config.heap_size):
         interface.fail(__("The RAM size must contain only numbers."))
-
-    if int(heap_size) < 3 or int(heap_size) > 8:
-        interface.fail(__("The RAM size must be between 2-8 GB in size."))
 
     set_heap_size(config, heap_size, plat.path("project/gradle.properties"))
 
