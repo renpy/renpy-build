@@ -42,6 +42,7 @@ class Configuration(object):
         self.store = "none"
         self.update_icons = True
         self.update_always = True
+        self.heap_size = None
 
         try:
             with file(os.path.join(directory, ".android.json"), "r") as f:
@@ -79,6 +80,15 @@ def set_version(config, value):
     except:
         pass
 
+def set_heap_size(config, value, gradle_dir):
+    """
+    Sets the Java Heap Size for Gradle in gradle.properties.
+    """
+    config.heap_size = value
+
+    with open(gradle_dir, "w+") as g:
+        g.writelines(["# The setting is particularly useful for tweaking memory settings.\n", "org.gradle.jvmargs=-Xmx" + value + "g\n", "# Disable the gradle daemon, so it doesn't waste ram.\n", "org.gradle.daemon = false"])
+    
 
 def configure(interface, directory, default_name=None, default_version=None):
 
@@ -131,6 +141,23 @@ def configure(interface, directory, default_name=None, default_version=None):
 
     if not re.match(r'^[\d]+$', config.numeric_version):
         interface.fail(__("The numeric version must contain only numbers."))
+
+    if config.heap_size is None:
+        heap = open(plat.path("project/gradle.properties"), "r")
+        for line in heap:
+            if "org.gradle.jvmargs" in line:
+                heapVal = line
+        heap.close()
+        heapVal = heapVal.replace('org.gradle.jvmargs=-Xmx', "")
+        heapVal = heapVal.replace('g\n', "")
+        config.heap_size = heapVal
+
+    heap_size = interface.input(__("How much RAM do you want to allocate to Gradle?\n\nThis must be a positive integer number."), config.heap_size)
+
+    if not re.match(r'^[\d]+$', config.heap_size):
+        interface.fail(__("The RAM size must contain only numbers."))
+
+    set_heap_size(config, heap_size, plat.path("project/gradle.properties"))
 
     config.orientation = interface.choice(__("How would you like your application to be displayed?"), [
         ("sensorLandscape", __("In landscape orientation.")),
