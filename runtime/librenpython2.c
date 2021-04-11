@@ -201,6 +201,9 @@ static void search_python_home(void) {
 #endif
 
 #ifdef MAC
+    // Relative to the Resources directory.
+    find_python_home("/../Resources");
+
     // Relative to the base directory.
     find_python_home("");
 
