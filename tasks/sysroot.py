@@ -14,7 +14,6 @@ PACKAGES = [
     'libxxf86vm-dev',
     'libxss-dev',
     'libgl1-mesa-dev',
-    'libesd0-dev',
     'libdbus-1-dev',
     'libudev-dev',
     'libgl1-mesa-dev',
@@ -75,7 +74,6 @@ RASPI_PACKAGES = [
     'libxxf86vm-dev',
     'libxss-dev',
     'libgl1-mesa-dev',
-    'libesd0-dev',
     'libdbus-1-dev',
     'libudev-dev',
     'libgles2-mesa-dev',
@@ -89,8 +87,20 @@ RASPI_PACKAGES = [
 ]
 
 
-@task(platforms="linux", archs="armv7l")
+@task(platforms="linux", archs="armv7l,aarch64")
 def install(c):
+
+    if c.arch == "armv7l":
+        deb_arch = "armhf"
+        deb_mirror = "http://archive.raspbian.org/raspbian"
+        qemu_arch = "arm"
+    elif c.arch == "aarch64":
+        deb_arch = "arm64"
+        deb_mirror = "http://deb.debian.org/debian"
+        qemu_arch = "aarch64"
+
+    c.var("deb_arch", deb_arch)
+    c.var("qemu_arch", qemu_arch)
 
     if not c.path("{{ sysroot }}").exists():
 
@@ -106,13 +116,13 @@ def install(c):
         --variant=minbase
         --include={{ packages }}
         --components=main,contrib,firmware,rpi
-        --arch armhf
+        --arch {{ deb_arch }}
         buster
         {{ sysroot }}
-        http://archive.raspbian.org/raspbian
+        {{ deb_mirror }}
         """)
 
-        c.run("""sudo cp /usr/bin/qemu-arm-static {{ sysroot }}/usr/bin """)
+        c.run("""sudo cp /usr/bin/qemu-{{ qemu_arch }}-static {{ sysroot }}/usr/bin """)
 
         c.run("""sudo chroot {{ sysroot }} /debootstrap/debootstrap --second-stage """)
 
