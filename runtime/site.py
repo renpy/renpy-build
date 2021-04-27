@@ -407,5 +407,8 @@ sys.path = [ pythonlib + "/site-packages", pythonlib ]
 if "RENPY_PLATFORM" in os.environ:
     sys.path.append(pythonlib + "/../" + os.environ["RENPY_PLATFORM"])
 
-sys.path = [ os.path.abspath(i) for i in sys.path ]
+# Look for binary libraries in MacOS on mac.
+if RENPY_PLATFORM.startswith("mac-"):
+    sys.path.append(os.path.dirname(sys.executable))
 
+sys.path = [ os.path.abspath(i) for i in sys.path ]
