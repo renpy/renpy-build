@@ -628,7 +628,7 @@ def build(iface, directory, commands, launch=False, finished=None):
 
             dfn = plat.path(dfn)
 
-            shutil.copy(sfn, dfn)
+            shutil.move(sfn, dfn)
             files.append(dfn)
 
     # Launch.
@@ -651,6 +651,8 @@ def build(iface, directory, commands, launch=False, finished=None):
 
     if finished is not None:
         finished(files)
+        if os.path.isdir(assets):
+            shutil.rmtree(assets)
 
     iface.final_success(
         __("The build seems to have succeeded.") +
