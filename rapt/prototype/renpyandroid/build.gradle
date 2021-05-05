@@ -17,14 +17,14 @@ android {
             minifyEnabled false
             packagingOptions {
                doNotStrip '**/*.so'
-           } 
+           }
         }
 
         release {
             minifyEnabled false
             packagingOptions {
                doNotStrip '**/*.so'
-           } 
+           }
         }
     }
 
@@ -41,8 +41,9 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'uk.uuid.slf4j:slf4j-android:1.7.25-1'
 
-    implementation 'com.danikula.expansion:expansion:1.3.4@aar'
-    implementation 'com.danikula.expansion:license:1.7.0@aar'
-    implementation 'com.danikula.expansion:zip:1.2.1@aar'
+    api project (':expansion')
+    api project (':license')
+    api project (':zip')
+
 
 }
