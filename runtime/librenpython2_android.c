@@ -145,6 +145,8 @@ int SDL_main(int argc, char **argv) {
     setenv_workaround("RENPY_PLATFORM", PLATFORM "-" ARCH);
     SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
+#if 0
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 	    return 1;
 	}
@@ -202,6 +204,8 @@ done:
     if (presplash) {
         SDL_FreeSurface(presplash);
     }
+
+#endif
 
 	call_prepare_python();
 
