@@ -269,8 +269,7 @@ public class PythonSDLActivity extends SDLActivity {
         // Initalize the store support.
         Store.create(this);
 
-        // Hide the navigation.
-        setWindowStyle(true);
+        // Ensure that the surface has the right format when GL starts.
         setSurfaceViewFormat(1);
 
         // Show the presplash.
