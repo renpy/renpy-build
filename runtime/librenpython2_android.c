@@ -87,8 +87,8 @@ PyMODINIT_FUNC initandroidembed(void) {
 }
 
 static struct _inittab inittab[] = {
-               { "androidembed",  initandroidembed },
-               { NULL, NULL },
+   { "androidembed",  initandroidembed },
+   { NULL, NULL },
 };
 
 /* Python Startup *************************************************************/
@@ -132,80 +132,10 @@ void call_prepare_python(void) {
 }
 
 int SDL_main(int argc, char **argv) {
-	SDL_Surface *surface;
-	SDL_RWops *rwops = NULL;
-	SDL_Surface *presplash = NULL;
-	SDL_Surface *presplash2 = NULL;
-	SDL_Rect pos;
-	SDL_Event event;
 
-	Uint32 pixel;
-
-	init_environ();
+    init_environ();
     setenv_workaround("RENPY_PLATFORM", PLATFORM "-" ARCH);
     SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
-
-#if 0
-
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-	    return 1;
-	}
-
-	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
-
-	window = SDL_CreateWindow("", 0, 0, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
-	surface = SDL_GetWindowSurface(window);
-	pixel = SDL_MapRGB(surface->format, 128, 128, 128);
-
-	rwops = SDL_RWFromFile("android-presplash.png", "r");
-
-	if (!rwops) {
-		rwops = SDL_RWFromFile("android-presplash.jpg", "r");
-	}
-
-	if (!rwops) goto done;
-
-	presplash = IMG_Load_RW(rwops, 1);
-
-    if (!presplash) goto done;
-
-	presplash2 = SDL_ConvertSurfaceFormat(presplash, SDL_PIXELFORMAT_RGB888, 0);
-	Uint8 *pp = (Uint8 *) presplash2->pixels;
-
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-	pixel = SDL_MapRGBA(surface->format, pp[2], pp[1], pp[0], 255);
-#else
-	pixel = SDL_MapRGBA(surface->format, pp[0], pp[1], pp[2], 255);
-#endif
-
-	SDL_FreeSurface(presplash2);
-
-done:
-
-    {
-        Uint32 start = SDL_GetTicks();
-
-        while (SDL_GetTicks() < start + 520) {
-            surface = SDL_GetWindowSurface(window);
-
-            SDL_FillRect(surface, NULL, pixel);
-
-            if (presplash) {
-                pos.x = (surface->w - presplash->w) / 2;
-                pos.y = (surface->h - presplash->h) / 2;
-                SDL_BlitSurface(presplash, NULL, surface, &pos);
-                SDL_UpdateWindowSurface(window);
-            }
-
-            SDL_WaitEventTimeout(&event, 10);
-        }
-    }
-
-    if (presplash) {
-        SDL_FreeSurface(presplash);
-    }
-
-#endif
 
 	call_prepare_python();
 

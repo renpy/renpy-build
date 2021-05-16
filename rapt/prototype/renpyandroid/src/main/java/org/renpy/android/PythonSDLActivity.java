@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,14 +21,16 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.renpy.iap.Store;
@@ -54,16 +58,13 @@ public class PythonSDLActivity extends SDLActivity {
 
     ResourceManager resourceManager;
 
-
     protected String[] getLibraries() {
         return new String[] {
             "renpython",
         };
     }
 
-
     // GUI code. /////////////////////////////////////////////////////////////
-
 
     public void addView(View view, int index) {
         mVbox.addView(view, index, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, (float) 0.0));
@@ -92,7 +93,6 @@ public class PythonSDLActivity extends SDLActivity {
     public void setOrientationBis(int w, int h, boolean resizable, String hint) {
         return;
     }
-
 
     // Code to unpack python and get things running ///////////////////////////
 
@@ -246,14 +246,64 @@ public class PythonSDLActivity extends SDLActivity {
 
     };
 
-    // Code to support devicePurchase. /////////////////////////////////////////
+    // App lifecycle.
+    public ImageView mPresplash = null;
 
+    Bitmap getBitmap(String assetName) {
+        try {
+            InputStream is = getAssets().open(assetName);
+            Bitmap rv = BitmapFactory.decodeStream(is);
+            is.close();
+
+            return rv;
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v("python", "onCreate()");
         super.onCreate(savedInstanceState);
+
+        // Initalize the store support.
         Store.create(this);
+
+        // Hide the navigation.
+        setWindowStyle(true);
+
+        // Show the presplash.
+        Bitmap presplashBitmap = getBitmap("android-presplash.png");
+
+        if (presplashBitmap == null) {
+            presplashBitmap = getBitmap("android-presplash.jpg");
+        }
+
+        if (presplashBitmap != null) {
+
+            mPresplash = new ImageView(this);
+            mPresplash.setBackgroundColor(presplashBitmap.getPixel(0, 0));
+            mPresplash.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mPresplash.setImageBitmap(presplashBitmap);
+
+            mLayout.addView(mPresplash, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        }
+    }
+
+    /**
+     * Called by Ren'Py to hide the presplash after start.
+     */
+    public void hidePresplash() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (mActivity.mPresplash != null) {
+                    mActivity.mLayout.removeView(mActivity.mPresplash);
+                    mActivity.mPresplash = null;
+                }
+            }
+        });
     }
 
     @Override
