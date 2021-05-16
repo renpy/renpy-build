@@ -271,6 +271,7 @@ public class PythonSDLActivity extends SDLActivity {
 
         // Hide the navigation.
         setWindowStyle(true);
+        setSurfaceViewFormat(1);
 
         // Show the presplash.
         Bitmap presplashBitmap = getBitmap("android-presplash.png");
@@ -297,7 +298,6 @@ public class PythonSDLActivity extends SDLActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 if (mActivity.mPresplash != null) {
                     mActivity.mLayout.removeView(mActivity.mPresplash);
                     mActivity.mPresplash = null;
