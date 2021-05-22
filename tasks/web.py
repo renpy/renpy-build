@@ -23,7 +23,7 @@ def links(c):
 
 @task(kind="host-python", platforms="web")
 def download_emsdk(c):
-    c.var("emsdk_version", "2.0.15")
+    c.var("emsdk_version", "2.0.20")
 
     c.chdir("{{ renpyweb }}")
     c.run("git clone https://github.com/emscripten-core/emsdk/")
