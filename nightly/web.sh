@@ -15,7 +15,7 @@ $SCRIPTS/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
 # Upload everything to the server.
 if [ "$UPLOAD" = 1 ]; then
-    rsync -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly --delete
+    rsync -av /home/tom/magnetic/ab/WWW.nightly/ tom@192.168.99.2:/home/tom/WWW.nightly --delete
 fi
 
 # Delete old nightlies.
