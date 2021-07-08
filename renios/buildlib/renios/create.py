@@ -104,7 +104,7 @@ def create_project(interface, dest, name=None, version="1.0"):
         CFBundlePackageType="APPL",
         CFBundleShortVersionString=version,
         CFBundleSignature="????",
-        CFBundleVersion=1,
+        CFBundleVersion="1",
         LSRequiresIPhoneOS=True,
         UIRequiresFullScreen=True,
         UIStatusBarHidden=True,

@@ -62,9 +62,9 @@ def build_environment(c):
     c.env("LDFLAGS", "-L{{install}}/lib")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "11.0")
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "11.0")
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
     if c.kind == "host":
 
@@ -258,8 +258,8 @@ def build_environment(c):
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=11.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=11.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
 
     elif (c.platform == "ios") and (c.arch == "armv7s"):
 
@@ -274,8 +274,8 @@ def build_environment(c):
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=11.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=11.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
 
     elif (c.platform == "ios") and (c.arch == "x86_64"):
 
@@ -290,8 +290,8 @@ def build_environment(c):
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=11.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=11.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")
