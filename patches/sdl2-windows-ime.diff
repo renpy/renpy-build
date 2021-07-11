@@ -1,0 +1,73 @@
+diff -ru SDL2-2.0.14.new/src/video/windows/SDL_windowskeyboard.c SDL2-2.0.14/src/video/windows/SDL_windowskeyboard.c
+--- SDL2-2.0.14/src/video/windows/SDL_windowskeyboard.c	2020-12-21 12:44:36.000000000 -0500
++++ SDL2-2.0.14.new/src/video/windows/SDL_windowskeyboard.c	2021-07-11 12:46:01.910661929 -0400
+@@ -229,10 +229,31 @@
+ }
+
+ void
++WIN_UpdateTextInputRect(SDL_VideoData *videodata)
++{
++    HIMC himc = ImmGetContext(videodata->ime_hwnd_current);
++    CANDIDATEFORM cf;
++
++    if (!himc)
++        return;
++
++    cf.dwIndex = 0;
++    cf.dwStyle = CFS_EXCLUDE;
++    cf.ptCurrentPos.x = videodata->ime_rect.x;
++    cf.ptCurrentPos.y = videodata->ime_rect.y;
++    cf.rcArea.left = videodata->ime_rect.x;
++    cf.rcArea.top = videodata->ime_rect.y;
++    cf.rcArea.right = videodata->ime_rect.x + videodata->ime_rect.w;
++    cf.rcArea.bottom = videodata->ime_rect.y + videodata->ime_rect.h;
++    ImmSetCandidateWindow(himc, &cf);
++
++    ImmReleaseContext(videodata->ime_hwnd_current, himc);
++}
++
++void
+ WIN_SetTextInputRect(_THIS, SDL_Rect *rect)
+ {
+     SDL_VideoData *videodata = (SDL_VideoData *)_this->driverdata;
+-    HIMC himc = 0;
+
+     if (!rect) {
+         SDL_InvalidParamError("rect");
+@@ -240,17 +261,7 @@
+     }
+
+     videodata->ime_rect = *rect;
+-
+-    himc = ImmGetContext(videodata->ime_hwnd_current);
+-    if (himc)
+-    {
+-        COMPOSITIONFORM cf;
+-        cf.ptCurrentPos.x = videodata->ime_rect.x;
+-        cf.ptCurrentPos.y = videodata->ime_rect.y;
+-        cf.dwStyle = CFS_FORCE_POSITION;
+-        ImmSetCompositionWindow(himc, &cf);
+-        ImmReleaseContext(videodata->ime_hwnd_current, himc);
+-    }
++    WIN_UpdateTextInputRect(videodata);
+ }
+
+ #ifdef SDL_DISABLE_WINDOWS_IME
+@@ -370,7 +381,8 @@
+     videodata->ime_available = SDL_TRUE;
+     IME_UpdateInputLocale(videodata);
+     IME_SetupAPI(videodata);
+-    videodata->ime_uiless = UILess_SetupSinks(videodata);
++    // FIXME: the implementation of UILess IME is incomplete so we disable it by commenting this out:
++    //videodata->ime_uiless = UILess_SetupSinks(videodata);
+     IME_UpdateInputLocale(videodata);
+     IME_Disable(videodata, hwnd);
+ }
+@@ -882,6 +894,7 @@
+         *lParam = 0;
+         break;
+     case WM_IME_STARTCOMPOSITION:
++        WIN_UpdateTextInputRect(videodata);
+         trap = SDL_TRUE;
+         break;
+     case WM_IME_COMPOSITION:
