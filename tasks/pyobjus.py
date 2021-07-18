@@ -39,7 +39,7 @@ def build(c):
 
         f.write(c.expand("""\
 DEF PLATFORM = "{{ 'ios' if c.platform == 'ios' else 'darwin' }}"
-DEF ARCH = "{{ c.arch }}"
+DEF ARCH = "{{ c.arch.replace('sim-', '') }}"
 """))
 
     c.run("""cython pyobjus.pyx""")
@@ -79,4 +79,3 @@ def host_build(c):
     c.run("""install -d {{ pytmp }}/pyobjus/pyobjus""")
     c.run("""install dylib_manager.py  __init__.py  objc_py_types.py  protocols.py {{ pytmp }}/pyobjus/pyobjus""")
     c.run("{{ hostpython }} -OO -m compileall {{ pytmp }}/pyobjus/pyobjus")
-

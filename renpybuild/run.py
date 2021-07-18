@@ -42,19 +42,25 @@ def build_environment(c):
         c.var("host_platform", "arm-apple-darwin")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
         c.var("host_platform", "arm-apple-darwin")
-    elif (c.platform == "ios") and (c.arch == "x86_64"):
+    elif (c.platform == "ios") and (c.arch == "sim-arm64"):
+        c.var("host_platform", "arm-apple-darwin")
+    elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.var("host_platform", "x86_64-apple-darwin")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
-    elif (c.platform == "ios") and (c.arch == "x86_64"):
+    elif (c.platform == "ios") and (c.arch == "sim-arm64"):
+        c.var("sdl_host_platform", "arm-ios-darwin21")
+    elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.var("sdl_host_platform", "x86_64-ios-darwin21")
     else:
         c.var("sdl_host_platform", "{{ host_platform }}")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
+        c.var("ffi_host_platform", "aarch64-ios-darwin21")
+    if (c.platform == "ios") and (c.arch == "sim-arm64"):
         c.var("ffi_host_platform", "aarch64-ios-darwin21")
     else:
         c.var("ffi_host_platform", "{{ host_platform }}")
@@ -65,7 +71,9 @@ def build_environment(c):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
-    elif (c.platform == "ios") and (c.arch == "x86_64"):
+    elif (c.platform == "ios") and (c.arch == "sim-arm64"):
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
+    elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
     if c.kind == "host":
@@ -279,7 +287,23 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
 
-    elif (c.platform == "ios") and (c.arch == "x86_64"):
+    elif (c.platform == "ios") and (c.arch == "sim-arm64"):
+
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
+
+        c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
+        c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
+        c.env("CPP", "ccache {{ crossbin }}clang -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld")
+        c.env("AR", "ccache {{ crossbin }}ar")
+        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
+        c.env("STRIP", "ccache  {{ crossbin }}strip")
+        c.env("NM", "{{ crossbin}}nm")
+
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
+
+    elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
         c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
 

@@ -45,8 +45,8 @@ def lipo(c, namefilter):
     # debug.
 
     paths = [
-        c.path("{{ tmp }}/install.ios-arm64/lib"),
-        c.path("{{ tmp }}/install.ios-x86_64/lib"),
+        c.path("{{ tmp }}/install.ios-sim-x86_64/lib"),
+        c.path("{{ tmp }}/install.ios-sim-arm64/lib"),
         ]
 
     c.var("paths", paths, expand=False)

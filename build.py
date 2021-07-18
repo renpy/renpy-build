@@ -38,7 +38,8 @@ Platform("android", "arm64_v8a")
 Platform("android", "armeabi_v7a")
 
 Platform("ios", "arm64")
-Platform("ios", "x86_64")
+Platform("ios", "sim-x86_64")
+Platform("ios", "sim-arm64")
 
 Platform("web", "wasm")
 

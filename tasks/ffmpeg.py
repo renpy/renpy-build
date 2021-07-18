@@ -23,11 +23,15 @@ def build(c):
         c.var("arch", "x86")
     elif c.arch == "x86_64":
         c.var("arch", "x86_64")
+    elif c.arch == "sim-x86_64":
+        c.var("arch", "x86_64")
     elif c.arch == "armv7l":
         c.var("arch", "armhf")
     elif c.arch == "arm64_v8a":
         c.var("arch", "aarch64")
     elif c.arch == "arm64":
+        c.var("arch", "aarch64")
+    elif c.arch == "sim-arm64":
         c.var("arch", "aarch64")
     elif c.arch == "armeabi_v7a":
         c.var("arch", "arm")

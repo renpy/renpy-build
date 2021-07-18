@@ -122,7 +122,7 @@ def build(c):
     c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
 
 
-@task(kind="cross", platforms="ios", archs="x86_64")
+@task(kind="cross", platforms="ios", archs="sim-arm64,sim-x86_64")
 def build(c):
 
     c.clean("{{ cross }}")
@@ -137,13 +137,14 @@ def build(c):
         data = f.read()
 
     data = data.replace("iPhoneOS", "iPhoneSimulator")
-    data = data.replace("arm-apple-darwin11", "x86_64-apple-darwin11")
+
+    if c.arch == "sim-x86_64":
+        data = data.replace("arm-apple-darwin11", "x86_64-apple-darwin11")
 
     with open(c.path("build.sh"), "w") as f:
         f.write(data)
 
-    c.run("./build.sh {{tars}}/iPhoneSimulator14.0.sdk.tar.gz {{ c.arch }}")
+    c.run("./build.sh {{tars}}/iPhoneSimulator14.0.sdk.tar.gz {{ c.arch.replace('sim-', '') }}")
 
     c.chdir("{{ cross }}")
     c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
-
