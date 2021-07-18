@@ -60,7 +60,7 @@ def build_environment(c):
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("ffi_host_platform", "aarch64-ios-darwin21")
-    if (c.platform == "ios") and (c.arch == "sim-arm64"):
+    elif (c.platform == "ios") and (c.arch == "sim-arm64"):
         c.var("ffi_host_platform", "aarch64-ios-darwin21")
     else:
         c.var("ffi_host_platform", "{{ host_platform }}")
@@ -257,67 +257,51 @@ def build_environment(c):
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
+        c.var("llver", "13")
+        c.var("clang_args", "-fuse-ld=lld -target arm64-apple-ios13.0 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
-        c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossbin }}clang -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
+        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk ")
+        c.env("AR", "ccache llvm-ar-{{ llver }}")
+        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
+        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
+        c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
-
-    elif (c.platform == "ios") and (c.arch == "armv7s"):
-
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
-
-        c.env("CC", "ccache {{ crossbin }}clang -arch armv7s -mfpu=neon -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}clang++ -arch armv7s -mfpu=neon -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossbin }}clang -arch armv7s -mfpu=neon -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
-
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -miphoneos-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
+        c.var("llver", "13")
+        c.var("clang_args", "-fuse-ld=lld -target arm64-apple-ios13.0-simulator -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
-        c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossbin }}clang -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
+        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk ")
+        c.env("AR", "ccache llvm-ar-{{ llver }}")
+        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
+        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
+        c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}11-")
+        c.var("llver", "13")
+        c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-ios13.0-simulator -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
-        c.env("CC", "ccache {{ crossbin }}clang -arch x86_64 -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}clang++ -arch x86_64 -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossbin }}clang -arch x86_64 -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
+        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk ")
+        c.env("AR", "ccache llvm-ar-{{ llver }}")
+        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
+        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
+        c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-version-min=13.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }}  -mios-version-min=13.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")

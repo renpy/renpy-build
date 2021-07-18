@@ -9,7 +9,7 @@ def copytree(c):
 
 
 def lipo(c, namefilter):
-    c.var("lipo", "{{ tmp }}/cross.ios-arm64/bin/arm-apple-darwin11-lipo")
+    c.var("lipo", "llvm-lipo-13")
 
     paths = [
         c.path("{{ tmp }}/install.ios-arm64/lib"),

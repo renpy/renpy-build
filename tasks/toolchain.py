@@ -112,14 +112,8 @@ def build(c):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
-    c.run("git clone https://github.com/tpoechtrager/cctools-port")
-    c.chdir("cctools-port/usage_examples/ios_toolchain")
-    # c.run("git checkout 606eb7dcb21ea90df1d36cd6b67e04c23cafe705")
-
-    c.run("./build.sh {{tars}}/iPhoneOS14.0.sdk.tar.gz {{ c.arch }}")
-
-    c.chdir("{{ cross }}")
-    c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
+    c.run("tar xaf {{ tars }}/iPhoneOS14.0.sdk.tar.gz")
+    c.run("ln -s iPhoneOS14.0.sdk sdk")
 
 
 @task(kind="cross", platforms="ios", archs="sim-arm64,sim-x86_64")
@@ -128,23 +122,13 @@ def build(c):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
-    c.run("git clone https://github.com/tpoechtrager/cctools-port")
-    c.chdir("cctools-port/usage_examples/ios_toolchain")
+    c.run("tar xaf {{ tars }}/iPhoneSimulator14.0.sdk.tar.gz")
+    c.run("ln -s iPhoneSimulator14.0.sdk sdk")
 
-    c.run("ls")
-
-    with open(c.path("build.sh"), "r") as f:
-        data = f.read()
-
-    data = data.replace("iPhoneOS", "iPhoneSimulator")
-
-    if c.arch == "sim-x86_64":
-        data = data.replace("arm-apple-darwin11", "x86_64-apple-darwin11")
-
-    with open(c.path("build.sh"), "w") as f:
-        f.write(data)
-
-    c.run("./build.sh {{tars}}/iPhoneSimulator14.0.sdk.tar.gz {{ c.arch.replace('sim-', '') }}")
-
-    c.chdir("{{ cross }}")
-    c.run("ln -s cctools-port/usage_examples/ios_toolchain/target/bin bin")
+@task(platforms="ios")
+def mockrt(c):
+    c.clean()
+    c.run("{{ CC }} {{ CFLAGS }} -c {{ source }}/mockrt.c")
+    c.run("mkdir -p {{ install }}/lib")
+    c.run("{{ AR }} rc {{ install }}/lib/libmockrt.a mockrt.o")
+    c.run("{{ RANLIB }} {{ install }}/lib/libmockrt.a")

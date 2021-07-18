@@ -110,6 +110,7 @@ def build_ios(c):
         f.write("ac_cv_little_endian_double=yes\n")
         f.write("ac_cv_header_langinfo_h=no\n")
         f.write("ac_cv_func_getentropy=no\n")
+        f.write("ac_cv_have_long_long_format=yes\n")
 
     c.env("CONFIG_SITE", "config.site")
 
