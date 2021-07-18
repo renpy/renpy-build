@@ -46,16 +46,16 @@ def build_environment(c):
         c.var("host_platform", "x86_64-apple-darwin")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
-        c.var("sdl_host_platform", "arm-ios-darwin11")
+        c.var("sdl_host_platform", "arm-ios-darwin21")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
-        c.var("sdl_host_platform", "arm-ios-darwin11")
+        c.var("sdl_host_platform", "arm-ios-darwin21")
     elif (c.platform == "ios") and (c.arch == "x86_64"):
-        c.var("sdl_host_platform", "x86_64-ios-darwin11")
+        c.var("sdl_host_platform", "x86_64-ios-darwin21")
     else:
         c.var("sdl_host_platform", "{{ host_platform }}")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
-        c.var("ffi_host_platform", "aarch64-ios-darwin11")
+        c.var("ffi_host_platform", "aarch64-ios-darwin21")
     else:
         c.var("ffi_host_platform", "{{ host_platform }}")
 
@@ -64,6 +64,8 @@ def build_environment(c):
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
+    elif (c.platform == "ios") and (c.arch == "x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
     if c.kind == "host":
