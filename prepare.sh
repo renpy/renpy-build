@@ -31,9 +31,13 @@ sudo apt-get install -y mingw-w64 autoconf
 # Needed for mac
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
 
+# Needed for iOS
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 13
+
 # Needed for web
 sudo apt-get install -y quilt
-
 
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt-get install -y \

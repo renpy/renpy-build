@@ -50,8 +50,10 @@ Change into the renpy-build directory, and run::
     ./prepare.sh
 
 **This will globally change your system. ** Specifically, it will place
-files needed to build for Apple platforms in /usr/lib/clang/10/lib . Please
-make sure you're comfortable with this change before continuing.
+files needed to build for Apple platforms in /usr/lib/clang/10/lib ,and
+will install clang-13 from llvm.org. It will also install various
+package from Ubuntu repositories. Please make sure you're comfortable with
+this change before continuing.
 
 This will first install all the packages required to build Ren'Py, and
 then it will clone Ren'Py and pygame_sdl2. It will also create a python
