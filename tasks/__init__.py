@@ -7,6 +7,8 @@ from . import nasm
 from . import zlib
 from . import bzip2
 from . import openssl
+from . import curl
+
 from . import libffi
 
 from . import libpng
