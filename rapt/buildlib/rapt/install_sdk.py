@@ -88,11 +88,11 @@ def unpack_sdk(interface):
         interface.terms("https://developer.android.com/studio/terms", __("Do you accept the Android SDK Terms and Conditions?"))
 
     if plat.windows:
-        archive = "sdk-tools-windows-{}.zip".format(plat.sdk_version)
+        archive = "commandlinetools-windows-{}.zip".format(plat.sdk_version)
     elif plat.macintosh:
-        archive = "sdk-tools-darwin-{}.zip".format(plat.sdk_version)
+        archive = "commandlinetools-darwin-{}.zip".format(plat.sdk_version)
     elif plat.linux:
-        archive = "sdk-tools-linux-{}.zip".format(plat.sdk_version)
+        archive = "commandlinetools-linux-{}.zip".format(plat.sdk_version)
 
     url = "https://dl.google.com/android/repository/" + archive
 
@@ -113,9 +113,14 @@ def unpack_sdk(interface):
 
         zf.extractall("Sdk")
 
-        os.chdir(old_cwd)
-
         zf.close()
+
+        # sdkmanager won't run unless we reorganize the unpack.
+        os.rename("Sdk/cmdline-tools", "Sdk/latest")
+        os.mkdir("Sdk/cmdline-tools")
+        os.rename("Sdk/latest", "Sdk/cmdline-tools/latest")
+
+        os.chdir(old_cwd)
 
     interface.background(extract)
 
@@ -128,7 +133,7 @@ def get_packages(interface):
 
     wanted_packages = [
         ("platform-tools", "platform-tools"),
-        ("platforms;android-29", "platforms/android-29"),
+        ("platforms;android-30", "platforms/android-30"),
         ]
 
     for i, j in wanted_packages:
@@ -225,7 +230,7 @@ def generate_keys(interface):
 
     dname = "CN=" + org
 
-    if not run(interface, plat.keytool, "-genkey", "-keystore", "android.keystore", "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
+    if not run(interface, plat.keytool, "-genkey", "-keystore", "android.keystore", "-alias", "android", "-keyalg", "RSA", "-keysize", "4096", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
         interface.fail(__("Could not create android.keystore. Is keytool in your path?"))
 
     interface.success(__("I've finished creating android.keystore. Please back it up, and keep it in a safe place."))

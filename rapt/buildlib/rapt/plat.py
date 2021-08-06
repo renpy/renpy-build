@@ -137,7 +137,7 @@ if platform.win32_ver()[0]:
         traceback.print_exc()
 
     adb = "platform-tools\\adb.exe"
-    sdkmanager = "tools\\bin\\sdkmanager.bat"
+    sdkmanager = "cmdline-tools\\latest\\bin\\sdkmanager.bat"
 
     java = maybe_java_home("java.exe")
     javac = maybe_java_home("javac.exe")
@@ -154,7 +154,7 @@ elif platform.mac_ver()[0]:
         traceback.print_exc()
 
     adb = "platform-tools/adb"
-    sdkmanager = "tools/bin/sdkmanager"
+    sdkmanager = "cmdline-tools/latest/bin/sdkmanager"
 
     java = maybe_java_home("java")
     javac = maybe_java_home("javac")
@@ -166,7 +166,7 @@ else:
     linux = True
 
     adb = "platform-tools/adb"
-    sdkmanager = "tools/bin/sdkmanager"
+    sdkmanager = "cmdline-tools/latest/bin/sdkmanager"
 
     java = maybe_java_home("java")
     javac = maybe_java_home("javac")
@@ -193,7 +193,7 @@ def path(path, relative=False):
     return path
 
 
-sdk_version = "4333796"
+sdk_version = "7583922_latest"
 
 try:
     with open(path("sdk.txt")) as f:

@@ -10,13 +10,13 @@ pushd "$ROOT"
 popd
 
 
-rm -f "$ROOT/renpy/rapt/Sdk"
+rm -Rf "$ROOT/renpy/rapt/Sdk"
 ln -s "/home/tom/ab/android/Sdk" "$ROOT/renpy/rapt/Sdk"
 mkdir -p "$ROOT/renpy/rapt/project"
 cp -a /home/tom/ab/android/local.properties "$ROOT/renpy/rapt/project"
 
 pushd "$ROOT/renpy/rapt"
-export PGS4A_NO_TERMS=1
+export RAPT_NO_TERMS=1
 python android.py installsdk
 popd
 
