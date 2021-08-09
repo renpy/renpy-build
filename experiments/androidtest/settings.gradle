@@ -1,0 +1,6 @@
+include ':app'
+include ':ff1'
+include ':ff2'
+include ':ff3'
+include ':ff4'
+rootProject.name = "AndroidTest"
