@@ -180,9 +180,6 @@ def make_tar(iface, fn, source_dirs):
 
     for sd in source_dirs:
 
-        if PYTHON and not RENPY:
-            compile_dir(iface, sd)
-
         sd = os.path.abspath(sd)
 
         for dir, dirs, files in os.walk(sd): # @ReservedAssignment
@@ -411,17 +408,13 @@ def build(iface, directory, commands, launch=False, finished=None):
 
     # Are we doing a Ren'Py build?
 
-    global RENPY
-
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
 
-    if os.path.isdir(os.path.join(directory, "renpy")):
-        RENPY = True
-    else:
-        RENPY = False
+    if not os.path.isdir(os.path.join(directory, "renpy")):
+        iface.fail(__("{} does not contain a Ren'Py game.").format(directory))
 
-    if RENPY and not os.path.isdir(os.path.join(directory, "game")):
+    if not os.path.isdir(os.path.join(directory, "game")):
         iface.fail(__("{} does not contain a Ren'Py game.").format(directory))
 
     config = configure.Configuration(directory)
@@ -437,20 +430,8 @@ def build(iface, directory, commands, launch=False, finished=None):
     blocklist = PatternList("blocklist.txt")
     keeplist = PatternList("keeplist.txt")
 
-    if RENPY:
-        default_presplash = plat.path("templates/renpy-presplash.jpg")
-
-        private_dir, assets_dir = split_renpy(directory)
-
-    else:
-        default_presplash = plat.path("templates/pygame-presplash.jpg")
-
-        if config.layout == "internal":
-            private_dir = directory
-            assets_dir = None
-        elif config.layout == "split":
-            private_dir = join_and_check(directory, "internal")
-            assets_dir = join_and_check(directory, "assets")
+    default_presplash = plat.path("templates/renpy-presplash.jpg")
+    private_dir, assets_dir = split_renpy(directory)
 
     versioned_name = config.name
     versioned_name = re.sub(r'[^\w]', '', versioned_name)
@@ -459,9 +440,6 @@ def build(iface, directory, commands, launch=False, finished=None):
     # Annoying fixups.
     config.name = config.name.replace("'", "\\'")
     config.icon_name = config.icon_name.replace("'", "\\'")
-
-    if config.store not in [ "play", "none" ]:
-        config.expansion = False
 
     iface.info(__("Updating project."))
 
@@ -483,49 +461,23 @@ def build(iface, directory, commands, launch=False, finished=None):
         else:
             os.mkdir(assets)
 
-        # If we're Ren'Py, rename things.
-        if RENPY:
+        # Ren'Py uses a lot of names that don't work as assets. Auto-rename
+        # them.
+        for dirpath, dirnames, filenames in os.walk(assets, topdown=False):
 
-            # Ren'Py uses a lot of names that don't work as assets. Auto-rename
-            # them.
-            for dirpath, dirnames, filenames in os.walk(assets, topdown=False):
+            for fn in filenames + dirnames:
+                if fn[0] == ".":
+                    continue
 
-                for fn in filenames + dirnames:
-                    if fn[0] == ".":
-                        continue
+                old = os.path.join(dirpath, fn)
+                new = os.path.join(dirpath, "x-" + fn)
 
-                    old = os.path.join(dirpath, fn)
-                    new = os.path.join(dirpath, "x-" + fn)
-
-                    plat.rename(old, new)
+                plat.rename(old, new)
 
     iface.background(make_assets)
 
     if not os.path.exists(plat.path("bin")):
         os.mkdir(plat.path("bin"), 0o777)
-
-    if config.expansion:
-        iface.info(__("Creating expansion file."))
-        expansion_file = "bin/main.{}.{}.obb".format(config.numeric_version, config.package)
-
-        def make_expansion():
-
-            zf = zipfile.ZipFile(plat.path(expansion_file), "w", zipfile.ZIP_STORED)
-            zip_directory(zf, "assets", assets)
-            zf.close()
-
-            # Delete and re-make the assets directory.
-            shutil.rmtree(assets)
-            os.mkdir(assets)
-
-        iface.background(make_expansion)
-
-        # Write the file size into DownloaderActivity.
-        file_size = os.path.getsize(plat.path(expansion_file))
-
-    else:
-        expansion_file = None
-        file_size = 0
 
     iface.info(__("Packaging internal data."))
 
@@ -548,12 +500,7 @@ def build(iface, directory, commands, launch=False, finished=None):
     iface.background(pack)
     private_version = private_version[0]
 
-    # Write out constants.java.
-    if not config.google_play_key:
-        config.google_play_key = "NOT_SET"
-
-    if not config.google_play_salt:
-        config.google_play_salt = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20"
+    config.numeric_version = int(config.numeric_version)
 
     for always, template, i in GENERATED:
 
@@ -562,7 +509,6 @@ def build(iface, directory, commands, launch=False, finished=None):
             template,
             i,
             private_version=private_version,
-            file_size=file_size,
             config=config,
             sdkpath=plat.path("Sdk"),
             )
@@ -596,17 +542,7 @@ def build(iface, directory, commands, launch=False, finished=None):
 
     try:
 
-        iface.call([ plat.gradlew, "--stacktrace", "-p", plat.path("project") ] + commands, cancel=True)
-
-        if (expansion_file is not None) and any(i.startswith("install") for i in commands):
-            iface.info(__("Uploading expansion file."))
-
-            dest = "/storage/emulated/0/Android/obb/{}/{}".format(config.package, os.path.basename(expansion_file))
-
-            iface.call([ plat.adb, "push", plat.path(expansion_file), dest ], cancel=True)
-
-        if expansion_file is not None:
-            files.append(plat.path(expansion_file))
+        iface.call([ plat.gradlew, "-p", plat.path("project") ] + commands, cancel=True)
 
     except subprocess.CalledProcessError:
 
@@ -636,10 +572,7 @@ def build(iface, directory, commands, launch=False, finished=None):
     if launch:
         iface.info(__("Launching app."))
 
-        if expansion_file:
-            launch_activity = "DownloaderActivity"
-        else:
-            launch_activity = "PythonSDLActivity"
+        launch_activity = "PythonSDLActivity"
 
         iface.call([
             plat.adb, "shell",
@@ -653,11 +586,7 @@ def build(iface, directory, commands, launch=False, finished=None):
         finished(files)
 
     iface.final_success(
-        __("The build seems to have succeeded.") +
-        "\n\n" +
-        __("The arm64-v8a version works on newer Android devices, the armeabi-v7a version works on older devices, and the x86_64 version works on the simulator and chromebooks.") +
-        "\n\n" +
-        __("The universal version works everywhere but is larger.")
+        __("The build seems to have succeeded.")
         )
 
 

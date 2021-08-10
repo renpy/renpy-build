@@ -80,6 +80,7 @@ def set_version(config, value):
     except:
         pass
 
+
 def set_heap_size(config, value, gradle_dir):
     """
     Sets the Java Heap Size for Gradle in gradle.properties.
@@ -88,7 +89,7 @@ def set_heap_size(config, value, gradle_dir):
 
     with open(gradle_dir, "w+") as g:
         g.writelines(["# The setting is particularly useful for tweaking memory settings.\n", "org.gradle.jvmargs=-Xmx" + value + "g\n", "# Disable the gradle daemon, so it doesn't waste ram.\n", "org.gradle.daemon = false"])
-    
+
 
 def configure(interface, directory, default_name=None, default_version=None):
 
@@ -165,52 +166,12 @@ def configure(interface, directory, default_name=None, default_version=None):
         ("sensor", __("In the user's preferred orientation.")),
         ], config.orientation)
 
-    if plat.renpy:
-        config.store = interface.choice(__("Which app store would you like to support in-app purchasing through?"), [
-            ("play", __("Google Play.")),
-            ("amazon", __("Amazon App Store.")),
-            ("all", __("Both, in one app.")),
-            ("none", __("Neither.")),
-            ], config.store)
+    config.store = "all"
 
-    if config.store in [ "play", "none" ]:
-        config.expansion = interface.choice(__("Would you like to create an expansion APK?") + "\n\n" + __("Automatically installing expansion APKs {a=https://issuetracker.google.com/issues/160942333}may not work on Android 11{/a}."), [
-            (False, __("No. Size limit of 100 MB on Google Play, but can be distributed through other stores and sideloaded.")),
-            (True, __("Yes. 2 GB size limit, but won't work outside of Google Play. (Read the documentation to get this to work.)"))
-            ], config.expansion)
+    permissions = [ i for i in config.permissions if i not in [ "INTERNET" ] ]
+    permissions.append("INTERNET")
 
-    if not plat.renpy:
-
-        config.layout = interface.choice("How is your application laid out?", [
-            ("internal", "A single directory, that will be placed on device internal storage."),
-            ("split", "Multiple directories that correspond to internal and asset storage."),
-            ], config.layout)
-
-        config.source = interface.yesno_choice("Do you want to include the Python source code of your application in the archive? If you include it once, you'll need to include it always.", config.source)
-
-        permissions = " ".join(config.permissions)
-        permissions = interface.input("""\
-What permissions should your application have? Possible permissions include:
-
-INTERNET (network access), VIBRATE (vibration control).
-
-Please enter a space-separated list of permissions.""", permissions)
-        config.permissions = permissions.split()
-
-    if plat.renpy:
-
-        if not config.expansion:
-            internet = "INTERNET" in config.permissions
-            internet = interface.yesno_choice(__("Do you want to allow the app to access the Internet?"), internet)
-        else:
-            internet = False # included in template.
-
-        permissions = [ i for i in config.permissions if i not in [ "INTERNET" ] ]
-
-        if internet:
-            permissions.append("INTERNET")
-
-        config.permissions = permissions
+    config.permissions = permissions
 
     config.update_always = interface.choice(
         __("Do you want to automatically update the Java source code?"), [

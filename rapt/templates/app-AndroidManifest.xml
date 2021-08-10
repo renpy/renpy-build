@@ -20,37 +20,18 @@
             android:launchMode="singleTop"
             android:screenOrientation="{{ config.orientation }}">
 
-{% if not config.expansion %}
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-{% endif %}
 
         </activity>
 
-{% if config.store == "amazon" or config.store == "all" %}
     <receiver android:name = "com.amazon.device.iap.ResponseReceiver" >
       <intent-filter>
         <action android:name = "com.amazon.inapp.purchasing.NOTIFY" android:permission = "com.amazon.inapp.purchasing.Permission.NOTIFY" />
       </intent-filter>
     </receiver>
-{% endif %}
-
-{% if config.expansion %}
-       <activity
-           android:label="@string/appName"
-           android:name="org.renpy.android.DownloaderActivity"
-           android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-           <intent-filter >
-               <action android:name="android.intent.action.MAIN" />
-               <category android:name="android.intent.category.LAUNCHER" />
-           </intent-filter>
-       </activity>
-
-       <service android:name="org.renpy.android.DownloaderService" />
-       <receiver android:name="org.renpy.android.DownloaderAlarmReceiver" />
-{% endif %}
 
   </application>
 
@@ -59,19 +40,7 @@
   <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-{% if config.expansion or config.store == "play" or config.store == "all" %}
-  <uses-permission android:name="com.android.vending.CHECK_LICENSE"/>
-{% endif %}
-
-{% if config.expansion %}
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-{% endif %}
-
-{% if config.store == "play" or config.store == "all" %}
   <uses-permission android:name="com.android.vending.BILLING"/>
-{% endif %}
 
   {% for perm in config.permissions %}
   <uses-permission android:name="android.permission.{{ perm }}" />

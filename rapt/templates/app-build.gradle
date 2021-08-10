@@ -4,9 +4,6 @@ def localPropertiesFile = rootProject.file("local.properties")
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
-
-import com.android.build.OutputFile
-
 android {
     compileSdkVersion 29
     ndkVersion "21.3.6528147"
@@ -15,18 +12,8 @@ android {
         applicationId "{{ config.package }}"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode {{ config.numeric_version }}
+        versionCode {{ 1000000000 + config.numeric_version }}
         versionName "{{ config.version }}"
-    }
-
-    splits {
-        abi {
-            enable true;
-            reset();
-
-            include "x86_64", "armeabi-v7a", "arm64-v8a"
-            universalApk true
-        }
     }
 
     signingConfigs {
@@ -55,24 +42,9 @@ android {
         }
     }
 
-
-    project.ext.versionCodes = ['armeabi-v7a': 0, 'arm64-v8a': 1, 'x86_64': 8]
-
-    android.applicationVariants.all { variant ->
-        // assign different version code for each output
-        variant.outputs.each { output ->
-            output.versionCodeOverride =
-                    project.ext.versionCodes.get(output.getFilter(com.android.build.OutputFile.ABI), 0) * 100000000 + android.defaultConfig.versionCode;
-
-            output.outputFileName =
-                    output.outputFileName.replace("app-", "app-" + output.versionCodeOverride + "-");
-        }
-    }
-
     aaptOptions {
         noCompress 'ogv', 'avi', 'mpg', 'webm', 'mkv', 'mp4', 'mp3', 'mp2', 'ogg', 'opus', 'flac', 'png', 'jpg', 'jpeg', 'webp', 'rpyc', 'rpymc', 'rpyb'
     }
-
 }
 
 dependencies {
