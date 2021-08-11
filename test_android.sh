@@ -21,7 +21,7 @@ python android.py installsdk
 popd
 
 if [ "$1" != "" ]; then
-    $ROOT/renpy/renpy.sh $ROOT/renpy/launcher android_build "$1" installDebug --launch
+    $ROOT/renpy/renpy.sh $ROOT/renpy/launcher android_build "$1" --launch
 fi
 
 # sleep 1

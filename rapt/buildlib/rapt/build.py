@@ -404,7 +404,7 @@ def copy_libs():
         shutil.copytree(prototype, project)
 
 
-def build(iface, directory, commands, launch=False, finished=None):
+def build(iface, directory, install=False, bundle=False, launch=False, finished=None):
 
     # Are we doing a Ren'Py build?
 
@@ -420,9 +420,6 @@ def build(iface, directory, commands, launch=False, finished=None):
     config = configure.Configuration(directory)
     if config.package is None:
         iface.fail(__("Run configure before attempting to build the app."))
-
-    if (config.store == "play" or config.store == "all") and ((config.google_play_key is None) or (len(config.google_play_key) < 32)):
-        iface.fail(__("Google Play support is enabled, but build.google_play_key is not defined."))
 
     global blocklist
     global keeplist
@@ -523,10 +520,7 @@ def build(iface, directory, commands, launch=False, finished=None):
 
     apkdirs = [ ]
 
-    if any(i.endswith("Debug") for i in commands):
-        apkdirs.append(plat.path("project/app/build/outputs/apk/debug"))
-
-    if any(i.endswith("Release") for i in commands):
+    if not bundle:
         apkdirs.append(plat.path("project/app/build/outputs/apk/release"))
 
     for i in apkdirs:
@@ -540,9 +534,16 @@ def build(iface, directory, commands, launch=False, finished=None):
     # dists folder.
     files = [ ]
 
+    if bundle:
+        command = "buildBundle"
+    elif install:
+        command = "installRelease"
+    else:
+        command = "buildRelease"
+
     try:
 
-        iface.call([ plat.gradlew, "-p", plat.path("project") ] + commands, cancel=True)
+        iface.call([ plat.gradlew, "-p", plat.path("project"), command ], cancel=True)
 
     except subprocess.CalledProcessError:
 
