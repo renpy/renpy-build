@@ -42,6 +42,10 @@ android {
         }
     }
 
+{% if bundle %}
+    assetPacks = [ ":ff1", ":ff2", ":ff3", ":ff4" ]
+{% endif %}
+
     aaptOptions {
         noCompress 'ogv', 'avi', 'mpg', 'webm', 'mkv', 'mp4', 'mp3', 'mp2', 'ogg', 'opus', 'flac', 'png', 'jpg', 'jpeg', 'webp', 'rpyc', 'rpymc', 'rpyb'
     }

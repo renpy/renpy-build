@@ -11,6 +11,7 @@ import time
 import zipfile
 import subprocess
 import hashlib
+import collections
 
 from . import plat
 from . import iconmaker
@@ -229,6 +230,50 @@ def make_tree(src, dest):
     shutil.copytree(src, dest, ignore=ignore)
 
 
+MAX_SIZE = 500000000
+
+
+def make_bundle_tree(src):
+
+    src = plat.path(src)
+    sizes = collections.defaultdict(int)
+
+    targets = [
+        plat.path("project/ff1/src/main/assets"),
+        plat.path("project/ff2/src/main/assets"),
+        plat.path("project/ff3/src/main/assets"),
+        plat.path("project/ff4/src/main/assets"),
+        ]
+
+    for dirpath, _, filenames in os.walk(src):
+
+        for fn in filenames:
+
+            if fn[0] == ".":
+                continue
+
+            old = os.path.join(dirpath, fn)
+            size = os.path.getsize(old)
+
+            for target in targets:
+                if sizes[target] + size <= MAX_SIZE:
+                    break
+            else:
+                raise Exception("Game too big for bundle, or single file > 500MB.")
+
+            sizes[target] += size
+
+            new = os.path.join(target, os.path.relpath(dirpath, src), fn)
+            newdir = os.path.join(target, os.path.relpath(dirpath, src))
+
+            try:
+                os.makedirs(newdir, 0o777)
+            except:
+                pass
+
+            plat.rename(old, new)
+
+
 def join_and_check(base, sub):
     """
     If base/sub is a directory, returns the joined path. Otherwise, return None.
@@ -342,6 +387,7 @@ GENERATED = [
     (False, "templates/renpyandroid-AndroidManifest.xml", "project/renpyandroid/src/main/AndroidManifest.xml"),
     (False, "templates/renpyandroid-strings.xml", "project/renpyandroid/src/main/res/values/strings.xml"),
     (False, "templates/Constants.java", "project/renpyandroid/src/main/java/org/renpy/android/Constants.java"),
+    (False, "templates/settings.gradle", "project/settings.gradle"),
 ]
 
 COPIED = [
@@ -451,25 +497,30 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     if os.path.isdir(assets):
         shutil.rmtree(assets)
 
+    os.mkdir(assets)
+
     def make_assets():
 
-        if assets_dir is not None:
-            make_tree(assets_dir, assets)
+        if bundle:
+
+            make_bundle_tree(assets_dir)
+
         else:
-            os.mkdir(assets)
 
-        # Ren'Py uses a lot of names that don't work as assets. Auto-rename
-        # them.
-        for dirpath, dirnames, filenames in os.walk(assets, topdown=False):
+            make_tree(assets_dir, assets)
 
-            for fn in filenames + dirnames:
-                if fn[0] == ".":
-                    continue
+            # Ren'Py uses a lot of names that don't work as assets. Auto-rename
+            # them.
+            for dirpath, dirnames, filenames in os.walk(assets, topdown=False):
 
-                old = os.path.join(dirpath, fn)
-                new = os.path.join(dirpath, "x-" + fn)
+                for fn in filenames + dirnames:
+                    if fn[0] == ".":
+                        continue
 
-                plat.rename(old, new)
+                    old = os.path.join(dirpath, fn)
+                    new = os.path.join(dirpath, "x-" + fn)
+
+                    plat.rename(old, new)
 
     iface.background(make_assets)
 
@@ -507,6 +558,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
             i,
             private_version=private_version,
             config=config,
+            bundle=bundle,
             sdkpath=plat.path("Sdk"),
             )
 
@@ -535,7 +587,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     files = [ ]
 
     if bundle:
-        command = "buildBundle"
+        command = "bundleRelease"
     elif install:
         command = "installRelease"
     else:
