@@ -33,9 +33,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.Collections;
+
+import com.google.android.play.core.assetpacks.*;
+import com.google.android.play.core.assetpacks.model.*;
+import com.google.android.play.core.tasks.OnSuccessListener;
+
 import org.renpy.iap.Store;
 
-public class PythonSDLActivity extends SDLActivity {
+
+
+public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpdateListener {
 
     /**
      * This exists so python code can access this activity.
@@ -236,6 +244,18 @@ public class PythonSDLActivity extends SDLActivity {
 
         nativeSetEnv("ANDROID_APK", apkFilePath);
 
+        if (!mAllPacksReady) {
+            Log.i("python", "Waiting for all packs to become ready.");
+        }
+
+        synchronized (this) {
+            while (!mAllPacksReady) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) { /* pass */ }
+            }
+        }
+
         Log.v("python", "Finished preparePython.");
 
     };
@@ -252,6 +272,24 @@ public class PythonSDLActivity extends SDLActivity {
             return rv;
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    boolean mAllPacksReady = false;
+    AssetPackManager mAssetPackManager = null;
+
+    /** 
+     * Given a pack name, return true if it's been downloaded and is 
+     * ready for use, or false otherwise. Returns true if the pack 
+     * doesn't exist at all.
+     */
+    boolean checkPack(String name) {
+        AssetPackLocation location = mAssetPackManager.getPackLocation(name);
+        if (location != null) {
+            nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), location.assetsPath());
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -282,6 +320,31 @@ public class PythonSDLActivity extends SDLActivity {
 
             mLayout.addView(mPresplash, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
         }
+
+        boolean allPacksReady = true;
+
+        if (Constants.assetPacks.length > 0) {
+
+            mAssetPackManager = AssetPackManagerFactory.getInstance(this);
+            mAssetPackManager.registerListener(this);
+
+            for (String pack : Constants.assetPacks) {
+                if (! checkPack(pack) ) {
+                    Log.i("python", "fetching: " + pack);
+                    mAssetPackManager.fetch(Collections.singletonList(pack));
+                    allPacksReady = false;
+                }
+            }
+
+        }
+
+        if (!allPacksReady) {
+            Toast.makeText(this, "Downloading game data.", Toast.LENGTH_LONG).show();
+        }
+
+        mAllPacksReady = allPacksReady;
+
+
     }
 
     /**
@@ -320,6 +383,73 @@ public class PythonSDLActivity extends SDLActivity {
 
         super.onActivityResult(requestCode, resultCode, intent);
     }
+
+    boolean waitForWifiConfirmationShown = false;
+
+    public void onStateUpdate(AssetPackState assetPackState) {
+        Log.i("python", "onStateUpdate: " + assetPackState.toString());
+
+        switch (assetPackState.status()) {
+          case AssetPackStatus.PENDING:
+            break;
+
+          case AssetPackStatus.DOWNLOADING:
+            break;
+
+          case AssetPackStatus.TRANSFERRING:
+            break;
+
+          case AssetPackStatus.COMPLETED:
+            break;
+
+          case AssetPackStatus.FAILED:
+            Log.e("python", "error = " + assetPackState.errorCode());
+            break;
+
+          case AssetPackStatus.CANCELED:
+            break;
+
+          case AssetPackStatus.WAITING_FOR_WIFI:
+            if (!waitForWifiConfirmationShown) {
+              mAssetPackManager.showCellularDataConfirmation(mActivity)
+                .addOnSuccessListener(new OnSuccessListener<Integer> () {
+                  @Override
+                  public void onSuccess(Integer resultCode) {
+                    if (resultCode == RESULT_OK) {
+                      Log.d("python", "Confirmation dialog has been accepted.");
+                    } else if (resultCode == RESULT_CANCELED) {
+                      Log.d("python", "Confirmation dialog has been denied by the user.");
+                    }
+                  }
+                });
+              waitForWifiConfirmationShown = true;
+            }
+            break;
+
+          case AssetPackStatus.NOT_INSTALLED:
+            break;
+        }
+
+        // Check all the asset packs again.
+        boolean allPacksReady = true;
+
+        if (Constants.assetPacks.length > 0) {
+            for (String pack : Constants.assetPacks) {
+                if (! checkPack(pack) ) {
+                    allPacksReady = false;
+                }
+            }
+
+        }
+
+        synchronized (this) {
+            mAllPacksReady = allPacksReady;
+            this.notifyAll();
+        }
+
+    }
+
+
 
     // Code to support public APIs. ////////////////////////////////////////////
 
