@@ -12,7 +12,7 @@ android {
         applicationId "{{ config.package }}"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode {{ 1000000000 + config.numeric_version }}
+        versionCode {{ config.numeric_version }}
         versionName "{{ config.version }}"
     }
 
@@ -54,4 +54,3 @@ android {
 dependencies {
     api project (':renpyandroid')
 }
-

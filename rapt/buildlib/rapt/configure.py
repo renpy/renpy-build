@@ -29,7 +29,7 @@ class Configuration(object):
         self.name = None
         self.icon_name = None
         self.version = None
-        self.numeric_version = None
+        self.numeric_version = 1
         self.orientation = "sensorLandscape"
         self.permissions = [ "VIBRATE" ]
         self.include_pil = False
@@ -59,26 +59,6 @@ class Configuration(object):
 
         with file(os.path.join(directory, ".android.json"), "w") as f:
             json.dump(self.__dict__, f)
-
-
-def set_version(config, value):
-    """
-    Sets the version, and tries to set the numeric versions based on the
-    version number.
-    """
-
-    config.version = value
-
-    try:
-        v = 0
-
-        for i in config.version.split('.'):
-            v *= 100
-            v += int(i)
-
-        config.numeric_version = str(v)
-    except:
-        pass
 
 
 def set_heap_size(config, value, gradle_dir):
@@ -129,19 +109,14 @@ def configure(interface, directory, default_name=None, default_version=None):
             interface.fail(__("{} is a Java keyword, and can't be used as part of a package name.").format(part))
 
     if config.version is None:
-        config.version = default_version
+        config.version = default_versione
 
     version = interface.input(__("What is the application's version?\n\nThis should be the human-readable version that you would present to a person. It must contain only numbers and dots."), config.version)
 
     if not re.match(r'^[\d\.]+$', version):
         interface.fail(__("The version number must contain only numbers and dots."))
 
-    set_version(config, version)
-
-    config.numeric_version = interface.input(__("What is the version code?\n\nThis must be a positive integer number, and the value should increase between versions."), config.numeric_version)
-
-    if not re.match(r'^[\d]+$', config.numeric_version):
-        interface.fail(__("The numeric version must contain only numbers."))
+    config.version = version
 
     if config.heap_size is None:
         heap = open(plat.path("project/gradle.properties"), "r")

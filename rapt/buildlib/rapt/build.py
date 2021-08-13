@@ -480,6 +480,9 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     versioned_name = re.sub(r'[^\w]', '', versioned_name)
     versioned_name += "-" + config.version
 
+    # Pick the numeric version.
+    config.numeric_version = max(int(time.time()), int(config.numeric_version))
+
     # Annoying fixups.
     config.name = config.name.replace("'", "\\'")
     config.icon_name = config.icon_name.replace("'", "\\'")
@@ -547,8 +550,6 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     iface.background(pack)
     private_version = private_version[0]
-
-    config.numeric_version = int(config.numeric_version)
 
     for always, template, i in GENERATED:
 
