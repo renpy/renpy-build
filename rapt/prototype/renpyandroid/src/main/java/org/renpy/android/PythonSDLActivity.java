@@ -236,12 +236,6 @@ public class PythonSDLActivity extends SDLActivity {
 
         nativeSetEnv("ANDROID_APK", apkFilePath);
 
-        String expansionFile = getIntent().getStringExtra("expansionFile");
-
-        if (expansionFile != null) {
-            nativeSetEnv("ANDROID_EXPANSION", expansionFile);
-        }
-
         Log.v("python", "Finished preparePython.");
 
     };
