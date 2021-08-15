@@ -18,6 +18,7 @@ from . import iconmaker
 
 import rapt.plat as plat
 import rapt.iconmaker as iconmaker
+import rapt.install_sdk as install_sdk
 
 __ = plat.__
 
@@ -579,6 +580,9 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     if not bundle:
         apkdirs.append(plat.path("project/app/build/outputs/apk/release"))
+    else:
+        apkdirs.append(plat.path("project/app/build/outputs/bundle/release"))
+
 
     for i in apkdirs:
         if os.path.exists(i):
@@ -611,7 +615,10 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     for i in apkdirs:
         for j in os.listdir(i):
 
-            if not j.endswith(".apk"):
+            for k in [ ".apk", ".aab" ]:
+                if j.endswith(k):
+                    break
+            else:
                 continue
 
             sfn = os.path.join(i, j)
@@ -624,6 +631,31 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
             shutil.copy(sfn, dfn)
             files.append(dfn)
+
+    # Install the bundle.
+
+    if bundle and install:
+
+        iface.info(__("I'm installing the bundle."))
+
+        iface.call([ 
+            plat.java, 
+            "-jar", 
+            plat.path("bundletool.jar"), 
+            "build-apks", 
+            "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
+            "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
+            "--local-testing",
+        ] +  install_sdk.get_local_key_properties() )
+
+
+        iface.call([ 
+            plat.java, 
+            "-jar", 
+            plat.path("bundletool.jar"), 
+            "install-apks", 
+            "--apks=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
+        ])
 
     # Launch.
 

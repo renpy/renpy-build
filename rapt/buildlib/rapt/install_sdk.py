@@ -166,8 +166,6 @@ def set_property(properties, key, value, replace=False):
     replaces the value.
     """
 
-    print("Set", properties, key, value)
-
     lines = [ ]
 
     try:
@@ -204,6 +202,14 @@ def get_property(properties, key):
 
     return None
 
+
+def get_local_key_properties():
+    return [
+        "--ks", get_property(local_properties, "key.store"),
+        "--ks-pass", "pass:" + get_property(local_properties, "key.store.password"),
+        "--ks-key-alias", get_property(local_properties, "key.alias"),
+        "--key-pass", "pass:" + get_property(local_properties, "key.alias.password"),
+    ]
 
 def generate_keys(interface):
 
