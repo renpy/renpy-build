@@ -109,7 +109,7 @@ def configure(interface, directory, default_name=None, default_version=None):
             interface.fail(__("{} is a Java keyword, and can't be used as part of a package name.").format(part))
 
     if config.version is None:
-        config.version = default_versione
+        config.version = default_version
 
     version = interface.input(__("What is the application's version?\n\nThis should be the human-readable version that you would present to a person. It must contain only numbers and dots."), config.version)
 
