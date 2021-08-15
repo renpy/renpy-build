@@ -157,18 +157,21 @@ def get_packages(interface):
 
 
 local_properties = plat.path("project/local.properties")
+bundle_properties = plat.path("project/bundle.properties")
 
 
-def set_property(key, value, replace=False):
+def set_property(properties, key, value, replace=False):
     """
-    Sets the property `key` in local.properties to `value`. If replace is True,
+    Sets the property `key` in local/bundle.properties to `value`. If replace is True,
     replaces the value.
     """
+
+    print("Set", properties, key, value)
 
     lines = [ ]
 
     try:
-        with open(local_properties, "r") as f:
+        with open(properties, "r") as f:
             for l in f:
                 k = l.partition("=")[0].strip()
 
@@ -183,16 +186,16 @@ def set_property(key, value, replace=False):
     except:
         pass
 
-    with open(local_properties, "w") as f:
+    with open(properties, "w") as f:
         for l in lines:
             f.write(l)
 
         f.write("{}={}\n".format(key, value))
 
 
-def get_property(key):
+def get_property(properties, key):
 
-    with open(local_properties, "r") as f:
+    with open(properties, "r") as f:
         for l in f:
             k, _, v = l.partition("=")
 
@@ -204,15 +207,17 @@ def get_property(key):
 
 def generate_keys(interface):
 
-    set_property("key.alias", "android")
-    set_property("key.store.password", "android")
-    set_property("key.alias.password", "android")
+    properties = local_properties
+
+    set_property(properties, "key.alias", "android")
+    set_property(properties, "key.store.password", "android")
+    set_property(properties, "key.alias.password", "android")
 
     default_keystore = plat.path("android.keystore").replace("\\", "/")
 
-    set_property("key.store", default_keystore)
+    set_property(properties, "key.store", default_keystore)
 
-    if get_property("key.store") != default_keystore:
+    if get_property(properties, "key.store") != default_keystore:
         interface.info(__("You set the keystore yourself, so I'll assume it's how you want it."))
         return
 
@@ -230,10 +235,33 @@ def generate_keys(interface):
 
     dname = "CN=" + org
 
-    if not run(interface, plat.keytool, "-genkey", "-keystore", "android.keystore", "-alias", "android", "-keyalg", "RSA", "-keysize", "4096", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
+    if not run(interface, plat.keytool, "-genkey", "-keystore", "android.keystore", "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
         interface.fail(__("Could not create android.keystore. Is keytool in your path?"))
 
     interface.success(__("I've finished creating android.keystore. Please back it up, and keep it in a safe place."))
+
+def generate_bundle_keys(interface):
+
+    properties = bundle_properties
+
+    set_property(properties, "key.alias", "android")
+    set_property(properties, "key.store.password", "android")
+    set_property(properties, "key.alias.password", "android")
+
+    default_keystore = plat.path("bundle.keystore").replace("\\", "/")
+
+    set_property(properties, "key.store", default_keystore)
+
+    if get_property(properties, "key.store") != default_keystore:
+        return
+
+    if os.path.exists(plat.path("bundle.keystore")):
+        return
+
+    dname = "CN=Ren'Py Creator"
+
+    if not run(interface, plat.keytool, "-genkey", "-keystore", "bundle.keystore", "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
+        interface.fail(__("Could not create bundle.keystore. Is keytool in your path?"))
 
 
 def install_sdk(interface):
@@ -249,7 +277,9 @@ def install_sdk(interface):
     get_packages(interface)
 
     generate_keys(interface)
+    generate_bundle_keys(interface)
 
-    set_property("sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
+    set_property(local_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
+    set_property(bundle_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
 
     interface.final_success(__("It looks like you're ready to start packaging games."))

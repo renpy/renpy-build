@@ -423,6 +423,7 @@ def copy_project(update_always=False):
         return
 
     lp = snarf("project/local.properties")
+    bp = snarf("project/bundle.properties")
 
     if os.path.exists(project):
         shutil.rmtree(project)
@@ -433,6 +434,9 @@ def copy_project(update_always=False):
         with open(plat.path("project/local.properties"), "w") as f:
             f.write(lp + "\n")
 
+    if bp is not None:
+        with open(plat.path("project/bundle.properties"), "w") as f:
+            f.write(bp + "\n")
 
 def copy_libs():
     """

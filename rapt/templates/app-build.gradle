@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 
+{% if bundle %}
+def localPropertiesFile = rootProject.file("bundle.properties")
+{% else %}
 def localPropertiesFile = rootProject.file("local.properties")
+{% endif %}
+
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
