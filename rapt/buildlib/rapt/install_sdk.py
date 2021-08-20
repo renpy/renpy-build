@@ -88,9 +88,9 @@ def unpack_sdk(interface):
         interface.terms("https://developer.android.com/studio/terms", __("Do you accept the Android SDK Terms and Conditions?"))
 
     if plat.windows:
-        archive = "commandlinetools-windows-{}.zip".format(plat.sdk_version)
+        archive = "commandlinetools-win-{}.zip".format(plat.sdk_version)
     elif plat.macintosh:
-        archive = "commandlinetools-darwin-{}.zip".format(plat.sdk_version)
+        archive = "commandlinetools-mac-{}.zip".format(plat.sdk_version)
     elif plat.linux:
         archive = "commandlinetools-linux-{}.zip".format(plat.sdk_version)
 
@@ -211,6 +211,7 @@ def get_local_key_properties():
         "--key-pass", "pass:" + get_property(local_properties, "key.alias.password"),
     ]
 
+
 def generate_keys(interface):
 
     properties = local_properties
@@ -245,6 +246,7 @@ def generate_keys(interface):
         interface.fail(__("Could not create android.keystore. Is keytool in your path?"))
 
     interface.success(__("I've finished creating android.keystore. Please back it up, and keep it in a safe place."))
+
 
 def generate_bundle_keys(interface):
 
