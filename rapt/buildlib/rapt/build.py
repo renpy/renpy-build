@@ -579,8 +579,6 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     if not bundle:
         apkdirs.append(plat.path("project/app/build/outputs/apk/release"))
-        for i in os.listdir(plat.path("project/app/build/outputs")):
-            print(i)
     else:
         apkdirs.append(plat.path("project/app/build/outputs/bundle/release"))
 
@@ -601,7 +599,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     elif install:
         command = "installRelease"
     else:
-        command = "buildRelease"
+        command = "assembleRelease"
 
     try:
 
@@ -613,6 +611,8 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     # Copy everything to bin.
 
+    for i in os.listdir(plat.path("project/app/build/outputs")):
+        print(i)
     for i in apkdirs:
         for j in os.listdir(i):
 
