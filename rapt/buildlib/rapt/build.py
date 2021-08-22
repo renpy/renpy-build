@@ -457,8 +457,6 @@ def copy_libs():
 
 def build(iface, directory, install=False, bundle=False, launch=False, finished=None):
 
-    # Are we doing a Ren'Py build?
-
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
 
@@ -505,12 +503,11 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     if os.path.isdir(assets):
         shutil.rmtree(assets)
 
-    os.mkdir(assets)
-
     def make_assets():
 
         if bundle:
 
+            os.mkdir(assets)
             make_bundle_tree(assets_dir)
 
         else:
@@ -583,7 +580,6 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     else:
         apkdirs.append(plat.path("project/app/build/outputs/bundle/release"))
 
-
     for i in apkdirs:
         if os.path.exists(i):
             shutil.rmtree(i)
@@ -600,7 +596,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     elif install:
         command = "installRelease"
     else:
-        command = "buildRelease"
+        command = "assembleRelease"
 
     try:
 
