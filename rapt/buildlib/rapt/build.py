@@ -123,6 +123,9 @@ def render(always, template, dest, **kwargs):
     if (not always) and os.path.exists(dest):
         return
 
+    if not os.path.isdir(os.path.dirname(dest)):
+        os.makedirs(os.path.dirname(dest))
+
     template = environment.get_template(template)
     text = template.render(**kwargs)
 
@@ -439,6 +442,7 @@ def copy_project(update_always=False):
         with open(plat.path("project/bundle.properties"), "w") as f:
             f.write(bp + "\n")
 
+
 def copy_libs():
     """
     This copies updated libraries from the prototype to the project each
@@ -634,22 +638,21 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
         iface.info(__("I'm installing the bundle."))
 
-        iface.call([ 
-            plat.java, 
-            "-jar", 
-            plat.path("bundletool.jar"), 
-            "build-apks", 
+        iface.call([
+            plat.java,
+            "-jar",
+            plat.path("bundletool.jar"),
+            "build-apks",
             "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
             "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
             "--local-testing",
-        ] +  install_sdk.get_local_key_properties() )
+        ] + install_sdk.get_local_key_properties())
 
-
-        iface.call([ 
-            plat.java, 
-            "-jar", 
-            plat.path("bundletool.jar"), 
-            "install-apks", 
+        iface.call([
+            plat.java,
+            "-jar",
+            plat.path("bundletool.jar"),
+            "install-apks",
             "--apks=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
         ])
 
