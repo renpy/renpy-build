@@ -9,8 +9,7 @@
         android:label="@string/appName"
         android:isGame="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-        android:hardwareAccelerated="true"
-        >
+        android:hardwareAccelerated="true">
 
         <activity
             android:name="org.renpy.android.PythonSDLActivity"
@@ -27,9 +26,9 @@
 
         </activity>
 
-    <receiver android:name = "com.amazon.device.iap.ResponseReceiver" >
+    <receiver android:name="com.amazon.device.iap.ResponseReceiver">
       <intent-filter>
-        <action android:name = "com.amazon.inapp.purchasing.NOTIFY" android:permission = "com.amazon.inapp.purchasing.Permission.NOTIFY" />
+        <action android:name="com.amazon.inapp.purchasing.NOTIFY" android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY" />
       </intent-filter>
     </receiver>
 
