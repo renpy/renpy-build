@@ -579,6 +579,8 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     if not bundle:
         apkdirs.append(plat.path("project/app/build/outputs/apk/release"))
+        for i in os.listdir(plat.path("project/app/build/outputs"):
+            print(i)
     else:
         apkdirs.append(plat.path("project/app/build/outputs/bundle/release"))
 
