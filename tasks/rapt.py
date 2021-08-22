@@ -15,11 +15,6 @@ def copy(c):
     c.rmtree("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
     c.rmtree("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius")
 
-    os.unlink(c.path("{{ raptver }}/prototype/app/build.gradle"))
-    os.unlink(c.path("{{ raptver }}/prototype/app/src/main/AndroidManifest.xml"))
-    os.unlink(c.path("{{ raptver }}/prototype/app/src/main/res/values/strings.xml"))
-    os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/AndroidManifest.xml"))
-    os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/res/values/strings.xml"))
     os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/renpy/android/Constants.java"))
 
     if c.path("{{ raptver }}/prototype/local.properties").exists():

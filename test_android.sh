@@ -20,7 +20,7 @@ export RAPT_NO_TERMS=1
 python android.py installsdk
 popd
 
-adb shell input keyevent KEYCODE_HOME
+adb shell input keyevent KEYCODE_HOME || true
 
 if [ "$1" != "" ]; then
     $ROOT/renpy/renpy.sh $ROOT/renpy/launcher android_build "$1" --bundle --launch
