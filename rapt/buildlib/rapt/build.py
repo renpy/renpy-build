@@ -559,13 +559,16 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
         render(
             always or config.update_always,
-            template,
-            i,
+            plat.path(template),
+            plat.path(i),
             private_version=private_version,
             config=config,
             bundle=bundle,
             sdkpath=plat.path("Sdk"),
             )
+
+    with open(plat.path("project/app/src/main/AndroidManifest.xml"),"r") as ___manifest:
+        print(___manifest.read().strip())
 
     if config.update_icons:
         iconmaker.IconMaker(directory, config)
