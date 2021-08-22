@@ -505,12 +505,11 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     if os.path.isdir(assets):
         shutil.rmtree(assets)
 
-    os.mkdir(assets)
-
     def make_assets():
 
         if bundle:
 
+            os.mkdir(assets)
             make_bundle_tree(assets_dir)
 
         else:
