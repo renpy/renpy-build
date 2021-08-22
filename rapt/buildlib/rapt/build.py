@@ -457,8 +457,6 @@ def copy_libs():
 
 def build(iface, directory, install=False, bundle=False, launch=False, finished=None):
 
-    # Are we doing a Ren'Py build?
-
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
 
@@ -560,15 +558,12 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
         render(
             always or config.update_always,
             template,
-            plat.path(i),
+            i,
             private_version=private_version,
             config=config,
             bundle=bundle,
             sdkpath=plat.path("Sdk"),
             )
-
-    with open(plat.path("project/app/src/main/AndroidManifest.xml"),"r") as ___manifest:
-        print(___manifest.read().strip())
 
     if config.update_icons:
         iconmaker.IconMaker(directory, config)
@@ -584,7 +579,6 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
         apkdirs.append(plat.path("project/app/build/outputs/apk/release"))
     else:
         apkdirs.append(plat.path("project/app/build/outputs/bundle/release"))
-
 
     for i in apkdirs:
         if os.path.exists(i):
@@ -614,8 +608,6 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     # Copy everything to bin.
 
-    for i in os.listdir(plat.path("project/app/build/outputs")):
-        print(i)
     for i in apkdirs:
         for j in os.listdir(i):
 
