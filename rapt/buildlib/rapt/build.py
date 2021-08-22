@@ -559,7 +559,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
         render(
             always or config.update_always,
-            plat.path(template),
+            template,
             plat.path(i),
             private_version=private_version,
             config=config,
