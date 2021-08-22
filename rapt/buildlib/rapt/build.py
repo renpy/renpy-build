@@ -599,7 +599,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     elif install:
         command = "installRelease"
     else:
-        command = "assembleRelease"
+        command = "buildRelease"
 
     try:
 
