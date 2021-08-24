@@ -9,6 +9,7 @@ import os
 import shutil
 import time
 import zipfile
+import gzip
 import subprocess
 import hashlib
 import collections
@@ -530,6 +531,21 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
                     new = os.path.join(dirpath, "x-" + fn)
 
                     plat.rename(old, new)
+
+                    if new[-3:] != ".gz":
+                        continue
+
+                    # AAPT unavoidably gunzips files with a .gz extension.
+                    # To prevent this we temporarily double gzip such files,
+                    # leaving AAPT to unpack them back into the original
+                    # location. /o\
+
+                    old, new = new, new + ".gz"
+
+                    with open(old, "rb") as src, gzip.open(new, "wb") as out:
+                        shutil.copyfileobj(src, out)
+
+                    os.unlink(old)
 
     iface.background(make_assets)
 
