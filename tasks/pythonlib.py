@@ -250,11 +250,10 @@ def python2(c):
     if socket.gethostname() == "eileen":
         with open(c.path("{{ distlib }}/{{ pythonver }}/site.py"), "a") as f:
             f.write("\n")
-            f.write("renpy_build_offical = True\n")
+            f.write("renpy_build_official = True\n")
 
     c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
     with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
         f.write("lib-dynload needs to exist to stop an exec_prefix error.\n")
-
