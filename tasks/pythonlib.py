@@ -245,6 +245,13 @@ def python2(c):
         pyo_copy(src, dst)
 
     c.copy("{{ runtime }}/site.py", "{{ distlib }}/{{ pythonver }}/site.py")
+
+    import socket
+    if socket.gethostname() == "eileen":
+        with open(c.path("{{ distlib }}/{{ pythonver }}/site.py"), "a") as f:
+            f.write("\n")
+            f.write("renpy_build_offical = True\n")
+
     c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
