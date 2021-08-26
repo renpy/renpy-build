@@ -63,6 +63,8 @@ def build(args):
     archs = set(i.strip() for i in args.archs.split(",") if i)
     pythons = set(i.strip() for i in args.pythons.split(",") if i)
 
+    tasks = set(i.strip() for i in args.tasks.split(",") if i)
+
     # Check that the platforms, archs, and pythons are known.
 
     for i in platforms:
@@ -83,6 +85,10 @@ def build(args):
     # Actually build everything.
 
     for task in renpybuild.model.tasks:
+
+        if tasks and (task.name not in tasks):
+            continue
+
         for p in known_platforms:
 
             if platforms and (p.platform not in platforms):
@@ -156,6 +162,8 @@ def main():
 
     ap.add_argument("--nostrip", action="store_true", default=False)
     ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")
+
+    ap.add_argument("--tasks", default=None)
 
     ap.set_defaults(function=build)
 

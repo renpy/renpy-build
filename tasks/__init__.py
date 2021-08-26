@@ -46,3 +46,6 @@ from . import renios
 from . import steam
 
 from . import web
+
+from . import extensions
+

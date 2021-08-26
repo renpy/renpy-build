@@ -336,9 +336,11 @@ class Context:
 
         self.var("source", source)
 
+        self.run("install -d {{ install }}/extensions")
+
         if self.platform == "windows":
-            self.var("so", "{{dlpa}}/" + source.stem + ".pyd")
-            self.run("{{ CXX }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }}  -shared -o {{ so }} {{ source }} -lrenpython -l{{ pythonver }} " + cflags, verbose=True)
+            self.var("so", "{{ install }}/extensions/" + source.stem + ".pyd")
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }}  -shared -o {{ so }} {{ source }} -lrenpython -l{{ pythonver }} " + cflags, verbose=True)
 
         elif self.platform == "ios":
             self.var("name", source.stem)
@@ -349,7 +351,7 @@ class Context:
             self.var("initc", "init_" + source.stem + ".c")
             self.var("inito", "init_" + source.stem + ".o")
 
-            self.run("{{ CXX }} {{ CFLAGS }} {{ LDFLAGS }} -c -o {{ o }} {{ source }} " + cflags, verbose=True)
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -c -o {{ o }} {{ source }} " + cflags, verbose=True)
 
             with open(self.path("{{ initc }}"), "w") as f:
                 f.write(self.expand("""\
@@ -369,19 +371,19 @@ static void {{ cname }}_constructor() {
 }
 """))
 
-            self.run("{{ CXX }} {{ CFLAGS }} {{ LDFLAGS }} -c -o {{ inito }} {{ initc }}", verbose=True)
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -c -o {{ inito }} {{ initc }}", verbose=True)
 
             self.run("""{{ AR }} -r {{ a }} {{ o }} {{ inito }}""")
-            self.run("""install -d {{install}}/lib""")
-            self.run("""install {{ a }} {{ install }}/lib""")
+            self.run("""install -d {{install}}/extensions""")
+            self.run("""install {{ a }} {{ install }}/extensions""")
 
         elif self.platform == "android":
-            self.var("so", "{{ dlpa }}/" + source.stem + ".so")
-            self.run("{{ CXX }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ jniLibs }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
-        else:
+            self.var("so", "{{ install }}/extensions/" + source.stem + ".so")
+            self.run("{{ CC }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ jniLibs }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
 
-            self.var("so", "{{ dlpa }}/" + source.stem + ".so")
-            self.run("{{ CXX  }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
+        else:
+            self.var("so", "{{ install }}/extensions/" + source.stem + ".so")
+            self.run("{{ CC  }} {{ CFLAGS }} {{ LDFLAGS }} -L{{ dlpa }} -shared -o {{ so }} {{ source }} -lrenpython " + cflags, verbose=True)
 
 
 class Task:
