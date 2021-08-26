@@ -46,6 +46,7 @@ def build(c):
                     i = i.replace("gen/", gen)
                     sources.append(dn / i)
 
+    read_setup(c.root / "extensions")
     read_setup(c.pygame_sdl2)
     read_setup(c.renpy / "module")
 
