@@ -112,4 +112,7 @@ clones of those projects after the prepare step is complete. Updating
 renpy-build itself may require deleting the tmp/ directory and a complete
 rebuild, though simple changes may not require that.
 
+Note
+----
 
+Support for unofficial builds of Ren'Py will be limited.
