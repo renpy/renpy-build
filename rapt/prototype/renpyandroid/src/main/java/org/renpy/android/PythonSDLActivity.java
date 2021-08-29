@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
@@ -25,7 +26,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,13 +37,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 import com.google.android.play.core.assetpacks.*;
 import com.google.android.play.core.assetpacks.model.*;
 import com.google.android.play.core.tasks.OnSuccessListener;
 
 import org.renpy.iap.Store;
-
 
 
 public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpdateListener {
@@ -278,6 +281,9 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     boolean mAllPacksReady = false;
     AssetPackManager mAssetPackManager = null;
 
+    // The pack download progress bar.
+    ProgressBar mProgressBar = null;
+
     /** 
      * Given a pack name, return true if it's been downloaded and is 
      * ready for use, or false otherwise. Returns true if the pack 
@@ -304,22 +310,6 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         // Ensure that the surface has the right format when GL starts.
         setSurfaceViewFormat(1);
 
-        // Show the presplash.
-        Bitmap presplashBitmap = getBitmap("android-presplash.png");
-
-        if (presplashBitmap == null) {
-            presplashBitmap = getBitmap("android-presplash.jpg");
-        }
-
-        if (presplashBitmap != null) {
-
-            mPresplash = new ImageView(this);
-            mPresplash.setBackgroundColor(presplashBitmap.getPixel(0, 0));
-            mPresplash.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            mPresplash.setImageBitmap(presplashBitmap);
-
-            mLayout.addView(mPresplash, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-        }
 
         boolean allPacksReady = true;
 
@@ -338,12 +328,43 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
 
         }
 
-        if (!allPacksReady) {
-            Toast.makeText(this, "Downloading game data.", Toast.LENGTH_LONG).show();
-        }
-
         mAllPacksReady = allPacksReady;
 
+        String bitmapFilename;
+
+        if (allPacksReady) {
+            bitmapFilename = "android-presplash";
+        } else {
+            bitmapFilename = "android-downloading";
+        }
+
+        // Show the presplash.
+        Bitmap presplashBitmap = getBitmap(bitmapFilename + ".png");
+
+        if (presplashBitmap == null) {
+            presplashBitmap = getBitmap(bitmapFilename + ".jpg");
+        }
+
+        if (presplashBitmap != null) {
+
+            mPresplash = new ImageView(this);
+            mPresplash.setBackgroundColor(presplashBitmap.getPixel(0, 0));
+            mPresplash.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mPresplash.setImageBitmap(presplashBitmap);
+
+            mLayout.addView(mPresplash, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        }
+
+        if (!mAllPacksReady) {
+            RelativeLayout.LayoutParams prlp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 20);
+            prlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            prlp.leftMargin = 20;
+            prlp.rightMargin = 20;
+            prlp.bottomMargin = 20;
+
+            mProgressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+            mLayout.addView(mProgressBar, prlp);
+        }
 
     }
 
@@ -357,6 +378,11 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
                 if (mActivity.mPresplash != null) {
                     mActivity.mLayout.removeView(mActivity.mPresplash);
                     mActivity.mPresplash = null;
+                }
+    
+                if (mActivity.mProgressBar != null) {
+                    mActivity.mLayout.removeView(mActivity.mProgressBar);
+                    mActivity.mProgressBar = null;
                 }
             }
         });
@@ -385,9 +411,14 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     }
 
     boolean waitForWifiConfirmationShown = false;
+    HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
+
+    long mOldProgress = 0;
 
     public void onStateUpdate(AssetPackState assetPackState) {
         Log.i("python", "onStateUpdate: " + assetPackState.toString());
+
+        assetPackStates.put(assetPackState.name(), assetPackState);
 
         switch (assetPackState.status()) {
           case AssetPackStatus.PENDING:
@@ -433,22 +464,50 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         // Check all the asset packs again.
         boolean allPacksReady = true;
 
+        long totalBytesToDownload = 0;
+        long bytesDownloaded = 0;
+
         if (Constants.assetPacks.length > 0) {
             for (String pack : Constants.assetPacks) {
                 if (! checkPack(pack) ) {
                     allPacksReady = false;
                 }
-            }
 
+                AssetPackState aps = assetPackStates.get(pack);
+                if (aps != null) {
+                    totalBytesToDownload += aps.totalBytesToDownload();
+                    bytesDownloaded += aps.bytesDownloaded();
+                }
+            }
+        }
+
+        Log.d("python", "totalBytesToDownload=" + totalBytesToDownload + ", bytesDownloaded=" + bytesDownloaded);
+
+        // Protect against a DBZ.
+        if (totalBytesToDownload == 0) {
+            totalBytesToDownload = 1;
+        }
+
+        final long newProgress = 100 * bytesDownloaded / totalBytesToDownload;
+
+        if (mOldProgress != newProgress) {
+            mOldProgress = newProgress;
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mProgressBar != null) {
+                        mProgressBar.setProgress((int) newProgress);
+                    }
+                }
+            });
         }
 
         synchronized (this) {
             mAllPacksReady = allPacksReady;
             this.notifyAll();
         }
-
     }
-
 
 
     // Code to support public APIs. ////////////////////////////////////////////
