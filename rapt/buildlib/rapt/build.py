@@ -237,7 +237,6 @@ def make_tree(src, dest):
 
 MAX_SIZE = 500000000
 
-
 def make_bundle_tree(src):
 
     src = plat.path(src)
@@ -259,6 +258,11 @@ def make_bundle_tree(src):
 
             old = os.path.join(dirpath, fn)
             size = os.path.getsize(old)
+
+            matchfn = os.path.relpath(old, src)
+
+            if blocklist.match(matchfn) and not keeplist.match(matchfn):
+                continue
 
             for target in targets:
                 if sizes[target] + size <= MAX_SIZE:
