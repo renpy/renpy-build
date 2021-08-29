@@ -486,6 +486,8 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     keeplist = PatternList("keeplist.txt")
 
     default_presplash = plat.path("templates/renpy-presplash.jpg")
+    default_downloading = plat.path("templates/renpy-downloading.jpg")
+
     private_dir, assets_dir = split_renpy(directory)
 
     versioned_name = config.name
@@ -594,6 +596,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     # Copy the presplash files.
     copy_presplash(directory, "android-presplash", default_presplash)
+    copy_presplash(directory, "android-downloading", default_downloading)
 
     # Find and clean the apkdirs.
 
