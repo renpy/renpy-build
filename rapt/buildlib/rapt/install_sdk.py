@@ -191,7 +191,7 @@ def set_property(properties, key, value, replace=False):
         f.write("{}={}\n".format(key, value))
 
 
-def get_property(properties, key):
+def get_property(properties, key, default=None):
 
     with open(properties, "r") as f:
         for l in f:
@@ -200,7 +200,7 @@ def get_property(properties, key):
             if k.strip() == key:
                 return v.strip()
 
-    return None
+    return default
 
 
 def get_local_key_properties():
@@ -222,6 +222,29 @@ def get_dname(interface):
         dname = "CN=" + interface.input(__("Please enter your name or the name of your organization."), "A Ren'Py Creator")
 
 
+def backup_keys(source):
+
+    try:
+
+        import __main__
+        import time
+        import renpy
+        import shutil
+
+        backups = __main__.path_to_saves(renpy.config.gamedir, "backups")
+
+        keys = os.path.join(backups, "keys")
+        keyfile = os.path.join(keys, os.path.basename(source) + "-" + str(int(time.time())))
+
+        if not os.path.isdir(keys):
+            os.mkdir(keys, 0o700)
+
+        shutil.copy(source, keyfile)
+
+    except:
+        pass
+
+
 def generate_keys(interface):
 
     properties = local_properties
@@ -232,12 +255,11 @@ def generate_keys(interface):
 
     default_keystore = plat.path("android.keystore").replace("\\", "/")
 
-    set_property(properties, "key.store", default_keystore)
-
-    if get_property(properties, "key.store") != default_keystore:
+    if get_property(properties, "key.store", default_keystore) != default_keystore:
         return
 
     if os.path.exists(plat.path("android.keystore")):
+        set_property(properties, "key.store", default_keystore)
         return
 
     if not interface.yesno(__("I can create an application signing key for you. This key is required to create Universal APK for sideloading and stores other than Google Play.\n\nDo you want to create a key?")):
@@ -253,6 +275,9 @@ def generate_keys(interface):
 
     interface.success(__("I've finished creating android.keystore. Please back it up, and keep it in a safe place."))
 
+    backup_keys(default_keystore)
+    set_property(properties, "key.store", default_keystore)
+
 
 def generate_bundle_keys(interface):
 
@@ -264,12 +289,11 @@ def generate_bundle_keys(interface):
 
     default_keystore = plat.path("bundle.keystore").replace("\\", "/")
 
-    set_property(properties, "key.store", default_keystore)
-
-    if get_property(properties, "key.store") != default_keystore:
+    if get_property(properties, "key.store", default_keystore) != default_keystore:
         return
 
     if os.path.exists(plat.path("bundle.keystore")):
+        set_property(properties, "key.store", default_keystore)
         return
 
     if not interface.yesno(__("I can create a bundle signing key for you. This key is required to build an Android App Bundle (AAB) for upload to Google Play.\n\nDo you want to create a key?")):
@@ -282,6 +306,9 @@ def generate_bundle_keys(interface):
 
     if not run(interface, plat.keytool, "-genkey", "-keystore", "bundle.keystore", "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
         interface.fail(__("Could not create bundle.keystore. Is keytool in your path?"))
+
+    backup_keys(default_keystore)
+    set_property(properties, "key.store", default_keystore)
 
 
 def install_sdk(interface):
