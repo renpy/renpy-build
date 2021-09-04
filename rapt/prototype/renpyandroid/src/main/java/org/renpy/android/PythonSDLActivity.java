@@ -402,13 +402,6 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         setIntent(intent);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (Store.getStore().onActivityResult(requestCode, resultCode, intent)) {
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, intent);
-    }
 
     boolean waitForWifiConfirmationShown = false;
     HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
@@ -545,4 +538,28 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         }
     }
 
+    // Activity Requests ///////////////////////////////////////////////////////
+
+    // The thought behind this is that this will make it possible to call
+    // mActivity.startActivity(Intent, requestCode), then poll the fields on
+    // this object until the response comes back.
+
+    public int mActivityResultRequestCode = -1;
+    public int mActivityResultResultCode = -1;
+    public Intent mActivityResultResultData = null;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (Store.getStore().onActivityResult(requestCode, resultCode, resultData)) {
+            return;
+        }
+
+        Log.v("python", "onActivityResult(" + requestCode + ", " + resultCode + ", " + resultData.toString() + ")");
+
+        mActivityResultRequestCode = requestCode;
+        mActivityResultResultCode = resultCode;
+        mActivityResultResultData = resultData;
+
+        super.onActivityResult(requestCode, resultCode, resultData);
+    }
 }
