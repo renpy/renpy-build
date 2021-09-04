@@ -284,9 +284,9 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     // The pack download progress bar.
     ProgressBar mProgressBar = null;
 
-    /** 
-     * Given a pack name, return true if it's been downloaded and is 
-     * ready for use, or false otherwise. Returns true if the pack 
+    /**
+     * Given a pack name, return true if it's been downloaded and is
+     * ready for use, or false otherwise. Returns true if the pack
      * doesn't exist at all.
      */
     boolean checkPack(String name) {
@@ -379,7 +379,7 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
                     mActivity.mLayout.removeView(mActivity.mPresplash);
                     mActivity.mPresplash = null;
                 }
-    
+
                 if (mActivity.mProgressBar != null) {
                     mActivity.mLayout.removeView(mActivity.mProgressBar);
                     mActivity.mProgressBar = null;
@@ -510,14 +510,10 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     }
 
 
-    // Code to support public APIs. ////////////////////////////////////////////
+    // Support public APIs. ////////////////////////////////////////////////////
 
     public void openUrl(String url) {
-        Log.i("python", "Opening URL: " + url);
-
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
+        openURL(url);
     }
 
     public void vibrate(double s) {
