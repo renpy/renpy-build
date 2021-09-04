@@ -464,7 +464,7 @@ def copy_libs():
         shutil.copytree(prototype, project)
 
 
-def build(iface, directory, install=False, bundle=False, launch=False, finished=None):
+def build(iface, directory, install=False, bundle=False, launch=False, finished=None, permissions=[]):
 
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
@@ -500,6 +500,8 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     # Annoying fixups.
     config.name = config.name.replace("'", "\\'")
     config.icon_name = config.icon_name.replace("'", "\\'")
+
+    config.permissions.extend(permissions)
 
     iface.info(__("Updating project."))
 

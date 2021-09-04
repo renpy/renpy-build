@@ -43,7 +43,11 @@
   <uses-permission android:name="com.android.vending.BILLING"/>
 
   {% for perm in config.permissions %}
+  {% if "." in perm %}
+  <uses-permission android:name="{{ perm }}" />
+  {% else %}
   <uses-permission android:name="android.permission.{{ perm }}" />
+  {%endif %}
   {% endfor %}
 
 {{ manifest_extra or '' }}
