@@ -90,7 +90,7 @@ static void check(const char *func, NvAPI_Status ret) {
     }
 }
 
-static unsigned int original;
+static unsigned int original = OGL_THREAD_CONTROL_ENABLE;
 static unsigned int got_original = 0;
 
 void set_thread_optimization(unsigned value) {
@@ -132,6 +132,10 @@ void set_thread_optimization(unsigned value) {
     if (!got_original) {
         original = setting.u32CurrentValue;
         got_original = 1;
+    }
+
+    if (original < 1 || original > 16) {
+        original = OGL_THREAD_CONTROL_ENABLE;
     }
 
     setting.version = NVDRS_SETTING_VER;
