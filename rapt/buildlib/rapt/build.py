@@ -237,6 +237,7 @@ def make_tree(src, dest):
 
 MAX_SIZE = 500000000
 
+
 def make_bundle_tree(src):
 
     src = plat.path(src)
@@ -248,6 +249,17 @@ def make_bundle_tree(src):
         plat.path("project/ff3/src/main/assets"),
         plat.path("project/ff4/src/main/assets"),
         ]
+
+    # Write at least one file in each assets directory, to make sure that
+    # all exist.
+    for i in targets:
+            try:
+                os.makedirs(i, 0o777)
+            except:
+                pass
+
+            with open(os.path.join(i, "00_pack.txt"), "w") as f:
+                f.write("Shiro was here.\n")
 
     for dirpath, _, filenames in os.walk(src):
 
