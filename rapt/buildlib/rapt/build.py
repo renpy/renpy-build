@@ -663,25 +663,32 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
         iface.info(__("I'm installing the bundle."))
 
-        iface.call([
-            plat.java,
-            "-jar",
-            plat.path("bundletool.jar"),
-            "build-apks",
-            "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
-            "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
-            "--local-testing",
-        ] + install_sdk.get_local_key_properties())
+        try:
 
-        iface.call([
-            plat.java,
-            "-jar",
-            plat.path("bundletool.jar"),
-            "install-apks",
-            "--apks=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
-        ])
+            iface.call([
+                plat.java,
+                "-jar",
+                plat.path("bundletool.jar"),
+                "build-apks",
+                "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
+                "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
+                "--local-testing",
+            ] + install_sdk.get_local_key_properties())
 
-    # Launch.
+            iface.call([
+                plat.java,
+                "-jar",
+                plat.path("bundletool.jar"),
+                "install-apks",
+                "--apks=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
+                "--adb=" + plat.adb,
+            ])
+
+        except subprocess.CalledProcessError:
+
+            iface.fail(__("Installing the bundle appears to have failed."))
+
+# Launch.
 
     if launch:
         iface.info(__("Launching app."))
