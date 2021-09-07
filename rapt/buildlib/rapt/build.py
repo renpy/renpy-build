@@ -695,13 +695,19 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
         launch_activity = "PythonSDLActivity"
 
-        iface.call([
-            plat.adb, "shell",
-            "am", "start",
-            "-W",
-            "-a", "android.intent.action.MAIN",
-            "{}/org.renpy.android.{}".format(config.package, launch_activity),
-            ], cancel=True)
+        try:
+
+            iface.call([
+                plat.adb, "shell",
+                "am", "start",
+                "-W",
+                "-a", "android.intent.action.MAIN",
+                "{}/org.renpy.android.{}".format(config.package, launch_activity),
+                ], cancel=True)
+
+        except subprocess.CalledProcessError:
+
+            iface.fail(__("Launching the app appears to have failed."))
 
     if finished is not None:
         finished(files)
