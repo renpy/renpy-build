@@ -15,6 +15,10 @@ def hostunpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/freetype-{{version}}.tar.gz")
 
+    c.var("version", version)
+    c.chdir("freetype-{{version}}")
+    c.patch("freetype-otvalid.diff")
+
 
 @task()
 def unpack(c):
@@ -22,6 +26,10 @@ def unpack(c):
 
     c.var("version", version)
     c.run("tar xzf {{source}}/freetype-{{version}}.tar.gz")
+
+    c.var("version", version)
+    c.chdir("freetype-{{version}}")
+    c.patch("freetype-otvalid.diff")
 
 
 @task(kind="host")

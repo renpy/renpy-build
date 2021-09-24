@@ -1,0 +1,12 @@
+diff -u -r freetype-2.10.1/modules.cfg freetype-2.10.1.new/modules.cfg
+--- freetype-2.10.1/modules.cfg	2019-02-23 04:06:07.000000000 -0500
++++ freetype-2.10.1.new/modules.cfg	2021-09-24 11:53:17.948499041 -0400
+@@ -130,7 +130,7 @@
+ 
+ # OpenType table validation.  Needs `ftotval.c' below.
+ #
+-# AUX_MODULES += otvalid
++AUX_MODULES += otvalid
+ 
+ # Auxiliary PostScript driver component to share common code.
+ #
