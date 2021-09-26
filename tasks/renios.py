@@ -1,11 +1,33 @@
 from renpybuild.model import task
 import os
+import subprocess
+import re
 
 
 @task(kind="host-python")
 def copytree(c):
     c.copytree("{{ root }}/renios", "{{ renios }}")
     c.rmtree("{{ renios }}/prototype/prebuilt")
+
+
+def check_sdk(name, paths):
+
+    for d in paths:
+        fn = d / name
+
+        p = subprocess.run([ "llvm-otool-13", "-l", f"{fn}"], capture_output=True)
+
+        obj = None
+
+        for l in p.stdout.decode("utf-8").split("\n"):
+            if re.match(r'.*\.a\(.*\)', l):
+                if obj is not None:
+                    raise Exception(f"{obj} does not have a minos defined, in {fn}")
+
+                obj = l
+
+            if "minos" in l:
+                obj = None
 
 
 def lipo(c, namefilter):
@@ -27,6 +49,8 @@ def lipo(c, namefilter):
 
         if not namefilter(i):
             continue
+
+        check_sdk(i, paths)
 
         print("(Release) Lipo and strip:", i)
 
@@ -61,6 +85,8 @@ def lipo(c, namefilter):
 
         if not namefilter(i):
             continue
+
+        check_sdk(i, paths)
 
         print("(Debug) Lipo and strip:", i)
 
