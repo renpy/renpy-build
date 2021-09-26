@@ -130,6 +130,7 @@ def create_project(interface, dest, name=None, version="1.0"):
         CFBundleShortVersionString=version,
         CFBundleSignature="????",
         CFBundleVersion="1",
+        UILaunchStoryboardName="Launch Screen",
         LSRequiresIPhoneOS=True,
         UIRequiresFullScreen=True,
         UIStatusBarHidden=True,
