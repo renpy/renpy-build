@@ -52,12 +52,10 @@
 		E22EF5001A3352D900A74B9F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E22EF5021A3352EA00A74B9F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E22EF5071A33876B00A74B9F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E2578D6B24E62500006621CE /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		E266353E2425BD61005FA50B /* LaunchImage-foreground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage-foreground.png"; sourceTree = "<group>"; };
 		E266353F2425BD61005FA50B /* LaunchImage-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage-background.png"; sourceTree = "<group>"; };
 		E2845E1E1A350A57004BC3F8 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		E2845E291A36AD24004BC3F8 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		E2907EC224284D42003439CC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayer.m; sourceTree = "<group>"; };
 		E2BB98821A631363009C927E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
@@ -102,8 +100,6 @@
 				E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */,
 				E2845E1E1A350A57004BC3F8 /* main.c */,
 				E20E170E1A34DF1900820124 /* Info.plist */,
-				E22EF5071A33876B00A74B9F /* libz.dylib */,
-				E2845E291A36AD24004BC3F8 /* libbz2.dylib */,
 				E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */,
 				E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */,
 				E22EF5021A3352EA00A74B9F /* ImageIO.framework */,

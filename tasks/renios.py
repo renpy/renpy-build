@@ -7,7 +7,14 @@ import re
 @task(kind="host-python")
 def copytree(c):
     c.copytree("{{ root }}/renios", "{{ renios }}")
+
     c.rmtree("{{ renios }}/prototype/prebuilt")
+    c.rmtree("{{ renios }}/prototype/base")
+    c.rmtree("{{ renios }}/prototype/prototype.xcodeproj/project.xcworkspace")
+    c.rmtree("{{ renios }}/prototype/prototype.xcodeproj/xcshareddata")
+    c.rmtree("{{ renios }}/prototype/prototype.xcodeproj/xcuserdata")
+
+    c.run("""find {{ renios }}/prototype/ -name ._* -delete""")
 
 
 def check_sdk(name, paths):
