@@ -31,6 +31,7 @@ def patch_posix(c):
     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
     c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
     c.patch("python2-utf8.diff")
+    c.patch("python-c-locale-utf8.diff")
 
 
 @task(kind="python", pythons="2", platforms="ios")
