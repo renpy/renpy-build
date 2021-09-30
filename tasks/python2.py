@@ -94,6 +94,7 @@ def build_posix(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
+    c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
@@ -121,6 +122,7 @@ def build_ios(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
+    c.run("""{{ make }} """)
     c.run("""{{ make }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
@@ -146,6 +148,7 @@ def build_android(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
+    c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
@@ -184,6 +187,7 @@ REGENHEADER=${CCINSTALL}/include/stddef.h
 eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 """)
 
+    c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
