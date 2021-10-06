@@ -1,0 +1,14 @@
+diff -ur SDL2-2.0.14/src/video/android/SDL_androidvideo.c SDL2-2.0.14.new/src/video/android/SDL_androidvideo.c
+--- SDL2-2.0.14/src/video/android/SDL_androidvideo.c	2020-12-21 12:44:36.000000000 -0500
++++ SDL2-2.0.14.new/src/video/android/SDL_androidvideo.c	2021-10-06 00:27:54.553051440 -0400
+@@ -255,8 +255,8 @@
+          * will fall back to the old mode */
+         SDL_VideoDisplay *display              = SDL_GetDisplayForWindow(window);
+         display->display_modes[0].format       = Android_ScreenFormat;
+-        display->display_modes[0].w            = Android_DeviceWidth;
+-        display->display_modes[0].h            = Android_DeviceHeight;
++        display->display_modes[0].w            = Android_SurfaceWidth;
++        display->display_modes[0].h            = Android_SurfaceHeight;
+         display->display_modes[0].refresh_rate = Android_ScreenRate;
+         display->current_mode                  = display->display_modes[0];
+

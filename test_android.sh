@@ -26,3 +26,13 @@ adb shell input keyevent KEYCODE_HOME || true
 if [ "$1" != "" ]; then
     $ROOT/renpy/renpy.sh $ROOT/renpy/launcher android_build "$1" --bundle --launch
 fi
+
+
+# ## This tests app switching.
+#
+# sleep 5
+# adb shell input keyevent KEYCODE_HOME || true
+# sleep 1
+# adb shell input keyevent KEYCODE_APP_SWITCH || true
+# sleep 1
+# adb shell input tap 500 500 || true
