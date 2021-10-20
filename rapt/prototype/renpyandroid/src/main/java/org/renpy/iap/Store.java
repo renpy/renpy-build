@@ -16,8 +16,6 @@ public class Store {
 
         String storeName = org.renpy.android.Constants.store;
 
-        android.util.Log.e("python", android.os.Build.MANUFACTURER);
-
         if (storeName.equals("all")) {
             PackageManager pkgManager = activity.getPackageManager();
             String installerPackageName = pkgManager.getInstallerPackageName(activity.getPackageName());
@@ -26,15 +24,18 @@ public class Store {
                  if (android.os.Build.MANUFACTURER.startsWith("Amazon")) {
                      storeName = "amazon";
                  } else {
-                     storeName = "none";
+                     storeName = "play";
                  }
 
             } else if (installerPackageName.startsWith("com.amazon")) {
                 storeName = "amazon";
             } else {
-                storeName = "none";
+                storeName = "play";
             }
+
         }
+
+        android.util.Log.e("python", "Selecting the " + storeName + " store.");
 
         if (storeName.equals("play")) {
             store = new PlayStore(activity);
