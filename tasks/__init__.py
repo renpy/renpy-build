@@ -1,5 +1,7 @@
 # The tasks to run, in order.
 
+from . import cython
+
 from . import sysroot
 from . import toolchain
 from . import nasm
