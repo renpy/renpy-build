@@ -139,8 +139,8 @@ def configure(interface, directory, default_name=None, default_version=None):
 
     if not re.match(r'^[\d]+$', heap_size):
         interface.fail(__("The RAM size must contain only numbers and be positive."))
-    else:
-        config.set_heap_size(heap_size, plat.path("project/gradle.properties"))
+    
+    config.set_heap_size(heap_size, plat.path("project/gradle.properties"))
 
     config.orientation = interface.choice(__("How would you like your application to be displayed?"), [
         ("sensorLandscape", __("In landscape orientation.")),
