@@ -253,6 +253,10 @@ def make_bundle_tree(src):
     # Write at least one file in each assets directory, to make sure that
     # all exist.
     for i in targets:
+
+            if os.path.isdir(i):
+                shutil.rmtree(i)
+
             try:
                 os.makedirs(i, 0o777)
             except:
