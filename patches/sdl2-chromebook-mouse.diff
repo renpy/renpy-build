@@ -1,0 +1,12 @@
+diff -ru SDL2-2.0.14/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java SDL2-2.0.14.new/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java
+--- SDL2-2.0.14/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java	2020-12-21 12:44:36.000000000 -0500
++++ SDL2-2.0.14.new/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java	2021-11-05 20:25:50.534405994 -0400
+@@ -696,6 +696,8 @@
+                 return SDLControllerManager.handleJoystickMotionEvent(event);
+ 
+             case InputDevice.SOURCE_MOUSE:
++            // This is how the mouse events show up on ChromeOS.
++            case InputDevice.SOURCE_TOUCHSCREEN:
+             // DeX desktop mouse cursor is a separate non-standard input type.
+             case InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_TOUCHSCREEN:
+                 action = event.getActionMasked();

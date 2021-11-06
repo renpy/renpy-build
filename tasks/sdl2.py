@@ -25,6 +25,7 @@ def unpack(c):
         c.patch("sdl2-mac-fix-toggle-fullscreen.diff")
         c.patch("sdl2-windows-ime.diff")
         c.patch("sdl2-no-android-device-sizes.diff")
+        c.patch("sdl2-chromebook-mouse.diff")
 
         if c.platform == "ios":
             c.patch("sdl2-ios-configure.diff")
@@ -97,7 +98,7 @@ def build(c):
     c.run("""make install""")
 
 
-@task(kind="arch-python", platforms="android", always=True)
+@task(kind="arch-python", platforms="android", archs="x86_64", always=True)
 def rapt(c):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
@@ -110,4 +111,3 @@ def rapt(c):
 #     c.run("""install {{ cross }}/android-ndk-r21d/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
 
     c.copytree("android-project/app/src/main/java/org/libsdl", "{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
-
