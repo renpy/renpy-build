@@ -1,14 +1,25 @@
-diff -ur SDL2-2.0.14/src/video/android/SDL_androidvideo.c SDL2-2.0.14.new/src/video/android/SDL_androidvideo.c
---- SDL2-2.0.14/src/video/android/SDL_androidvideo.c	2020-12-21 12:44:36.000000000 -0500
-+++ SDL2-2.0.14.new/src/video/android/SDL_androidvideo.c	2021-10-06 00:27:54.553051440 -0400
-@@ -255,8 +255,8 @@
-          * will fall back to the old mode */
-         SDL_VideoDisplay *display              = SDL_GetDisplayForWindow(window);
-         display->display_modes[0].format       = Android_ScreenFormat;
--        display->display_modes[0].w            = Android_DeviceWidth;
--        display->display_modes[0].h            = Android_DeviceHeight;
-+        display->display_modes[0].w            = Android_SurfaceWidth;
-+        display->display_modes[0].h            = Android_SurfaceHeight;
-         display->display_modes[0].refresh_rate = Android_ScreenRate;
-         display->current_mode                  = display->display_modes[0];
-
+diff -ru SDL2-2.0.14/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java SDL2-2.0.14.new/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+--- SDL2-2.0.14/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java	2020-12-21 12:44:36.000000000 -0500
++++ SDL2-2.0.14.new/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java	2021-11-05 21:35:57.410716188 -0400
+@@ -1782,16 +1782,6 @@
+         mHeight = height;
+         int nDeviceWidth = width;
+         int nDeviceHeight = height;
+-        try
+-        {
+-            if (Build.VERSION.SDK_INT >= 17) {
+-                DisplayMetrics realMetrics = new DisplayMetrics();
+-                mDisplay.getRealMetrics( realMetrics );
+-                nDeviceWidth = realMetrics.widthPixels;
+-                nDeviceHeight = realMetrics.heightPixels;
+-            }
+-        } catch(Exception ignored) {
+-        }
+ 
+         synchronized(SDLActivity.getContext()) {
+             // In case we're waiting on a size change after going fullscreen, send a notification.
+@@ -2325,4 +2315,3 @@
+         SDLActivity.onNativeClipboardChanged();
+     }
+ }
+-
