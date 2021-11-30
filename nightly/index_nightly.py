@@ -56,6 +56,9 @@ def directory(name, full):
     if not dirtime:
         return None
 
+    if not sdk:
+        return None
+
     dt = datetime.datetime.fromtimestamp(dirtime)
     date = dt.strftime("%A, %B %d, %Y")
 
