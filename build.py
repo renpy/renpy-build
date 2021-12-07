@@ -56,6 +56,7 @@ class Python:
 
 
 Python("2")
+Python("3")
 
 
 def build(args):
@@ -152,7 +153,7 @@ def main():
 
     ap.add_argument("--platforms", "--platform", default="")
     ap.add_argument("--archs", "--arch", default="")
-    ap.add_argument("--pythons", "--python", default="")
+    ap.add_argument("--pythons", "--python", default="2")
 
     ap.add_argument("--nostrip", action="store_true", default=False)
     ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")
