@@ -17,46 +17,34 @@ known_platforms = [ ]
 
 class Platform:
 
-    def __init__(self, platform, arch):
+    def __init__(self, platform, arch, python):
         self.platform = platform
         self.arch = arch
+        self.python = python
 
         known_platforms.append(self)
 
 
-Platform("linux", "x86_64")
-Platform("linux", "i686")
-Platform("linux", "armv7l")
+Platform("linux", "x86_64", "2")
+Platform("linux", "i686", "2")
+Platform("linux", "armv7l", "2")
 
-Platform("windows", "x86_64")
-Platform("windows", "i686")
+Platform("windows", "x86_64", "2")
+Platform("windows", "i686", "2")
 
-Platform("mac", "x86_64")
+Platform("mac", "x86_64", "2")
 
-Platform("android", "x86_64")
-Platform("android", "arm64_v8a")
-Platform("android", "armeabi_v7a")
+Platform("android", "x86_64", "2")
+Platform("android", "arm64_v8a", "2")
+Platform("android", "armeabi_v7a", "2")
 
-Platform("ios", "arm64")
-Platform("ios", "sim-x86_64")
-Platform("ios", "sim-arm64")
+Platform("ios", "arm64", "2")
+Platform("ios", "sim-x86_64", "2")
+Platform("ios", "sim-arm64", "2")
 
-Platform("web", "wasm")
+Platform("web", "wasm", "2")
 
-# Python Registry ##############################################################
-
-known_pythons = [ ]
-
-
-class Python:
-
-    def __init__(self, python):
-        self.python = python
-        known_pythons.append(self)
-
-
-Python("2")
-Python("3")
+Platform("linux", "x86_64", "3")
 
 
 def build(args):
@@ -77,7 +65,7 @@ def build(args):
             sys.exit(1)
 
     for i in pythons:
-        if i not in { j.python for j in known_pythons }:
+        if i not in { j.python for j in known_platforms }:
             print("Python", i, "is not known.", file=sys.stderr)
             sys.exit(1)
 
@@ -91,26 +79,25 @@ def build(args):
 
             if archs and (p.arch not in archs):
                 continue
+            
+            if pythons and (p.python not in pythons):
+                continue
 
             platform = p.platform
             arch = p.arch
+            python = p.python
 
-            for py in known_pythons:
+            context = renpybuild.model.Context(
+                p.platform,
+                p.arch,
+                p.python,
+                root,
+                tmp,
+                pygame_sdl2,
+                renpy,
+                args)
 
-                if pythons and (py.python not in pythons):
-                    continue
-
-                python = py.python
-
-                context = renpybuild.model.Context(
-                    platform, arch, python,
-                    root,
-                    tmp,
-                    pygame_sdl2,
-                    renpy,
-                    args)
-
-                task.run(context)
+            task.run(context)
 
     print("")
     print("Build finished successfully.")
