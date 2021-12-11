@@ -22,5 +22,3 @@ def build_host(c):
     c.run("""./configure --prefix="{{ host }}" """)
 
     c.run("""{{ make }} install""")
-
-    raise SystemExit(1)

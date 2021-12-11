@@ -7,10 +7,7 @@ version = "2.7.18"
 def annotate(c):
     if c.python == "2":
         c.var("pythonver", "python2.7")
-    else:
-        c.var("pythonver", "python3.8")
-
-    c.include("{{ install }}/include/{{ pythonver }}")
+        c.include("{{ install }}/include/{{ pythonver }}")
 
 
 @task(kind="python", pythons="2")
@@ -80,11 +77,6 @@ def build_posix(c):
     with open(c.path("config.site"), "w") as f:
         f.write("ac_cv_file__dev_ptmx=no\n")
         f.write("ac_cv_file__dev_ptc=no\n")
-
-        if c.platform == "ios":
-            f.write("ac_cv_little_endian_double=yes\n")
-            f.write("ac_cv_header_langinfo_h=no\n")
-            f.write("ac_cv_func_getentropy=no\n")
 
     c.env("CONFIG_SITE", "config.site")
 
