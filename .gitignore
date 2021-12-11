@@ -1,7 +1,9 @@
 __pycache__
 .project
 .pydevproject
-deps
+.settings
+/0old
+/deps
 /tmp
 /dist
 /renpy
@@ -17,3 +19,4 @@ renios/prototype/prototype.xcodeproj/xcuserdata/
 live2d
 renpyweb
 tmp.initial/
+unpacked
