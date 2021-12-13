@@ -21,5 +21,10 @@
     "**/renpyweb/build/**": true,
     "**/renpyweb/cache/**": true,
     "**/tmp/**": true
+  },
+  "files.associations": {
+    "algorithm": "c",
+    "string": "c",
+    "*.tcc": "c"
   }
 }

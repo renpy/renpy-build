@@ -67,7 +67,7 @@ def build(c):
         c.var("object", object)
         c.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}", verbose=True)
 
-    c.generate("{{ source }}/librenpy_inittab.c", "inittab.c", modules=modules)
+    c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "inittab.c", modules=modules)
     c.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o", verbose=True)
     objects.append("inittab.o")
 
