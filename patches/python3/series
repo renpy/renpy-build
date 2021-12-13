@@ -1,0 +1,3 @@
+# This series applies on GIT commit d7c94d627e2dabfa4b9445e491bacb2a51c30d8a
+no-multiarch.diff
+cross-darwin.diff

@@ -1,0 +1,24 @@
+No multiarch.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+Since everything is a cross-compile, there is no need to use
+multiarch support.
+---
+ setup.py |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/setup.py b/setup.py
+index 43e807f..43e3a83 100644
+--- a/setup.py
++++ b/setup.py
+@@ -665,6 +665,9 @@ class PyBuildExt(build_ext):
+             self.failed.append(ext.name)
+ 
+     def add_multiarch_paths(self):
++        # renpy-build - disable this, since everything is a cross-compile.
++        return
++
+         # Debian/Ubuntu multiarch support.
+         # https://wiki.ubuntu.com/MultiarchSpec
+         tmpfile = os.path.join(self.build_temp, 'multiarch')

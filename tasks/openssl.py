@@ -19,13 +19,15 @@ def build(c):
     if c.platform == "mac":
         c.env("KERNEL_BITS", "64")
 
+
+
     if (c.platform == "windows") and (c.arch == "x86_64"):
         # c.env("CFLAGS", "{{ CFLAGS }} -DNOCRYPT")
-        c.run("""./Configure mingw64 no-shared no-asm no-engine --prefix="{{ install }}" """)
+        c.run("""./Configure mingw64 no-shared no-asm no-engine thread --prefix="{{ install }}" """)
     elif (c.platform == "windows") and (c.arch == "i686"):
-        c.run("""./Configure mingw no-shared no-asm no-engine --prefix="{{ install }}" """)
+        c.run("""./Configure mingw no-shared no-asm no-engine thread --prefix="{{ install }}" """)
     else:
-        c.run("""./Configure cc no-shared no-asm no-engine --prefix="{{ install }}" """)
+        c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 
     c.run("""{{ make }}""")
     c.run("""make install_sw""")
