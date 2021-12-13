@@ -1,6 +1,7 @@
 array -DPy_BUILD_CORE_MODULE arraymodule.c     # array objects
 cmath cmathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # complex math library functions
 math mathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # math library functions, e.g. sin()
+_struct -DPy_BUILD_CORE_MODULE _struct.c       # binary structure packing/unpacking
 _contextvars _contextvarsmodule.c  # Context Variables
 _struct -DPy_BUILD_CORE_MODULE _struct.c       # binary structure packing/unpacking
 _weakref _weakref.c    # basic weak reference support

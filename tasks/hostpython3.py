@@ -20,5 +20,6 @@ def build_host(c):
     c.chdir("Python-{{ version }}")
 
     c.run("""./configure --prefix="{{ host }}" """)
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }} install""")
