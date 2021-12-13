@@ -1,0 +1,72 @@
+array -DPy_BUILD_CORE_MODULE arraymodule.c     # array objects
+cmath cmathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # complex math library functions
+math mathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # math library functions, e.g. sin()
+_contextvars _contextvarsmodule.c  # Context Variables
+_struct -DPy_BUILD_CORE_MODULE _struct.c       # binary structure packing/unpacking
+_weakref _weakref.c    # basic weak reference support
+_random _randommodule.c -DPy_BUILD_CORE_MODULE # Random number generator
+_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c # elementtree accelerator
+_pickle -DPy_BUILD_CORE_MODULE _pickle.c       # pickle accelerator
+_datetime _datetimemodule.c    # datetime accelerator
+_zoneinfo _zoneinfo.c -DPy_BUILD_CORE_MODULE   # zoneinfo accelerator
+_bisect _bisectmodule.c        # Bisection algorithms
+_heapq _heapqmodule.c -DPy_BUILD_CORE_MODULE   # Heap queue algorithm
+_asyncio _asynciomodule.c  # Fast asyncio Future
+_json -I$(srcdir)/Include/internal -DPy_BUILD_CORE_BUILTIN _json.c     # _json speedups
+_statistics _statisticsmodule.c # statistics accelerator
+
+unicodedata unicodedata.c -DPy_BUILD_CORE_BUILTIN   # static Unicode character database
+zlib zlibmodule.c -lz
+_csv _csv.c
+binascii binascii.c
+
+###############################################################################
+
+# Posix-y.
+{% if (c.kind == "host") or (c.platform != "windows") %}
+
+_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/malloc_closure.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+_socket socketmodule.c timemodule.c -lm
+_ssl _ssl.c -lssl -lcrypto
+_hashlib _hashopenssl.c -lssl -lcrypto
+
+fcntl fcntlmodule.c
+
+pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DXML_POOR_ENTROPY -DUSE_PYEXPAT_CAPI
+
+{% if c.platform != "android" %}
+grp grpmodule.c
+{% endif %}
+
+pwd pwdmodule.c
+
+resource resource.c
+termios termios.c
+
+_posixsubprocess  -DPy_BUILD_CORE_BUILTIN _posixsubprocess.c  # POSIX subprocess module helper
+
+{% endif %}
+
+
+# Mac, only.
+{% if (c.kind != "host") and (c.platform == "mac") %}
+_scproxy ../Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation
+{% endif %}
+
+
+# iOS, only.
+{% if (c.kind != "host") and (c.platform == "ios") %}
+_scproxy _scproxy.c
+{% endif %}
+
+
+# Windows, only.
+{% if (c.kind != "host") and (c.platform == "windows") %}
+_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c ctypes/malloc_closure.c _ctypes/cfield.c -lffi -loleaut32 -lole32 -luuid
+_socket socketmodule.c timemodule.c -lws2_32 -lm
+_subprocess ../PC/_subprocess.c
+_ssl _ssl.c -lssl -lcrypto -lcrypt32
+hashlib _hashopenssl.c -lssl -lcrypto -lcrypt32
+
+msvcrt ../PC/msvcrtmodule.c
+{% endif %}

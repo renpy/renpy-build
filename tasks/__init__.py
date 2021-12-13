@@ -18,6 +18,7 @@ from . import libwebp
 from . import hostpython3
 from . import hostpython2
 from . import python2
+from . import python3
 
 from . import live2d
 
