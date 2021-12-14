@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include "Python.h"
 
+/**
+ * A small note on encoding: This does as much as it can in UTF-8 mode,
+ * with the only work done with wchar_t being to test for the actual 
+ * existence of files on windows. 
+ */
+
 void init_librenpy(void);
 
 #ifdef MS_WINDOWS
@@ -48,7 +54,7 @@ static int compare(const char *a, const char *b0, const char *b1) {
  */
 static void take_argv0(char *argv0) {
 
-    Py_SetProgramName(argv0);
+    // Py_SetProgramName(argv0);
 
     // This copy is required because dirname can change its arguments.
     argv0 = strdup(argv0);
@@ -131,13 +137,22 @@ static char *join(const char *p1, const char *p2) {
 }
 
 /*
- * This comnbines exedir with the optional p1 and p2. It returns 1 if the
+ * This combines exedir with the optional p1 and p2. It returns 1 if the
  * file exists, and 0 otherwise.
  */
 static int exists(const char *p1, const char *p2) {
     char *path = join(p1, p2);
 
+#ifdef MS_WINDOWS
+    wchar_t *wpath = Py_DecodeLocale(path, NULL);
+    if (wpath == NULL) {
+        return 0;
+    }
+    FILE *f = _wfopen(wpath, L"rb");
+    PyMem_Free(wpath);
+#else
     FILE *f = fopen(path, "rb");
+#endif
 
 #ifdef DEBUG_EXISTS
     printf("%s", path);
@@ -177,12 +192,12 @@ static void find_python_home(const char *p) {
 #ifdef WINDOWS
     if (exists(p, "\\lib\\python2.7\\site.pyo") || exists(p, "\\lib\\python27.zip")) {
         found = 1;
-        Py_SetPythonHome(join(p, NULL));
+        // Py_SetPythonHome(join(p, NULL));
     }
 #else
     if (exists(p, "/lib/python2.7/site.pyo") || exists(p, "/lib/python27.zip")) {
         found = 1;
-        Py_SetPythonHome(join(p, NULL));
+        // Py_SetPythonHome(join(p, NULL));
     }
 #endif
 }
@@ -268,12 +283,33 @@ static void set_renpy_platform() {
     }
 }
 
+/**
+ * Preinitializes Python, to enable UTF-8 mode.
+ */
+
+static void preinitialize(int isolated, int argc, char **argv) {
+    PyPreConfig preconfig;
+
+    if (isolated) { 
+        PyPreConfig_InitIsolatedConfig(&preconfig);
+    } else {
+        PyPreConfig_InitPythonConfig(&preconfig);
+    }
+
+    preconfig.utf8_mode = 1;
+
+    Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
+
+}
 
 /**
  * This is the python command, and all it does is to modify the path to the
  * python library, and start python.
  */
 int EXPORT renpython_main(int argc, char **argv) {
+
+
+    preinitialize(0, argc, argv);
 
     set_renpy_platform();
     take_argv0(argv[0]);
@@ -284,13 +320,15 @@ int EXPORT renpython_main(int argc, char **argv) {
 
     init_librenpy();
 
-    return Py_Bytes(argc, argv);
+    return Py_BytesMain(argc, argv);
 }
 
 /**
  * This is called from the launcher executable, to start Ren'Py running.
  */
 int EXPORT launcher_main(int argc, char **argv) {
+
+    preinitialize(1, argc, argv);
 
     set_renpy_platform();
     take_argv0(argv[0]);
@@ -343,11 +381,6 @@ int EXPORT launcher_main(int argc, char **argv) {
         new_argv[i + 1] = argv[i];
     }
 
-    // Set up the Python flags.
-    Py_OptimizeFlag = 2;
-    Py_IgnoreEnvironmentFlag = 1;
-    Py_NoUserSiteDirectory = 1;
-
     init_librenpy();
-    return Py_Main(argc + 1, new_argv);
+    return Py_BytesMain(argc + 1, new_argv);
 }
