@@ -23,9 +23,9 @@ def build(c):
 
     if (c.platform == "windows") and (c.arch == "x86_64"):
         # c.env("CFLAGS", "{{ CFLAGS }} -DNOCRYPT")
-        c.run("""./Configure mingw64 no-shared no-asm no-engine thread --prefix="{{ install }}" """)
+        c.run("""./Configure mingw64 no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif (c.platform == "windows") and (c.arch == "i686"):
-        c.run("""./Configure mingw no-shared no-asm no-engine thread --prefix="{{ install }}" """)
+        c.run("""./Configure mingw no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 
