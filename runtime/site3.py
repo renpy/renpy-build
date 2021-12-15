@@ -30,29 +30,20 @@ import os
 import time
 import locale
 
-# Set the default encoding to utf-8.
-sys.setdefaultencoding("utf-8")
-
-
-def getpreferredencoding(do_setlocale=True):
-    return "utf-8"
-
-
-locale.getpreferredencoding = getpreferredencoding
-
 # A variable giving the Ren'Py platform ########################################
 
 RENPY_PLATFORM = os.environ.get("RENPY_PLATFORM", "unknown-unknown")
+PY_RENPY_PLATFORM = "py3-" + RENPY_PLATFORM
 
 # Look for a better Python executable to set sys.executable to. ################
 
 base = os.path.dirname(sys.executable)
 
 PYTHON_SEARCH = [
-    os.path.join(base, "lib", RENPY_PLATFORM, "pythonw"),
-    os.path.join(base, "lib", RENPY_PLATFORM, "python"),
-    os.path.join(base, "lib", RENPY_PLATFORM, "pythonw.exe"),
-    os.path.join(base, "lib", RENPY_PLATFORM, "python.exe"),
+    os.path.join(base, "lib", PY_RENPY_PLATFORM, "pythonw"),
+    os.path.join(base, "lib", PY_RENPY_PLATFORM, "python"),
+    os.path.join(base, "lib", PY_RENPY_PLATFORM, "pythonw.exe"),
+    os.path.join(base, "lib", PY_RENPY_PLATFORM, "python.exe"),
     os.path.join(base, "pythonw"),
     os.path.join(base, "python"),
     os.path.join(base, "pythonw.exe"),
@@ -67,8 +58,8 @@ for fn in PYTHON_SEARCH:
 # And the same thing for Ren'Py.
 
 RENPY_SEARCH = [
-    os.path.join(base, "lib", RENPY_PLATFORM, "renpy"),
-    os.path.join(base, "lib", RENPY_PLATFORM, "renpy.exe"),
+    os.path.join(base, "lib", PY_RENPY_PLATFORM, "renpy"),
+    os.path.join(base, "lib", PY_RENPY_PLATFORM, "renpy.exe"),
     os.path.join(base, "renpy"),
     os.path.join(base, "renpy.exe"),
     ]
@@ -404,8 +395,7 @@ def _renpy_argv_emulation():
 pythonlib = os.path.dirname(__file__)
 sys.path = [ pythonlib + "/site-packages", pythonlib ]
 
-if "RENPY_PLATFORM" in os.environ:
-    sys.path.append(pythonlib + "/../" + os.environ["RENPY_PLATFORM"])
+sys.path.append(pythonlib + "/../" + PY_RENPY_PLATFORM)
 
 # Look for binary libraries in MacOS on mac.
 if RENPY_PLATFORM.startswith("mac-"):

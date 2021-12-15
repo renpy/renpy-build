@@ -25,6 +25,7 @@
   "files.associations": {
     "algorithm": "c",
     "string": "c",
-    "*.tcc": "c"
+    "*.tcc": "c",
+    "stdlib.h": "c"
   }
 }

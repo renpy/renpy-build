@@ -525,9 +525,7 @@ def python3(c):
     for base in search:
 
         for fn in list(base.glob("**/*cpython-310.pyc")) + list(base.glob("**/*.pem")):
-            dest = fn.relative_to(base)
-
-            short = str(dest)
+            short = str(fn.relative_to(base))
             short = short.replace("__pycache__/", "")
             short = short.replace(".cpython-310.pyc", "")
 
@@ -545,7 +543,7 @@ def python3(c):
                         matched = True
 
             if matched:
-                dest = dist/dest
+                dest = dist / (short + ".pyc")
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(fn, dest)
 
@@ -560,7 +558,7 @@ def python3(c):
             f.write("\n")
             f.write("renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -m compileall {{ distlib }}/{{ pythonver }}/site.py")
+    c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/site.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
     with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:

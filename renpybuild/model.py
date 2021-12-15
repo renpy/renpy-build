@@ -73,8 +73,12 @@ class Context:
         self.var("renpyweb", self.renpyweb)
 
         self.var("dist", self.renpy)
-        self.var("distlib", self.renpy / ("lib" + python))
-        self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
+        self.var("distlib", self.renpy / "lib")
+
+        if python == "3":
+            self.var("dlpa", "{{distlib}}/py3-{{ platform }}-{{ arch }}")
+        else:
+            self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
 
         self.var("rapt", "{{ renpy }}/rapt")
         self.var("raptver", "{{ rapt }}" + self.python)

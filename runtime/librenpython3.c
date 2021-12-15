@@ -26,6 +26,10 @@ static char *exedir;
 /* The name of the .py file to use */
 static char *pyname;
 
+/**
+ * The Python config object.
+ */
+PyConfig config;
 
 /**
  * Returns true if every character in a is equivalent to the characters in b0 or b1,
@@ -54,7 +58,7 @@ static int compare(const char *a, const char *b0, const char *b1) {
  */
 static void take_argv0(char *argv0) {
 
-    // Py_SetProgramName(argv0);
+    config.program_name = Py_DecodeLocale(argv0, NULL);
 
     // This copy is required because dirname can change its arguments.
     argv0 = strdup(argv0);
@@ -190,15 +194,15 @@ static void find_python_home(const char *p) {
 
 
 #ifdef WINDOWS
-    if (exists(p, "\\lib\\python2.7\\site.pyo") || exists(p, "\\lib\\python27.zip")) {
+    if (exists(p, "\\lib\\python3.10\\__pycache__\\site.cpython-310.pyc") || exists(p, "\\lib\\python310.zip")) {
         found = 1;
-        // Py_SetPythonHome(join(p, NULL));
+        config.home = Py_DecodeLocale(join(p, NULL), NULL);
     }
 #else
-    if (exists(p, "/lib/python2.7/site.pyo") || exists(p, "/lib/python27.zip")) {
+    if (exists(p, "/lib/python3.10/__pycache__/site.cpython-310.pyc") || exists(p, "/lib/python310.zip")) {
         found = 1;
-        // Py_SetPythonHome(join(p, NULL));
-    }
+        config.home = Py_DecodeLocale(join(p, NULL), NULL);
+    } 
 #endif
 }
 
@@ -297,8 +301,15 @@ static void preinitialize(int isolated, int argc, char **argv) {
     }
 
     preconfig.utf8_mode = 1;
+    preconfig.use_environment = 0;
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
+
+    if (isolated) {
+        PyConfig_InitIsolatedConfig(&config);
+    } else {
+        PyConfig_InitPythonConfig(&config);
+    }
 
 }
 
@@ -315,8 +326,7 @@ int EXPORT renpython_main(int argc, char **argv) {
     take_argv0(argv[0]);
     search_python_home();
 
-    Py_OptimizeFlag = 2;
-    Py_NoUserSiteDirectory = 1;
+    config.user_site_directory = 0;
 
     init_librenpy();
 
@@ -333,6 +343,8 @@ int EXPORT launcher_main(int argc, char **argv) {
     set_renpy_platform();
     take_argv0(argv[0]);
     search_python_home();
+
+    config.user_site_directory = 0;
 
 #ifdef LINUX
     // Relative to the base directory.
@@ -381,6 +393,12 @@ int EXPORT launcher_main(int argc, char **argv) {
         new_argv[i + 1] = argv[i];
     }
 
+    PyConfig_SetBytesArgv(&config, argc + 1, new_argv);
+    Py_InitializeFromConfig(&config);
+
     init_librenpy();
-    return Py_BytesMain(argc + 1, new_argv);
+
+    return Py_RunMain();
+
+    // return Py_BytesMain(argc + 1, new_argv);
 }
