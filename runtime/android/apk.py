@@ -1,8 +1,9 @@
+from __future__ import print_function, unicode_literals
+
 import os
 import struct
 import zipfile
 import io
-
 
 class SubFile(object):
 
@@ -147,7 +148,7 @@ class APK(object):
 
         if apk is None:
             apk = os.environ["ANDROID_APK"]
-            print "Opening APK %r" % apk
+            print("Opening APK %r" % apk)
 
         self.apk = apk
 
@@ -165,7 +166,7 @@ class APK(object):
 
             self.info[fn] = i
 
-        f = file(self.apk, "rb")
+        f = open(self.apk, "rb")
 
         self.offset = { }
 
