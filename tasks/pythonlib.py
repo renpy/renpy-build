@@ -1,6 +1,7 @@
 from renpybuild.model import task
 
 import shutil
+import os
 
 PYTHON27_MODULES = """
 genericpath.pyo
@@ -244,7 +245,7 @@ def python2(c):
         dst = dist / i
         pyo_copy(src, dst)
 
-    c.copy("{{ runtime }}/site.py", "{{ distlib }}/{{ pythonver }}/site.py")
+    c.copy("{{ runtime }}/site2.py", "{{ distlib }}/{{ pythonver }}/site.py")
 
     import socket
     if socket.gethostname() == "eileen":
@@ -253,6 +254,313 @@ def python2(c):
             f.write("renpy_build_official = True\n")
 
     c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
+
+    c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
+    with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
+        f.write("lib-dynload needs to exist to stop an exec_prefix error.\n")
+
+
+PY3_MODULES = """
+collections/
+concurrent/
+config-3.10-x86_64-linux-gnu/python-config
+
+ctypes/
+
+encodings/aliases
+encodings/ascii
+encodings/base64_codec
+encodings/charmap
+encodings/cp437
+encodings/hex_codec
+encodings/idna
+encodings/__init__
+encodings/latin_1
+encodings/mbcs
+encodings/punycode
+encodings/quopri_codec
+encodings/raw_unicode_escape
+encodings/rot_13
+encodings/undefined
+encodings/unicode_escape
+encodings/utf_16_be
+encodings/utf_16
+encodings/utf_16_le
+encodings/utf_32_be
+encodings/utf_32
+encodings/utf_32_le
+encodings/utf_7
+encodings/utf_8
+encodings/utf_8_sig
+encodings/zlib_codec
+http/client
+http/cookiejar
+http/cookies
+http/__init__
+http/server
+importlib/metadata/_adapters
+importlib/metadata/_collections
+importlib/metadata/_functools
+importlib/metadata/__init__
+importlib/metadata/_itertools
+importlib/metadata/_meta
+importlib/metadata/_text
+importlib/_abc
+importlib/abc
+importlib/_adapters
+importlib/_bootstrap
+importlib/_bootstrap_external
+importlib/_common
+importlib/__init__
+importlib/machinery
+importlib/readers
+importlib/resources
+importlib/util
+json/decoder
+json/encoder
+json/__init__
+json/scanner
+json/tool
+logging/config
+logging/handlers
+logging/__init__
+
+abc
+argparse
+ast
+base64
+binhex
+bisect
+_bootsubprocess
+bz2
+calendar
+cgi
+chunk
+cmd
+code
+codecs
+codeop
+_collections_abc
+colorsys
+_compat_pickle
+compileall
+_compression
+configparser
+contextlib
+contextvars
+copy
+copyreg
+cProfile
+csv
+dataclasses
+datetime
+decimal
+difflib
+dis
+doctest
+enum
+filecmp
+fileinput
+fnmatch
+fractions
+ftplib
+functools
+__future__
+genericpath
+getopt
+getpass
+gettext
+glob
+graphlib
+gzip
+hashlib
+heapq
+imaplib
+imghdr
+imp
+inspect
+io
+ipaddress
+keyword
+linecache
+locale
+lzma
+_markupbase
+mimetypes
+modulefinder
+ntpath
+nturl2path
+numbers
+opcode
+operator
+optparse
+os
+_osx_support
+pathlib
+pickle
+pickletools
+pipes
+pkgutil
+platform
+plistlib
+poplib
+posixpath
+pprint
+profile
+pstats
+pty
+_py_abc
+pyclbr
+py_compile
+_pydecimal
+pydoc
+_pyio
+queue
+quopri
+random
+re
+reprlib
+rlcompleter
+runpy
+sched
+secrets
+selectors
+shelve
+shlex
+shutil
+signal
+_sitebuiltins
+site
+socket
+socketserver
+sre_compile
+sre_constants
+sre_parse
+ssl
+stat
+statistics
+string
+stringprep
+_strptime
+struct
+subprocess
+sunau
+symtable
+tabnanny
+tarfile
+tempfile
+textwrap
+this
+threading
+_threading_local
+timeit
+token
+tokenize
+traceback
+trace
+tracemalloc
+tty
+types
+typing
+uu
+uuid
+warnings
+wave
+weakref
+_weakrefset
+webbrowser
+zipapp
+zipfile
+zipimport
+
+android/
+certifi/
+chardet/
+future/
+idna/
+past/
+iossupport
+six
+
+pygame_sdl2/
+
+
+requests/
+rsa/
+urllib3/
+
+urllib/
+
+xml/etree/cElementTree
+xml/etree/ElementInclude
+xml/etree/ElementPath
+xml/etree/ElementTree
+xml/etree/__init__
+
+zoneinfo/
+
+jnius/
+pyobjus/
+"""
+
+@task(kind="host-python", pythons="3", always=True)
+def python3(c):
+
+    # The list of rules.
+    rules = set(PY3_MODULES.split())
+    used_rules = set()
+
+    search = [
+        c.path("{{ install }}/lib/{{ pythonver }}"),
+        c.path("{{ install }}/lib/{{ pythonver }}/site-packages"),
+        c.path("{{ pytmp }}/pyjnius"),
+        c.path("{{ pytmp }}/pyobjus"),
+        ]
+
+    dist = c.path("{{ distlib }}/{{ pythonver }}")
+
+    c.clean("{{ distlib }}/{{ pythonver }}")
+    c.run("{{ hostpython }} -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
+
+    for base in search:
+
+        for fn in list(base.glob("**/*cpython-310.pyc")) + list(base.glob("**/*.pem")):
+            dest = fn.relative_to(base)
+
+            short = str(dest)
+            short = short.replace("__pycache__/", "")
+            short = short.replace(".cpython-310.pyc", "")
+
+            matched = False
+
+            for i in rules:
+
+                if i[-1] == "/":
+                    if short.startswith(i):
+                        used_rules.add(i)
+                        matched = True
+                else:
+                    if short == i:
+                        used_rules.add(i)
+                        matched = True
+
+            if matched:
+                dest = dist/dest
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(fn, dest)
+
+    if rules - used_rules:
+        raise Exception(f"Unused rules: {rules - used_rules}")
+
+    c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/site.py")
+
+    import socket
+    if socket.gethostname() == "eileen":
+        with open(c.path("{{ distlib }}/{{ pythonver }}/site.py"), "a") as f:
+            f.write("\n")
+            f.write("renpy_build_official = True\n")
+
+    c.run("{{ hostpython }} -m compileall {{ distlib }}/{{ pythonver }}/site.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
     with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
