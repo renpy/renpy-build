@@ -89,7 +89,7 @@ def build_posix(c):
 
 
 
-@task(kind="python", pythons="2", platforms="ios")
+@task(kind="python", pythons="3", platforms="ios")
 def build_ios(c):
     common(c)
 
@@ -106,7 +106,7 @@ def build_ios(c):
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
 
-@task(kind="python", pythons="2", platforms="android")
+@task(kind="python", pythons="3", platforms="android")
 def build_android(c):
     common(c)
 
@@ -121,7 +121,7 @@ def build_android(c):
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 
-@task(kind="python", pythons="2", platforms="windows")
+@task(kind="python", pythons="3", platforms="windows")
 def build_windows(c):
     common(c)
 
