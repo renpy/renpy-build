@@ -266,7 +266,7 @@ concurrent/
 config-3.10-x86_64-linux-gnu/python-config
 
 ctypes/
-
+email/
 encodings/aliases
 encodings/ascii
 encodings/base64_codec
@@ -293,29 +293,13 @@ encodings/utf_7
 encodings/utf_8
 encodings/utf_8_sig
 encodings/zlib_codec
+html/
 http/client
 http/cookiejar
 http/cookies
 http/__init__
 http/server
-importlib/metadata/_adapters
-importlib/metadata/_collections
-importlib/metadata/_functools
-importlib/metadata/__init__
-importlib/metadata/_itertools
-importlib/metadata/_meta
-importlib/metadata/_text
-importlib/_abc
-importlib/abc
-importlib/_adapters
-importlib/_bootstrap
-importlib/_bootstrap_external
-importlib/_common
-importlib/__init__
-importlib/machinery
-importlib/readers
-importlib/resources
-importlib/util
+importlib/
 json/decoder
 json/encoder
 json/__init__
@@ -328,6 +312,7 @@ logging/__init__
 abc
 argparse
 ast
+asyncio/
 base64
 binhex
 bisect
@@ -496,6 +481,7 @@ xml/etree/ElementInclude
 xml/etree/ElementPath
 xml/etree/ElementTree
 xml/etree/__init__
+xml/parsers/expat
 
 zoneinfo/
 
