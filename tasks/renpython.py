@@ -334,7 +334,10 @@ def link_windows(c):
         c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
 
     elif c.arch == "x86_64":
-        c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
+        c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")
+
+        if c.python == "2":
+            c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
 
 
 @task(kind="python", always=True, platforms="ios")
