@@ -56,6 +56,7 @@ class Context:
 
         self.var("platform", platform)
         self.var("arch", arch)
+        self.var("python", python)
         self.var("root", root)
         self.var("runtime", self.root / "runtime")
         self.var("source", self.root / "source")
@@ -75,10 +76,7 @@ class Context:
         self.var("dist", self.renpy)
         self.var("distlib", self.renpy / "lib")
 
-        if python == "3":
-            self.var("dlpa", "{{distlib}}/py3-{{ platform }}-{{ arch }}")
-        else:
-            self.var("dlpa", "{{distlib}}/{{ platform }}-{{ arch }}")
+        self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
 
         self.var("rapt", "{{ renpy }}/rapt")
         self.var("raptver", "{{ rapt }}" + self.python)

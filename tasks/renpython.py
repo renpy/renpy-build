@@ -223,7 +223,7 @@ def link_mac(c):
     c.run("""install renpy {{ dlpa }}/renpy""")
 
     # renpy.app/Contents/MacOS:
-    c.var("acm", "{{ renpy }}/renpy.app/Contents/MacOS")
+    c.var("acm", "{{ renpy }}/renpy{{ python }}.app/Contents/MacOS")
 
     c.run("""install -d {{ acm }}""")
     c.run("""install librenpython.dylib {{ acm }}""")

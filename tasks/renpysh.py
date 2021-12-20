@@ -1,6 +1,11 @@
 from renpybuild.model import task
 
 
-@task(kind="host", always=True)
+@task(kind="python", always=True)
 def renpysh(c):
-    c.copy("{{ runtime }}/renpy.sh", "{{ dist }}/renpy.sh")
+    c.generate("{{ runtime }}/renpy.sh", "{{ dist }}/renpy{{ python }}.sh")
+    c.run("chmod +x {{ dist }}/renpy{{ python }}.sh")
+
+    if c.python == 2:
+        c.run("ln -s {{ dist }}/renpy{{ python }}.sh {{ dist }}/renpy.sh")
+        

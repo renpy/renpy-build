@@ -26,7 +26,6 @@ link () {
 pushd $BASE/renpy
 
 rm -f lib rapt renios
-ln -s lib2 lib
 ln -s rapt2 rapt
 ln -s renios2 renios
 
@@ -69,4 +68,3 @@ export RENPY_SIMPLE_EXCEPTIONS=1
 ./lib/linux-x86_64/python -O distribute.py "$RENPY_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
 
 popd
-

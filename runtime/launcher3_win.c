@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     }
 
     base = strdup(argv[0]);
-    snprintf(path, 4096, "%s\\lib\\" PLATFORM "-" ARCH, dirname(base));
+    snprintf(path, 4096, "%s\\lib\\py2-" PLATFORM "-" ARCH, dirname(base));
     free(base);
 
     SetDllDirectory(path);
