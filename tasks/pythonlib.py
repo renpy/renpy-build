@@ -510,10 +510,13 @@ def python3(c):
 
     for base in search:
 
-        for fn in list(base.glob("**/*cpython-310.pyc")) + list(base.glob("**/*.pem")):
+        for fn in list(base.glob("**/*cpython-*.pyc")) + list(base.glob("**/*.pem")):
+            if fn.match("*.opt-?.pyc"):
+                continue
+
             short = str(fn.relative_to(base))
             short = short.replace("__pycache__/", "")
-            short = short.replace(".cpython-310.pyc", "")
+            short = short.replace(".cpython-*.pyc", "")
 
             matched = False
 
