@@ -44,7 +44,7 @@ sudo apt-get install -y \
     python-dev-is-python2 libavcodec-dev libavformat-dev \
     libavresample-dev libswresample-dev libswscale-dev libfreetype6-dev libglew1.6-dev \
     libfribidi-dev libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev \
-    libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-turbo8-dev
+    libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-turbo8-dev autoconf-archive
 
 # Unpack clang.
 sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/10/lib/
@@ -68,4 +68,3 @@ export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
 . $BASE/nightly/git.sh
 . $BASE/nightly/python.sh
-
