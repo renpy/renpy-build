@@ -13,7 +13,11 @@ def build(c):
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
-    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\" -D{{ c.platform|upper }}
+    -DPLATFORM=\\"{{ c.platform }}\\" 
+    -DARCH=\\"{{ c.arch }}\\"
+    -DPYTHONVER=\\"{{ pythonver }}\\"
+    -DPYCVER=\\"{{ pycver }}\\" 
+    -D{{ c.platform|upper }}
 
     -c -o librenpython.o
     {{ runtime }}/librenpython{{ c.python }}.c
@@ -26,7 +30,10 @@ def build_android(c):
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
-    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
+    -DPLATFORM=\\"{{ c.platform }}\\" 
+    -DARCH=\\"{{ c.arch }}\\"
+    -DPYTHONVER=\\"{{ pythonver }}\\"
+    -DPYCVER=\\"{{ pycver }}\\" 
 
     -c -o librenpython_android.o
     {{ runtime }}/librenpython{{ c.python }}_android.c

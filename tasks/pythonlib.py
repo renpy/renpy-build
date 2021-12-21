@@ -2,6 +2,7 @@ from renpybuild.model import task
 
 import shutil
 import os
+import re
 
 PYTHON27_MODULES = """
 genericpath.pyo
@@ -489,6 +490,7 @@ jnius/
 pyobjus/
 """
 
+
 @task(kind="host-python", pythons="3", always=True)
 def python3(c):
 
@@ -516,7 +518,7 @@ def python3(c):
 
             short = str(fn.relative_to(base))
             short = short.replace("__pycache__/", "")
-            short = short.replace(".cpython-*.pyc", "")
+            short = re.sub(r'\.cpython-.*.pyc$', '', short)
 
             matched = False
 

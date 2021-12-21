@@ -6,6 +6,7 @@ version = "3.10.1"
 def annotate(c):
     if c.python == "3":
         c.var("pythonver", "python3.10")
+        c.var("pycver", "310")
         c.include("{{ install }}/include/{{ pythonver }}")
 
 
@@ -36,16 +37,18 @@ def patch_posix(c):
 #     c.chdir("Modules")
 #     c.run("cython _scproxy.pyx")
 
-# @task(kind="python", pythons="2", platforms="windows")
-# def patch_windows(c):
-#     c.var("version", version)
+@task(kind="python", pythons="3", platforms="windows")
+def patch_windows(c):
+    c.var("version", version)
 
-#     c.chdir("Python-{{ version }}")
-#     c.patchdir("mingw-w64-python2")
-#     c.patch("python2-no-dllmain.diff")
-#     c.patch("python2-utf8.diff")
+    c.chdir("Python-{{ version }}")
+    c.patchdir("mingw-w64-python3")
+    c.patch("python3/no-multiarch.diff")
+    c.patch("python3/cross-darwin.diff")
 
-#     c.run(""" autoreconf -vfi """)
+    c.run(""" autoreconf -vfi """)
+
+    raise SystemExit(1)
 
 
 # @task(kind="python", pythons="2", platforms="android")
