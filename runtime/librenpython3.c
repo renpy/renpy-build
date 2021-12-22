@@ -194,7 +194,7 @@ static void find_python_home(const char *p) {
 
 
 #ifdef WINDOWS
-    if (exists(p, "\\lib\\" PYTHONVER "\\__pycache__\\site.cpython-" PYCVER "pyc") || 
+    if (exists(p, "\\lib\\" PYTHONVER "\\__pycache__\\site.cpython-" PYCVER ".pyc") || 
         exists(p, "\\lib\\python" PYCVER ".zip")) {
         
         found = 1;
