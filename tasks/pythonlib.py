@@ -264,7 +264,6 @@ def python2(c):
 PY3_MODULES = """
 collections/
 concurrent/
-config-3.10-x86_64-linux-gnu/python-config
 
 ctypes/
 email/

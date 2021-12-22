@@ -1,12 +1,12 @@
 from renpybuild.model import task, annotator
 
-version = "3.10.1"
+version = "3.9.9"
 
 @annotator
 def annotate(c):
     if c.python == "3":
-        c.var("pythonver", "python3.10")
-        c.var("pycver", "310")
+        c.var("pythonver", "python3.9")
+        c.var("pycver", "39")
         c.include("{{ install }}/include/{{ pythonver }}")
 
 
@@ -87,8 +87,6 @@ def build_posix(c):
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
-
-    
 
 
 
