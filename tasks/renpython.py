@@ -250,7 +250,12 @@ def link_windows(c):
     -lrenpy
 
     {{install}}/lib/libfribidi.a
+
+    {% if c.python == "2" %}
     {{install}}/lib/{{ pythonver }}/config/lib{{ pythonver }}.dll.a
+    {% else %}
+    {{install}}/lib/lib{{ pythonver }}.dll.a
+    {% endif %}
 
     -lavformat
     -lavcodec

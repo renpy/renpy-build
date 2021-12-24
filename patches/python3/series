@@ -2,3 +2,4 @@
 no-multiarch.diff
 allow-old-mingw.diff
 single-dllmain.diff
+fix-overlapped-conflict.diff

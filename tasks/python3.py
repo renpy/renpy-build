@@ -57,6 +57,7 @@ def patch_windows(c):
     c.patch("python3/no-multiarch.diff")
     c.patch("python3/allow-old-mingw.diff")
     c.patch("python3/single-dllmain.diff")
+    c.patch("python3/fix-overlapped-conflict.diff")
 
     c.run(""" autoreconf -vfi """)
 
