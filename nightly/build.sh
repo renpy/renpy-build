@@ -25,7 +25,7 @@ link () {
 
 pushd $BASE/renpy
 
-rm -f lib rapt renios
+rm -f rapt renios
 ln -s rapt2 rapt
 ln -s renios2 renios
 
