@@ -2,9 +2,9 @@
 
 # Tests the nightly build of the project.
 
-set -e
+set -ex
 
-nightly=${$1:-/home/tom/ab/nightly-build}
+nightly=${NIGHTLY:-/home/tom/ab/nightly-build}
 
 
 rm -Rf $nightly/tasks
