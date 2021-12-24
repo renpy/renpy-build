@@ -274,7 +274,8 @@ def link_windows(c):
     -lm
     -lpthread
     -lws2_32
-
+    -liphlpapi
+    
     -ldinput8
     -ldxguid
     -ldxerr8

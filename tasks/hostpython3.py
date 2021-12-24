@@ -23,3 +23,7 @@ def build_host(c):
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }} install""")
+
+    c.rmtree("{{ host }}/lib/python3.9/config-3.9-x86_64-linux-gnu/Tools/")
+    c.run("install -d {{ host }}/lib/python3.9/config-3.9-x86_64-linux-gnu/Tools/")
+    c.run("cp -a Tools/scripts {{ host }}/lib/python3.9/config-3.9-x86_64-linux-gnu/Tools/scripts")

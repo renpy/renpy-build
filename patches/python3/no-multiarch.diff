@@ -1,18 +1,18 @@
-No multiarch.
+Do not use multiarch on Debian/ubuntu.
 
 From: Tom Rothamel <tom@rothamel.us>
 
-Since everything is a cross-compile, there is no need to use
-multiarch support.
+Since everything is a cross-compile, multiarch support has no purpose
+and just gets in the way.
 ---
  setup.py |    3 +++
  1 file changed, 3 insertions(+)
 
 diff --git a/setup.py b/setup.py
-index 43e807f..43e3a83 100644
+index 9a5887b..7b733b0 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -665,6 +665,9 @@ class PyBuildExt(build_ext):
+@@ -629,6 +629,9 @@ class PyBuildExt(build_ext):
              self.failed.append(ext.name)
  
      def add_multiarch_paths(self):
@@ -21,4 +21,4 @@ index 43e807f..43e3a83 100644
 +
          # Debian/Ubuntu multiarch support.
          # https://wiki.ubuntu.com/MultiarchSpec
-         tmpfile = os.path.join(self.build_temp, 'multiarch')
+         cc = sysconfig.get_config_var('CC')

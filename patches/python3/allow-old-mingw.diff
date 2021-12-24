@@ -1,0 +1,69 @@
+Remove the use of functions that don't exist in older mingws.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+For now, we're targeting Ubuntu 20.04 as the build platform, and using
+the system mingw, which is missing some (newer?) functions.
+---
+ Modules/_localemodule.c |    5 +++--
+ Python/fileutils.c      |    3 ++-
+ Python/pylifecycle.c    |    2 ++
+ 3 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/Modules/_localemodule.c b/Modules/_localemodule.c
+index 2e353bb..18f3164 100644
+--- a/Modules/_localemodule.c
++++ b/Modules/_localemodule.c
+@@ -183,7 +183,8 @@ locale_decode_monetary(PyObject *dict, struct lconv *lc)
+ #define GET_LOCALE_STRING(ATTR) PyUnicode_DecodeLocale(lc->ATTR, NULL)
+ #else  /* MS_WINDOWS */
+ /* Use _W_* fields of Windows struct lconv */
+-#define GET_LOCALE_STRING(ATTR) PyUnicode_FromWideChar(lc->_W_ ## ATTR, -1)
++/* #define GET_LOCALE_STRING(ATTR) PyUnicode_FromWideChar(lc->_W_ ## ATTR, -1) */
++#define GET_LOCALE_STRING(ATTR) PyUnicode_DecodeLocale(lc->ATTR, NULL)
+ #endif /* MS_WINDOWS */
+ 
+     int res = -1;
+@@ -255,7 +256,7 @@ PyLocale_localeconv(PyObject* self, PyObject *Py_UNUSED(ignored))
+ 
+ #ifdef MS_WINDOWS
+ /* Use _W_* fields of Windows struct lconv */
+-#define GET_LOCALE_STRING(ATTR) PyUnicode_FromWideChar(lc->_W_ ## ATTR, -1)
++#define GET_LOCALE_STRING(ATTR) PyUnicode_DecodeLocale(lc->ATTR, NULL)
+ #else
+ #define GET_LOCALE_STRING(ATTR) PyUnicode_DecodeLocale(lc->ATTR, NULL)
+ #endif
+diff --git a/Python/fileutils.c b/Python/fileutils.c
+index 26e97df..93cbb1d 100644
+--- a/Python/fileutils.c
++++ b/Python/fileutils.c
+@@ -2246,7 +2246,8 @@ _Py_GetLocaleconvNumeric(struct lconv *lc,
+ #define GET_LOCALE_STRING(ATTR) PyUnicode_DecodeLocale(lc->ATTR, NULL)
+ #else /* MS_WINDOWS */
+ /* Use _W_* fields of Windows strcut lconv */
+-#define GET_LOCALE_STRING(ATTR) PyUnicode_FromWideChar(lc->_W_ ## ATTR, -1)
++#define GET_LOCALE_STRING(ATTR) PyUnicode_DecodeLocale(lc->ATTR, NULL)
++/* #define GET_LOCALE_STRING(ATTR) PyUnicode_FromWideChar(lc->_W_ ## ATTR, -1) */
+ #endif /* MS_WINDOWS */
+ 
+     int res = -1;
+diff --git a/Python/pylifecycle.c b/Python/pylifecycle.c
+index 60f091c..73af037 100644
+--- a/Python/pylifecycle.c
++++ b/Python/pylifecycle.c
+@@ -305,6 +305,7 @@ _coerce_default_locale_settings(int warn, const _LocaleCoercionTarget *target)
+     /* Reset locale back to currently configured defaults */
+     _Py_SetLocaleFromEnv(LC_ALL);
+ 
++#if 0
+     /* Set the relevant locale environment variable */
+     if (setenv("LC_CTYPE", newloc, 1)) {
+         fprintf(stderr,
+@@ -314,6 +315,7 @@ _coerce_default_locale_settings(int warn, const _LocaleCoercionTarget *target)
+     if (warn) {
+         fprintf(stderr, C_LOCALE_COERCION_WARNING, newloc);
+     }
++#endif
+ 
+     /* Reconfigure with the overridden environment variables */
+     _Py_SetLocaleFromEnv(LC_ALL);

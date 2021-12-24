@@ -1,6 +1,7 @@
 from renpybuild.model import task, annotator
 
 version = "3.9.9"
+win_version = "3.9.7"
 
 @annotator
 def annotate(c):
@@ -10,13 +11,25 @@ def annotate(c):
         c.include("{{ install }}/include/{{ pythonver }}")
 
 
-@task(kind="python", pythons="3")
+@task(kind="python", pythons="3", platforms="linux,mac,android,ios")
 def unpack(c):
     c.clean()
 
     c.var("version", version)
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
+@task(kind="python", pythons="3", platforms="windows")
+def unpack_windows(c):
+    c.clean()
+    c.var("version", win_version)
+
+    if (c.root / "unpacked" / "cpython-mingw").exists():
+        c.run("git clone {{ c.root }}/unpacked/cpython-mingw")
+    else:
+        c.run("git clone https://github.com/msys2-contrib/cpython-mingw")
+
+    c.chdir("cpython-mingw")
+    c.run("git checkout mingw-v{{ version }}")
 
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
 def patch_posix(c):
@@ -24,7 +37,6 @@ def patch_posix(c):
 
     c.chdir("Python-{{ version }}")
     c.patch("python3/no-multiarch.diff")
-    c.patch("python3/cross-darwin.diff")
 
 # @task(kind="python", pythons="2", platforms="ios")
 # def patch_ios(c):
@@ -39,16 +51,14 @@ def patch_posix(c):
 
 @task(kind="python", pythons="3", platforms="windows")
 def patch_windows(c):
-    c.var("version", version)
+    c.var("version", win_version)
 
-    c.chdir("Python-{{ version }}")
-    c.patchdir("mingw-w64-python3")
+    c.chdir("cpython-mingw")
     c.patch("python3/no-multiarch.diff")
-    c.patch("python3/cross-darwin.diff")
+    c.patch("python3/allow-old-mingw.diff")
+    c.patch("python3/single-dllmain.diff")
 
     c.run(""" autoreconf -vfi """)
-
-    raise SystemExit(1)
 
 
 # @task(kind="python", pythons="2", platforms="android")
@@ -67,7 +77,11 @@ def patch_windows(c):
 
 def common(c):
     c.var("version", version)
-    c.chdir("Python-{{ version }}")
+
+    if c.platform == "windows":
+        c.chdir("cpython-mingw")
+    else:
+        c.chdir("Python-{{ version }}")
 
     with open(c.path("config.site"), "w") as f:
         f.write("ac_cv_file__dev_ptmx=no\n")
@@ -128,6 +142,7 @@ def build_windows(c):
 
     c.env("MSYSTEM", "MINGW")
     c.env("LDFLAGS", "{{ LDFLAGS }} -static-libgcc")
+    c.env("CFLAGS", "{{ CFLAGS }} ")
 
     with open(c.path("config.site"), "a") as f:
         f.write("ac_cv_func_mktime=yes")
@@ -140,16 +155,18 @@ def build_windows(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
-    with open(c.path("Lib/plat-generic/regen"), "w") as f:
-        f.write("""\
-#! /bin/sh
-set -v
-CCINSTALL=$($1 -print-search-dirs | head -1 | cut -d' ' -f2)
-REGENHEADER=${CCINSTALL}/include/stddef.h
-eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
-""")
+    # raise SystemExit(1)
 
-    c.run("""{{ make }}""")
+#     with open(c.path("Lib/plat-generic/regen"), "w") as f:
+#         f.write("""\
+# #! /bin/sh
+# set -v
+# CCINSTALL=$($1 -print-search-dirs | head -1 | cut -d' ' -f2)
+# REGENHEADER=${CCINSTALL}/include/stddef.h
+# eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
+# """)
+
+    c.run("""make""")
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 

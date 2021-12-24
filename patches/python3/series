@@ -1,3 +1,4 @@
-# This series applies on GIT commit d7c94d627e2dabfa4b9445e491bacb2a51c30d8a
+# This series applies on GIT commit 6d690d7fa4f832affcc343851decae16989bc9e2
 no-multiarch.diff
-cross-darwin.diff
+allow-old-mingw.diff
+single-dllmain.diff
