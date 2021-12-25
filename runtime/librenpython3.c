@@ -2,6 +2,7 @@
 #include <string.h>
 #include <libgen.h>
 #include <stdlib.h>
+#include <wchar.h>
 #include "Python.h"
 
 /**
@@ -276,10 +277,46 @@ static void find_pyname(const char *p) {
         pyname = join(p, "main.py");
         return;
     }
-
-
 }
 
+
+static void search_pyname() {
+
+#ifdef LINUX
+    // Relative to the base directory.
+    find_pyname("/");
+
+    // Relative to lib/windows-i686
+    find_pyname("/../../");
+#endif
+
+#ifdef MAC
+    // Relative to the base directory.
+    find_pyname("/");
+
+    // Relative to lib/windows-i686
+    find_pyname("/../../");
+
+    // In the mac app - exe is in game.app/Contents/MacOS,
+    // main.py is in game.app/Contents/MacOS/Resources/autorun.
+    find_pyname("/../Resources/autorun/");
+
+    // Relative to renpy.app/Contents/MacOS.
+    find_pyname("/../../../");
+#endif
+
+#ifdef WINDOWS
+    // Relative to the base directory.
+    find_pyname("\\");
+
+    // Relative to lib/windows-i686.
+    find_pyname("\\..\\..\\");
+#endif
+
+#ifdef IOS
+    find_pyname("/base/");
+#endif
+}
 
 /**
  * This sets the RENPY_PLATFORM environment variable, if it hasn't been set
@@ -317,6 +354,32 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
 }
 
+/** 
+ * The same, but use wchar_t arguments.
+ */
+static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
+    PyPreConfig preconfig;
+
+    if (isolated) { 
+        PyPreConfig_InitIsolatedConfig(&preconfig);
+    } else {
+        PyPreConfig_InitPythonConfig(&preconfig);
+    }
+
+    preconfig.utf8_mode = 1;
+    preconfig.use_environment = 0;
+
+    Py_PreInitializeFromArgs(&preconfig, argc, argv);
+
+    if (isolated) {
+        PyConfig_InitIsolatedConfig(&config);
+    } else {
+        PyConfig_InitPythonConfig(&config);
+    }
+
+}
+
+
 /**
  * This is the python command, and all it does is to modify the path to the
  * python library, and start python.
@@ -337,6 +400,23 @@ int EXPORT renpython_main(int argc, char **argv) {
     return Py_BytesMain(argc, argv);
 }
 
+int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
+
+
+    preinitialize_wide(0, argc, argv);
+    
+    set_renpy_platform();
+    take_argv0(Py_EncodeLocale(argv[0], NULL));
+    search_python_home();
+
+    config.user_site_directory = 0;
+
+    init_librenpy();
+
+    return Py_Main(argc, argv);
+}
+
+
 /**
  * This is called from the launcher executable, to start Ren'Py running.
  */
@@ -350,43 +430,8 @@ int EXPORT launcher_main(int argc, char **argv) {
 
     config.user_site_directory = 0;
 
-#ifdef LINUX
-    // Relative to the base directory.
-    find_pyname("/");
-
-    // Relative to lib/windows-i686
-    find_pyname("/../../");
-#endif
-
-#ifdef MAC
-    // Relative to the base directory.
-    find_pyname("/");
-
-    // Relative to lib/windows-i686
-    find_pyname("/../../");
-
-    // In the mac app - exe is in game.app/Contents/MacOS,
-    // main.py is in game.app/Contents/MacOS/Resources/autorun.
-    find_pyname("/../Resources/autorun/");
-
-    // Relative to renpy.app/Contents/MacOS.
-    find_pyname("/../../../");
-#endif
-
-#ifdef WINDOWS
-    // Relative to the base directory.
-    find_pyname("\\");
-
-    // Relative to lib/windows-i686.
-    find_pyname("\\..\\..\\");
-#endif
-
-#ifdef IOS
-
-    find_pyname("/base/");
-
-#endif
-
+    search_pyname();
+    
     // Figure out argv.
     char **new_argv = (char **) alloca((argc + 1) * sizeof(char *));
 
@@ -398,6 +443,41 @@ int EXPORT launcher_main(int argc, char **argv) {
     }
 
     PyConfig_SetBytesArgv(&config, argc + 1, new_argv);
+    Py_InitializeFromConfig(&config);
+
+    init_librenpy();
+
+    return Py_RunMain();
+
+    // return Py_BytesMain(argc + 1, new_argv);
+}
+
+/**
+ * This is called from the launcher executable, to start Ren'Py running.
+ */
+int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
+
+    preinitialize_wide(1, argc, argv);
+
+    set_renpy_platform();
+    take_argv0(Py_EncodeLocale(argv[0], NULL));
+    search_python_home();
+
+    config.user_site_directory = 0;
+
+    search_pyname();
+    
+    // Figure out argv.
+    wchar_t **new_argv = (char **) alloca((argc + 1) * sizeof(wchar_t *));
+
+    new_argv[0] = argv[0];
+    new_argv[1] = Py_DecodeLocale(pyname, NULL);
+
+    for (int i = 1; i < argc; i++) {
+        new_argv[i + 1] = argv[i];
+    }
+
+    PyConfig_SetArgv(&config, argc + 1, new_argv);
     Py_InitializeFromConfig(&config);
 
     init_librenpy();

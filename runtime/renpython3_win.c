@@ -1,5 +1,7 @@
-int __declspec(dllimport) renpython_main(int argc, char **argv);
+#include <wchar.h>
 
-int main(int argc, char **argv) {
-    return renpython_main(argc, argv);
+int __declspec(dllimport) renpython_main_wide(int argc, char **argv);
+
+int WinMain(int argc, char **argv) {
+    return renpython_main_wide(argc, argv);
 }
