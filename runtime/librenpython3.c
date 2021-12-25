@@ -402,9 +402,9 @@ int EXPORT renpython_main(int argc, char **argv) {
 
 int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
 
-
-    preinitialize_wide(0, argc, argv);
     
+    preinitialize_wide(0, argc, argv);
+     
     set_renpy_platform();
     take_argv0(Py_EncodeLocale(argv[0], NULL));
     search_python_home();
