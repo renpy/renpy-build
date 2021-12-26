@@ -65,6 +65,6 @@ export RENPY_SIMPLE_EXCEPTIONS=1
 # popd
 
 # Build the distribution.
-./lib/linux-x86_64/python -O distribute.py "$RENPY_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
+./lib/py2-linux-x86_64/python -O distribute.py "$RENPY_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
 
 popd
