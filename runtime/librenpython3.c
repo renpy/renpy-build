@@ -386,7 +386,6 @@ static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
  */
 int EXPORT renpython_main(int argc, char **argv) {
 
-
     preinitialize(0, argc, argv);
 
     set_renpy_platform();
@@ -401,7 +400,6 @@ int EXPORT renpython_main(int argc, char **argv) {
 }
 
 int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
-
     
     preinitialize_wide(0, argc, argv);
      
@@ -448,8 +446,6 @@ int EXPORT launcher_main(int argc, char **argv) {
     init_librenpy();
 
     return Py_RunMain();
-
-    // return Py_BytesMain(argc + 1, new_argv);
 }
 
 /**
@@ -464,6 +460,7 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
     search_python_home();
 
     config.user_site_directory = 0;
+    config.parse_argv = 1;
 
     search_pyname();
     
@@ -483,6 +480,4 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
     init_librenpy();
 
     return Py_RunMain();
-
-    // return Py_BytesMain(argc + 1, new_argv);
 }
