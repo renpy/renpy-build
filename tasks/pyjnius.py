@@ -37,7 +37,7 @@ cdef JNIEnv *get_platform_jnienv():
     return SDL_AndroidGetJNIEnv()
 """)
 
-    c.run("""cython jnius.pyx""")
+    c.run("""cython --3str jnius.pyx""")
 
     c_fn = c.path("jnius.c")
 
@@ -49,6 +49,8 @@ cdef JNIEnv *get_platform_jnienv():
     ccode = re.sub('Py_InitModule4\("([^"]+)"', 'Py_InitModule4("' + parent_module + '.\\1"', ccode)
     ccode = re.sub('^__Pyx_PyMODINIT_FUNC init', '__Pyx_PyMODINIT_FUNC init' + parent_module_identifier + '_', ccode, 0, re.MULTILINE) # Cython 0.28.2
     ccode = re.sub('^PyMODINIT_FUNC init', 'PyMODINIT_FUNC init' + parent_module_identifier + '_', ccode, 0, re.MULTILINE) # Cython 0.25.2
+    ccode = re.sub('^__Pyx_PyMODINIT_FUNC PyInit_', '__Pyx_PyMODINIT_FUNC PyInit_' + parent_module_identifier + '_', ccode, 0, re.MULTILINE) # Cython 0.28.2
+    ccode = re.sub('^PyMODINIT_FUNC PyInit_', 'PyMODINIT_FUNC PyInit_' + parent_module_identifier + '_', ccode, 0, re.MULTILINE) # Cython 0.25.2
     with open(c_fn, 'w') as f:
         f.write(ccode)
 
