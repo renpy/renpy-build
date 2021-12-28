@@ -63,7 +63,7 @@ _posixsubprocess -DPy_BUILD_CORE_BUILTIN  -DPy_BUILD_CORE_BUILTIN _posixsubproce
 
 # Mac, only.
 {% if (c.kind != "host") and (c.platform == "mac") %}
-_scproxy -DPy_BUILD_CORE_BUILTIN ../Mac/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation
+_scproxy -DPy_BUILD_CORE_BUILTIN _scproxy.c -framework SystemConfiguration -framework CoreFoundation
 {% endif %}
 
 # iOS, only.

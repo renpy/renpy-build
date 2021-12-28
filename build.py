@@ -48,6 +48,8 @@ Platform("linux", "x86_64", "3")
 
 Platform("windows", "x86_64", "3")
 
+Platform("mac", "x86_64", "3")
+
 
 def build(args):
     platforms = set(i.strip() for i in args.platforms.split(",") if i)

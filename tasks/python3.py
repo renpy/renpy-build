@@ -37,6 +37,9 @@ def patch_posix(c):
 
     c.chdir("Python-{{ version }}")
     c.patch("python3/no-multiarch.diff")
+    c.patch("python3/cross-darwin.diff")
+
+    c.run(""" autoreconf -vfi """)
 
 # @task(kind="python", pythons="2", platforms="ios")
 # def patch_ios(c):
@@ -102,7 +105,6 @@ def build_posix(c):
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
-
 
 
 @task(kind="python", pythons="3", platforms="ios")
