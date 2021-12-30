@@ -427,6 +427,8 @@ int EXPORT launcher_main(int argc, char **argv) {
     search_python_home();
 
     config.user_site_directory = 0;
+    config.parse_argv = 1;
+
 
     search_pyname();
     

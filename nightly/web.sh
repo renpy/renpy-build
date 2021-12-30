@@ -2,7 +2,7 @@
 
 pushd $BASE/renpy/dl
 
-SSH="ssh"#  -J geladura.onegeek.org"
+SSH="ssh"
 
 # Upload the built distro to the server.
 if [ "$UPLOAD" = 1 ]; then
