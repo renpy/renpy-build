@@ -1,0 +1,22 @@
+Change division to match Python 3 semantics.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ jnius/jnius_conversion.pxi |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/jnius/jnius_conversion.pxi b/jnius/jnius_conversion.pxi
+index 08fd8c7..fb2c929 100644
+--- a/jnius/jnius_conversion.pxi
++++ b/jnius/jnius_conversion.pxi
+@@ -514,7 +514,7 @@ cdef jstring convert_pystr_to_java(JNIEnv *j_env, unicode py_uni) except NULL:
+     py_bytes = py_uni.encode('utf-16')
+     # skip byte-order mark
+     buff = (<char *>py_bytes) + sizeof(jchar)
+-    j_strlen = len(py_bytes) / sizeof(jchar) - 1
++    j_strlen = len(py_bytes) // sizeof(jchar) - 1
+     j_str = j_env[0].NewString(j_env, <jchar *>buff, j_strlen)
+ 
+     if j_str == NULL:

@@ -11,6 +11,12 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/pyjnius-{{version}}.tar.gz")
 
+@task(kind="host-python")
+def patch(c):
+    c.var("version", version)
+    c.chdir("pyjnius-{{version}}/")
+
+    c.patch("pyjnius/py3-division.diff")
 
 @task(kind="host-python")
 def build(c):
