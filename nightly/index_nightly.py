@@ -3,6 +3,7 @@
 import datetime
 import os.path
 import argparse
+import re
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
@@ -54,10 +55,10 @@ def directory(name, full):
             other.append(record)
 
     if not dirtime:
-        return None
+        return 0, None
 
     if not sdk:
-        return None
+        return 0, None
 
     dt = datetime.datetime.fromtimestamp(dirtime)
     date = dt.strftime("%A, %B %d, %Y")
@@ -73,7 +74,7 @@ def directory(name, full):
 
     os.utime(os.path.join(full, "index.html"), (dirtime, dirtime))
 
-    return date
+    return dirtime, date
 
 
 def main():
@@ -82,23 +83,30 @@ def main():
     ap.add_argument("nightly")
     args = ap.parse_args()
 
-    dirs = [ ]
+    dirs_7 = [ ]
+    dirs_8 = [ ]
 
     for i in os.listdir(args.nightly):
-        if i.startswith("nightly-"):
+        if re.match(r"(\d+-)?nightly-", i):
             full = os.path.join(args.nightly, i)
-            name = directory(i, full)
+            dirtime, name = directory(i, full)
 
             if name is None:
                 continue
 
-            dirs.append((i, name))
+            if i.startswith("8-"):
+                dirs_8.append((dirtime, i, name))
+            else:
+                dirs_7.append((dirtime, i, name))
 
-    dirs.sort()
-    dirs.reverse()
+    dirs_7.sort()
+    dirs_7.reverse()
+
+    dirs_8.sort()
+    dirs_8.reverse()
 
     tmpl = env.get_template("root.html")
-    html = tmpl.render(dirs=dirs)
+    html = tmpl.render(dirs_7=dirs_7, dirs_8=dirs_8)
 
     with open(os.path.join(args.nightly, "index.html"), "w") as f:
         f.write(html)

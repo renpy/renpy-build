@@ -2,16 +2,20 @@
 
 pushd $BASE/renpy/dl
 
+SSH="ssh"#  -J geladura.onegeek.org"
+
 # Upload the built distro to the server.
 if [ "$UPLOAD" = 1 ]; then
-    rsync -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly
+    rsync -e "$SSH" --progress -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly
 fi
 
 # Index the nightly.
 $SCRIPTS/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
 rm current
-ln -s "$RENPY_NIGHTLY" current
+ln -s "$RENPY_7_NIGHTLY" current
+ln -s "$RENPY_7_NIGHTLY" current-7
+ln -s "$RENPY_8_NIGHTLY" current-8
 
 rm renpy-nightly-sdk.zip
 rm renpy-nightly-sdk.tar.bz2
@@ -20,7 +24,7 @@ ln -s current/renpy-*-sdk.tar.bz2 renpy-nightly-sdk.tar.bz2
 
 # Upload the index to the server.
 if [ "$UPLOAD" = 1 ]; then
-    rsync -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly --delete
+    rsync -e "$SSH" --progress -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly --delete
 fi
 
 # Delete old nightlies.

@@ -13,7 +13,8 @@ fi
 
 # Build the dependencies.
 pushd $BASE
-./build.py
+./build.py --python 2
+./build.py --python 3
 popd
 
 
@@ -49,7 +50,8 @@ link /home/tom/ab/renpy/editra editra
 REV=$(git rev-parse --short HEAD)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-export RENPY_NIGHTLY="nightly-$(date +%Y-%m-%d)-$REV"
+export RENPY_7_NIGHTLY="7-nightly-$(date +%Y-%m-%d)-$REV"
+export RENPY_8_NIGHTLY="8-nightly-$(date +%Y-%m-%d)-$REV"
 
 # Generate source.
 
@@ -65,6 +67,7 @@ export RENPY_SIMPLE_EXCEPTIONS=1
 # popd
 
 # Build the distribution.
-./lib/py2-linux-x86_64/python -O distribute.py "$RENPY_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
+./lib/py2-linux-x86_64/python -O distribute.py "$RENPY_7_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
+./lib/py3-linux-x86_64/python -O distribute.py "$RENPY_8_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS
 
 popd

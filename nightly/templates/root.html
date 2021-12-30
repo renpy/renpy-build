@@ -40,10 +40,13 @@
       </p>
 
 
-      <h3>Builds</h3>
-
+      <h3>Ren'Py 7 Builds</h3>
+        <p>
+        <a href="current-7/index.html">This link will always bring you to the current nightly build of Ren'Py 7.</a>
+        </p>
+  
         <table class="table">
-        {% for d, name in dirs %}
+        {% for ts, d, name in dirs_7 %}
 
         <tr>
           <td><a href="{{ d }}/index.html">{{ name }}</a></td>
@@ -52,6 +55,23 @@
 
         {% endfor %}
         </table>
+
+      <h3>Ren'Py 8 Builds</h3>
+        <p>
+        <a href="current-8/index.html">This link will always bring you to the current nightly build of Ren'Py 8.</a>
+        </p>
+  
+        <table class="table">
+        {% for ts, d, name in dirs_8 %}
+
+        <tr>
+          <td><a href="{{ d }}/index.html">{{ name }}</a></td>
+          <td>{{ d }}</td>
+        </tr>
+
+        {% endfor %}
+        </table>
+
 
 
     </div>
