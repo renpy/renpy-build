@@ -1,4 +1,5 @@
 array -DPy_BUILD_CORE_BUILTIN arraymodule.c     # array objects
+_bz2 -DPy_BUILD_CORE_BUILTIN _bz2module.c -lbz2
 cmath -DPy_BUILD_CORE_BUILTIN cmathmodule.c _math.c # -lm # complex math library functions
 math -DPy_BUILD_CORE_BUILTIN mathmodule.c _math.c # -lm # math library functions, e.g. sin()
 _struct -DPy_BUILD_CORE_BUILTIN _struct.c       # binary structure packing/unpacking
