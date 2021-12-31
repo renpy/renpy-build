@@ -124,11 +124,11 @@ class NullIOBase(io.RawIOBase):
 
 null_io = NullIOBase()
 
-# if sys.stdout is None:
-sys.stdout = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
+if sys.stdout is None:
+    sys.stdout = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
 
-# if sys.stderr is None:
-sys.stderr = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
+if sys.stderr is None:
+    sys.stderr = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
 
 
 # Android Startup ##############################################################
