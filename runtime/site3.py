@@ -255,14 +255,14 @@ def _run_argvemulator(timeout=60):
         sts = carbon.AEGetParamDesc(message, keyDirectObject, typeAEList,
                                     ctypes.byref(listdesc))
         if sts != 0:
-            print >> sys.stderr, "argvemulator warning: cannot unpack open document event"
+            print("argvemulator warning: cannot unpack open document event", file=sys.stderr)
             running[0] = False
             return
 
         item_count = ctypes.c_long()
         sts = carbon.AECountItems(ctypes.byref(listdesc), ctypes.byref(item_count))
         if sts != 0:
-            print >> sys.stderr, "argvemulator warning: cannot unpack open document event"
+            print("argvemulator warning: cannot unpack open document event", file=sys.stderr)
             running[0] = False
             return
 
@@ -270,7 +270,7 @@ def _run_argvemulator(timeout=60):
         for i in range(item_count.value):
             sts = carbon.AEGetNthDesc(ctypes.byref(listdesc), i + 1, typeFSRef, 0, ctypes.byref(desc))
             if sts != 0:
-                print >> sys.stderr, "argvemulator warning: cannot unpack open document event"
+                print("argvemulator warning: cannot unpack open document event", file=sys.stderr)
                 running[0] = False
                 return
 
@@ -278,7 +278,7 @@ def _run_argvemulator(timeout=60):
             buf = ctypes.create_string_buffer(sz)
             sts = carbon.AEGetDescData(ctypes.byref(desc), buf, sz)
             if sts != 0:
-                print >> sys.stderr, "argvemulator warning: cannot extract open document event"
+                print("argvemulator warning: cannot extract open document event", file=sys.stderr)
                 continue
 
             fsref = buf
@@ -286,10 +286,10 @@ def _run_argvemulator(timeout=60):
             buf = ctypes.create_string_buffer(1024)
             sts = carbon.FSRefMakePath(ctypes.byref(fsref), buf, 1023)
             if sts != 0:
-                print >> sys.stderr, "argvemulator warning: cannot extract open document event"
+                print("argvemulator warning: cannot extract open document event", file=sys.stderr)
                 continue
 
-            print >> sys.stderr, "Adding: %s" % (repr(buf.value.decode('utf-8')),)
+            print("Adding: %s" % (repr(buf.value.decode('utf-8')),), file=sys.stderr)
 
             if sys.version_info[0] > 2:
                 sys.argv.append(buf.value.decode('utf-8'))
@@ -308,14 +308,14 @@ def _run_argvemulator(timeout=60):
         ok = carbon.AEGetParamDesc(message, keyDirectObject, typeAEList,
                                    ctypes.byref(listdesc))
         if ok != 0:
-            print >> sys.stderr, "argvemulator warning: cannot unpack open document event"
+            print("argvemulator warning: cannot unpack open document event", file=sys.stderr)
             running[0] = False
             return
 
         item_count = ctypes.c_long()
         sts = carbon.AECountItems(ctypes.byref(listdesc), ctypes.byref(item_count))
         if sts != 0:
-            print >> sys.stderr, "argvemulator warning: cannot unpack open url event"
+            print("argvemulator warning: cannot unpack open url event", file=sys.stderr)
             running[0] = False
             return
 
@@ -323,7 +323,7 @@ def _run_argvemulator(timeout=60):
         for i in range(item_count.value):
             sts = carbon.AEGetNthDesc(ctypes.byref(listdesc), i + 1, typeChar, 0, ctypes.byref(desc))
             if sts != 0:
-                print >> sys.stderr, "argvemulator warning: cannot unpack open URL event"
+                print("argvemulator warning: cannot unpack open URL event", file=sys.stderr)
                 running[0] = False
                 return
 
@@ -331,7 +331,7 @@ def _run_argvemulator(timeout=60):
             buf = ctypes.create_string_buffer(sz)
             sts = carbon.AEGetDescData(ctypes.byref(desc), buf, sz)
             if sts != 0:
-                print >> sys.stderr, "argvemulator warning: cannot extract open URL event"
+                print("argvemulator warning: cannot extract open URL event", file=sys.stderr)
 
             else:
                 if sys.version_info[0] > 2:
@@ -357,12 +357,12 @@ def _run_argvemulator(timeout=60):
         sts = carbon.ReceiveNextEvent(1, ctypes.byref(eventType),
                                       start + timeout - now, TRUE, ctypes.byref(event))
         if sts != 0:
-            print >> sys.stderr, "argvemulator warning: fetching events failed"
+            print("argvemulator warning: fetching events failed", file=sys.stderr)
             break
 
         sts = carbon.AEProcessEvent(event)
         if sts != 0:
-            print >> sys.stderr, "argvemulator warning: processing events failed"
+            print("argvemulator warning: processing events failed", file=sys.stderr)
             break
 
     carbon.AERemoveEventHandler(kCoreEventClass, kAEOpenApplication,
