@@ -96,6 +96,41 @@ class BuiltinSubmoduleImporter(object):
 
 sys.meta_path.append(BuiltinSubmoduleImporter())
 
+# Windows Startup ##############################################################
+
+import io
+
+class NullIOBase(io.RawIOBase):
+    def fileno(self):
+        return 0
+
+    def seek(self, offset, whence=0):
+        return 0
+
+    def truncate(self, size=None):
+        return 0
+
+    def readinto(self, b):
+        return 0
+
+    def readable(self):
+        return True
+
+    def write(self, b):
+        return len(b)
+
+    def writable(self):
+        return True
+
+null_io = NullIOBase()
+
+# if sys.stdout is None:
+sys.stdout = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
+
+# if sys.stderr is None:
+sys.stderr = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
+
+
 # Android Startup ##############################################################
 
 if RENPY_PLATFORM.startswith("android-"):
@@ -124,7 +159,8 @@ if RENPY_PLATFORM.startswith("android-"):
 
     print("Logging start.")
 
-# iOS Startup ##############################################################
+
+# iOS Startup ##################################################################
 
 if RENPY_PLATFORM.startswith("ios-"):
     import iossupport
