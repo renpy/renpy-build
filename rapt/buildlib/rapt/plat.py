@@ -80,7 +80,10 @@ def set_win32_java_home():
         jh = key + "\\1.8\\JavaHome"
 
         if jh in keys:
-            os.environ["JAVA_HOME"] = keys[jh]
+            if sys.version_info[0] == 2:
+                os.environ["JAVA_HOME"] = keys[jh]
+            else:
+                os.environ["JAVA_HOME"] = keys[jh].decode("mbcs")
             return
 
 
