@@ -230,6 +230,7 @@ def link_mac(c):
     c.run("""install renpy {{ dlpa }}/renpy""")
 
     # renpy.app/Contents/MacOS:
+    c.var("ac", "{{ renpy }}/renpy{{ python }}.app/Contents")
     c.var("acm", "{{ renpy }}/renpy{{ python }}.app/Contents/MacOS")
 
     c.run("""install -d {{ acm }}""")
@@ -237,6 +238,11 @@ def link_mac(c):
     c.run("""install python {{ acm }}/python""")
     c.run("""install python {{ acm }}/pythonw""")
     c.run("""install renpy {{ acm }}/renpy""")
+
+    c.run("""install -d {{ ac }}/Resources""")
+    c.run("""install {{ runtime }}/Info.plist {{ ac }}""")
+    c.run("""install {{ runtime }}/icon.icns {{ ac }}/Resources""")
+
 
 
 @task(kind="python", always=True, platforms="windows")

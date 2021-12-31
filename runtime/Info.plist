@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>Ren'Py Launcher</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>****</string>
+				<string>fold</string>
+				<string>disk</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>renpy</string>
+	<key>CFBundleIconFile</key>
+	<string>icon</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Ren'Py Launcher</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>Ren'Py 8.0.0.0n</string>
+	<key>CFBundleVersion</key>
+	<string>2021.1230.132617</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.simulation-games</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.python-script</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Ren'Py Script</string>
+			<key>UTTypeIdentifier</key>
+			<string>org.renpy.rpy</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rpy</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
