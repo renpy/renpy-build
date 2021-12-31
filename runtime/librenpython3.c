@@ -195,14 +195,14 @@ static void find_python_home(const char *p) {
 
 
 #ifdef WINDOWS
-    if (exists(p, "\\lib\\" PYTHONVER "\\__pycache__\\site.cpython-" PYCVER ".pyc") || 
+    if (exists(p, "\\lib\\" PYTHONVER "\\site.pyc") || 
         exists(p, "\\lib\\python" PYCVER ".zip")) {
         
         found = 1;
         config.home = Py_DecodeLocale(join(p, NULL), NULL);
     }
 #else
-    if (exists(p, "/lib/" PYTHONVER "/__pycache__/site.cpython-" PYCVER ".pyc") || 
+    if (exists(p, "/lib/" PYTHONVER "/site.pyc") || 
         exists(p, "/lib/python" PYCVER ".zip")) {
         
         found = 1;
@@ -467,7 +467,7 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
     search_pyname();
     
     // Figure out argv.
-    wchar_t **new_argv = (char **) alloca((argc + 1) * sizeof(wchar_t *));
+    wchar_t **new_argv = (wchar_t **) alloca((argc + 1) * sizeof(wchar_t *));
 
     new_argv[0] = argv[0];
     new_argv[1] = Py_DecodeLocale(pyname, NULL);

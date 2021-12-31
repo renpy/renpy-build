@@ -30,7 +30,7 @@ static wchar_t *widedirname(wchar_t *s) {
 
 }
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+int wmain(int argc, wchar_t *argv[], wchar_t *envp[]) {
     wchar_t path[4096];
     HMODULE library;
 
@@ -38,15 +38,16 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     wchar_t *arch = L"" ARCH;
 
     if (!IsWindowsVistaOrGreater()) {
-        MessageBox(NULL, "This program requires Windows Vista or greater to run.", "Version Not Supported", MB_OK);
+        MessageBox(NULL, L"This program requires Windows Vista or greater to run.", L"Version Not Supported", MB_OK);
         return 0;
     }
 
-    swprintf(path, 4096, L"%ls\\lib\\py3-%ls-%ls", widedirname(__wargv[0]), platform, arch);
+    swprintf(path, 4096, L"%ls\\lib\\py3-%ls-%ls", widedirname(argv[0]), platform, arch);
+
     SetDllDirectoryW(path);
-    library = LoadLibrary("librenpython.dll");
+    library = LoadLibrary(L"librenpython.dll");
 
     int (*launcher_main_wide)(int, wchar_t **) = (int (*)(int, wchar_t **)) GetProcAddress(library, "launcher_main_wide");
 
-    return launcher_main_wide(__argc, __wargv);
+    return launcher_main_wide(argc, argv);
 }

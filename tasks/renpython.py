@@ -308,6 +308,7 @@ def link_windows(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+    -mconsole -municode
     -o python.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
     renpy_icon.o
@@ -316,7 +317,7 @@ def link_windows(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mwindows
+    -mwindows -municode
     -o pythonw.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
     renpy_icon.o
@@ -325,7 +326,7 @@ def link_windows(c):
 
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mwindows
+    -mwindows -municode
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c

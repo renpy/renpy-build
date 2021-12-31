@@ -1,7 +1,9 @@
 #include <windows.h>
+#include <stdio.h>
+#include <wchar.h>
 
 int __declspec(dllimport) renpython_main_wide(int argc, wchar_t **argv);
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-    return renpython_main_wide(__argc, __wargv);
+int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] ) {
+    return renpython_main_wide(argc, argv);
 }
