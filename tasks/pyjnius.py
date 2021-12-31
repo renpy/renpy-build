@@ -17,6 +17,7 @@ def patch(c):
     c.chdir("pyjnius-{{version}}/")
 
     c.patch("pyjnius/py3-division.diff")
+    c.patch("pyjnius/no-win-jdk-home.diff")
 
 @task(kind="host-python")
 def build(c):
