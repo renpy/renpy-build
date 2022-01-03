@@ -11,6 +11,7 @@ _abcoll.pyo
 linecache.pyo
 stat.pyo
 types.pyo
+typing.pyo
 pygame_sdl2/__init__.pyo
 pygame_sdl2/compat.pyo
 pygame_sdl2/time.pyo
