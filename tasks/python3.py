@@ -158,18 +158,7 @@ def build_windows(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
-    # raise SystemExit(1)
-
-#     with open(c.path("Lib/plat-generic/regen"), "w") as f:
-#         f.write("""\
-# #! /bin/sh
-# set -v
-# CCINSTALL=$($1 -print-search-dirs | head -1 | cut -d' ' -f2)
-# REGENHEADER=${CCINSTALL}/include/stddef.h
-# eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
-# """)
-
-    c.run("""make""")
+    c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
