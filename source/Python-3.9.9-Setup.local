@@ -81,4 +81,5 @@ _ssl -DPy_BUILD_CORE_BUILTIN _ssl.c -lssl -lcrypto -lcrypt32
 _hashlib -DPy_BUILD_CORE_BUILTIN _hashopenssl.c -lssl -lcrypto -lcrypt32
 _overlapped -DPy_BUILD_CORE_BUILTIN overlapped.c
 msvcrt -DPy_BUILD_CORE_BUILTIN ../PC/msvcrtmodule.c
+winreg -DPy_BUILD_CORE_BUILTIN ../PC/winreg.c
 {% endif %}
