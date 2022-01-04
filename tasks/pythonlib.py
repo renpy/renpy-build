@@ -317,6 +317,7 @@ asyncio/
 base64
 binhex
 bisect
+_bootlocale
 _bootsubprocess
 bz2
 calendar
@@ -361,6 +362,7 @@ graphlib
 gzip
 hashlib
 heapq
+hmac
 imaplib
 imghdr
 imp
