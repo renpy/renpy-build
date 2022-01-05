@@ -335,6 +335,7 @@ static void set_renpy_platform() {
 static void preinitialize(int isolated, int argc, char **argv) {
     PyPreConfig preconfig;
 
+    // Initialize PreConfig.
     if (isolated) { 
         PyPreConfig_InitIsolatedConfig(&preconfig);
     } else {
@@ -346,6 +347,7 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
 
+    // Initialize Config.
     if (isolated) {
         PyConfig_InitIsolatedConfig(&config);
     } else {
@@ -360,6 +362,7 @@ static void preinitialize(int isolated, int argc, char **argv) {
 static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
     PyPreConfig preconfig;
 
+    // Initialize PreConfig.
     if (isolated) { 
         PyPreConfig_InitIsolatedConfig(&preconfig);
     } else {
@@ -371,6 +374,7 @@ static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
 
     Py_PreInitializeFromArgs(&preconfig, argc, argv);
 
+    // Initialize Config.
     if (isolated) {
         PyConfig_InitIsolatedConfig(&config);
     } else {
