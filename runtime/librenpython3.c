@@ -346,6 +346,12 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
 
+    if (isolated) {
+        PyConfig_InitIsolatedConfig(&config);
+    } else {
+        PyConfig_InitPythonConfig(&config);
+    }
+
 }
 
 /** 
@@ -364,6 +370,12 @@ static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
     preconfig.use_environment = 0;
 
     Py_PreInitializeFromArgs(&preconfig, argc, argv);
+
+    if (isolated) {
+        PyConfig_InitIsolatedConfig(&config);
+    } else {
+        PyConfig_InitPythonConfig(&config);
+    }
 
 }
 
