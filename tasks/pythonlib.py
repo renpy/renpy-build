@@ -475,6 +475,7 @@ pygame_sdl2/
 
 requests/
 rsa/
+pyasn1/
 urllib3/
 
 urllib/
