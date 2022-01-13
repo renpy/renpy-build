@@ -38,6 +38,7 @@ def patch_posix(c):
     c.chdir("Python-{{ version }}")
     c.patch("python3/no-multiarch.diff")
     c.patch("python3/cross-darwin.diff")
+    c.patch("python3/fix-ssl-dont-use-enum_certificates.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -168,4 +169,3 @@ def pip(c):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
     c.run("{{ install }}/bin/hostpython3 -s -m pip install --upgrade future==0.18.2 six==1.12.0 rsa==3.4.2 pyasn1==0.4.2")
     c.run("{{ install }}/bin/hostpython3 -s -m pip install --upgrade urllib3==1.22 certifi idna==2.6 requests==2.20.0")
-    

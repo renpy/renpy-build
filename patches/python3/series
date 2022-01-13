@@ -4,3 +4,4 @@ allow-old-mingw.diff
 single-dllmain.diff
 fix-overlapped-conflict.diff
 cross-darwin.diff
+fix-ssl-dont-use-enum_certificates.diff
