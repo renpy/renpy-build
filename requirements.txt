@@ -1,7 +1,7 @@
 colorama==0.3.7
 Cython==0.29.25
 future==0.18.2
-ipython==4.1.2
+ipython==7.16.3
 Jinja==1.2
 Jinja2==2.10
 modernize==0.5
