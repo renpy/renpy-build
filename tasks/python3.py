@@ -1,7 +1,7 @@
 from renpybuild.model import task, annotator
 
-version = "3.9.9"
-win_version = "3.9.7"
+version = "3.9.10"
+win_version = "3.9.10"
 
 @annotator
 def annotate(c):
