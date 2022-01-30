@@ -163,6 +163,8 @@ class Context:
         self.install = install
         self.var("install", install)
 
+        self.var("linuxinstall", self.tmp / "install.linux-x86_64")
+
         self.var("hostpython", "{{ install }}/bin/hostpython{{ c.python }}")
 
         renpybuild.run.build_environment(self)

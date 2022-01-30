@@ -502,8 +502,8 @@ def python3(c):
     used_rules = set()
 
     search = [
-        c.path("{{ install }}/lib/{{ pythonver }}"),
-        c.path("{{ install }}/lib/{{ pythonver }}/site-packages"),
+        c.path("{{ linuxinstall }}/lib/{{ pythonver }}"),
+        c.path("{{ linuxinstall }}/lib/{{ pythonver }}/site-packages"),
         c.path("{{ pytmp }}/pyjnius"),
         c.path("{{ pytmp }}/pyobjus"),
         ]
