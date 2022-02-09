@@ -192,6 +192,7 @@ urllib3/
 idna/
 certifi/
 chardet/
+ecdsa/
 requests/
 
 iossupport.pyo
@@ -464,6 +465,7 @@ zipimport
 android/
 certifi/
 chardet/
+ecdsa/
 future/
 idna/
 past/
