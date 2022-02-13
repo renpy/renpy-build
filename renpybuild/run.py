@@ -219,7 +219,8 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
+        c.env("NM", "{{ crossbin }}nm")
+        c.env("READELF", "{{ crossbin }}readelf")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
@@ -236,6 +237,7 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
+        c.env("READELF", "{{ crossbin }}readelf")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
@@ -252,6 +254,7 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("STRIP", "ccache  {{ crossbin }}strip")
         c.env("NM", "{{ crossbin}}nm")
+        c.env("READELF", "{{ crossbin }}readelf")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 

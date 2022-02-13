@@ -50,6 +50,10 @@ Platform("windows", "x86_64", "3")
 
 Platform("mac", "x86_64", "3")
 
+Platform("android", "x86_64", "3")
+Platform("android", "arm64_v8a", "3")
+Platform("android", "armeabi_v7a", "3")
+
 
 def build(args):
     platforms = set(i.strip() for i in args.platforms.split(",") if i)
@@ -83,7 +87,7 @@ def build(args):
 
             if archs and (p.arch not in archs):
                 continue
-            
+
             if pythons and (p.python not in pythons):
                 continue
 
