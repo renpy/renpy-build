@@ -2,6 +2,7 @@ array -DPy_BUILD_CORE_BUILTIN arraymodule.c     # array objects
 _bz2 -DPy_BUILD_CORE_BUILTIN _bz2module.c -lbz2
 cmath -DPy_BUILD_CORE_BUILTIN cmathmodule.c _math.c # -lm # complex math library functions
 math -DPy_BUILD_CORE_BUILTIN mathmodule.c _math.c # -lm # math library functions, e.g. sin()
+mmap -DPy_BUILD_CORE_BUILTIN mmapmodule.c
 _struct -DPy_BUILD_CORE_BUILTIN _struct.c       # binary structure packing/unpacking
 _contextvars -DPy_BUILD_CORE_BUILTIN _contextvarsmodule.c  # Context Variables
 _struct -DPy_BUILD_CORE_BUILTIN _struct.c       # binary structure packing/unpacking
@@ -21,7 +22,6 @@ unicodedata -DPy_BUILD_CORE_BUILTIN unicodedata.c -DPy_BUILD_CORE_BUILTIN   # st
 zlib -DPy_BUILD_CORE_BUILTIN zlibmodule.c -lz
 _csv -DPy_BUILD_CORE_BUILTIN _csv.c
 binascii -DPy_BUILD_CORE_BUILTIN binascii.c
-
 
 _md5 -DPy_BUILD_CORE_BUILTIN md5module.c
 _sha1 -DPy_BUILD_CORE_BUILTIN sha1module.c

@@ -199,6 +199,8 @@ iossupport.pyo
 
 six.pyo
 
+pefile.pyo
+ordlookup/
 """
 
 
@@ -274,6 +276,7 @@ encodings/ascii
 encodings/base64_codec
 encodings/charmap
 encodings/cp437
+encodings/cp1252
 encodings/hex_codec
 encodings/idna
 encodings/__init__
@@ -493,6 +496,9 @@ zoneinfo/
 
 jnius/
 pyobjus/
+
+pefile
+ordlookup/
 """
 
 
