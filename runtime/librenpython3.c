@@ -7,8 +7,8 @@
 
 /**
  * A small note on encoding: This does as much as it can in UTF-8 mode,
- * with the only work done with wchar_t being to test for the actual 
- * existence of files on windows. 
+ * with the only work done with wchar_t being to test for the actual
+ * existence of files on windows.
  */
 
 void init_librenpy(void);
@@ -195,19 +195,19 @@ static void find_python_home(const char *p) {
 
 
 #ifdef WINDOWS
-    if (exists(p, "\\lib\\" PYTHONVER "\\site.pyc") || 
+    if (exists(p, "\\lib\\" PYTHONVER "\\site.pyc") ||
         exists(p, "\\lib\\python" PYCVER ".zip")) {
-        
+
         found = 1;
         config.home = Py_DecodeLocale(join(p, NULL), NULL);
     }
 #else
-    if (exists(p, "/lib/" PYTHONVER "/site.pyc") || 
+    if (exists(p, "/lib/" PYTHONVER "/site.pyc") ||
         exists(p, "/lib/python" PYCVER ".zip")) {
-        
+
         found = 1;
         config.home = Py_DecodeLocale(join(p, NULL), NULL);
-    } 
+    }
 #endif
 }
 
@@ -336,7 +336,7 @@ static void preinitialize(int isolated, int argc, char **argv) {
     PyPreConfig preconfig;
 
     // Initialize PreConfig.
-    if (isolated) { 
+    if (isolated) {
         PyPreConfig_InitIsolatedConfig(&preconfig);
     } else {
         PyPreConfig_InitPythonConfig(&preconfig);
@@ -356,14 +356,14 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
 }
 
-/** 
+/**
  * The same, but use wchar_t arguments.
  */
 static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
     PyPreConfig preconfig;
 
     // Initialize PreConfig.
-    if (isolated) { 
+    if (isolated) {
         PyPreConfig_InitIsolatedConfig(&preconfig);
     } else {
         PyPreConfig_InitPythonConfig(&preconfig);
@@ -404,9 +404,9 @@ int EXPORT renpython_main(int argc, char **argv) {
 }
 
 int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
-    
+
     preinitialize_wide(0, argc, argv);
-     
+
     set_renpy_platform();
     take_argv0(Py_EncodeLocale(argv[0], NULL));
     search_python_home();
@@ -433,9 +433,8 @@ int EXPORT launcher_main(int argc, char **argv) {
     config.user_site_directory = 0;
     config.parse_argv = 1;
 
-
     search_pyname();
-    
+
     // Figure out argv.
     char **new_argv = (char **) alloca((argc + 1) * sizeof(char *));
 
@@ -469,7 +468,7 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
     config.parse_argv = 1;
 
     search_pyname();
-    
+
     // Figure out argv.
     wchar_t **new_argv = (wchar_t **) alloca((argc + 1) * sizeof(wchar_t *));
 

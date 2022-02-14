@@ -13,10 +13,10 @@ def build(c):
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
-    -DPLATFORM=\\"{{ c.platform }}\\" 
+    -DPLATFORM=\\"{{ c.platform }}\\"
     -DARCH=\\"{{ c.arch }}\\"
     -DPYTHONVER=\\"{{ pythonver }}\\"
-    -DPYCVER=\\"{{ pycver }}\\" 
+    -DPYCVER=\\"{{ pycver }}\\"
     -D{{ c.platform|upper }}
 
     -c -o librenpython.o
@@ -30,10 +30,10 @@ def build_android(c):
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
-    -DPLATFORM=\\"{{ c.platform }}\\" 
+    -DPLATFORM=\\"{{ c.platform }}\\"
     -DARCH=\\"{{ c.arch }}\\"
     -DPYTHONVER=\\"{{ pythonver }}\\"
-    -DPYCVER=\\"{{ pycver }}\\" 
+    -DPYCVER=\\"{{ pycver }}\\"
 
     -c -o librenpython_android.o
     {{ runtime }}/librenpython{{ c.python }}_android.c
@@ -286,7 +286,7 @@ def link_windows(c):
     -lpthread
     -lws2_32
     -liphlpapi
-    
+
     -ldinput8
     -ldxguid
     -ldxerr8

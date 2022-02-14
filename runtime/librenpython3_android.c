@@ -82,42 +82,55 @@ static PyMethodDef AndroidEmbedMethods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-PyMODINIT_FUNC initandroidembed(void) {
-    (void) Py_InitModule("androidembed", AndroidEmbedMethods);
+static struct PyModuleDef androidembed_module =
+{
+    PyModuleDef_HEAD_INIT,
+    "androidembed", /* name of module */
+    "",          /* module documentation, may be NULL */
+    -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+    AndroidEmbedMethods
+};
+
+PyMODINIT_FUNC PyInit_androidembed(void) {
+    return PyModule_Create(&androidembed_module);
 }
 
 static struct _inittab inittab[] = {
-   { "androidembed",  initandroidembed },
+   { "androidembed",  PyInit_androidembed },
    { NULL, NULL },
 };
 
 /* Python Startup *************************************************************/
 
 int start_python(void) {
-    char *private = getenv("ANDROID_PRIVATE");
+    PyPreConfig preconfig;
+    PyConfig config;
 
+    char *private = getenv("ANDROID_PRIVATE");
     chdir(private);
 
-    /* The / is required to stop python from doing a search that causes
-     * a crash on ARC.
-     */
     char python[2048];
     snprintf(python, 2048, "%s/python", private);
 
-    Py_SetProgramName(python);
-    Py_SetPythonHome(private);
+    int argc = 2;
+    char *argv[] = { python, "main.py", NULL };
 
-    char *args[] = { python, "main.py", NULL };
+    PyPreConfig_InitIsolatedConfig(&preconfig);
 
-    Py_OptimizeFlag = 2;
-    Py_IgnoreEnvironmentFlag = 1;
-    Py_NoUserSiteDirectory = 1;
+    preconfig.utf8_mode = 1;
+    preconfig.use_environment = 0;
+
+    Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
+
+    PyConfig_InitIsolatedConfig(&config);
+
+    PyConfig_SetBytesArgv(&config, argc, argv);
+    Py_InitializeFromConfig(&config);
 
     PyImport_ExtendInittab(inittab);
-
     init_librenpy();
 
-    return Py_Main(2, args);
+    return Py_RunMain();
 }
 
 
@@ -141,4 +154,3 @@ int SDL_main(int argc, char **argv) {
 
 	return start_python();
 }
-
