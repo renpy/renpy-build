@@ -16,3 +16,4 @@ sphinx-bootstrap-theme==0.4.9
 sphinxcontrib-websupport==1.0.1
 typing==3.6.4
 pefile==2019.4.18
+typing
