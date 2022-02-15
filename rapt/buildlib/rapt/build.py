@@ -1,4 +1,7 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
+
+from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
+from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode # *
 
 import pygame_sdl2
 import sys
@@ -130,7 +133,7 @@ def render(always, template, dest, **kwargs):
     template = environment.get_template(template)
     text = template.render(**kwargs)
 
-    f = file(dest, "wb")
+    f = open(dest, "wb")
     f.write(text.encode("utf-8"))
     f.close()
 
@@ -492,6 +495,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
         iface.fail(__("{} does not contain a Ren'Py game.").format(directory))
 
     config = configure.Configuration(directory)
+
     if config.package is None:
         iface.fail(__("Run configure before attempting to build the app."))
 

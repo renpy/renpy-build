@@ -45,7 +45,7 @@ class Configuration(object):
         self.heap_size = None
 
         try:
-            with file(os.path.join(directory, ".android.json"), "r") as f:
+            with open(os.path.join(directory, ".android.json"), "r") as f:
                 d = json.load(f)
 
             self.__dict__.update(d)
@@ -57,7 +57,7 @@ class Configuration(object):
 
     def save(self, directory):
 
-        with file(os.path.join(directory, ".android.json"), "w") as f:
+        with open(os.path.join(directory, ".android.json"), "w") as f:
             json.dump(self.__dict__, f)
 
 
