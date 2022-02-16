@@ -1,0 +1,11 @@
+/include
+
+**~
+**.bak
+**.rpy
+**.swp
+**.pyo
+**.pyx
+**.pxd
+
+**/.**
