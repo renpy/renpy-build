@@ -112,17 +112,24 @@ int start_python(void) {
     char python[2048];
     snprintf(python, 2048, "%s/python", private);
 
-    int argc = 2;
-    char *argv[] = { python, "main.py", NULL };
+    char main_py[2048];
+    snprintf(main_py, 2048, "%s/main.py", private);
 
-    PyPreConfig_InitIsolatedConfig(&preconfig);
+    argc = 2;
+    char *argv[] = { python, main_py, NULL };
+
+    PyPreConfig_InitPythonConfig(&preconfig);
 
     preconfig.utf8_mode = 1;
     preconfig.use_environment = 0;
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
 
-    PyConfig_InitIsolatedConfig(&config);
+    PyConfig_InitPythonConfig(&config);
+
+    config.home = Py_DecodeLocale(private, NULL);
+    config.user_site_directory = 0;
+    config.parse_argv = 1;
 
     PyConfig_SetBytesArgv(&config, argc, argv);
     Py_InitializeFromConfig(&config);
@@ -130,7 +137,9 @@ int start_python(void) {
     PyImport_ExtendInittab(inittab);
     init_librenpy();
 
-    return Py_RunMain();
+    int rv = Py_RunMain();
+
+    return rv;
 }
 
 
@@ -143,6 +152,7 @@ void call_prepare_python(void) {
 	(*env)->DeleteLocalRef(env, activity);
 	(*env)->DeleteLocalRef(env, clazz);
 }
+
 
 int SDL_main(int argc, char **argv) {
 
