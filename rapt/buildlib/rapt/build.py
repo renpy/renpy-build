@@ -367,6 +367,32 @@ def copy_presplash(directory, name, default):
     shutil.copy(fn, plat.path("project/app/src/main/assets/" + name + ext))
 
 
+def eliminate_pycache(directory):
+    """
+    Eliminates the __pycache__ directory, and moves the files in it up a level,
+    renaming them to remove the cache tag.
+    """
+
+    print("Eliminating __pycache__...")
+
+    if PY2:
+        return
+
+    import pathlib
+    import sys
+
+    paths = list(pathlib.Path(directory).glob("**/__pycache__/*.pyc"))
+
+    for p in paths:
+        name = p.stem.partition(".")[0]
+        p.rename(p.parent.parent / (name + ".pyc"))
+
+    paths = list(pathlib.Path(directory).glob("**/__pycache__"))
+
+    for p in paths:
+        p.rmdir()
+
+
 def split_renpy(directory):
     """
     Takes a built Ren'Py game, and splits it into the private and assets
@@ -507,6 +533,8 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     default_presplash = plat.path("templates/renpy-presplash.jpg")
     default_downloading = plat.path("templates/renpy-downloading.jpg")
+
+    eliminate_pycache(directory)
 
     private_dir, assets_dir = split_renpy(directory)
 
