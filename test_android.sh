@@ -8,7 +8,7 @@ PY=$(python -c 'import sys; print(sys.version[0])')
 ROOT="$(dirname $(readlink -f $0))"
 
 pushd "$ROOT"
-./build.py --python $PY --platform android rebuild rapt rapt-sdl2 python3
+./build.py --python $PY --platform android rebuild rapt rapt-sdl2 pyjnius pyobjus
 popd
 
 rm "$ROOT/renpy/rapt"
