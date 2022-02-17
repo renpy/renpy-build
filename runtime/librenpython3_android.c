@@ -106,6 +106,9 @@ int start_python(void) {
     PyPreConfig preconfig;
     PyConfig config;
 
+    PyImport_ExtendInittab(inittab);
+    init_librenpy();
+
     char *private = getenv("ANDROID_PRIVATE");
     chdir(private);
 
@@ -115,7 +118,7 @@ int start_python(void) {
     char main_py[2048];
     snprintf(main_py, 2048, "%s/main.py", private);
 
-    argc = 2;
+    int argc = 2;
     char *argv[] = { python, main_py, NULL };
 
     PyPreConfig_InitPythonConfig(&preconfig);
@@ -134,14 +137,10 @@ int start_python(void) {
     PyConfig_SetBytesArgv(&config, argc, argv);
     Py_InitializeFromConfig(&config);
 
-    PyImport_ExtendInittab(inittab);
-    init_librenpy();
-
     int rv = Py_RunMain();
 
     return rv;
 }
-
 
 void call_prepare_python(void) {
 	JNIEnv* env = (JNIEnv*) SDL_AndroidGetJNIEnv();
