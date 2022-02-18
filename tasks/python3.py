@@ -167,5 +167,15 @@ def build_windows(c):
 @task(kind="python", pythons="3")
 def pip(c):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
-    c.run("{{ install }}/bin/hostpython3 -s -m pip install --upgrade future==0.18.2 six==1.12.0 rsa==3.4.2 pyasn1==0.4.2 ecdsa==0.17.0")
-    c.run("{{ install }}/bin/hostpython3 -s -m pip install --upgrade urllib3==1.22 certifi idna==2.6 requests==2.20.0 pefile==2021.9.3")
+    c.run("""{{ install }}/bin/hostpython3 -s -m pip install --upgrade
+        future==0.18.2
+        six==1.12.0
+        rsa==3.4.2
+        pyasn1==0.4.2
+        ecdsa==0.17.0
+        urllib3==1.22
+        certifi
+        idna==2.6
+        requests==2.20.0
+        pefile==2021.9.3
+        """)
