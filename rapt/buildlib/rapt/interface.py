@@ -1,3 +1,5 @@
+from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
+
 import webbrowser
 import textwrap
 import sys
@@ -6,12 +8,6 @@ import subprocess
 import urllib
 
 from . import plat
-
-import colorama
-from colorama import Fore, Back, Style
-
-colorama.init()
-
 
 class Interface(object):
 
@@ -22,9 +18,7 @@ class Interface(object):
 
         wrapped = "\n\n".join("\n".join(textwrap.wrap(i)) for i in s.split("\n\n"))
 
-        sys.stdout.write(style)
         sys.stdout.write(wrapped)
-        sys.stdout.write(Fore.RESET + Back.RESET + Style.RESET_ALL)
         sys.stdout.write("\n")
         sys.stdout.flush()
 
@@ -33,27 +27,27 @@ class Interface(object):
         Displays `prompt` as an informational message.
         """
 
-        print
-        self.write(prompt, Style.BRIGHT)
-        print
+        print()
+        self.write(prompt)
+        print()
 
     def success(self, prompt):
         """
         Displays `prompt` as a success message.
         """
 
-        print
-        self.write(prompt, Fore.GREEN + Style.BRIGHT)
-        print
+        print()
+        self.write(prompt)
+        print()
 
     def final_success(self, prompt):
         """
         Displays `prompt` as the last success message of an operation.
         """
 
-        print
-        self.write(prompt, Fore.GREEN + Style.BRIGHT)
-        print
+        print()
+        self.write(prompt)
+        print()
 
     def yesno(self, prompt):
         """
@@ -70,8 +64,8 @@ class Interface(object):
         is currently selected, if any.
         """
 
-        print
-        self.write(prompt, Style.BRIGHT)
+        print()
+        self.write(prompt)
 
         while True:
 
@@ -82,7 +76,7 @@ class Interface(object):
             else:
                 prompt = "yes/no> "
 
-            choice = raw_input(prompt)
+            choice = input(prompt)
             choice = choice.strip().lower()
 
             if choice == "yes" or choice == "y":
@@ -117,8 +111,8 @@ class Interface(object):
         empty strings are allowed. Otherwise, they are not.
         """
 
-        print
-        self.write(prompt, Style.BRIGHT)
+        print()
+        self.write(prompt)
 
         while True:
 
@@ -127,7 +121,7 @@ class Interface(object):
             else:
                 prompt = "> "
 
-            rv = raw_input(prompt)
+            rv = input(prompt)
             rv = rv.strip()
 
             if rv:
@@ -153,8 +147,8 @@ class Interface(object):
 
         default_choice = None
 
-        print
-        self.write(prompt, Style.BRIGHT)
+        print()
+        self.write(prompt)
 
         for i, (value, label) in enumerate(choices):
 
@@ -165,7 +159,7 @@ class Interface(object):
 
             self.write("{}) {}".format(i, label), Style.BRIGHT)
 
-        print
+        print()
 
         if default_choice is not None:
             prompt = "1-{} [{}]> ".format(len(choices), default_choice)
@@ -174,7 +168,7 @@ class Interface(object):
 
         while True:
             try:
-                choice = raw_input(prompt).strip()
+                choice = input(prompt).strip()
                 if choice:
                     choice = int(choice)
                 else:
@@ -197,8 +191,8 @@ class Interface(object):
         Causes the program to terminate with a message, and a failure code.
         """
 
-        print
-        self.write(prompt, Fore.RED + Style.BRIGHT)
+        print()
+        self.write(prompt)
 
         sys.exit(-1)
 
@@ -224,7 +218,7 @@ class Interface(object):
             try:
                 while p.poll() is None:
                     time.sleep(.2)
-                    p.stdin.write('y\n')
+                    p.stdin.write(b'y\n')
                     p.stdin.flush()
             except:
                 pass
@@ -239,7 +233,10 @@ class Interface(object):
         Downloads `url` to `dest`.
         """
 
-        urllib.urlretrieve(url, dest)
+        import requests
+        resp = requests.get(url)
+        with open(dest, 'wb') as f:
+            f.write(resp.content)
 
     def background(self, f):
         """

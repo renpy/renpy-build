@@ -14,7 +14,6 @@ import rapt.configure as configure
 import rapt.build as build
 import rapt.plat as plat
 
-
 def main():
 
     # Change into our root directory.

@@ -14,8 +14,7 @@ popd
 rm "$ROOT/renpy/rapt"
 ln -s "rapt$PY" "$ROOT/renpy/rapt"
 
-export PYTHONPATH="$ROOT/renpy"
-
+export PYTHONPATH="$ROOT/renpy:$ROOT/renpy/launcher/game"
 
 rm -Rf "$ROOT/renpy/rapt/Sdk"
 ln -s "/home/tom/ab/android/Sdk" "$ROOT/renpy/rapt/Sdk"
