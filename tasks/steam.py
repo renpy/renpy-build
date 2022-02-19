@@ -7,10 +7,10 @@ def unpack_sdk(c):
 
     c.clean("{{ install }}/steam")
 
-    if not c.path("{{ tars }}/steamworks_sdk_150.zip").exists():
+    if not c.path("{{ tars }}/steamworks_sdk_153a.zip").exists():
         return
 
-    zf = zipfile.ZipFile(c.path("{{ tars }}/steamworks_sdk_150.zip"))
+    zf = zipfile.ZipFile(c.path("{{ tars }}/steamworks_sdk_153a.zip"))
     zf.extractall(c.path("{{ install }}/steam"))
     zf.close()
 
@@ -25,7 +25,7 @@ def patch_sdk(c):
     c.patch("steam-cdecl.diff")
 
 
-@task(platforms="linux,windows,mac", archs="x86_64,i686", always=True)
+@task(kind="python", platforms="linux,windows,mac", archs="x86_64,i686", always=True)
 def build(c):
 
     if not c.path("{{host}}/steam/sdk").exists():
