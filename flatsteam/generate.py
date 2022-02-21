@@ -31,15 +31,24 @@ MAPPINGS = {
     "unsigned long" : "c_ulong",
     "long long" : "c_longlong",
     "signed long long" : "c_longlong",
+    "int64_t" : "c_longlong",
     "unsigned long long" : "c_ulonglong",
     "char *" : "c_char_p",
     "void *" : "c_void_p",
+    "CGameID" : "c_ulonglong",
+    "CSteamID" : "c_ulonglong",
+    "bool" : "c_bool",
+    "float" : "c_float",
+
 }
 
-class UnmappableType(Exception):
+def unprefix(name):
+    """"
+    Removes the SteamAPI_ prefix from a name.
     """
-    An exception that will be raised if map_type can't map the type.
-    """
+
+    return name.partition("SteamAPI_")[2]
+
 
 def map_type(name):
     """
@@ -57,6 +66,10 @@ def map_type(name):
         mapped = map_type(name[:-2])
         rv = f"POINTER({mapped})"
 
+    elif name.endswith(" **"):
+        mapped = map_type(name[:-1])
+        rv = f"POINTER({mapped})"
+
     elif name.endswith("]"):
         m = re.match(r"(.*) \[(\d+)\]", name)
         if m is None:
@@ -68,7 +81,7 @@ def map_type(name):
         rv = f"({mapped} * {count})"
 
     elif "(*)" in name:
-        raise UnmappableType(f"Couldn't map type {name}")
+        return "c_void_p"
 
     else:
         raise Exception(f"Couldn't map type {name}")
@@ -138,7 +151,6 @@ def enums(enums):
 
     p("")
     p("")
-
     p("# Enums")
 
     for e in enums:
@@ -158,9 +170,70 @@ def enums(enums):
 
         MAPPINGS[enumname] = enumname
 
+def structs(structs):
+
+    p("")
+    p("")
+    p("# Structs")
+
+    for s in structs:
+        structname = s["struct"]
+        fields = s["fields"]
+        methods = s.get("methods", [])
+
+        p("")
+        p(f"class {structname}(Structure):")
+        p("    _pack_ = PACK")
+        p("    _fields_ = [")
+
+        for f in fields:
+            fieldname = f["fieldname"]
+            fieldtype = f["fieldtype"]
+
+            if fieldtype == "SteamInputActionEvent_t::AnalogAction_t":
+                continue
+
+            mapped = map_type(fieldtype)
+
+            p(f"        ({fieldname!r}, {mapped}),")
+
+        p("    ]")
+
+
+        for m in methods:
+            methodname = m["methodname"]
+
+            if "operator" in methodname:
+                continue
+
+            flat = m["methodname_flat"]
+            flat = unprefix(flat)
+
+            params = ", ".join(p["paramname"] for p in m["params"])
+
+
+
+            p("")
+            p(f"    def {methodname}(self):")
+            p(f"        return _flat.{flat}(self, {params})")
+
+
+        MAPPINGS[structname] = structname
+
+
+
+
+
+
 
 HEADER = """\
-from ctypes import POINTER, c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong, c_longlong, c_ulonglong, c_char_p, c_void_p
+from ctypes import POINTER, c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong, c_longlong, c_ulonglong, c_char_p, c_void_p, Structure, c_bool, c_float
+
+import platform
+if platform.win32_ver()[0]:
+    PACK = 8
+else:
+    PACK = 4
 """
 
 def main():
@@ -178,9 +251,8 @@ def main():
     p("# Constants")
 
     consts(api["consts"])
-
-
     enums(api["enums"])
+    structs(api["structs"])
 
     out.close()
 
