@@ -13,7 +13,7 @@ def p(s):
     """
 
     out.write(s + "\n")
-    sys.stdout.write(s + "\n")
+    # sys.stdout.write(s + "\n")
 
 # A mapping from a type to the corresponding ctypes constructor.
 MAPPINGS = {
@@ -26,6 +26,8 @@ MAPPINGS = {
     "int" : "c_int",
     "signed int" : "c_int",
     "unsigned int" : "c_uint",
+    "int32_t" : "c_int",
+    "intptr_t" : "POINTER(c_int)",
     "long" : "c_long",
     "signed long" : "c_long",
     "unsigned long" : "c_ulong",
@@ -39,7 +41,15 @@ MAPPINGS = {
     "CSteamID" : "c_ulonglong",
     "bool" : "c_bool",
     "float" : "c_float",
-
+    "double" : "c_double",
+    "void" : "None",
+    "size_t" : "c_size_t",
+    "SteamAPIWarningMessageHook_t" : "c_void_p",
+    "ISteamHTMLSurface::EHTMLMouseButton" : "c_int",
+    "ISteamHTMLSurface::EHTMLKeyModifiers" : "c_int",
+    "SteamDatagramRelayAuthTicket *" : "c_void_p",
+    "ISteamNetworkingConnectionSignaling *" : "c_void_p",
+    "ISteamNetworkingSignalingRecvContext *" : "c_void_p",
 }
 
 def unprefix(name):
@@ -59,8 +69,13 @@ def map_type(name):
     if rv is not None:
         return rv
 
+    name = name.replace("&", "*")
+
     if name.startswith("const "):
         rv = map_type(name[6:])
+
+    elif name.endswith("const"):
+        rv = map_type(name[:-5])
 
     elif name.endswith(" *"):
         mapped = map_type(name[:-2])
@@ -84,9 +99,7 @@ def map_type(name):
         return "c_void_p"
 
     else:
-        raise Exception(f"Couldn't map type {name}")
-
-    print(f"Mapped {name} to {rv}.")
+        raise Exception(f"Couldn't map type {name!r}")
 
     MAPPINGS[name] = rv
     return rv
@@ -101,18 +114,12 @@ def typedef(typedefs):
 
     for d in typedefs:
 
-        try:
 
-            type = map_type(d["type"])
-            typedef = d["typedef"]
+        type = map_type(d["type"])
+        typedef = d["typedef"]
 
-            print(f"Mapped {typedef} to {type}.")
+        MAPPINGS[typedef] = type
 
-            MAPPINGS[typedef] = type
-
-        except UnmappableType:
-            print(f"Skipping typedef {d}")
-            continue
 
 
 def consts(consts):
@@ -170,14 +177,13 @@ def enums(enums):
 
         MAPPINGS[enumname] = enumname
 
+        if "fqname" in e:
+            MAPPINGS[e["fqname"]] = enumname
+
 def structs(structs):
 
-    p("")
-    p("")
-    p("# Structs")
-
     for s in structs:
-        structname = s["struct"]
+        structname = s.get("struct", None) or s["classname"]
         fields = s["fields"]
         methods = s.get("methods", [])
 
@@ -199,6 +205,8 @@ def structs(structs):
 
         p("    ]")
 
+        if "callback_id" in s:
+            p(f"    callback_id = {s['callback_id']}")
 
         for m in methods:
             methodname = m["methodname"]
@@ -211,29 +219,148 @@ def structs(structs):
 
             params = ", ".join(p["paramname"] for p in m["params"])
 
+            p("")
+            p(f"    def {methodname}(self, {params}):")
+            p(f"        return steamapi.{flat}(byref(self), {params})")
 
+
+        for a in s.get("accessors", []):
+
+            name = a["name"]
+            flat = a["name_flat"]
+            flat = unprefix(flat)
+
+            if not flat:
+                continue
 
             p("")
-            p(f"    def {methodname}(self):")
-            p(f"        return _flat.{flat}(self, {params})")
-
+            p(f"def {name}(self):")
+            p(f"    return steamapi.{flat}()")
 
         MAPPINGS[structname] = structname
 
 
+def flatmethod(m, methodname, flat):
+    short = unprefix(flat)
+
+    if not short:
+        return
+
+    paramtypes = ", ".join(map_type(p["paramtype"]) for p in m["params"])
+    returntype = map_type(m["returntype"])
+
+    p("")
+    p(f"        self.{short} = dll.{flat}")
+    p(f"        self.{short}.argtypes = [ {paramtypes} ]")
+    p(f"        self.{short}.restype = {returntype}")
+
+
+def flataccessor(a, name, flat, interface):
+    short = unprefix(flat)
+
+    if not short:
+        return
+
+    p("")
+    p(f"        self.{short} = dll.{flat}")
+    p(f"        self.{short}.argtypes = [ ]")
+    p(f"        self.{short}.restype = POINTER({interface})")
+    p(f"        self.{name} = self.{short}")
+
+
+def fixedmethod(name, argtypes, restype):
+
+    short = unprefix(name)
+
+    if not short:
+        return
+
+    p("")
+    p(f"        self.{short} = dll.{name}")
+    p(f"        self.{short}.argtypes = [ { argtypes } ]")
+    p(f"        self.{short}.restype = { restype }")
 
 
 
+def steamapi(structs, interfaces):
 
+    p("""\
+class SteamAPI(object):
+
+    def load(self, dll):
+""")
+
+    for s in structs:
+        for m in s.get("methods", []):
+            name = m["methodname"]
+            flat = m["methodname_flat"]
+            flatmethod(m, name, flat)
+
+    for i in interfaces:
+        for m in i.get("methods", []):
+            name = m["methodname"]
+            flat = m["methodname_flat"]
+            flatmethod(m, name, flat)
+
+        for a in i.get("accessors", []):
+            name = a["name"]
+            flat = a["name_flat"]
+            flataccessor(a, name, flat, i["classname"])
+
+
+
+    # Manual definitions of various Steam types.
+
+    fixedmethod("SteamAPI_Init", "", "c_bool")
+    fixedmethod("SteamAPI_Shutdown", "", "None")
+
+    fixedmethod("SteamAPI_RestartAppIfNecessary", "c_uint", "c_bool")
+    fixedmethod("SteamAPI_ReleaseCurrentThreadMemory", "", "None")
+
+    fixedmethod("SteamAPI_WriteMiniDump", "c_uint, c_void_p, c_uint", "None")
+    fixedmethod("SteamAPI_SetMiniDumpComment", "c_char_p", "None")
+
+    fixedmethod("SteamAPI_ManualDispatch_Init", "", "None")
+    fixedmethod("SteamAPI_ManualDispatch_RunFrame", "c_int", "None")
+
+    fixedmethod("SteamAPI_ManualDispatch_GetNextCallback", "c_int, POINTER(CallbackMsg_t)", "c_bool")
+    fixedmethod("SteamAPI_ManualDispatch_FreeLastCallback", "c_int", "None")
+    fixedmethod("SteamAPI_ManualDispatch_GetAPICallResult", "c_int, c_ulonglong, c_void_p, c_int, c_int, c_bool", "c_bool")
+
+    fixedmethod("SteamAPI_GetHSteamPipe", "", "c_int")
+    fixedmethod("SteamAPI_GetHSteamUser", "", "c_uint")
+    fixedmethod("SteamGameServer_GetHSteamPipe", "", "c_int")
+    fixedmethod("SteamGameServer_GetHSteamUser", "", "c_uint")
 
 HEADER = """\
-from ctypes import POINTER, c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong, c_longlong, c_ulonglong, c_char_p, c_void_p, Structure, c_bool, c_float
+from ctypes import cdll, POINTER, c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong, c_longlong, c_ulonglong, c_char_p, c_void_p, Structure, c_bool, c_float, byref, c_double, c_size_t
 
 import platform
 if platform.win32_ver()[0]:
     PACK = 8
 else:
     PACK = 4
+
+class CallbackMsg_t(Structure):
+    _fields_ = [
+        ( "m_hSteamUser", c_int),
+        ( "m_iCallback", c_int),
+        ( "m_pubParam", c_void_p),
+        ( "m_cubParam", c_int),
+        ]
+
+    _pack_ = PACK
+"""
+
+FOOTER = """
+
+steamapi = SteamAPI()
+
+dll = cdll["/home/tom/ab/renpy-build/flatsteam/sdk/redistributable_bin/linux64/libsteam_api.so"]
+steamapi.load(dll)
+
+steamapi.Init()
+print(dir(steamapi.SteamApps()))
 """
 
 def main():
@@ -252,7 +379,34 @@ def main():
 
     consts(api["consts"])
     enums(api["enums"])
+
+    for i in api["callback_structs"]:
+        if "enums" in i:
+            enums(i["enums"])
+
+    p("")
+    p("")
+    p("# ")
+
+
     structs(api["structs"])
+    structs(api["callback_structs"])
+
+
+    p("")
+    p("")
+    p("# ")
+
+    structs(api["interfaces"])
+
+
+    p("")
+    p("")
+    p("# ")
+
+    steamapi(api["structs"], api["interfaces"])
+
+    out.write(FOOTER)
 
     out.close()
 
