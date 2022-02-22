@@ -173,8 +173,6 @@ def enums(enums):
         for v in values:
             p(f"{v['name']} = {enumname}({v['value']})")
 
-        p("")
-
         MAPPINGS[enumname] = enumname
 
         if "fqname" in e:
@@ -221,7 +219,7 @@ def structs(structs):
 
             p("")
             p(f"    def {methodname}(self, {params}):")
-            p(f"        return steamapi.{flat}(byref(self), {params})")
+            p(f"        return {flat}(byref(self), {params})")
 
 
         for a in s.get("accessors", []):
@@ -250,9 +248,10 @@ def flatmethod(m, methodname, flat):
     returntype = map_type(m["returntype"])
 
     p("")
-    p(f"        self.{short} = dll.{flat}")
-    p(f"        self.{short}.argtypes = [ {paramtypes} ]")
-    p(f"        self.{short}.restype = {returntype}")
+    p(f"    global {short}")
+    p(f"    {short} = dll.{flat}")
+    p(f"    {short}.argtypes = [ {paramtypes} ]")
+    p(f"    {short}.restype = {returntype}")
 
 
 def flataccessor(a, name, flat, interface):
@@ -262,10 +261,10 @@ def flataccessor(a, name, flat, interface):
         return
 
     p("")
-    p(f"        self.{short} = dll.{flat}")
-    p(f"        self.{short}.argtypes = [ ]")
-    p(f"        self.{short}.restype = POINTER({interface})")
-    p(f"        self.{name} = self.{short}")
+    p(f"    global {short}")
+    p(f"    {short} = dll.{flat}")
+    p(f"    {short}.argtypes = [ ]")
+    p(f"    {short}.restype = POINTER({interface})")
 
 
 def fixedmethod(name, argtypes, restype):
@@ -276,18 +275,67 @@ def fixedmethod(name, argtypes, restype):
         return
 
     p("")
-    p(f"        self.{short} = dll.{name}")
-    p(f"        self.{short}.argtypes = [ { argtypes } ]")
-    p(f"        self.{short}.restype = { restype }")
+    p(f"    global {short}")
+    p(f"    {short} = dll.{name}")
+    p(f"    {short}.argtypes = [ { argtypes } ]")
+    p(f"    {short}.restype = { restype }")
 
+
+def stubmethod(m, methodname, flat):
+    short = unprefix(flat)
+
+    if not short:
+        return
+
+    p("")
+    p(f"{short} = not_ready")
+
+
+def stubaccessor(a, name, flat, interface):
+    short = unprefix(flat)
+
+    if not short:
+        return
+
+    p("")
+    p(f"{short} = not_ready")
+    p("")
+    p(f"def {name}(): # type: () -> {interface}")
+    p(f"    return {short}().contents")
+
+
+def stubfixedmethod(name, argtypes, restype):
+
+    short = unprefix(name)
+
+    if not short:
+        return
+
+    p("")
+    p(f"{short} = not_ready")
+
+
+FIXED_METHODS = [
+    ("SteamAPI_Init", "", "c_bool"),
+    ("SteamAPI_Shutdown", "", "None"),
+    ("SteamAPI_RestartAppIfNecessary", "c_uint", "c_bool"),
+    ("SteamAPI_ReleaseCurrentThreadMemory", "", "None"),
+    ("SteamAPI_WriteMiniDump", "c_uint, c_void_p, c_uint", "None"),
+    ("SteamAPI_SetMiniDumpComment", "c_char_p", "None"),
+    ("SteamAPI_ManualDispatch_Init", "", "None"),
+    ("SteamAPI_ManualDispatch_RunFrame", "c_int", "None"),
+    ("SteamAPI_ManualDispatch_GetNextCallback", "c_int, POINTER(CallbackMsg_t)", "c_bool"),
+    ("SteamAPI_ManualDispatch_FreeLastCallback", "c_int", "None"),
+    ("SteamAPI_ManualDispatch_GetAPICallResult", "c_int, c_ulonglong, c_void_p, c_int, c_int, c_bool", "c_bool"),
+    ("SteamAPI_GetHSteamPipe", "", "c_int"),
+    ("SteamAPI_GetHSteamUser", "", "c_uint"),
+]
 
 
 def steamapi(structs, interfaces):
 
     p("""\
-class SteamAPI(object):
-
-    def load(self, dll):
+def load(dll):
 """)
 
     for s in structs:
@@ -307,33 +355,46 @@ class SteamAPI(object):
             flat = a["name_flat"]
             flataccessor(a, name, flat, i["classname"])
 
+    for name, argtypes, restype in FIXED_METHODS:
+        fixedmethod(name, argtypes, restype)
+
+    # Stubs.
+
+    for s in structs:
+        for m in s.get("methods", []):
+            name = m["methodname"]
+            flat = m["methodname_flat"]
+            stubmethod(m, name, flat)
+
+    for i in interfaces:
+        for m in i.get("methods", []):
+            name = m["methodname"]
+            flat = m["methodname_flat"]
+            stubmethod(m, name, flat)
+
+        for a in i.get("accessors", []):
+            name = a["name"]
+            flat = a["name_flat"]
+            stubaccessor(a, name, flat, i["classname"])
+
+    for name, argtypes, restype in FIXED_METHODS:
+        stubfixedmethod(name, argtypes, restype)
 
 
-    # Manual definitions of various Steam types.
-
-    fixedmethod("SteamAPI_Init", "", "c_bool")
-    fixedmethod("SteamAPI_Shutdown", "", "None")
-
-    fixedmethod("SteamAPI_RestartAppIfNecessary", "c_uint", "c_bool")
-    fixedmethod("SteamAPI_ReleaseCurrentThreadMemory", "", "None")
-
-    fixedmethod("SteamAPI_WriteMiniDump", "c_uint, c_void_p, c_uint", "None")
-    fixedmethod("SteamAPI_SetMiniDumpComment", "c_char_p", "None")
-
-    fixedmethod("SteamAPI_ManualDispatch_Init", "", "None")
-    fixedmethod("SteamAPI_ManualDispatch_RunFrame", "c_int", "None")
-
-    fixedmethod("SteamAPI_ManualDispatch_GetNextCallback", "c_int, POINTER(CallbackMsg_t)", "c_bool")
-    fixedmethod("SteamAPI_ManualDispatch_FreeLastCallback", "c_int", "None")
-    fixedmethod("SteamAPI_ManualDispatch_GetAPICallResult", "c_int, c_ulonglong, c_void_p, c_int, c_int, c_bool", "c_bool")
-
-    fixedmethod("SteamAPI_GetHSteamPipe", "", "c_int")
-    fixedmethod("SteamAPI_GetHSteamUser", "", "c_uint")
-    fixedmethod("SteamGameServer_GetHSteamPipe", "", "c_int")
-    fixedmethod("SteamGameServer_GetHSteamUser", "", "c_uint")
 
 HEADER = """\
-from ctypes import cdll, POINTER, c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong, c_longlong, c_ulonglong, c_char_p, c_void_p, Structure, c_bool, c_float, byref, c_double, c_size_t
+from ctypes import (
+    c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong,
+    c_longlong, c_ulonglong, c_char_p, c_void_p, c_bool, c_float, byref,
+    c_double, c_size_t, Structure, POINTER, byref)
+
+try:
+    from typing import Any
+except ImportError:
+    pass
+
+def not_ready(*args): # type: (...) -> Any
+    raise RuntimeError("Please call steamapi.load() before this function.")
 
 import platform
 if platform.win32_ver()[0]:
@@ -352,30 +413,18 @@ class CallbackMsg_t(Structure):
     _pack_ = PACK
 """
 
-FOOTER = """
-
-steamapi = SteamAPI()
-
-dll = cdll["/home/tom/ab/renpy-build/flatsteam/sdk/redistributable_bin/linux64/libsteam_api.so"]
-steamapi.load(dll)
-
-steamapi.Init()
-print(dir(steamapi.SteamApps()))
-"""
 
 def main():
     with open("sdk/public/steam/steam_api.json", "r") as f:
         api = json.load(f)
 
     global out
-    out = open("flatsteam.py", "w")
+    out = open("steamapi.py", "w")
 
     p(HEADER)
     p("")
 
     typedef(api["typedefs"])
-
-    p("# Constants")
 
     consts(api["consts"])
     enums(api["enums"])
@@ -384,29 +433,10 @@ def main():
         if "enums" in i:
             enums(i["enums"])
 
-    p("")
-    p("")
-    p("# ")
-
-
     structs(api["structs"])
     structs(api["callback_structs"])
-
-
-    p("")
-    p("")
-    p("# ")
-
     structs(api["interfaces"])
-
-
-    p("")
-    p("")
-    p("# ")
-
     steamapi(api["structs"], api["interfaces"])
-
-    out.write(FOOTER)
 
     out.close()
 
