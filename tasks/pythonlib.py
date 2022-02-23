@@ -201,6 +201,8 @@ six.pyo
 
 pefile.pyo
 ordlookup/
+
+steamapi.pyo
 """
 
 
@@ -231,6 +233,7 @@ def python2(c):
         c.path("{{ install }}/lib/{{ pythonver }}/site-packages"),
         c.path("{{ pytmp }}/pyjnius"),
         c.path("{{ pytmp }}/pyobjus"),
+        c.path("{{ pytmp }}/steam"),
         ]
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
@@ -499,6 +502,8 @@ pyobjus/
 
 pefile
 ordlookup/
+
+steamapi
 """
 
 
@@ -514,6 +519,7 @@ def python3(c):
         c.path("{{ install }}/lib/{{ pythonver }}/site-packages"),
         c.path("{{ pytmp }}/pyjnius"),
         c.path("{{ pytmp }}/pyobjus"),
+        c.path("{{ pytmp }}/steam"),
         ]
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
@@ -548,6 +554,8 @@ def python3(c):
                 dest = dist / (short + ".pyc")
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(fn, dest)
+
+    # used_rules.add("steamapi")
 
     if rules - used_rules:
         raise Exception(f"Unused rules: {rules - used_rules}")

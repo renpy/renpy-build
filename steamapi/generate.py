@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+
 import json
 import pprint
 import re
 import io
 import sys
+import argparse
 
 # The file that the generated code will be written to.
 out = None # type: io.TextIOBase
@@ -415,11 +418,17 @@ class CallbackMsg_t(Structure):
 
 
 def main():
-    with open("sdk/public/steam/steam_api.json", "r") as f:
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("api_json", default="sdk/public/steam/steam_api.json", nargs='?')
+    ap.add_argument("output", default="steamapi.py", nargs='?')
+    args = ap.parse_args()
+
+    with open(args.api_json, "r") as f:
         api = json.load(f)
 
     global out
-    out = open("steamapi.py", "w")
+    out = open(args.output, "w")
 
     p(HEADER)
     p("")
