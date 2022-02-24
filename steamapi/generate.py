@@ -226,7 +226,7 @@ def structs(structs):
         MAPPINGS[structname] = structname
 
 
-def flatmethod(m, methodname, flat):
+def flatmethod(m, methodname, flat, interface):
     short = unprefix(flat)
 
     if not short:
@@ -238,7 +238,7 @@ def flatmethod(m, methodname, flat):
     p("")
     p(f"    global {short}")
     p(f"    {short} = dll.{flat}")
-    p(f"    {short}.argtypes = [ {paramtypes} ]")
+    p(f"    {short}.argtypes = [ POINTER({ interface }), {paramtypes} ]")
     p(f"    {short}.restype = {returntype}")
 
 
@@ -331,13 +331,13 @@ def load(dll):
         for m in s.get("methods", []):
             name = m["methodname"]
             flat = m["methodname_flat"]
-            flatmethod(m, name, flat)
+            flatmethod(m, name, flat, s["struct"])
 
     for i in interfaces:
         for m in i.get("methods", []):
             name = m["methodname"]
             flat = m["methodname_flat"]
-            flatmethod(m, name, flat)
+            flatmethod(m, name, flat,  i["classname"])
 
         for a in i.get("accessors", []):
             name = a["name"]
