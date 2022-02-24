@@ -210,33 +210,18 @@ def structs(structs):
             p(f"    callback_id = {s['callback_id']}")
 
         for m in methods:
-            methodname = m["methodname"]
-
-            if "operator" in methodname:
-                continue
 
             flat = m["methodname_flat"]
             flat = unprefix(flat)
+
+            methodname = flat.partition("_")[-1]
 
             params = ", ".join(p["paramname"] for p in m["params"])
 
             p("")
             p(f"    def {methodname}(self, {params}):")
-            p(f"        return {flat}(byref(self), {params})")
+            p(f"        return {flat}(byref(self), {params}) # type: ignore")
 
-
-        for a in s.get("accessors", []):
-
-            name = a["name"]
-            flat = a["name_flat"]
-            flat = unprefix(flat)
-
-            if not flat:
-                continue
-
-            p("")
-            p(f"def {name}(self):")
-            p(f"    return steamapi.{flat}()")
 
         MAPPINGS[structname] = structname
 
@@ -332,6 +317,7 @@ FIXED_METHODS = [
     ("SteamAPI_ManualDispatch_GetAPICallResult", "c_int, c_ulonglong, c_void_p, c_int, c_int, c_bool", "c_bool"),
     ("SteamAPI_GetHSteamPipe", "", "c_int"),
     ("SteamAPI_GetHSteamUser", "", "c_uint"),
+    ("SteamAPI_RunCallbacks", "", "None"),
 ]
 
 
