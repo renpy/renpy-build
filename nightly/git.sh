@@ -8,7 +8,12 @@ update () {
         popd
     else
         if [ -e "$REFS/$2/.git" ]; then
-            git clone $1 "$BASE/$2" --reference "$REFS/$2"
+            if [ $REFS = $BASE ]; then
+                git reset --hard
+                git pull
+            else
+                git clone $1 "$BASE/$2" --reference "$REFS/$2"
+            fi
         else
             git clone $1 "$BASE/$2"
         fi
