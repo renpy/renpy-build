@@ -702,7 +702,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
             dfn = plat.path(dfn)
 
-            shutil.copy(sfn, dfn)
+            shutil.move(sfn, dfn)
             files.append(dfn)
 
     # Install the bundle.
@@ -759,6 +759,8 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
 
     if finished is not None:
         finished(files)
+        if os.path.isdir(assets):
+            shutil.rmtree(assets)
 
     iface.final_success(
         __("The build seems to have succeeded.")
