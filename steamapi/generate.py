@@ -225,6 +225,16 @@ def structs(structs):
 
         MAPPINGS[structname] = structname
 
+def callback_by_id(structs):
+
+    p("")
+    p("callback_by_id = {")
+
+    for s in structs:
+        p(f"{s['callback_id']} : {s['struct']},")
+
+    p("}")
+
 
 def flatmethod(m, methodname, flat, interface):
     short = unprefix(flat)
@@ -430,6 +440,9 @@ def main():
 
     structs(api["structs"])
     structs(api["callback_structs"])
+
+    callback_by_id(api["callback_structs"])
+
     structs(api["interfaces"])
     steamapi(api["structs"], api["interfaces"])
 
