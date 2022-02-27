@@ -385,7 +385,7 @@ HEADER = """\
 from ctypes import (
     c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong,
     c_longlong, c_ulonglong, c_char_p, c_void_p, c_bool, c_float, byref,
-    c_double, c_size_t, Structure, POINTER, byref)
+    c_double, c_size_t, Structure, POINTER, byref, cast, sizeof)
 
 try:
     from typing import Any
@@ -401,6 +401,9 @@ if platform.win32_ver()[0]:
 else:
     PACK = 4
 
+"""
+
+FOOTER = '''\
 class CallbackMsg_t(Structure):
     _fields_ = [
         ( "m_hSteamUser", c_int),
@@ -410,6 +413,92 @@ class CallbackMsg_t(Structure):
         ]
 
     _pack_ = PACK
+
+hSteamPipe = None
+
+def init_callbacks():
+    """
+    This initializes Steam callback handling. It should be called after
+    Init but before any other call.
+    """
+
+    global hSteamPipe
+    ManualDispatch_Init()
+    hSteamPipe = GetHSteamPipe()
+
+    print(hSteamPipe)
+
+def generate_callbacks():
+    if hSteamPipe is None:
+        raise RuntimeError("Please call steamapi.init_callbacks() before this function.")
+
+    ManualDispatch_RunFrame(hSteamPipe)
+
+    message = CallbackMsg_t()
+
+    while ManualDispatch_GetNextCallback(hSteamPipe, byref(message)):
+
+        callback_type = callback_by_id.get(message.m_iCallback, None)
+
+        if callback_type is not None:
+            cb = cast(message.m_pubParam, POINTER(callback_type)).contents
+            yield cb
+
+        ManualDispatch_FreeLastCallback(hSteamPipe)
+
+class APIFailure(Exception):
+    pass
+
+def get_api_call_result(call, callback_type):
+
+    failure = c_bool()
+
+    if not SteamUtils().IsAPICallCompleted(call, byref(failure)):
+        return None
+
+    if failure:
+        raise APIFailure(call)
+
+    if isinstance(callback_type, int):
+        callback_type = callback_by_id[callback_type]
+
+    result = callback_type()
+
+    if not SteamUtils().GetAPICallResult(call, byref(result), sizeof(result), callback_type.callback_id, byref(failure)):
+        raise APIFailure(call)
+
+    if failure:
+        raise APIFailure(call)
+
+    return result
+'''
+
+
+"""
+	HSteamPipe hSteamPipe = SteamAPI_GetHSteamPipe(); // See also SteamGameServer_GetHSteamPipe()
+	SteamAPI_ManualDispatch_RunFrame( hSteamPipe )
+	CallbackMsg_t callback;
+	while ( SteamAPI_ManualDispatch_GetNextCallback( hSteamPipe, &callback ) )
+	{
+		// Check for dispatching API call results
+		if ( callback.m_iCallback == SteamAPICallCompleted_t::k_iCallback )
+		{
+			SteamAPICallCompleted_t *pCallCompleted = (SteamAPICallCompleted_t *)callback.
+			void *pTmpCallResult = malloc( pCallback->m_cubParam );
+			bool bFailed;
+			if ( SteamAPI_ManualDispatch_GetAPICallResult(hSteamPipe, pCallCompleted->m_hAsyncCall, pTmpCallResult, pCallback->m_cubParam, pCallback->m_iCallback, &bFailed ) )
+			{
+				// Dispatch the call result to the registered handler(s) for the
+				// call identified by pCallCompleted->m_hAsyncCall
+			}
+			free( pTmpCallResult );
+		}
+		else
+		{
+			// Look at callback.m_iCallback to see what kind of callback it is,
+			// and dispatch to appropriate handler(s)
+		}
+		SteamAPI_ManualDispatch_FreeLastCallback( hSteamPipe );
 """
 
 
@@ -445,6 +534,9 @@ def main():
 
     structs(api["interfaces"])
     steamapi(api["structs"], api["interfaces"])
+
+
+    p(FOOTER)
 
     out.close()
 

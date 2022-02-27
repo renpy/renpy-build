@@ -1,7 +1,7 @@
 from ctypes import (
     c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, c_long, c_ulong,
     c_longlong, c_ulonglong, c_char_p, c_void_p, c_bool, c_float, byref,
-    c_double, c_size_t, Structure, POINTER, byref)
+    c_double, c_size_t, Structure, POINTER, byref, cast, sizeof)
 
 try:
     from typing import Any
@@ -17,15 +17,6 @@ if platform.win32_ver()[0]:
 else:
     PACK = 4
 
-class CallbackMsg_t(Structure):
-    _fields_ = [
-        ( "m_hSteamUser", c_int),
-        ( "m_iCallback", c_int),
-        ( "m_pubParam", c_void_p),
-        ( "m_cubParam", c_int),
-        ]
-
-    _pack_ = PACK
 
 
 k_uAppIdInvalid = c_uint(0)
@@ -15038,3 +15029,71 @@ GetHSteamPipe = not_ready
 GetHSteamUser = not_ready
 
 RunCallbacks = not_ready
+class CallbackMsg_t(Structure):
+    _fields_ = [
+        ( "m_hSteamUser", c_int),
+        ( "m_iCallback", c_int),
+        ( "m_pubParam", c_void_p),
+        ( "m_cubParam", c_int),
+        ]
+
+    _pack_ = PACK
+
+hSteamPipe = None
+
+def init_callbacks():
+    """
+    This initializes Steam callback handling. It should be called after
+    Init but before any other call.
+    """
+
+    global hSteamPipe
+    ManualDispatch_Init()
+    hSteamPipe = GetHSteamPipe()
+
+    print(hSteamPipe)
+
+def generate_callbacks():
+    if hSteamPipe is None:
+        raise RuntimeError("Please call steamapi.init_callbacks() before this function.")
+
+    ManualDispatch_RunFrame(hSteamPipe)
+
+    message = CallbackMsg_t()
+
+    while ManualDispatch_GetNextCallback(hSteamPipe, byref(message)):
+
+        callback_type = callback_by_id.get(message.m_iCallback, None)
+
+        if callback_type is not None:
+            cb = cast(message.m_pubParam, POINTER(callback_type)).contents
+            yield cb
+
+        ManualDispatch_FreeLastCallback(hSteamPipe)
+
+class APIFailure(Exception):
+    pass
+
+def get_api_call_result(call, callback_type):
+
+    failure = c_bool()
+
+    if not SteamUtils().IsAPICallCompleted(call, byref(failure)):
+        return None
+
+    if failure:
+        raise APIFailure(call)
+
+    if isinstance(callback_type, int):
+        callback_type = callback_by_id[callback_type]
+
+    result = callback_type()
+
+    if not SteamUtils().GetAPICallResult(call, byref(result), sizeof(result), callback_type.callback_id, byref(failure)):
+        raise APIFailure(call)
+
+    if failure:
+        raise APIFailure(call)
+
+    return result
+
