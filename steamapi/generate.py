@@ -426,9 +426,16 @@ def init_callbacks():
     ManualDispatch_Init()
     hSteamPipe = GetHSteamPipe()
 
-    print(hSteamPipe)
-
 def generate_callbacks():
+    """
+    This generates the callback objects produced by Steam. This needs to be
+    iterated over once per frame to make sure the callbacks are
+    processed and the screen is updated.
+
+    The callbacks are generated of the
+
+    """
+
     if hSteamPipe is None:
         raise RuntimeError("Please call steamapi.init_callbacks() before this function.")
 
@@ -450,6 +457,28 @@ class APIFailure(Exception):
     pass
 
 def get_api_call_result(call, callback_type):
+    """
+    Returns the result of an API call.
+
+    `call`
+        The SteamAPICall_t returned by the call.
+
+    `callback_type`
+        Either the type or an integer representing the type of the API call.
+
+    This returns an object of callback_type if the call completed, None if
+    the call hasn't finished, and raises APIFailure if the call failed. (It's
+    recommended that APIFailures are caught and the API call retried.)
+
+    One way to use this is with the SteamAPICallCompleted_t callback::
+
+        for i in steamapi.generate_callbacks():
+            if isinstance(i, steamapi.SteamAPICallCompleted_t):
+                result = steamapi.get_api_call_result(i.m_hAsyncCall, i.m_iCallback)
+                print("The result of", i.m_hAsyncCall, "is", result)
+            else:
+                # Handle other callbacks.
+    """
 
     failure = c_bool()
 
@@ -472,34 +501,6 @@ def get_api_call_result(call, callback_type):
 
     return result
 '''
-
-
-"""
-	HSteamPipe hSteamPipe = SteamAPI_GetHSteamPipe(); // See also SteamGameServer_GetHSteamPipe()
-	SteamAPI_ManualDispatch_RunFrame( hSteamPipe )
-	CallbackMsg_t callback;
-	while ( SteamAPI_ManualDispatch_GetNextCallback( hSteamPipe, &callback ) )
-	{
-		// Check for dispatching API call results
-		if ( callback.m_iCallback == SteamAPICallCompleted_t::k_iCallback )
-		{
-			SteamAPICallCompleted_t *pCallCompleted = (SteamAPICallCompleted_t *)callback.
-			void *pTmpCallResult = malloc( pCallback->m_cubParam );
-			bool bFailed;
-			if ( SteamAPI_ManualDispatch_GetAPICallResult(hSteamPipe, pCallCompleted->m_hAsyncCall, pTmpCallResult, pCallback->m_cubParam, pCallback->m_iCallback, &bFailed ) )
-			{
-				// Dispatch the call result to the registered handler(s) for the
-				// call identified by pCallCompleted->m_hAsyncCall
-			}
-			free( pTmpCallResult );
-		}
-		else
-		{
-			// Look at callback.m_iCallback to see what kind of callback it is,
-			// and dispatch to appropriate handler(s)
-		}
-		SteamAPI_ManualDispatch_FreeLastCallback( hSteamPipe );
-"""
 
 
 def main():
@@ -534,7 +535,6 @@ def main():
 
     structs(api["interfaces"])
     steamapi(api["structs"], api["interfaces"])
-
 
     p(FOOTER)
 

@@ -15051,9 +15051,16 @@ def init_callbacks():
     ManualDispatch_Init()
     hSteamPipe = GetHSteamPipe()
 
-    print(hSteamPipe)
-
 def generate_callbacks():
+    """
+    This generates the callback objects produced by Steam. This needs to be
+    iterated over once per frame to make sure the callbacks are
+    processed and the screen is updated.
+
+    The callbacks are generated of the
+
+    """
+
     if hSteamPipe is None:
         raise RuntimeError("Please call steamapi.init_callbacks() before this function.")
 
@@ -15075,6 +15082,28 @@ class APIFailure(Exception):
     pass
 
 def get_api_call_result(call, callback_type):
+    """
+    Returns the result of an API call.
+
+    `call`
+        The SteamAPICall_t returned by the call.
+
+    `callback_type`
+        Either the type or an integer representing the type of the API call.
+
+    This returns an object of callback_type if the call completed, None if
+    the call hasn't finished, and raises APIFailure if the call failed. (It's
+    recommended that APIFailures are caught and the API call retried.)
+
+    One way to use this is with the SteamAPICallCompleted_t callback::
+
+        for i in steamapi.generate_callbacks():
+            if isinstance(i, steamapi.SteamAPICallCompleted_t):
+                result = steamapi.get_api_call_result(i.m_hAsyncCall, i.m_iCallback)
+                print("The result of", i.m_hAsyncCall, "is", result)
+            else:
+                # Handle other callbacks.
+    """
 
     failure = c_bool()
 
