@@ -1,0 +1,21 @@
+
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ include/SDL_config.h.in |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/SDL_config.h.in b/include/SDL_config.h.in
+index 0d981b4..0fe05b2 100644
+--- a/include/SDL_config.h.in
++++ b/include/SDL_config.h.in
+@@ -408,6 +408,7 @@
+ #undef SDL_VIDEO_DRIVER_OS2
+ #undef SDL_VIDEO_DRIVER_QNX
+ #undef SDL_VIDEO_DRIVER_RISCOS
++#undef SDL_VIDEO_DRIVER_UIKIT
+ 
+ #undef SDL_VIDEO_RENDER_D3D
+ #undef SDL_VIDEO_RENDER_D3D11
