@@ -1,12 +1,14 @@
 from renpybuild.model import task, annotator
 import shutil
 
-version = "2.0.14"
+version = "2.0.20"
 
 
 @annotator
 def annotate(c):
-    c.include("{{ install }}/include/SDL2")
+    if c.name != "sdl2":
+        c.include("{{ install }}/include/SDL2")
+
 
 
 @task()
@@ -20,16 +22,7 @@ def unpack(c):
         c.run("tar xzf {{source}}/SDL2-{{version}}.tar.gz")
 
         c.chdir("SDL2-{{version}}")
-        c.patch("sdl2-dinput.diff")
-        c.patch("sdl2-no-android-hid.diff")
-        c.patch("sdl2-mac-fix-toggle-fullscreen.diff")
-        c.patch("sdl2-windows-ime.diff")
-        c.patch("sdl2-no-android-device-sizes.diff")
-        c.patch("sdl2-chromebook-mouse.diff")
-
-        if c.platform == "ios":
-            c.patch("sdl2-ios-configure.diff")
-            c.run("./autogen.sh")
+        c.patchdir("SDL2-{{version}}")
 
 
 @task()
