@@ -58,9 +58,12 @@ def build(c):
         --disable-nas
         --disable-sndio
         --disable-fusionsound
+
+        --disable-hidapi
+
     {% endif %}
 
-        """)
+    """)
 
     if c.platform == "ios":
         with open(c.path("include/SDL_config.h"), "a") as f:

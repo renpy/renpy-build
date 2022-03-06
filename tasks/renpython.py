@@ -134,6 +134,8 @@ def link_android(c):
     -lGLESv1_CM
     -lGLESv2
 
+    -lOpenSLES
+
     -ljpeg
     -lpng
     -lwebp
