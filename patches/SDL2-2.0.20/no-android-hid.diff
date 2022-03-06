@@ -1,0 +1,22 @@
+Prevent the use of HID on Android.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ .../src/main/java/org/libsdl/app/SDLActivity.java  |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+index 8641ccf..5ab6573 100644
+--- a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
++++ b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+@@ -271,7 +271,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
+ 
+         mClipboardHandler = new SDLClipboardHandler();
+ 
+-        mHIDDeviceManager = HIDDeviceManager.acquire(this);
++        // mHIDDeviceManager = HIDDeviceManager.acquire(this);
+ 
+         // Set up the surface
+         mSurface = new SDLSurface(getApplication());

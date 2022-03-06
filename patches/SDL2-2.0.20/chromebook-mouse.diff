@@ -1,0 +1,22 @@
+Enable a touch-mouse on chromebook devices.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ .../java/org/libsdl/app/SDLControllerManager.java  |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java b/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java
+index 05e0f0c..ce9683f 100644
+--- a/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java
++++ b/android-project/app/src/main/java/org/libsdl/app/SDLControllerManager.java
+@@ -696,6 +696,8 @@ class SDLGenericMotionListener_API26 extends SDLGenericMotionListener_API24 {
+                 return SDLControllerManager.handleJoystickMotionEvent(event);
+ 
+             case InputDevice.SOURCE_MOUSE:
++            // This is how the mouse events show up on ChromeOS.
++            case InputDevice.SOURCE_TOUCHSCREEN:
+             // DeX desktop mouse cursor is a separate non-standard input type.
+             case InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_TOUCHSCREEN:
+                 action = event.getActionMasked();

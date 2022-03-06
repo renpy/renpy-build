@@ -1,0 +1,29 @@
+Ensure fullscreen windows are resizeable, on Mac.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+When a window isn't resizeable, the "Toggle Full Screen" 
+button isn't active, which means that the window can go into fullscreen and not
+come out.
+---
+ src/video/cocoa/SDL_cocoawindow.m |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/video/cocoa/SDL_cocoawindow.m b/src/video/cocoa/SDL_cocoawindow.m
+index bf86d7b..4d8546b 100644
+--- a/src/video/cocoa/SDL_cocoawindow.m
++++ b/src/video/cocoa/SDL_cocoawindow.m
+@@ -930,7 +930,12 @@ Cocoa_UpdateClipCursor(SDL_Window * window)
+         /* Unset the resizable flag. 
+            This is a workaround for https://bugzilla.libsdl.org/show_bug.cgi?id=3697
+          */
+-        SetWindowStyle(window, [nswindow styleMask] & (~NSWindowStyleMaskResizable));
++
++
++        /* RENPY: Comment this out. When a window isn't resizeable, the "Toggle Full Screen" 
++           button isn't active, which means that the window can go into fullscreen and not 
++           come out. */
++        /* SetWindowStyle(window, [nswindow styleMask] & (~NSWindowStyleMaskResizable));*/
+ 
+         if ((window->flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP) {
+             [NSMenu setMenuBarVisible:NO];

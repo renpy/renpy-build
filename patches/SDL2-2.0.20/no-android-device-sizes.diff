@@ -1,0 +1,36 @@
+rapt: Never use the device size.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+This was causing problems on Chromebook, and in general doesn't
+seem to be all that useful.
+---
+ .../src/main/java/org/libsdl/app/SDLActivity.java  |   11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+index 5ab6573..5057812 100644
+--- a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
++++ b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+@@ -1782,16 +1782,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
+         mHeight = height;
+         int nDeviceWidth = width;
+         int nDeviceHeight = height;
+-        try
+-        {
+-            if (Build.VERSION.SDK_INT >= 17) {
+-                DisplayMetrics realMetrics = new DisplayMetrics();
+-                mDisplay.getRealMetrics( realMetrics );
+-                nDeviceWidth = realMetrics.widthPixels;
+-                nDeviceHeight = realMetrics.heightPixels;
+-            }
+-        } catch(Exception ignored) {
+-        }
+ 
+         synchronized(SDLActivity.getContext()) {
+             // In case we're waiting on a size change after going fullscreen, send a notification.
+@@ -2325,4 +2315,3 @@ class SDLClipboardHandler implements
+         SDLActivity.onNativeClipboardChanged();
+     }
+ }
+-

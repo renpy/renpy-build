@@ -1,0 +1,22 @@
+Open DINPUT nonexclusively.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ src/joystick/windows/SDL_dinputjoystick.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/joystick/windows/SDL_dinputjoystick.c b/src/joystick/windows/SDL_dinputjoystick.c
+index c2f53a9..f2de471 100644
+--- a/src/joystick/windows/SDL_dinputjoystick.c
++++ b/src/joystick/windows/SDL_dinputjoystick.c
+@@ -755,7 +755,7 @@ SDL_DINPUT_JoystickOpen(SDL_Joystick * joystick, JoyStick_DeviceData *joystickde
+     result =
+         IDirectInputDevice8_SetCooperativeLevel(joystick->hwdata->
+         InputDevice, SDL_HelperWindow,
+-        DISCL_EXCLUSIVE |
++        DISCL_NONEXCLUSIVE |
+         DISCL_BACKGROUND);
+     if (FAILED(result)) {
+         return SetDIerror("IDirectInputDevice8::SetCooperativeLevel", result);

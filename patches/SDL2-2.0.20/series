@@ -1,0 +1,6 @@
+# This series applies on GIT commit 60e572aebe431102e97af16d9244f6faf3369103
+dinput-non-exclusive.diff
+no-android-hid.diff
+mac-fix-toggle-fullscreen.diff
+no-android-device-sizes.diff
+chromebook-mouse.diff
