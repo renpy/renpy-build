@@ -8,7 +8,7 @@ From: Tom Rothamel <tom@rothamel.us>
  1 file changed, 17 insertions(+), 42 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 823252b..17589f6 100644
+index 431d661..ba3ea36 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -390,6 +390,9 @@ then
@@ -54,7 +54,7 @@ index 823252b..17589f6 100644
  	*-*-vxworks*)
  		_host_cpu=$host_cpu
  		;;
-@@ -1216,17 +1231,6 @@ then
+@@ -1221,17 +1236,6 @@ then
          ARFLAGS="rcs"
  fi
  
@@ -72,7 +72,7 @@ index 823252b..17589f6 100644
  case $MACHDEP in
  hp*|HP*)
  	# install -d does not work on HP-UX
-@@ -2498,35 +2502,7 @@ case $ac_sys_system/$ac_sys_release in
+@@ -2503,35 +2507,7 @@ case $ac_sys_system/$ac_sys_release in
      }
      ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=yes])
  
@@ -109,7 +109,7 @@ index 823252b..17589f6 100644
  
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT" -lSystem -lSystemStubs -arch_only ${MACOSX_DEFAULT_ARCH}"
      LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
-@@ -5875,4 +5851,3 @@ if test "$Py_OPT" = 'false' -a "$Py_DEBUG" != 'true'; then
+@@ -5880,4 +5856,3 @@ if test "$Py_OPT" = 'false' -a "$Py_DEBUG" != 'true'; then
      echo "" >&AS_MESSAGE_FD
      echo "" >&AS_MESSAGE_FD
  fi
