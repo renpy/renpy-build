@@ -1,7 +1,8 @@
-# This series applies on GIT commit 6d690d7fa4f832affcc343851decae16989bc9e2
-no-multiarch.diff
+# This series applies on GIT commit 99a8fadeffd280caac0be200e117860df5546120
 allow-old-mingw.diff
-single-dllmain.diff
-fix-overlapped-conflict.diff
 cross-darwin.diff
+fix-overlapped-conflict.diff
 fix-ssl-dont-use-enum_certificates.diff
+single-dllmain.diff
+no-multiarch.diff
+ios-posixmodule.diff

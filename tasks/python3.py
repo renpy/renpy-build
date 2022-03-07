@@ -36,9 +36,9 @@ def patch_posix(c):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
-    c.patch("python3/no-multiarch.diff")
-    c.patch("python3/cross-darwin.diff")
-    c.patch("python3/fix-ssl-dont-use-enum_certificates.diff")
+    c.patch("Python-{{ version }}/no-multiarch.diff")
+    c.patch("Python-{{ version }}/cross-darwin.diff")
+    c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -58,10 +58,10 @@ def patch_windows(c):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
-    c.patch("python3/no-multiarch.diff")
-    c.patch("python3/allow-old-mingw.diff")
-    c.patch("python3/single-dllmain.diff")
-    c.patch("python3/fix-overlapped-conflict.diff")
+    c.patch("Python-{{ version }}/no-multiarch.diff")
+    c.patch("Python-{{ version }}/allow-old-mingw.diff")
+    c.patch("Python-{{ version }}/single-dllmain.diff")
+    c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -107,6 +107,16 @@ def build_posix(c):
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
+@task(kind="python", pythons="3", platforms="ios")
+def patch_ios(c):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patch("Python-{{ version }}/ios-posixmodule.diff")
+
+    c.run("cp {{patches}}/ios-python2/_scproxy.pyx Modules")
+    c.chdir("Modules")
+    c.run("cython _scproxy.pyx")
 
 @task(kind="python", pythons="3", platforms="ios")
 def build_ios(c):
@@ -114,15 +124,16 @@ def build_ios(c):
 
     with open(c.path("config.site"), "a") as f:
         f.write("ac_cv_little_endian_double=yes\n")
-        f.write("ac_cv_header_langinfo_h=no\n")
+        # f.write("ac_cv_header_langinfo_h=no\n")
         f.write("ac_cv_func_getentropy=no\n")
         f.write("ac_cv_have_long_long_format=yes\n")
+        f.write("ac_cv_func_clock_settime=no")
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
     c.run("""{{ make }} """)
     c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
+    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 
 @task(kind="python", pythons="3", platforms="android")

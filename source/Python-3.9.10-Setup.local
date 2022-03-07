@@ -38,7 +38,7 @@ pyexpat -DPy_BUILD_CORE_BUILTIN expat/xmlparse.c expat/xmlrole.c expat/xmltok.c 
 {% if (c.kind == "host") or (c.platform != "windows") %}
 
 {% if c.platform in ['mac', 'ios'] %}
-_ctypes -DPy_BUILD_CORE_BUILTIN _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/malloc_closure.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+_ctypes -DPy_BUILD_CORE_BUILTIN -DUSING_MALLOC_CLOSURE_DOT_C _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/malloc_closure.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
 {% else %}
 _ctypes -DPy_BUILD_CORE_BUILTIN _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
 {% endif %}
