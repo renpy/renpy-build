@@ -27,5 +27,6 @@
     "string": "c",
     "*.tcc": "c",
     "stdlib.h": "c"
-  }
+  },
+  "esbonio.server.enabled": true
 }

@@ -1,10 +1,12 @@
+from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
+from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode # *
+
 import xcodeprojer
 import shutil
 import os
 import plistlib
 import re
 import sys
-
 
 if sys.version_info.major >= 3:
     RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -112,7 +114,7 @@ def create_project(interface, dest, name=None, version="1.0"):
 
     output = xcodeprojer.unparse(root, format="xcode", projectname=name)
 
-    with open(pbxproj + ".new", "w") as f:
+    with open(pbxproj + ".new", "wb") as f:
         f.write(output)
 
     try:
@@ -143,6 +145,12 @@ def create_project(interface, dest, name=None, version="1.0"):
             ]
         )
 
-    plistlib.writePlist(plist, os.path.join(dest, "Info.plist"))
+    plist_fn = os.path.join(dest, "Info.plist")
+
+    if PY2:
+        plistlib.writePlist(plist, plist_fn)
+    else:
+        with open(plist_fn, "wb") as f:
+            plistlib.dump(plist, f)
 
     interface.success("Created the Xcode project.")
