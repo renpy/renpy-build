@@ -1,0 +1,22 @@
+Prevents posixmodule.c from calling system on iOS.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ Modules/posixmodule.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Modules/posixmodule.c b/Modules/posixmodule.c
+index 29d6126..9ad3f19 100644
+--- a/Modules/posixmodule.c
++++ b/Modules/posixmodule.c
+@@ -333,6 +333,8 @@ corresponding Unix manual entries for more information on calls.");
+ #  endif  /* _MSC_VER */
+ #endif  /* ! __WATCOMC__ || __QNX__ */
+ 
++#undef HAVE_SYSTEM
++
+ _Py_IDENTIFIER(__fspath__);
+ 
+ /*[clinic input]
