@@ -1,0 +1,21 @@
+Add OpenSLES to the list of libraries that need to be linked against.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ configure.ac |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configure.ac b/configure.ac
+index 3c1c6c8..72e3a82 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3758,6 +3758,7 @@ case "$host" in
+ 
+                 AC_DEFINE(SDL_AUDIO_DRIVER_OPENSLES, 1, [ ])
+                 SOURCES="$SOURCES $srcdir/src/audio/openslES/*.c"
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lOpenSLES"
+                 SUMMARY_audio="${SUMMARY_audio} openslES"
+ 
+                 AC_DEFINE(SDL_AUDIO_DRIVER_AAUDIO, 1, [ ])

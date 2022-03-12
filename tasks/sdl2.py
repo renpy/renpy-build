@@ -24,6 +24,8 @@ def unpack(c):
         c.chdir("SDL2-{{version}}")
         c.patchdir("SDL2-{{version}}")
 
+        c.run("""./autogen.sh""")
+
 
 @task()
 def build(c):
