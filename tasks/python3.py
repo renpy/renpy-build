@@ -58,7 +58,7 @@ def patch_windows(c):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
-    c.patch("Python-{{ version }}/no-multiarch.diff")
+    # c.patch("Python-{{ version }}/no-multiarch.diff")
     c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
     c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
