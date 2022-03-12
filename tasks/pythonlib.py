@@ -58,6 +58,7 @@ ctypes/macholib/__init__.pyo
 ctypes/util.pyo
 ctypes/wintypes.pyo
 
+csv.pyo
 decimal.pyo
 difflib.pyo
 dis.pyo
