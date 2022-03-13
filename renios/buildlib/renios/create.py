@@ -108,9 +108,15 @@ def create_project(interface, dest, name=None, version="1.0"):
     with open(pbxproj, "r") as f:
         root, _parseinfo = xcodeprojer.parse(f.read())
 
-    root = replace_name(root, "XHTE5H7Z79", "TEAMID")
-    root = replace_name(root, "org.renpy.prototype", "com.domain." + shortname)
+    if not "RENPY_TEST_IOS" in os.environ:
+        root = replace_name(root, "XHTE5H7Z79", "TEAMID")
+        root = replace_name(root, "org.renpy.prototype", "com.domain." + shortname)
+    else:
+        root = replace_name(root, "XHTE5H7Z79", "XHTE5H7Z79")
+        root = replace_name(root, "org.renpy.prototype", "org.renpy.prototype")
+
     root = replace_name(root, "prototype", name)
+    root = replace_name(root, "-lpython2.7", "-lpython{}.{}".format(sys.version_info.major, sys.version_info.minor))
 
     output = xcodeprojer.unparse(root, format="xcode", projectname=name)
 

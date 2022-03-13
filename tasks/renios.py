@@ -1,4 +1,5 @@
 from renpybuild.model import task
+import sys
 import os
 import subprocess
 import re
@@ -35,7 +36,6 @@ def check_sdk(name, paths):
 
             if "minos" in l:
                 obj = None
-
 
 def lipo(c, namefilter):
     c.var("lipo", "llvm-lipo-13")
@@ -112,8 +112,17 @@ def lipo(c, namefilter):
 
 @task(kind="host-python", platforms="ios")
 def lipo_all(c):
-    lipo(c, lambda n : True)
 
+    python = "libpython{}.".format(sys.version_info.major)
+
+    def namefilter(i):
+
+        if i.startswith("libpython") and not i.startswith(python):
+            return False
+
+        return True
+
+    lipo(c, namefilter)
 
 @task(kind="host-python", platforms="ios", always=True)
 def lipo_renpy(c):

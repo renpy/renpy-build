@@ -2,7 +2,12 @@
 
 set -e
 
-./build.py --platform ios --python 3
-./renpy/run.sh ./renpy/launcher ios_populate ${1:-./renpy/the_question} ./renios/prototype/
+# This modifies the renios/buildlib/creat.py to use the prototype credentials.
+export RENPY_TEST_IOS=1
 
-rsync -a renios/prototype tom@mary21.local:/Users/tom/ios
+./build.py --platform ios --arch arm64 --python 3 rebuild renios
+
+rm -Rf /tmp/ios-test
+./renpy/renpy3.sh ./renpy/launcher ios_create ${1:-./renpy/the_question} /tmp/ios-test
+
+rsync -a --delete /tmp/ios-test tom@mary21.local:/Users/tom/ios
