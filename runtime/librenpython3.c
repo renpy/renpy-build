@@ -347,6 +347,8 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
 
+    init_librenpy();
+
     // Initialize Config.
     if (isolated) {
         PyConfig_InitIsolatedConfig(&config);
@@ -374,6 +376,8 @@ static void preinitialize_wide(int isolated, int argc, wchar_t **argv) {
 
     Py_PreInitializeFromArgs(&preconfig, argc, argv);
 
+    init_librenpy();
+
     // Initialize Config.
     if (isolated) {
         PyConfig_InitIsolatedConfig(&config);
@@ -398,8 +402,6 @@ int EXPORT renpython_main(int argc, char **argv) {
 
     config.user_site_directory = 0;
 
-    init_librenpy();
-
     return Py_BytesMain(argc, argv);
 }
 
@@ -412,8 +414,6 @@ int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
     search_python_home();
 
     config.user_site_directory = 0;
-
-    init_librenpy();
 
     return Py_Main(argc, argv);
 }
@@ -448,8 +448,6 @@ int EXPORT launcher_main(int argc, char **argv) {
     PyConfig_SetBytesArgv(&config, argc + 1, new_argv);
     Py_InitializeFromConfig(&config);
 
-    init_librenpy();
-
     return Py_RunMain();
 }
 
@@ -481,8 +479,6 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
 
     PyConfig_SetArgv(&config, argc + 1, new_argv);
     Py_InitializeFromConfig(&config);
-
-    init_librenpy();
 
     return Py_RunMain();
 }
