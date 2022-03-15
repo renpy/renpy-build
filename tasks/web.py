@@ -78,6 +78,34 @@ def read_environment(c):
     return rv
 
 
+@task(kind="python", platforms="web", always=True)
+def inittab(c):
+
+    modules = [ ]
+
+    def read_setup(dn):
+
+        with open(dn / "Setup") as f:
+            for l in f:
+                l = l.partition("#")[0]
+                l = l.strip()
+
+                if not l:
+                    continue
+
+                parts = l.split()
+
+                if "live2d" in parts[0]:
+                    continue
+
+                modules.append(parts[0])
+
+    read_setup(c.pygame_sdl2)
+    read_setup(c.renpy / "module")
+
+    c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "{{ renpyweb }}/inittab.c", modules=modules)
+
+
 @task(kind="host-python", platforms="web", always=True)
 def build(c):
     environ = read_environment(c)
