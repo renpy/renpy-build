@@ -4,12 +4,16 @@ import os
 import re
 
 
+
 @task(kind="host-python", platforms="web")
 def clean(c):
     c.rmtree("{{ renpyweb }}/build")
     c.rmtree("{{ renpyweb }}/install")
     c.rmtree("{{ renpyweb }}/toolchain")
     c.rmtree("{{ renpyweb }}/emsdk")
+    c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/build")
+    c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/crosspython-dynamic")
+    c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/crosspython-static")
 
 
 @task(kind="host-python", platforms="web")
@@ -37,7 +41,6 @@ def patch_emsdk(c):
     c.chdir("{{ renpyweb }}/emsdk/upstream/emscripten/")
     c.patch("{{ renpyweb }}/patches/emscripten.patch")
 
-
 @task(kind="host-python", platforms="web", always=True)
 def clean_python_emscripten(c):
     newmakefile = c.path("{{ renpyweb }}/Makefile")
@@ -52,10 +55,11 @@ def clean_python_emscripten(c):
     if new != old:
 
         if int(os.environ.get("RENPYWEB_CLEAN", "1")):
-            c.unlink("{{ renpyweb }}/python-emscripten.fossil")
-            c.rmtree("{{ renpyweb }}/python-emscripten")
             c.rmtree("{{ renpyweb }}/build")
             c.rmtree("{{ renpyweb }}/install")
+            c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/build")
+            c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/crosspython-dynamic")
+            c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/crosspython-static")
 
         oldmakefile.write_text(new)
 
