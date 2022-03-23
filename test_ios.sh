@@ -10,4 +10,4 @@ export RENPY_TEST_IOS=1
 rm -Rf /tmp/ios-test
 ./renpy/renpy3.sh ./renpy/launcher ios_create ${1:-./renpy/the_question} /tmp/ios-test
 
-rsync -a --delete /tmp/ios-test tom@mary21.local:/Users/tom/ios
+rsync -a --delete --exclude '*.xcodeproj' /tmp/ios-test tom@mary21.local:/Users/tom/ios
