@@ -307,10 +307,6 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         // Initalize the store support.
         Store.create(this);
 
-        // Ensure that the surface has the right format when GL starts.
-        setSurfaceViewFormat(1);
-
-
         boolean allPacksReady = true;
 
         if (Constants.assetPacks.length > 0) {
