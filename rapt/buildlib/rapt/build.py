@@ -618,16 +618,10 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     # Really, a tar file with the private data in it.
     private_mp3 = os.path.join(assets, "private.mp3")
 
-    private_version = [ ]
+    make_tar(iface, private_mp3, private_dirs)
 
-    def pack():
-        make_tar(iface, private_mp3, private_dirs)
-
-        with open(private_mp3, "rb") as f:
-            private_version.append(hashlib.md5(f.read()).hexdigest())
-
-    iface.background(pack)
-    private_version = private_version[0]
+    with open(private_mp3, "rb") as f:
+        private_version = hashlib.md5(f.read()).hexdigest()
 
     for always, template, i in GENERATED:
 
