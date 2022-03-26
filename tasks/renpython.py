@@ -296,6 +296,7 @@ def link_windows(c):
     -lgdi32
     -lwinmm
     -limm32
+    -lcomdlg32
     -lole32
     -loleaut32
     -lshell32
