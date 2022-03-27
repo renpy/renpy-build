@@ -28,9 +28,9 @@ def build(c):
     modules = [ ]
     sources = [ ]
 
-    def read_setup(dn):
+    def read_setup(dn, suffix=""):
 
-        with open(dn / "Setup") as f:
+        with open(dn / "Setup" + suffix) as f:
             for l in f:
                 l = l.partition("#")[0]
                 l = l.strip()
@@ -55,6 +55,9 @@ def build(c):
 
     if c.platform == "ios" or c.platform == "mac":
         read_setup(c.path("{{ install }}/pyobjus"))
+
+    if c.platform == "windows" or c.platform == "mac" or c.platform == "linux":
+        read_setup(c.renpy / "module", ".tfd")
 
     objects = [ ]
 
