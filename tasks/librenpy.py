@@ -30,7 +30,7 @@ def build(c):
 
     def read_setup(dn, suffix=""):
 
-        with open(dn / "Setup" + suffix) as f:
+        with open(dn / ("Setup" + suffix)) as f:
             for l in f:
                 l = l.partition("#")[0]
                 l = l.strip()
