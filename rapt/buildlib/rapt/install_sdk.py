@@ -310,6 +310,8 @@ def generate_keys(interface):
     backup_keys(default_keystore)
     set_property(properties, "key.store", default_keystore)
 
+    return True
+
 
 def generate_bundle_keys(interface):
 
@@ -342,6 +344,8 @@ def generate_bundle_keys(interface):
     backup_keys(default_keystore)
     set_property(properties, "key.store", default_keystore)
 
+    return True
+
 
 def install_sdk(interface):
 
@@ -355,10 +359,12 @@ def install_sdk(interface):
 
     get_packages(interface)
 
-    generate_keys(interface)
-    generate_bundle_keys(interface)
+    generated = generate_keys(interface) or generate_bundle_keys(interface)
 
     set_property(local_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
     set_property(bundle_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
+
+    if generated:
+        interface.open_directory(plat.path("."), __("I've opened the directory containing android.keystore and bundle.keystore. Please back them up, and keep them in a safe place."))
 
     interface.final_success(__("It looks like you're ready to start packaging games."))

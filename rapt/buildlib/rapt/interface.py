@@ -31,6 +31,13 @@ class Interface(object):
         self.write(prompt)
         print()
 
+    def open_directory(self, directory, prompt):
+        """
+        Opens the directory, and display the prompt to explain why.
+        """
+
+        return
+
     def success(self, prompt):
         """
         Displays `prompt` as a success message.
