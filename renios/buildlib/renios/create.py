@@ -75,7 +75,7 @@ def create_project(interface, dest, name=None, version="1.0"):
     if version is None:
         return
 
-    shortname = re.sub(r'[^-_A-Za-z0-9]', '', name)
+    shortname = re.sub(r'[^-_A-Za-z0-9]', '', name) or "project"
 
     if os.path.exists(dest):
         interface.fail("{} already exists. If you would like to create an new project, please move the existing project out of the way.".format(dest))
@@ -101,9 +101,9 @@ def create_project(interface, dest, name=None, version="1.0"):
     rm("prototype.xcodeproj/project.xcworkspace")
     rm("prototype.xcodeproj/xcuserdata")
 
-    os.rename(os.path.join(dest, "prototype.xcodeproj"), os.path.join(dest, name + ".xcodeproj"))
+    os.rename(os.path.join(dest, "prototype.xcodeproj"), os.path.join(dest, shortname + ".xcodeproj"))
 
-    pbxproj = os.path.join(dest, name + ".xcodeproj", "project.pbxproj")
+    pbxproj = os.path.join(dest, shortname + ".xcodeproj", "project.pbxproj")
 
     with open(pbxproj, "r") as f:
         root, _parseinfo = xcodeprojer.parse(f.read())
