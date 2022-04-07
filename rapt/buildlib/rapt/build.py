@@ -112,8 +112,15 @@ class PatternList(object):
         return re.compile(regexp, re.I)
 
 
+def should_autoescape(fn):
+    """
+    Returnes true if the filename `fn` should be autoescaped.
+    """
+
+    return fn.endswith(".xml")
+
 # Used by render.
-environment = jinja2.Environment(loader=jinja2.FileSystemLoader(plat.path('')))
+environment = jinja2.Environment(loader=jinja2.FileSystemLoader(plat.path('')), autoescape=should_autoescape)
 
 
 def render(always, template, dest, **kwargs):
