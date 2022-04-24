@@ -6,3 +6,4 @@ fix-ssl-dont-use-enum_certificates.diff
 single-dllmain.diff
 no-multiarch.diff
 ios-posixmodule.diff
+no-builtin-available.diff

@@ -155,7 +155,6 @@ def build_windows(c):
 
     c.env("MSYSTEM", "MINGW")
     c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python2")
-    c.env("LDFLAGS", "{{ LDFLAGS }} -static-libgcc")
 
     with open(c.path("config.site"), "w") as f:
         f.write("ac_cv_func_mktime=yes")

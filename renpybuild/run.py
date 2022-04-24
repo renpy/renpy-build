@@ -192,21 +192,6 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip")
         c.env("NM", "{{ crossbin}}nm")
 
-    elif (c.platform == "mac") and (c.arch == "x86_64"):
-
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
-
-        c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
-
-        c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossbin }}clang -E ")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
-
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
         c.var("crossbin", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}-")
@@ -257,6 +242,41 @@ def build_environment(c):
         c.env("READELF", "{{ crossbin }}readelf")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+
+    # elif (c.platform == "mac") and (c.arch == "x86_64"):
+
+    #     c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
+
+    #     c.env("PATH", "{{ cross }}/bin:{{ PATH }}")
+
+    #     c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
+
+    #     c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
+    #     c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
+    #     c.env("CPP", "ccache {{ crossbin }}clang -E ")
+    #     c.env("LD", "ccache {{ crossbin}}ld")
+    #     c.env("AR", "ccache {{ crossbin }}ar")
+    #     c.env("RANLIB", "ccache {{ crossbin }}ranlib")
+    #     c.env("STRIP", "ccache  {{ crossbin }}strip")
+    #     c.env("NM", "{{ crossbin}}nm")
+
+    elif (c.platform == "mac") and (c.arch == "x86_64"):
+
+        c.var("llver", "13")
+        c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-darwin14 -isysroot {{cross}}/SDK/MacOSX10.10.sdk -Wno-unused-command-line-argument")
+
+        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/SDK/MacOSX10.10.sdk")
+        c.env("AR", "ccache llvm-ar-{{ llver }}")
+        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
+        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
+        c.env("NM", "llvm-nm-{{ llver }}")
+
+        c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=10.10")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=10.10")
+
+
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 

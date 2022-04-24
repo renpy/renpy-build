@@ -41,13 +41,16 @@ sudo apt-get install -y quilt
 
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt-get install -y \
-    python-dev-is-python2 libavcodec-dev libavformat-dev \
+    libavcodec-dev libavformat-dev \
     libavresample-dev libswresample-dev libswscale-dev libfreetype6-dev libglew1.6-dev \
     libfribidi-dev libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev \
     libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-turbo8-dev autoconf-archive
 
 # Unpack clang.
-sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/10/lib/
+# sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/10/lib/ # 20.4
+# sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/14/lib/ # 22.4
+
+exit
 
 mkdir -p "$BASE/tmp"
 

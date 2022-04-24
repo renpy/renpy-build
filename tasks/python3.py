@@ -39,6 +39,7 @@ def patch_posix(c):
     c.patch("Python-{{ version }}/no-multiarch.diff")
     c.patch("Python-{{ version }}/cross-darwin.diff")
     c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
+    c.patch("Python-{{ version }}/no-builtin-available.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -156,7 +157,6 @@ def build_windows(c):
     common(c)
 
     c.env("MSYSTEM", "MINGW")
-    c.env("LDFLAGS", "{{ LDFLAGS }} -static-libgcc")
     c.env("CFLAGS", "{{ CFLAGS }} ")
 
     with open(c.path("config.site"), "a") as f:
@@ -166,7 +166,7 @@ def build_windows(c):
     with open(c.path("Modules/timemodule.c"), "a") as f:
         f.write("/* MKTIME FIX */\n")
 
-    c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-threads --with-system-ffi""")
+    c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-system-ffi""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 

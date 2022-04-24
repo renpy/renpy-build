@@ -48,8 +48,9 @@ def build(c):
         --disable-render-metal
         --disable-jack
 
-    {% if c.platform == "android" %}
         --disable-video-wayland
+
+    {% if c.platform == "android" %}
         --disable-video-x11
 
         --disable-oss
@@ -60,7 +61,6 @@ def build(c):
         --disable-nas
         --disable-sndio
         --disable-fusionsound
-
         --disable-hidapi
 
     {% endif %}
