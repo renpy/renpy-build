@@ -8,10 +8,10 @@ the same manner that is used to make official Ren'Py releases.
 Requirements
 -------------
 
-Ren'Py Build requires a computer running Ubuntu 20.04. While it can run on
+Ren'Py Build requires a computer running Ubuntu 22.04. While it can run on
 a desktop computer, portions of the build process must run at root, and the
 whole process has security implications. My recommendation is to create a
-virtual machine, install Ubuntu 20.04 on it, and run this procedure on
+virtual machine, install Ubuntu 22.04 on it, and run this procedure on
 that machine.
 
 The virtual machine must be provisioned with at least 64 GB of disk space.
@@ -49,10 +49,8 @@ Change into the renpy-build directory, and run::
 
     ./prepare.sh
 
-**This will globally change your system. ** Specifically, it will place
-files needed to build for Apple platforms in /usr/lib/clang/10/lib ,and
-will install clang-13 from llvm.org. It will also install various
-package from Ubuntu repositories. Please make sure you're comfortable with
+**This will globally change your system. **  It will install packages from Ubuntu
+and LLVM repositories. Please make sure you're comfortable with
 this change before continuing.
 
 This will first install all the packages required to build Ren'Py, and
