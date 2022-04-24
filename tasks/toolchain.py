@@ -50,51 +50,6 @@ def build(c):
     c.run("make install")
 
 
-@task(kind="cross", platforms="mac")
-def build(c):
-
-    if c.path("{{ install }}/bin/{{ host_platform }}-cc").exists():
-        return
-
-    c.clean()
-
-    c.run("git clone https://github.com/tpoechtrager/osxcross")
-    c.chdir("osxcross")
-
-    c.copy("{{ tars }}/MacOSX10.10.sdk.tar.bz2", "tarballs")
-
-    c.env("SDK_VERSION", "10.10")
-    c.env("TARGET_DIR", "{{ install }}")
-    c.env("UNATTENDED", "1")
-    c.env("MAKE", "{{ make }}")
-
-    c.run("./build.sh")
-
-    with open(c.path("{{install}}/SDK/MacOSX10.10.sdk/SDKSettings.json"), "w") as f:
-        f.write("""\
-{
-	"CanonicalName": "macosx10.10",
-	"CustomProperties":
-	{
-		"KERNEL_EXTENSION_HEADER_SEARCH_PATHS": "$(KERNEL_FRAMEWORK)/PrivateHeaders $(KERNEL_FRAMEWORK_HEADERS)"
-	},
-	"DefaultProperties":
-	{
-		"MACOSX_DEPLOYMENT_TARGET": "10.10",
-		"PLATFORM_NAME": "macosx",
-		"DEFAULT_KEXT_INSTALL_PATH": "$(LIBRARY_KEXT_INSTALL_PATH)"
-	},
-	"DisplayName": "OS X 10.10",
-	"MaximumDeploymentTarget": "10.10",
-	"MinimalDisplayName": "10.10",
-	"MinimumSupportedToolsVersion": "3.2",
-	"SupportedBuildToolComponents": ["com.apple.compilers.gcc.headers.4_2"],
-	"Version": "10.10",
-	"isBaseSDK": "YES"
-}
-""")
-
-
 from zipfile import ZipFile, ZipInfo
 import os
 
@@ -123,6 +78,40 @@ def build(c):
     zf = ZipFileWithPermissions(c.path("{{ tars }}/android-ndk-r21d-linux-x86_64.zip"))
     zf.extractall(c.path("{{ install }}"))
     zf.close()
+
+
+@task(kind="cross", platforms="mac", archs="x86_64")
+def build(c):
+    c.clean("{{ cross }}")
+    c.chdir("{{ cross }}")
+
+    c.run("tar xaf {{ tars }}/MacOSX10.10.sdk.tar.bz2")
+    c.run("ln -s MacOSX10.10.sdk sdk")
+
+    # This should go away when the SDK is updated.
+    with open(c.path("sdk/SDKSettings.json"), "w") as f:
+        f.write("""\
+{
+	"CanonicalName": "macosx10.10",
+	"CustomProperties":
+	{
+		"KERNEL_EXTENSION_HEADER_SEARCH_PATHS": "$(KERNEL_FRAMEWORK)/PrivateHeaders $(KERNEL_FRAMEWORK_HEADERS)"
+	},
+	"DefaultProperties":
+	{
+		"MACOSX_DEPLOYMENT_TARGET": "10.10",
+		"PLATFORM_NAME": "macosx",
+		"DEFAULT_KEXT_INSTALL_PATH": "$(LIBRARY_KEXT_INSTALL_PATH)"
+	},
+	"DisplayName": "OS X 10.10",
+	"MaximumDeploymentTarget": "10.10",
+	"MinimalDisplayName": "10.10",
+	"MinimumSupportedToolsVersion": "3.2",
+	"SupportedBuildToolComponents": ["com.apple.compilers.gcc.headers.4_2"],
+	"Version": "10.10",
+	"isBaseSDK": "YES"
+}
+""")
 
 
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")
