@@ -72,7 +72,26 @@ def build(c):
 
     with open(c.path("{{install}}/SDK/MacOSX10.10.sdk/SDKSettings.json"), "w") as f:
         f.write("""\
-{"Version":"10.10"}
+{
+	"CanonicalName": "macosx10.10",
+	"CustomProperties":
+	{
+		"KERNEL_EXTENSION_HEADER_SEARCH_PATHS": "$(KERNEL_FRAMEWORK)/PrivateHeaders $(KERNEL_FRAMEWORK_HEADERS)"
+	},
+	"DefaultProperties":
+	{
+		"MACOSX_DEPLOYMENT_TARGET": "10.10",
+		"PLATFORM_NAME": "macosx",
+		"DEFAULT_KEXT_INSTALL_PATH": "$(LIBRARY_KEXT_INSTALL_PATH)"
+	},
+	"DisplayName": "OS X 10.10",
+	"MaximumDeploymentTarget": "10.10",
+	"MinimalDisplayName": "10.10",
+	"MinimumSupportedToolsVersion": "3.2",
+	"SupportedBuildToolComponents": ["com.apple.compilers.gcc.headers.4_2"],
+	"Version": "10.10",
+	"isBaseSDK": "YES"
+}
 """)
 
 
