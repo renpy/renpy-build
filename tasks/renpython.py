@@ -351,7 +351,7 @@ def link_windows(c):
             if i.endswith("-win32"):
                 c.var("mingw_version", i)
 
-        c.copy("/usr/lib/gcc/i686-w64-mingw32/{{ mingw_version }}/libgcc_s_sjlj-1.dll", "{{ dlpa }}/libgcc_s_sjlj-1.dll")
+        c.copy("/usr/lib/gcc/i686-w64-mingw32/{{ mingw_version }}/libgcc_s_dw2-1.dll", "{{ dlpa }}/libgcc_s_dw2-1.dll")
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
         c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")

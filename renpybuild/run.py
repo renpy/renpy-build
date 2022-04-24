@@ -175,7 +175,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
-        c.env("STRIP", "ccache llvm-strip")
+        c.env("STRIP", "ccache {{crossbin }}strip" )
         c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -189,7 +189,7 @@ def build_environment(c):
         c.env("AR", "ccache {{ crossbin }}ar")
         c.env("RANLIB", "ccache {{ crossbin }}ranlib")
         c.env("WINDRES", "ccache {{ crossbin }}windres")
-        c.env("STRIP", "ccache llvm-strip")
+        c.env("STRIP", "ccache {{ crossbin}}strip")
         c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
@@ -261,6 +261,8 @@ def build_environment(c):
     #     c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
+
+        c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
 
         c.var("llver", "13")
         c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-darwin14 -isysroot {{cross}}/SDK/MacOSX10.10.sdk -Wno-unused-command-line-argument")
