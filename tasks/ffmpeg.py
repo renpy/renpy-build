@@ -92,9 +92,8 @@ def build(c):
         --enable-w32threads
 {% endif %}
 
-{% if c.platform == "ios" and c.arch.startswith("sim-") %}
-        --disable-asm
-{% endif %}
+        --disable-mmx
+        --disable-mmxext
 
         --enable-ffmpeg
         --enable-ffplay
