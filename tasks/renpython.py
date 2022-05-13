@@ -251,15 +251,29 @@ def fix_pe(c, fn):
     Sets the PE file characteristics to mark the relocations as stripped.
     """
 
+    import sys
+    print(sys.executable, sys.path)
+
     fn = str(c.path(fn))
 
-    import pefile
+    with open(c.path("fix_pe.py"), "w") as f:
 
-    pe = pefile.PE(fn)
-    pe.FILE_HEADER.Characteristics = pe.FILE_HEADER.Characteristics | pefile.IMAGE_CHARACTERISTICS["IMAGE_FILE_RELOCS_STRIPPED"]
-    pe.OPTIONAL_HEADER.CheckSum = pe.generate_checksum()
-    pe.write(fn)
+        f.write("""\
+import sys
+print(sys.executable, sys.path)
 
+import pefile
+import sys
+
+fn = sys.argv[1]
+
+pe = pefile.PE(fn)
+pe.FILE_HEADER.Characteristics = pe.FILE_HEADER.Characteristics | pefile.IMAGE_CHARACTERISTICS["IMAGE_FILE_RELOCS_STRIPPED"]
+pe.OPTIONAL_HEADER.CheckSum = pe.generate_checksum()
+pe.write(fn)
+""")
+
+    c.run("""{{ hostpython }} fix_pe.py """ + fn)
 
 @task(kind="python", always=True, platforms="windows")
 def link_windows(c):
