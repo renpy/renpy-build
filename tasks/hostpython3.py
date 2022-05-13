@@ -3,7 +3,7 @@ from renpybuild.model import task
 version = "3.9.10"
 
 
-@task(kind="host", pythons="e")
+@task(kind="host", pythons="3")
 def unpack_hostpython(c):
     c.clean()
 
