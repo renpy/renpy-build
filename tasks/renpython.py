@@ -246,6 +246,20 @@ def link_mac(c):
     c.run("""install {{ runtime }}/icon.icns {{ ac }}/Resources""")
 
 
+def fix_pe(c, fn):
+    """
+    Sets the PE file characteristics to mark the relocations as stripped.
+    """
+
+    fn = str(c.path(fn))
+
+    import pefile
+
+    pe = pefile.PE(fn)
+    pe.FILE_HEADER.Characteristics = pe.FILE_HEADER.Characteristics | pefile.IMAGE_CHARACTERISTICS["IMAGE_FILE_RELOCS_STRIPPED"]
+    pe.OPTIONAL_HEADER.CheckSum = pe.generate_checksum()
+    pe.write(fn)
+
 
 @task(kind="python", always=True, platforms="windows")
 def link_windows(c):
@@ -340,6 +354,12 @@ def link_windows(c):
 
     if not c.args.nostrip:
         c.run("""{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe""")
+
+    c.run("""{{ STRIP }} -R .reloc python.exe pythonw.exe renpy.exe""")
+
+    fix_pe(c, "python.exe")
+    fix_pe(c, "pythonw.exe")
+    fix_pe(c, "renpy.exe")
 
     c.run("""install -d {{ dlpa }}""")
     c.run("""install librenpython.dll python.exe pythonw.exe {{ dlpa }}""")
