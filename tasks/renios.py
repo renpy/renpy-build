@@ -113,7 +113,7 @@ def lipo(c, namefilter):
 @task(kind="host-python", platforms="ios")
 def lipo_all(c):
 
-    python = "libpython{}.".format(sys.version_info.major)
+    python = "libpython{}.".format(c.python)
 
     def namefilter(i):
 
