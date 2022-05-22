@@ -432,6 +432,7 @@ int EXPORT launcher_main(int argc, char **argv) {
 
     config.user_site_directory = 0;
     config.parse_argv = 1;
+    config.install_signal_handlers = 1;
 
     search_pyname();
 
@@ -464,6 +465,7 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
 
     config.user_site_directory = 0;
     config.parse_argv = 1;
+    config.install_signal_handlers = 1;
 
     search_pyname();
 

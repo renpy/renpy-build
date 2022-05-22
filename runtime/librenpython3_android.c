@@ -133,6 +133,7 @@ int start_python(void) {
     config.home = Py_DecodeLocale(private, NULL);
     config.user_site_directory = 0;
     config.parse_argv = 1;
+    config.install_signal_handlers = 1;
 
     PyConfig_SetBytesArgv(&config, argc, argv);
     Py_InitializeFromConfig(&config);
