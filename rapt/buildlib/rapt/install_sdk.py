@@ -359,7 +359,13 @@ def install_sdk(interface):
 
     get_packages(interface)
 
-    generated = generate_keys(interface) or generate_bundle_keys(interface)
+    generated = False
+
+    if generate_keys(interface):
+        generated = True
+
+    if generate_bundle_keys(interface):
+        generated = True
 
     set_property(local_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
     set_property(bundle_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
