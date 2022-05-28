@@ -10,6 +10,7 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xjf {{source}}/zsync-{{version}}.tar.bz2")
 
+    c.run("""cp /usr/share/autoconf/build-aux/config.sub zsync-{{version}}/autotools""")
 
 @task(kind="python", platforms="linux,mac")
 def build(c):
@@ -37,4 +38,3 @@ def build(c):
 def install(c):
     c.run("install -d {{ dlpa }}")
     c.run("install {{ prebuilt }}/zsync.exe {{ prebuilt}}/zsyncmake.exe {{ dlpa }}")
-

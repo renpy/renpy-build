@@ -5,7 +5,7 @@ binutils_version = "2.33.1"
 gcc_version = "9.2.0"
 
 
-@task(kind="cross", platforms="linux")
+@task(kind="cross", platforms="linux", always=True)
 def build(c):
     c.var("binutils_version", binutils_version)
     c.var("gcc_version", gcc_version)
@@ -15,10 +15,14 @@ def build(c):
 
     c.clean()
 
+    c.env("CC", "ccache gcc-9")
+    c.env("CXX", "ccache g++-9")
+
     c.run("tar xaf {{ tars }}/binutils-{{ binutils_version }}.tar.gz")
     c.chdir("binutils-{{ binutils_version }}")
 
     c.run("./configure --target={{ host_platform }} --prefix={{ install }}")
+
     c.run("{{ make }}")
     c.run("make install")
 
@@ -27,6 +31,7 @@ def build(c):
     c.run("tar xaf {{ tars }}/gcc-{{ gcc_version }}.tar.gz")
     c.path("{{ build }}/gcc-{{ gcc_version }}/build").mkdir()
     c.chdir("{{ build }}/gcc-{{ gcc_version }}/build")
+
 
     c.run("""
     ../configure

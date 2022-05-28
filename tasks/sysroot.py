@@ -31,15 +31,22 @@ PACKAGES = [
 ]
 
 
-@task(platforms="linux", archs="x86_64,i686")
+@task(platforms="linux", archs="x86_64,i686,aarch64", always=True)
 def install(c):
 
     if c.arch == "i686":
         deb_arch = "i386"
+        release = "xenial"
     elif c.arch == "x86_64":
         deb_arch = "amd64"
+        release = "xenial"
+    elif c.arch == "aarch64":
+        deb_arch = "arm64"
+        release = "focal"
+
 
     c.var("deb_arch", deb_arch)
+    c.var("release", release)
 
     if not c.path("{{ sysroot }}").exists():
 

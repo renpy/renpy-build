@@ -22,6 +22,8 @@ def build_environment(c):
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-linux-gnu")
+    elif (c.platform == "linux") and (c.arch == "aarch64"):
+        c.var("host_platform", "aarch64-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "i686"):
         c.var("host_platform", "i686-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
@@ -121,12 +123,30 @@ def build_environment(c):
         c.env("LD", "ccache {{ crossbin}}ld -fPIC")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("STRIP", "ccache {{ cross }}/bin/strip")
+        c.env("STRIP", "ccache {{ crossbin }}strip")
         c.env("NM", "{{ cross }}/bin/nm")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu/mesa")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
+    elif (c.platform == "linux") and (c.arch == "aarch64"):
+
+        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
+
+        c.env("CC", "ccache {{ crossbin }}gcc -O3 -fPIC -pthread --sysroot {{ sysroot }}")
+        c.env("CXX", "ccache {{ crossbin }}g++ -O3 -fPIC -pthread --sysroot {{ sysroot }}")
+        c.env("CPP", "ccache {{ crossbin }}gcc -E --sysroot {{ sysroot }}")
+        c.env("LD", "ccache {{ crossbin}}ld -fPIC")
+        c.env("AR", "ccache {{ crossbin }}gcc-ar")
+        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+        c.env("STRIP", "ccache {{ crossbin }}strip")
+        c.env("NM", "{{ cross }}/bin/nm")
+
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/aarch64-linux-gnu")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/aarch64-linux-gnu")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/aarch64-linux-gnu/mesa")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
