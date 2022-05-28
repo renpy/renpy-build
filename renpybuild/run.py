@@ -123,7 +123,7 @@ def build_environment(c):
         c.env("LD", "ccache {{ crossbin}}ld -fPIC")
         c.env("AR", "ccache {{ crossbin }}gcc-ar")
         c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("STRIP", "ccache {{ crossbin }}strip")
+        c.env("STRIP", "ccache {{ cross }}/bin/strip")
         c.env("NM", "{{ cross }}/bin/nm")
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
