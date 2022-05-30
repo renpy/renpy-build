@@ -13,7 +13,7 @@ fi
 $SCRIPTS/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
 rm -f current current-7 current-8
-ln -s "$RENPY_7_NIGHTLY" current
+ln -s "$RENPY_8_NIGHTLY" current
 ln -s "$RENPY_7_NIGHTLY" current-7
 ln -s "$RENPY_8_NIGHTLY" current-8
 
