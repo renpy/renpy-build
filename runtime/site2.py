@@ -399,6 +399,12 @@ def _renpy_argv_emulation():
 
             break
 
+
+# Alias queue to queue. ########################################################
+
+import Queue
+sys.modules["queue"] = Queue
+
 # Platform specific python path. ###############################################
 
 

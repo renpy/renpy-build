@@ -180,7 +180,6 @@ future/
 html/
 http/
 past/
-queue/
 reprlib/
 socketserver/
 winreg/
