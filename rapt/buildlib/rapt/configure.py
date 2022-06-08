@@ -68,7 +68,7 @@ class Configuration(object):
 
         with open(gradle_dir, "r+") as g:
             contents = g.read()
-            contents = contents.replace("org.gradle.jvmargs=-Xmx" + str(self.heap_size) + "g\n", 
+            contents = contents.replace("org.gradle.jvmargs=-Xmx" + str(self.heap_size) + "g\n",
                 "org.gradle.jvmargs=-Xmx" + str(newSize) + "g\n")
             g.seek(0)
             g.write(contents)
@@ -139,7 +139,7 @@ def configure(interface, directory, default_name=None, default_version=None):
 
     if not re.match(r'^[\d]+$', heap_size):
         interface.fail(__("The RAM size must contain only numbers and be positive."))
-    
+
     config.set_heap_size(heap_size, plat.path("project/gradle.properties"))
 
     config.orientation = interface.choice(__("How would you like your application to be displayed?"), [
@@ -148,7 +148,12 @@ def configure(interface, directory, default_name=None, default_version=None):
         ("sensor", __("In the user's preferred orientation.")),
         ], config.orientation)
 
-    config.store = "all"
+    config.store = interface.choice(__("Which app store would you like to support in-app purchasing through?"), [
+        ("play", __("Google Play.")),
+        ("amazon", __("Amazon App Store.")),
+        ("all", __("Both, in one app.")),
+        ("none", __("Neither.")),
+        ], config.store)
 
     permissions = [ i for i in config.permissions if i not in [ "INTERNET" ] ]
     permissions.append("INTERNET")
@@ -169,7 +174,7 @@ def set_config(iface, directory, var, value):
     config = Configuration(directory)
 
     if var == "version":
-        set_version(config, value)
+        config.version = version
     elif var == "permissions":
         config.permissions = value.split()
     elif hasattr(config, var):

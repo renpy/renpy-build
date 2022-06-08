@@ -26,21 +26,27 @@
 
     </activity>
 
+{% if (config.store in ("amazon", "all" )) %}
     <receiver android:name="com.amazon.device.iap.ResponseReceiver"
       android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY">
       <intent-filter>
         <action android:name="com.amazon.inapp.purchasing.NOTIFY" />
       </intent-filter>
     </receiver>
+{% endif %}
 
   </application>
 
-  <uses-feature android:name="android.hardware.touchscreen" required="false" />
+  <uses-feature android:glEsVersion="0x00030000" android:required="true"/>
+
+  <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
   <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+  {% if (config.store in ("play", "all" )) %}
   <uses-permission android:name="com.android.vending.BILLING"/>
+  {% endif %}
 
   {% for perm in config.permissions %}
   {% if "." in perm %}
