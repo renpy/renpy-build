@@ -102,7 +102,7 @@ class IconMaker(object):
             pass
 
         # Did the user provide the file?
-        src = os.path.join(self.directory, "android-{}-{}.png".format(name, dpi))
+        src = os.path.join(self.directory, "android-{}_{}.png".format(name, dpi))
 
         if os.path.exists(src):
             shutil.copy(src, dst)
