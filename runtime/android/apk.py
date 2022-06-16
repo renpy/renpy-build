@@ -6,6 +6,7 @@ import zipfile
 import io
 
 class SubFile(object):
+    closed = False
 
     def __init__(self, name, base, length):
         self.f = None
@@ -47,6 +48,9 @@ class SubFile(object):
 
         return rv2
 
+    def readable(self):
+        return True
+
     def readline(self, length=None):
 
         if self.f is None:
@@ -81,6 +85,12 @@ class SubFile(object):
             rv.append(l)
 
         return rv
+
+    def seekable(self):
+        return True
+
+    def writable(self):
+        return False
 
     def xreadlines(self):
         return self
