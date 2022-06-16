@@ -44,7 +44,7 @@ class SubFile(object):
             rv2 = self.f.read(length)
             self.offset += len(rv2)
         else:
-            rv2 = ""
+            rv2 = b""
 
         return rv2
 
@@ -98,13 +98,15 @@ class SubFile(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         rv = self.readline()
 
         if not rv:
             raise StopIteration()
 
         return rv
+
+    next = __next__
 
     def flush(self):
         return
