@@ -6,6 +6,7 @@ import zipfile
 import io
 
 class SubFile(object):
+    closed = False
 
     def __init__(self, name, base, length):
         self.f = None
@@ -43,9 +44,12 @@ class SubFile(object):
             rv2 = self.f.read(length)
             self.offset += len(rv2)
         else:
-            rv2 = ""
+            rv2 = b""
 
         return rv2
+
+    def readable(self):
+        return True
 
     def readline(self, length=None):
 
@@ -82,19 +86,27 @@ class SubFile(object):
 
         return rv
 
+    def seekable(self):
+        return True
+
+    def writable(self):
+        return False
+
     def xreadlines(self):
         return self
 
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         rv = self.readline()
 
         if not rv:
             raise StopIteration()
 
         return rv
+
+    next = __next__
 
     def flush(self):
         return
