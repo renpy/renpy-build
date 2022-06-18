@@ -6,6 +6,8 @@ from . import sysroot
 from . import toolchain
 from . import nasm
 
+from . import metalangle
+
 from . import zlib
 from . import bzip2
 from . import openssl
@@ -44,7 +46,6 @@ from . import pygame_sdl2
 from . import librenpy
 from . import renpython
 from . import pythonlib
-
 
 from . import renpysh
 from . import renios

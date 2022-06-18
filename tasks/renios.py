@@ -129,6 +129,13 @@ def lipo_renpy(c):
     lipo(c, lambda n : "librenpy" in n)
 
 
+@task(kind="host-python", platforms="ios", always=True)
+def unpack_metalangle(c):
+    c.clean("{{ renios }}/prototype/Frameworks")
+    c.chdir("{{ renios }}/prototype/Frameworks")
+
+    c.run("tar xvaf {{ source }}/MetalANGLE.xcframework.tar.gz")
+
 @task(kind="host-python", platforms="ios", always=True, pythons="2")
 def copyback(c):
     c.copytree("{{ renios }}/prototype/prebuilt", "{{ root }}/renios/prototype/prebuilt")

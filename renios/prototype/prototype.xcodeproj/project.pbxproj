@@ -3,19 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		E218D27D1A69F7DF00698833 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218D27C1A69F7DF00698833 /* IAPHelper.m */; };
+		E21AB820285E856F002B88AF /* Frameworks in Resources */ = {isa = PBXBuildFile; fileRef = E21AB81F285E856F002B88AF /* Frameworks */; };
+		E21AB823285E85C9002B88AF /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */; };
+		E21AB824285E85C9002B88AF /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E21AB826285E878A002B88AF /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB81D285E8538002B88AF /* CoreServices.framework */; };
+		E21AB827285E8791002B88AF /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB81E285E853B002B88AF /* GameController.framework */; };
 		E22EF4F71A33523800A74B9F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF4F61A33523800A74B9F /* UIKit.framework */; };
 		E22EF4F91A33524600A74B9F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF4F81A33524600A74B9F /* Foundation.framework */; };
 		E22EF4FB1A33524F00A74B9F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF4FA1A33524F00A74B9F /* CoreGraphics.framework */; };
-		E22EF4FD1A33527400A74B9F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF4FC1A33527400A74B9F /* OpenGLES.framework */; };
 		E22EF4FF1A3352C500A74B9F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF4FE1A3352C500A74B9F /* AudioToolbox.framework */; };
 		E22EF5011A3352D900A74B9F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5001A3352D900A74B9F /* QuartzCore.framework */; };
 		E22EF5031A3352EA00A74B9F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22EF5021A3352EA00A74B9F /* ImageIO.framework */; };
-		E2578D6C24E62500006621CE /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2578D6B24E62500006621CE /* CoreServices.framework */; };
 		E26635402425BD62005FA50B /* LaunchImage-foreground.png in Resources */ = {isa = PBXBuildFile; fileRef = E266353E2425BD61005FA50B /* LaunchImage-foreground.png */; };
 		E26635412425BD62005FA50B /* LaunchImage-background.png in Resources */ = {isa = PBXBuildFile; fileRef = E266353F2425BD61005FA50B /* LaunchImage-background.png */; };
 		E26D5A9A241A038B00D17256 /* base in Resources */ = {isa = PBXBuildFile; fileRef = E2F6E416241629FB00E81516 /* base */; };
@@ -25,7 +28,6 @@
 		E2BB98831A631363009C927E /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2BB98821A631363009C927E /* Media.xcassets */; };
 		E2EF82F91B40D83600A94E16 /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EF82F81B40D83600A94E16 /* Log.m */; };
 		E2F6E4132414A79E00E81516 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */; };
-		E2F6E4152415908400E81516 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2F6E4142415908400E81516 /* GameController.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,21 +40,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E21AB825285E85C9002B88AF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E21AB824285E85C9002B88AF /* MetalANGLE.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E20E170E1A34DF1900820124 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E218D27C1A69F7DF00698833 /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
-		E22EF4C51A33491200A74B9F /* prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = prototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E21AB81D285E8538002B88AF /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		E21AB81E285E853B002B88AF /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		E21AB81F285E856F002B88AF /* Frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Frameworks; sourceTree = "<group>"; };
+		E21AB821285E85B8002B88AF /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = ..; sourceTree = "<group>"; };
+		E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = Frameworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
+		E22EF4C51A33491200A74B9F /* prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "prototype.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E22EF4F61A33523800A74B9F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E22EF4F81A33524600A74B9F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E22EF4FA1A33524F00A74B9F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		E22EF4FC1A33527400A74B9F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E22EF4FE1A3352C500A74B9F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E22EF5001A3352D900A74B9F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E22EF5021A3352EA00A74B9F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		E2578D6B24E62500006621CE /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		E266353E2425BD61005FA50B /* LaunchImage-foreground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage-foreground.png"; sourceTree = "<group>"; };
 		E266353F2425BD61005FA50B /* LaunchImage-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage-background.png"; sourceTree = "<group>"; };
 		E2845E1E1A350A57004BC3F8 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -61,8 +77,6 @@
 		E2BB98821A631363009C927E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		E2EF82F81B40D83600A94E16 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
-		E2F6E4112414A76E00E81516 /* prebuilt */ = {isa = PBXFileReference; lastKnownFileType = folder; path = prebuilt; sourceTree = "<group>"; };
-		E2F6E4142415908400E81516 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		E2F6E416241629FB00E81516 /* base */ = {isa = PBXFileReference; lastKnownFileType = folder; path = base; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,15 +86,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				E2F6E4132414A79E00E81516 /* CoreMotion.framework in Frameworks */,
-				E2F6E4152415908400E81516 /* GameController.framework in Frameworks */,
 				E22EF5031A3352EA00A74B9F /* ImageIO.framework in Frameworks */,
+				E21AB827285E8791002B88AF /* GameController.framework in Frameworks */,
 				E22EF5011A3352D900A74B9F /* QuartzCore.framework in Frameworks */,
-				E2578D6C24E62500006621CE /* CoreServices.framework in Frameworks */,
 				E22EF4FF1A3352C500A74B9F /* AudioToolbox.framework in Frameworks */,
-				E22EF4FD1A33527400A74B9F /* OpenGLES.framework in Frameworks */,
+				E21AB826285E878A002B88AF /* CoreServices.framework in Frameworks */,
 				E22EF4FB1A33524F00A74B9F /* CoreGraphics.framework in Frameworks */,
 				E22EF4F91A33524600A74B9F /* Foundation.framework in Frameworks */,
 				E22EF4F71A33523800A74B9F /* UIKit.framework in Frameworks */,
+				E21AB823285E85C9002B88AF /* MetalANGLE.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,27 +104,30 @@
 		E22EF4BC1A33491100A74B9F = {
 			isa = PBXGroup;
 			children = (
-				E2907EC224284D42003439CC /* Launch Screen.storyboard */,
+				E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */,
+				E21AB821285E85B8002B88AF /* ios */,
+				E2F6E416241629FB00E81516 /* base */,
+				E21AB81F285E856F002B88AF /* Frameworks */,
+				E2845E1E1A350A57004BC3F8 /* main.c */,
+				E22EF4FE1A3352C500A74B9F /* AudioToolbox.framework */,
+				E22EF4FA1A33524F00A74B9F /* CoreGraphics.framework */,
+				E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */,
+				E21AB81D285E8538002B88AF /* CoreServices.framework */,
+				E22EF4F81A33524600A74B9F /* Foundation.framework */,
+				E21AB81E285E853B002B88AF /* GameController.framework */,
+				E22EF5021A3352EA00A74B9F /* ImageIO.framework */,
+				E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */,
+				E22EF5001A3352D900A74B9F /* QuartzCore.framework */,
+				E22EF4F61A33523800A74B9F /* UIKit.framework */,
+				E218D27C1A69F7DF00698833 /* IAPHelper.m */,
+				E2EF82F81B40D83600A94E16 /* Log.m */,
+				E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */,
+				E20E170E1A34DF1900820124 /* Info.plist */,
 				E266353F2425BD61005FA50B /* LaunchImage-background.png */,
 				E266353E2425BD61005FA50B /* LaunchImage-foreground.png */,
-				E2F6E416241629FB00E81516 /* base */,
-				E2EF82F81B40D83600A94E16 /* Log.m */,
-				E218D27C1A69F7DF00698833 /* IAPHelper.m */,
+				E2907EC224284D42003439CC /* Launch Screen.storyboard */,
 				E2BB98821A631363009C927E /* Media.xcassets */,
-				E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */,
-				E2845E1E1A350A57004BC3F8 /* main.c */,
-				E20E170E1A34DF1900820124 /* Info.plist */,
-				E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */,
-				E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */,
-				E22EF5021A3352EA00A74B9F /* ImageIO.framework */,
-				E22EF5001A3352D900A74B9F /* QuartzCore.framework */,
-				E22EF4FE1A3352C500A74B9F /* AudioToolbox.framework */,
-				E22EF4FC1A33527400A74B9F /* OpenGLES.framework */,
-				E22EF4FA1A33524F00A74B9F /* CoreGraphics.framework */,
-				E22EF4F81A33524600A74B9F /* Foundation.framework */,
-				E22EF4F61A33523800A74B9F /* UIKit.framework */,
 				E22EF4C61A33491200A74B9F /* Products */,
-				E2F6E4102414A76E00E81516 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,16 +137,6 @@
 				E22EF4C51A33491200A74B9F /* prototype.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		E2F6E4102414A76E00E81516 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E2578D6B24E62500006621CE /* CoreServices.framework */,
-				E2F6E4142415908400E81516 /* GameController.framework */,
-				E2F6E4112414A76E00E81516 /* prebuilt */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,13 +150,14 @@
 				E22EF4C21A33491200A74B9F /* Frameworks */,
 				E22EF4C31A33491200A74B9F /* Resources */,
 				E20E170C1A34DB6C00820124 /* CopyFiles */,
+				E21AB825285E85C9002B88AF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = prototype;
-			productName = prototype;
+			name = "prototype";
+			productName = "prototype";
 			productReference = E22EF4C51A33491200A74B9F /* prototype.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -194,6 +202,7 @@
 				E26635412425BD62005FA50B /* LaunchImage-background.png in Resources */,
 				E26D5A9A241A038B00D17256 /* base in Resources */,
 				E2BB98831A631363009C927E /* Media.xcassets in Resources */,
+				E21AB820285E856F002B88AF /* Frameworks in Resources */,
 				E2907EC324284D42003439CC /* Launch Screen.storyboard in Resources */,
 				E26635402425BD62005FA50B /* LaunchImage-foreground.png in Resources */,
 			);
@@ -337,7 +346,10 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/prebuilt/release";
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(SRCROOT)/prebuilt/debug";
@@ -364,13 +376,12 @@
 					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
-				PRODUCT_NAME = prototype;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.renpy.prototype";
+				PRODUCT_NAME = "prototype";
 				SEPARATE_STRIP = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "";
-				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
 			};
 			name = Debug;
 		};
@@ -384,13 +395,15 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/prebuilt/release/";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/prebuilt/release/";
 				OTHER_LDFLAGS = (
 					"-lrenpython",
 					"-lrenpy",
-					"-lpython2.7",
+					"-lpython3.9",
 					"-lavformat",
 					"-lavcodec",
 					"-lswscale",
@@ -410,13 +423,12 @@
 					"-lz",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
-				PRODUCT_NAME = prototype;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.renpy.prototype";
+				PRODUCT_NAME = "prototype";
 				SEPARATE_STRIP = NO;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "";
-				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGLES;
 			};
 			name = Release;
 		};

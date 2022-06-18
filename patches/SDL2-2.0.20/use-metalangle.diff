@@ -1,0 +1,548 @@
+Use METALANGLE for OpenGL ES.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ src/video/uikit/SDL_uikitopengles.m   |   35 ++++++++
+ src/video/uikit/SDL_uikitopenglview.h |   14 +++
+ src/video/uikit/SDL_uikitopenglview.m |  153 +++++++++++++++++++++++++++++++++
+ 3 files changed, 201 insertions(+), 1 deletion(-)
+
+diff --git a/src/video/uikit/SDL_uikitopengles.m b/src/video/uikit/SDL_uikitopengles.m
+index 8722dca..c2b68a0 100644
+--- a/src/video/uikit/SDL_uikitopengles.m
++++ b/src/video/uikit/SDL_uikitopengles.m
+@@ -34,7 +34,11 @@
+ #include "SDL_loadso.h"
+ #include <dlfcn.h>
+ 
++#ifndef METALANGLE
+ @interface SDLEAGLContext : EAGLContext
++#else
++@interface SDLEAGLContext : MGLContext
++#endif
+ 
+ /* The OpenGL ES context owns a view / drawable. */
+ @property (nonatomic, strong) SDL_uikitopenglview *sdlView;
+@@ -70,7 +74,11 @@ UIKit_GL_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context)
+     @autoreleasepool {
+         SDLEAGLContext *eaglcontext = (__bridge SDLEAGLContext *) context;
+ 
++#ifndef METALANGLE
+         if (![EAGLContext setCurrentContext:eaglcontext]) {
++#else
++        if (![MGLContext setCurrentContext:eaglcontext forLayer:(MGLLayer*)eaglcontext.sdlView.layer]) {
++#endif
+             return SDL_SetError("Could not make EAGL context current");
+         }
+ 
+@@ -140,7 +148,11 @@ UIKit_GL_CreateContext(_THIS, SDL_Window * window)
+         SDL_uikitopenglview *view;
+         SDL_WindowData *data = (__bridge SDL_WindowData *) window->driverdata;
+         CGRect frame = UIKit_ComputeViewFrame(window, data.uiwindow.screen);
++#ifndef METALANGLE
+         EAGLSharegroup *sharegroup = nil;
++#else
++        MGLSharegroup *sharegroup = nil;
++#endif
+         CGFloat scale = 1.0;
+         int samples = 0;
+         int major = _this->gl_config.major_version;
+@@ -148,7 +160,11 @@ UIKit_GL_CreateContext(_THIS, SDL_Window * window)
+ 
+         /* The EAGLRenderingAPI enum values currently map 1:1 to major GLES
+          * versions. */
++#ifndef METALANGLE
+         EAGLRenderingAPI api = major;
++#else
++        MGLRenderingAPI api = major;
++#endif
+ 
+         /* iOS currently doesn't support GLES >3.0. iOS 6 also only supports up
+          * to GLES 2.0. */
+@@ -162,7 +178,11 @@ UIKit_GL_CreateContext(_THIS, SDL_Window * window)
+         }
+ 
+         if (_this->gl_config.share_with_current_context) {
++#ifndef METALANGLE
+             EAGLContext *context = (__bridge EAGLContext *) SDL_GL_GetCurrentContext();
++#else
++            MGLContext *context = (__bridge MGLContext *) SDL_GL_GetCurrentContext();
++#endif
+             sharegroup = context.sharegroup;
+         }
+ 
+@@ -178,9 +198,18 @@ UIKit_GL_CreateContext(_THIS, SDL_Window * window)
+         }
+ 
+         context = [[SDLEAGLContext alloc] initWithAPI:api sharegroup:sharegroup];
++#ifndef METALANGLE
+         if (!context) {
++#else
++        
++        if (!context || ![MGLContext setCurrentContext:context]) {
++#endif
+             SDL_SetError("OpenGL ES %d context could not be created", _this->gl_config.major_version);
++#ifndef METALANGLE
+             return NULL;
++#else
++            return nil;
++#endif
+         }
+ 
+         /* construct our view, passing in SDL's OpenGL configuration data */
+@@ -237,9 +266,15 @@ UIKit_GL_RestoreCurrentContext(void)
+          finished running its own code for the frame. If this isn't done, the
+          app may crash or have other nasty symptoms when Dictation is used.
+          */
++#ifndef METALANGLE
+         EAGLContext *context = (__bridge EAGLContext *) SDL_GL_GetCurrentContext();
+         if (context != NULL && [EAGLContext currentContext] != context) {
+             [EAGLContext setCurrentContext:context];
++#else
++        MGLContext *context = (__bridge MGLContext *) SDL_GL_GetCurrentContext();
++        if (context != NULL && [MGLContext currentContext] != context) {
++            [MGLContext setCurrentContext:context];
++#endif
+         }
+     }
+ }
+diff --git a/src/video/uikit/SDL_uikitopenglview.h b/src/video/uikit/SDL_uikitopenglview.h
+index df659a1..cf2b00a 100644
+--- a/src/video/uikit/SDL_uikitopenglview.h
++++ b/src/video/uikit/SDL_uikitopenglview.h
+@@ -22,9 +22,15 @@
+ #if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
+ 
+ #import <UIKit/UIKit.h>
++#ifndef METALANGLE
+ #import <OpenGLES/EAGL.h>
+ #import <OpenGLES/ES3/gl.h>
+ 
++#else
++// #import <OpenGLES/EAGL.h>
++// #import <OpenGLES/ES3/gl.h>
++#import <MetalANGLE/MGLKit.h>
++#endif
+ #import "SDL_uikitview.h"
+ #include "SDL_uikitvideo.h"
+ 
+@@ -41,9 +47,17 @@
+                   stencilBits:(int)stencilBits
+                          sRGB:(BOOL)sRGB
+                  multisamples:(int)multisamples
++#ifndef METALANGLE
+                       context:(EAGLContext *)glcontext;
++#else
++                      context:(MGLContext *)glcontext;
++#endif
+ 
++#ifndef METALANGLE
+ @property (nonatomic, readonly, weak) EAGLContext *context;
++#else
++@property (nonatomic, readonly, weak) MGLContext *context;
++#endif
+ 
+ /* The width and height of the drawable in pixels (as opposed to points.) */
+ @property (nonatomic, readonly) int backingWidth;
+diff --git a/src/video/uikit/SDL_uikitopenglview.m b/src/video/uikit/SDL_uikitopenglview.m
+index 52158f8..3d82608 100644
+--- a/src/video/uikit/SDL_uikitopenglview.m
++++ b/src/video/uikit/SDL_uikitopenglview.m
+@@ -22,8 +22,16 @@
+ 
+ #if SDL_VIDEO_DRIVER_UIKIT && (SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2)
+ 
++#ifndef METALANGLE
+ #include <OpenGLES/EAGLDrawable.h>
+ #include <OpenGLES/ES2/glext.h>
++#else
++#import <MetalANGLE/GLES2/gl2.h>
++#import <MetalANGLE/GLES2/gl2ext.h>
++#import <MetalANGLE/GLES3/gl3.h>
++#import <MetalANGLE/MGLKit.h>
++
++#endif
+ #import "SDL_uikitopenglview.h"
+ #include "SDL_uikitwindow.h"
+ 
+@@ -32,15 +40,27 @@
+     GLuint viewRenderbuffer, viewFramebuffer;
+ 
+     /* The depth buffer that is attached to viewFramebuffer, if it exists. */
++#ifndef METALANGLE
+     GLuint depthRenderbuffer;
++#else
++    // GLuint depthRenderbuffer;
++#endif
+ 
++#ifndef METALANGLE
+     GLenum colorBufferFormat;
++#else
++    // GLenum colorBufferFormat;
++#endif
+ 
+     /* format of depthRenderbuffer */
+     GLenum depthBufferFormat;
+ 
+     /* The framebuffer and renderbuffer used for rendering with MSAA. */
++#ifndef METALANGLE
+     GLuint msaaFramebuffer, msaaRenderbuffer;
++#else
++    // GLuint msaaFramebuffer, msaaRenderbuffer;
++#endif
+ 
+     /* The number of MSAA samples. */
+     int samples;
+@@ -54,7 +74,11 @@
+ 
+ + (Class)layerClass
+ {
++#ifndef METALANGLE
+     return [CAEAGLLayer class];
++#else
++    return [MGLLayer class];
++#endif
+ }
+ 
+ - (instancetype)initWithFrame:(CGRect)frame
+@@ -68,31 +92,47 @@
+                   stencilBits:(int)stencilBits
+                          sRGB:(BOOL)sRGB
+                  multisamples:(int)multisamples
++#ifndef METALANGLE
+                       context:(EAGLContext *)glcontext
++#else
++                      context:(MGLContext *)glcontext
++#endif
+ {
+     if ((self = [super initWithFrame:frame])) {
+         const BOOL useStencilBuffer = (stencilBits != 0);
+         const BOOL useDepthBuffer = (depthBits != 0);
++#ifndef METALANGLE
+         NSString *colorFormat = nil;
++#else
++        int colorFormat;
++#endif
+ 
+         context = glcontext;
+         samples = multisamples;
+         retainedBacking = retained;
++#ifndef METALANGLE
+ 
+         if (!context || ![EAGLContext setCurrentContext:context]) {
+             SDL_SetError("Could not create OpenGL ES drawable (could not make context current)");
+             return nil;
+         }
++#else
++        
++        MGLLayer *eaglLayer = (MGLLayer *)self.layer;
++#endif
+ 
+         if (samples > 0) {
+             GLint maxsamples = 0;
+             glGetIntegerv(GL_MAX_SAMPLES, &maxsamples);
++#ifndef METALANGLE
+ 
++#endif
+             /* Clamp the samples to the max supported count. */
+             samples = MIN(samples, maxsamples);
+         }
+ 
+         if (sRGB) {
++#ifndef METALANGLE
+             /* sRGB EAGL drawable support was added in iOS 7. */
+             if (UIKit_IsSystemVersionAtLeast(7.0)) {
+                 colorFormat = kEAGLColorFormatSRGBA8;
+@@ -101,26 +141,46 @@
+                 SDL_SetError("sRGB drawables are not supported.");
+                 return nil;
+             }
++#else
++            colorFormat = MGLDrawableColorFormatSRGBA8888;
++#endif
+         } else if (rBits >= 8 || gBits >= 8 || bBits >= 8 || aBits > 0) {
+             /* if user specifically requests rbg888 or some color format higher than 16bpp */
++#ifndef METALANGLE
+             colorFormat = kEAGLColorFormatRGBA8;
+             colorBufferFormat = GL_RGBA8;
++#else
++            colorFormat = MGLDrawableColorFormatRGBA8888;
++#endif
+         } else {
+             /* default case (potentially faster) */
++#ifndef METALANGLE
+             colorFormat = kEAGLColorFormatRGB565;
+             colorBufferFormat = GL_RGB565;
++#else
++            colorFormat = MGLDrawableColorFormatRGB565;;
++#endif
+         }
+ 
++#ifndef METALANGLE
+         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+ 
++#endif
+         eaglLayer.opaque = YES;
++#ifndef METALANGLE
+         eaglLayer.drawableProperties = @{
+             kEAGLDrawablePropertyRetainedBacking:@(retained),
+             kEAGLDrawablePropertyColorFormat:colorFormat
+         };
++#else
++        
++        eaglLayer.drawableColorFormat = colorFormat;
++        eaglLayer.retainedBacking = retained;
++#endif
+ 
+         /* Set the appropriate scale (for retina display support) */
+         self.contentScaleFactor = scale;
++#ifndef METALANGLE
+ 
+         /* Create the color Renderbuffer Object */
+         glGenRenderbuffers(1, &viewRenderbuffer);
+@@ -143,12 +203,29 @@
+ 
+         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+             SDL_SetError("Failed creating OpenGL ES framebuffer");
++#else
++        
++        eaglLayer.contentsScale = scale;
++        
++        if (!context || ![MGLContext setCurrentContext:context]) {
++            SDL_SetError("Could not create OpenGL ES drawable (could not make context current)");
++#endif
+             return nil;
+         }
+-
++#ifdef METALANGLE
++        
++        viewFramebuffer = eaglLayer.defaultOpenGLFrameBufferID;
++        
++        backingWidth = eaglLayer.drawableSize.width;
++        backingHeight = eaglLayer.drawableSize.height;
++#endif
++
++#ifndef METALANGLE
+         /* When MSAA is used we'll use a separate framebuffer for rendering to,
+          * since we'll need to do an explicit MSAA resolve before presenting. */
++#endif
+         if (samples > 0) {
++#ifndef METALANGLE
+             glGenFramebuffers(1, &msaaFramebuffer);
+             glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebuffer);
+ 
+@@ -158,9 +235,13 @@
+             glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, colorBufferFormat, backingWidth, backingHeight);
+ 
+             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderbuffer);
++#else
++            eaglLayer.drawableMultisample = samples;
++#endif
+         }
+ 
+         if (useDepthBuffer || useStencilBuffer) {
++#ifndef METALANGLE
+             if (useStencilBuffer) {
+                 /* Apparently you need to pack stencil and depth into one buffer. */
+                 depthBufferFormat = GL_DEPTH24_STENCIL8_OES;
+@@ -179,14 +260,24 @@
+                 glRenderbufferStorage(GL_RENDERBUFFER, depthBufferFormat, backingWidth, backingHeight);
+             }
+ 
++#endif
+             if (useDepthBuffer) {
++#ifndef METALANGLE
+                 glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
++#else
++                eaglLayer.drawableDepthFormat = MGLDrawableDepthFormat16;
++#endif
+             }
+             if (useStencilBuffer) {
++#ifndef METALANGLE
+                 glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
++#else
++                eaglLayer.drawableStencilFormat = MGLDrawableStencilFormat8;
++#endif
+             }
+         }
+ 
++#ifndef METALANGLE
+         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+             SDL_SetError("Failed creating OpenGL ES framebuffer");
+             return nil;
+@@ -194,6 +285,7 @@
+ 
+         glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
+ 
++#endif
+         [self setDebugLabels];
+     }
+ 
+@@ -202,21 +294,30 @@
+ 
+ - (GLuint)drawableRenderbuffer
+ {
++#ifndef METALANGLE
+     return viewRenderbuffer;
++#else
++    return viewFramebuffer;
++#endif
+ }
+ 
+ - (GLuint)drawableFramebuffer
+ {
++#ifndef METALANGLE
+     /* When MSAA is used, the MSAA draw framebuffer is used for drawing. */
+     if (msaaFramebuffer) {
+         return msaaFramebuffer;
+     } else {
+         return viewFramebuffer;
+     }
++#else
++    return viewFramebuffer;
++#endif
+ }
+ 
+ - (GLuint)msaaResolveFramebuffer
+ {
++#ifndef METALANGLE
+     /* When MSAA is used, the MSAA draw framebuffer is used for drawing and the
+      * view framebuffer is used as a MSAA resolve framebuffer. */
+     if (msaaFramebuffer) {
+@@ -253,10 +354,16 @@
+     }
+ 
+     glBindRenderbuffer(GL_RENDERBUFFER, prevRenderbuffer);
++#else
++    return viewFramebuffer;
++#endif
+ }
+ 
+ - (void)setDebugLabels
+ {
++#ifdef METALANGLE
++    /*
++#endif
+     if (viewFramebuffer != 0) {
+         glLabelObjectEXT(GL_FRAMEBUFFER, viewFramebuffer, 0, "context FBO");
+     }
+@@ -280,10 +387,14 @@
+     if (msaaRenderbuffer != 0) {
+         glLabelObjectEXT(GL_RENDERBUFFER, msaaRenderbuffer, 0, "context MSAA renderbuffer");
+     }
++#ifdef METALANGLE
++     */
++#endif
+ }
+ 
+ - (void)swapBuffers
+ {
++#ifndef METALANGLE
+     if (msaaFramebuffer) {
+         const GLenum attachments[] = {GL_COLOR_ATTACHMENT0};
+ 
+@@ -295,7 +406,13 @@
+             int w = backingWidth;
+             int h = backingHeight;
+             glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
++#else
++    MGLLayer *eaglLayer = (MGLLayer *)self.layer;
++    [MGLContext setCurrentContext:context forLayer:eaglLayer];
++    [context present:eaglLayer];
++#endif
+ 
++#ifndef METALANGLE
+             if (!retainedBacking) {
+                 /* Discard the contents of the MSAA drawable color buffer. */
+                 glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, attachments);
+@@ -317,17 +434,26 @@
+      * else is responsible for rebinding viewRenderbuffer, to reduce duplicate
+      * state changes. */
+     [context presentRenderbuffer:GL_RENDERBUFFER];
++#endif
+ }
+ 
+ - (void)layoutSubviews
+ {
+     [super layoutSubviews];
++#ifndef METALANGLE
+ 
++#else
++    
++#endif
+     int width  = (int) (self.bounds.size.width * self.contentScaleFactor);
+     int height = (int) (self.bounds.size.height * self.contentScaleFactor);
+ 
+     /* Update the color and depth buffer storage if the layer size has changed. */
++#ifdef METALANGLE
++    
++#endif
+     if (width != backingWidth || height != backingHeight) {
++#ifndef METALANGLE
+         EAGLContext *prevContext = [EAGLContext currentContext];
+         if (prevContext != context) {
+             [EAGLContext setCurrentContext:context];
+@@ -338,21 +464,34 @@
+         if (prevContext != context) {
+             [EAGLContext setCurrentContext:prevContext];
+         }
++#else
++            MGLLayer *eaglLayer = (MGLLayer *)self.layer;
++            [MGLContext setCurrentContext:context forLayer:eaglLayer];
++            backingWidth = eaglLayer.drawableSize.width;
++            backingHeight = eaglLayer.drawableSize.height;
++#endif
+     }
+ }
+ 
+ - (void)destroyFramebuffer
+ {
++#ifdef METALANGLE
++    /*
++#endif
+     if (viewFramebuffer != 0) {
+         glDeleteFramebuffers(1, &viewFramebuffer);
+         viewFramebuffer = 0;
+     }
++#ifndef METALANGLE
+ 
++#endif
+     if (viewRenderbuffer != 0) {
+         glDeleteRenderbuffers(1, &viewRenderbuffer);
+         viewRenderbuffer = 0;
+     }
++#ifndef METALANGLE
+ 
++#endif
+     if (depthRenderbuffer != 0) {
+         glDeleteRenderbuffers(1, &depthRenderbuffer);
+         depthRenderbuffer = 0;
+@@ -366,14 +505,26 @@
+     if (msaaRenderbuffer != 0) {
+         glDeleteRenderbuffers(1, &msaaRenderbuffer);
+         msaaRenderbuffer = 0;
++#ifndef METALANGLE
+     }
++#else
++    }*/
++#endif
+ }
+ 
+ - (void)dealloc
+ {
++#ifndef METALANGLE
+     if (context && context == [EAGLContext currentContext]) {
++#else
++    if (context && context == [MGLContext currentContext]) {
++#endif
+         [self destroyFramebuffer];
++#ifndef METALANGLE
+         [EAGLContext setCurrentContext:nil];
++#else
++        [MGLContext setCurrentContext:nil];
++#endif
+     }
+ }
+ 
