@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 PY=$(python -c 'import sys; print(sys.version[0])')
 

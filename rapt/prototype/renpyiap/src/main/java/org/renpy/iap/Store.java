@@ -8,11 +8,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
-public class Store {
+import org.renpy.android.StoreInterface;
+import org.renpy.android.PythonSDLActivity;
+
+public class Store implements StoreInterface {
 
     static public Store store = null;
 
-    static public void create(Activity activity) {
+    static public void create(PythonSDLActivity activity) {
 
         String storeName = org.renpy.android.Constants.store;
 
@@ -44,6 +47,8 @@ public class Store {
         } else {
             store = new Store();
         }
+
+        activity.mStore = store;
     }
 
     static public Store getStore() {

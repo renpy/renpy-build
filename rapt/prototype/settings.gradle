@@ -1,2 +1,2 @@
-include ':renpyandroid', ':app'
+include ':renpyandroid', ':renpyiap', ':app'
 rootProject.name="app"

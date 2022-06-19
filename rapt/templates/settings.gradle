@@ -1,6 +1,6 @@
 {% if not bundle %}
-include ':renpyandroid', ':app'
+include ':renpyiap', ':renpyandroid', ':app'
 {% else %}
-include ':renpyandroid', ':app', ':ff1', ':ff2', ':ff3', ':ff4'
+include ':renpyiap', ':renpyandroid', ':app', ':ff1', ':ff2', ':ff3', ':ff4'
 {% endif %}
 rootProject.name="app"

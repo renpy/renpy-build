@@ -57,5 +57,8 @@ android {
 }
 
 dependencies {
-    api project (':renpyandroid')
+    implementation project (':renpyandroid')
+{% if config.store != "none" %}
+    implementation project (':renpyiap')
+{% endif %}
 }

@@ -43,9 +43,6 @@ import com.google.android.play.core.assetpacks.*;
 import com.google.android.play.core.assetpacks.model.*;
 import com.google.android.play.core.tasks.OnSuccessListener;
 
-import org.renpy.iap.Store;
-
-
 public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpdateListener {
 
     /**
@@ -59,7 +56,6 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
      */
     public FrameLayout mFrameLayout;
 
-
     /**
      * A layout that contains mLayout. This is a 3x3 grid, with the layout
      * in the center. The idea is that if someone wants to show an ad, they
@@ -67,12 +63,33 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
      */
     public LinearLayout mVbox;
 
+    /**
+     * This is set by the renpy.iap.Store when it's loaded. If it's not loadable, this
+     * remains null;
+     */
+    public StoreInterface mStore = null;
+
     ResourceManager resourceManager;
 
     protected String[] getLibraries() {
         return new String[] {
             "renpython",
         };
+    }
+
+    // Creates the IAP store, when needed. /////////////////////////////////////////
+
+    public void createStore() {
+        if (Constants.store.equals("none")) {
+            return;
+        }
+
+        try {
+            Class cls = Class.forName("org.renpy.iap.Store");
+            cls.getMethod("create", PythonSDLActivity.class).invoke(null, this);
+        } catch (Exception e) {
+            Log.e("PythonSDLActivity", "Failed to create store: " + e.toString());
+        }
     }
 
     // GUI code. /////////////////////////////////////////////////////////////
@@ -305,7 +322,7 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         super.onCreate(savedInstanceState);
 
         // Initalize the store support.
-        Store.create(this);
+        createStore();
 
         boolean allPacksReady = true;
 
@@ -389,7 +406,10 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         Log.v("python", "onDestroy()");
 
         super.onDestroy();
-        Store.getStore().destroy();
+
+        if (mStore != null) {
+            mStore.destroy();
+        }
     }
 
     @Override
@@ -405,7 +425,7 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     long mOldProgress = 0;
 
     public void onStateUpdate(AssetPackState assetPackState) {
-        Log.i("python", "onStateUpdate: " + assetPackState.toString());
+        Log.i("packs", "onStateUpdate: " + assetPackState.toString());
 
         assetPackStates.put(assetPackState.name(), assetPackState);
 
@@ -470,7 +490,7 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
             }
         }
 
-        Log.d("python", "totalBytesToDownload=" + totalBytesToDownload + ", bytesDownloaded=" + bytesDownloaded);
+        Log.d("packs", "totalBytesToDownload=" + totalBytesToDownload + ", bytesDownloaded=" + bytesDownloaded);
 
         // Protect against a DBZ.
         if (totalBytesToDownload == 0) {
@@ -546,7 +566,7 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (Store.getStore().onActivityResult(requestCode, resultCode, resultData)) {
+        if (mStore != null && mStore.onActivityResult(requestCode, resultCode, resultData)) {
             return;
         }
 
