@@ -173,7 +173,7 @@ def make_tar(iface, fn, source_dirs):
         return rv
 
     # zf = zipfile.ZipFile(fn, "w")
-    tf = tarfile.open(fn, "w:gz", format=tarfile.USTAR_FORMAT)
+    tf = tarfile.open(fn, "w:gz", format=tarfile.GNU_FORMAT)
 
     added = set()
 
