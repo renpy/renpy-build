@@ -121,6 +121,7 @@ public class PlayStore extends Store {
                                 prices.clear();
 
                                 for (SkuDetails sku : skuDetailsList) {
+                                    Log.i("iap", "Got price sku=" + sku.getSku() + " price=" + sku.getPrice());
                                     prices.put(sku.getSku(), sku.getPrice());
                                     skuDetailsMap.put(sku.getSku(), sku);
                                 }
@@ -160,6 +161,8 @@ public class PlayStore extends Store {
     public void beginPurchase(String sku) {
         try {
             finished = false;
+
+            Log.i("iap", "beginPurchase " + sku);
 
             // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
             BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
