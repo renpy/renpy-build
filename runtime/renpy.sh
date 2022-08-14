@@ -59,13 +59,14 @@ if ! test -d "$LIB"; then
     exit 1
 fi
 
-if [ -e "$LIB/$BASEFILE" ] ; then 
+if [ -e "$LIB/$BASEFILE" ] ; then
     exec $RENPY_GDB "$LIB/$BASEFILE" "$@"
 fi
 
-if [ -e "$LIB/renpy" ] ; then 
+if [ -e "$LIB/renpy" ] ; then
     exec $RENPY_GDB "$LIB/renpy" "$@"
 fi
 
 echo "$LIB/$BASEFILE not found."
+echo "This game may not support the $RENPY_PLATFORM platform."
 exit 1
