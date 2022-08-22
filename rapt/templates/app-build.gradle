@@ -10,13 +10,13 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     ndkVersion "21.3.6528147"
 
     defaultConfig {
         applicationId "{{ config.package }}"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode {{ config.numeric_version }}
         versionName "{{ config.version }}"
     }
