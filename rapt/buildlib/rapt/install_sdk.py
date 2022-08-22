@@ -165,7 +165,7 @@ def get_packages(interface):
 
     wanted_packages = [
         ("platform-tools", "platform-tools"),
-        ("platforms;android-30", "platforms/android-30"),
+        ("platforms;android-31", "platforms/android-31"),
         ]
 
     for i, j in wanted_packages:
