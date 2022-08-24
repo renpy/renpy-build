@@ -126,6 +126,9 @@ def maybe_java_home(s):
     """
 
     if "JAVA_HOME" in os.environ:
+        if not os.path.exists(os.path.join(os.environ["JAVA_HOME"], "bin", "javac.exe")):
+            return s
+
         return os.path.join(os.environ["JAVA_HOME"], "bin", s)
     else:
         return s
