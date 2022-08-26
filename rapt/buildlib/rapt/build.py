@@ -586,7 +586,11 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
             # them.
             for dirpath, dirnames, filenames in os.walk(assets, topdown=False):
 
-                for fn in filenames + dirnames:
+                # Sort names longest to shortest to ensure that adding the "x-"
+                # prefix will not overwrite an asset before it has been moved.
+                names = sorted(dirnames + filenames, key=len, reverse=True)
+
+                for fn in names:
                     if fn[0] == ".":
                         continue
 
