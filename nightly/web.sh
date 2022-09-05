@@ -12,15 +12,9 @@ fi
 # Index the nightly.
 $SCRIPTS/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
-rm -f current current-7 current-8
-ln -s "$RENPY_8_NIGHTLY" current
-ln -s "$RENPY_7_NIGHTLY" current-7
-ln -s "$RENPY_8_NIGHTLY" current-8
+# Add symlinks.
+$SCRIPTS/link_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
-rm renpy-nightly-sdk.zip
-rm renpy-nightly-sdk.tar.bz2
-ln -s current/renpy-*-sdk.zip renpy-nightly-sdk.zip
-ln -s current/renpy-*-sdk.tar.bz2 renpy-nightly-sdk.tar.bz2
 
 # Upload the index to the server.
 if [ "$UPLOAD" = 1 ]; then

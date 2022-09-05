@@ -99,11 +99,8 @@ def main():
             else:
                 dirs_7.append((dirtime, i, name))
 
-    dirs_7.sort()
-    dirs_7.reverse()
-
-    dirs_8.sort()
-    dirs_8.reverse()
+    dirs_7.sort(key=lambda x: x[1], reverse=True)
+    dirs_8.sort(key=lambda x: x[1], reverse=True)
 
     tmpl = env.get_template("root.html")
     html = tmpl.render(dirs_7=dirs_7, dirs_8=dirs_8)
