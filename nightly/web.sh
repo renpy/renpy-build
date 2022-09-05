@@ -30,7 +30,7 @@ fi
 # Delete old nightlies.
 
 if [ "$PRUNE" = 1 ]; then
-    find /home/tom/magnetic/ab/WWW.nightly/ -ctime +30.5 -delete || true
+    $SCRIPTS/prune_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 fi
 
 popd
