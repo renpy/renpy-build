@@ -2,6 +2,7 @@ package org.renpy.iap;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import android.app.Activity;
@@ -26,8 +27,8 @@ public class PlayStore extends Store {
     /* The billingClient object, if it exists. */
     private BillingClient billingClient = null;
 
-    /* A map from sku to SkuDetails object. */
-    private HashMap<String, SkuDetails> skuDetailsMap = new HashMap<>();
+    /* A map from sku to ProductDetails object. */
+    private HashMap<String, ProductDetails> productDetailsMap = new HashMap<>();
 
     public PlayStore(Activity activity) {
         this.activity = activity;
@@ -80,7 +81,9 @@ public class PlayStore extends Store {
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
             }
 
-            purchased.add(purchase.getSku());
+            for (String sku : purchase.getProducts()) {
+                purchased.add(sku);
+            }
         }
     }
 
@@ -106,30 +109,36 @@ public class PlayStore extends Store {
 
             finished = false;
 
-            SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-            params.setSkusList(skus).setType(BillingClient.SkuType.INAPP);
+            List<QueryProductDetailsParams.Product> products = new ArrayList<QueryProductDetailsParams.Product>();
 
             for (String s : skus) {
                 Log.i("iap", "Trying to get prices for " + s);
+                products.add(QueryProductDetailsParams.Product.newBuilder().setProductId(s).setProductType(BillingClient.ProductType.INAPP).build());
             }
 
-            billingClient.querySkuDetailsAsync(params.build(),
-                    new SkuDetailsResponseListener() {
-                        @Override
-                        public void onSkuDetailsResponse(@NonNull BillingResult billingResult, List<SkuDetails> skuDetailsList) {
-                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                prices.clear();
+            QueryProductDetailsParams.Builder params = QueryProductDetailsParams.newBuilder();
+            params.setProductList(products);
 
-                                for (SkuDetails sku : skuDetailsList) {
-                                    Log.i("iap", "Got price sku=" + sku.getSku() + " price=" + sku.getPrice());
-                                    prices.put(sku.getSku(), sku.getPrice());
-                                    skuDetailsMap.put(sku.getSku(), sku);
-                                }
+            billingClient.queryProductDetailsAsync(
+                params.build(),
+                new ProductDetailsResponseListener() {
+                    @Override
+                    public void onProductDetailsResponse(@NonNull BillingResult billingResult, List<ProductDetails> productDetailsList) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            prices.clear();
 
-                                finished = true;
+                            for (ProductDetails p : productDetailsList) {
+                                String price = p.getOneTimePurchaseOfferDetails().getFormattedPrice();
+                                Log.i("iap", "Got price id=" + p.getProductId() + " price=" + price);
+                                prices.put(p.getProductId(), price);
+                                productDetailsMap.put(p.getProductId(), p);
                             }
+
+                            finished = true;
                         }
-                    });
+                    }
+                }
+            );
 
         } catch (Exception e) {
             finished = true;
@@ -141,20 +150,27 @@ public class PlayStore extends Store {
     public void restorePurchases() {
         try {
 
-            Purchase.PurchasesResult pr = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-            if (pr.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                if (pr.getPurchasesList() != null) {
-                    for (Purchase p : pr.getPurchasesList()) {
-                        handlePurchase(p);
+            billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                new PurchasesResponseListener() {
+                    @Override
+                    public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, List<Purchase> purchases) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            for (Purchase p : purchases) {
+                                handlePurchase(p);
+                            }
+                        }
+
+                        finished = true;
                     }
                 }
-            }
+            );
+
 
         } catch (Exception e) {
             Log.e("iap", "restorePurchases failed.", e);
+            finished = true;
         }
-
-        finished = true;
     }
 
     @Override
@@ -164,10 +180,9 @@ public class PlayStore extends Store {
 
             Log.i("iap", "beginPurchase " + sku);
 
-            // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
-            BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                    .setSkuDetails(Objects.requireNonNull(skuDetailsMap.get(sku)))
-                    .build();
+            ArrayList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
+            productDetailsParamsList.add(BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(productDetailsMap.get(sku)).build());
+            BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList).build();
 
             int responseCode = billingClient.launchBillingFlow(activity, billingFlowParams).getResponseCode();
 
