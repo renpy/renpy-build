@@ -119,6 +119,15 @@ def build(c):
 """)
 
 
+@task(kind="cross", platforms="mac", archs="arm64")
+def build(c):
+    c.clean("{{ cross }}")
+    c.chdir("{{ cross }}")
+
+    c.run("tar xaf {{ tars }}/MacOSX12.3.sdk.tar.bz2")
+    c.run("ln -s MacOSX.sdk sdk")
+
+
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")
 def build(c):
 

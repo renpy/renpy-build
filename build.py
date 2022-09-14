@@ -57,6 +57,7 @@ Platform("linux", "armv7l", "3")
 Platform("windows", "x86_64", "3")
 
 Platform("mac", "x86_64", "3")
+Platform("mac", "arm64", "3")
 
 Platform("android", "x86_64", "3")
 Platform("android", "arm64_v8a", "3")
