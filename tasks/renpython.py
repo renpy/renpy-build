@@ -168,6 +168,7 @@ def link_mac(c):
     -shared
     -o librenpython.dylib
     -install_name @executable_path/librenpython.dylib
+    -v
     librenpython.o
 
     -lrenpy
@@ -197,6 +198,10 @@ def link_mac(c):
     -Wl,-framework,CoreAudio
     -Wl,-framework,AudioToolbox
     -Wl,-framework,ForceFeedback
+    {% if c.arch == "arm64" %}
+    -Wl,-framework,GameController
+    -Wl,-framework,CoreHaptics
+    {% endif %}
     -lobjc
     -Wl,-framework,CoreVideo
     -Wl,-framework,Cocoa
@@ -222,7 +227,8 @@ def link_mac(c):
     librenpython.dylib
     """)
 
-    if not c.args.nostrip:
+    # Striping breaks the code signatures on arm64 mac, so don't strip there.
+    if not c.args.nostrip and not c.arch == "arm64":
         c.run("""{{ STRIP }} -S -x librenpython.dylib python renpy""")
 
     c.run("""install -d {{ dlpa }}""")

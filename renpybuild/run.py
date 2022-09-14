@@ -34,6 +34,8 @@ def build_environment(c):
         c.var("host_platform", "i686-w64-mingw32")
     elif (c.platform == "mac") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-apple-darwin14")
+    elif (c.platform == "mac") and (c.arch == "arm64"):
+        c.var("host_platform", "arm-apple-darwin21.6.0")
     elif (c.platform == "android") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-linux-android")
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
@@ -64,6 +66,8 @@ def build_environment(c):
         c.var("ffi_host_platform", "aarch64-ios-darwin21")
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
         c.var("ffi_host_platform", "aarch64-ios-darwin21")
+    elif (c.platform == "mac") and (c.arch == "arm64"):
+        c.var("ffi_host_platform", "aarch64-apple-darwin21.6.0")
     else:
         c.var("ffi_host_platform", "{{ host_platform }}")
 
@@ -297,6 +301,22 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
+    elif (c.platform == "mac") and (c.arch == "arm64"):
+
+        c.env("MACOSX_DEPLOYMENT_TARGET", "11.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=11.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=11.0")
+
+        c.var("llver", "13")
+        c.var("clang_args", "-fuse-ld=lld -target arm64-apple-macos11 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
+
+        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
+        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk")
+        c.env("AR", "ccache llvm-ar-{{ llver }}")
+        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
+        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
+        c.env("NM", "llvm-nm-{{ llver }}")
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 

@@ -5,7 +5,7 @@
 set -ex
 
 mac=$1
-path = $2
+path=$2
 
 if [ -z "$mac" -o -z "$path" ]; then
     echo "Usage: $0 <mac> <path>"
@@ -17,9 +17,9 @@ sync() {
 }
 
 sync launcher/ launcher
-sync lib2/ lib
-sync rapt2/ rapt
-sync renios2/ renios
+sync lib/ lib
+sync rapt3/ rapt
+sync renios3/ renios
 sync renpy/ renpy
 sync renpy.app/ renpy.app
 sync renpy.py renpy.py
