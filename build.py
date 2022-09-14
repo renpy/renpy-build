@@ -17,10 +17,11 @@ known_platforms = [ ]
 
 class Platform:
 
-    def __init__(self, platform, arch, python):
+    def __init__(self, platform, arch, python, experimental=False):
         self.platform = platform
         self.arch = arch
         self.python = python
+        self.experimental = experimental
 
         known_platforms.append(self)
 
@@ -164,6 +165,8 @@ def main():
     ap.add_argument("--nostrip", action="store_true", default=False)
     ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")
 
+    ap.add_argument("--experimental", action="store_true", default=False)
+
     ap.set_defaults(function=build)
 
     subparsers = ap.add_subparsers()
@@ -184,6 +187,9 @@ def main():
     global renpy
 
     args = ap.parse_args()
+
+    if not args.experimental:
+        known_platforms[:] = [ i for i in known_platforms if not i.experimental ]
 
     tmp = Path(args.tmp).resolve()
     root = Path(__file__).parent.resolve()
