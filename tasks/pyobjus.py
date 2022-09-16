@@ -17,7 +17,13 @@ def unpack(c):
     # c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
     c.chdir("pyobjus")
-    c.run("git checkout 9c0ca61c0cd67efd5371dba8deb36b6dbccddb64" )
+
+
+    if c.platform == "mac" and c.arch == "arm64":
+        c.run("git checkout 9c0ca61c0cd67efd5371dba8deb36b6dbccddb64")
+    else:
+        c.run("git checkout ea4ef7c96dcc83d5f1f18d4b15f3709f32c47a24")
+
 
 
 @task(kind="host-python")
@@ -26,7 +32,7 @@ def host_unpack(c):
 
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
     c.chdir("pyobjus")
-    c.run("git checkout 9c0ca61c0cd67efd5371dba8deb36b6dbccddb64")
+    c.run("git checkout ea4ef7c96dcc83d5f1f18d4b15f3709f32c47a24")
 
 
 @task(kind="python", platforms="mac,ios")

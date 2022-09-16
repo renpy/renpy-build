@@ -231,25 +231,72 @@ def link_mac(c):
     if not c.args.nostrip and not c.arch == "arm64":
         c.run("""{{ STRIP }} -S -x librenpython.dylib python renpy""")
 
-    c.run("""install -d {{ dlpa }}""")
-    c.run("""install librenpython.dylib {{ dlpa }}""")
-    c.run("""install python {{ dlpa }}/python""")
-    c.run("""install python {{ dlpa }}/pythonw""")
-    c.run("""install renpy {{ dlpa }}/renpy""")
 
-    # renpy.app/Contents/MacOS:
+    if c.args.experimental:
+
+        c.run("""install -d {{ install }}/mac{{python}}""")
+        c.run("""install librenpython.dylib {{ install }}/mac{{python}}""")
+        c.run("""install python {{ install }}/mac{{python}}/python""")
+        c.run("""install python {{ install }}/mac{{python}}/pythonw""")
+        c.run("""install renpy {{ install }}/mac{{python}}/renpy""")
+
+    else:
+
+        c.run("""install -d {{ dlpa }}""")
+        c.run("""install librenpython.dylib {{ dlpa }}""")
+        c.run("""install python {{ dlpa }}/python""")
+        c.run("""install python {{ dlpa }}/pythonw""")
+        c.run("""install renpy {{ dlpa }}/renpy""")
+
+        # renpy.app/Contents/MacOS:
+        c.var("ac", "{{ renpy }}/renpy{{ python }}.app/Contents")
+        c.var("acm", "{{ renpy }}/renpy{{ python }}.app/Contents/MacOS")
+
+        c.run("""install -d {{ acm }}""")
+        c.run("""install librenpython.dylib {{ acm }}""")
+        c.run("""install python {{ acm }}/python""")
+        c.run("""install python {{ acm }}/pythonw""")
+        c.run("""install renpy {{ acm }}/renpy""")
+
+        c.run("""install -d {{ ac }}/Resources""")
+        c.run("""install {{ runtime }}/Info.plist {{ ac }}""")
+        c.run("""install {{ runtime }}/icon.icns {{ ac }}/Resources""")
+
+
+@task(kind="host-python", platforms="mac", always=True)
+def lipo_mac(c):
+
+    if not c.args.experimental:
+        return
+
+    c.var("lipo", "llvm-lipo-13")
+    c.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
+
     c.var("ac", "{{ renpy }}/renpy{{ python }}.app/Contents")
     c.var("acm", "{{ renpy }}/renpy{{ python }}.app/Contents/MacOS")
 
+    c.run("""install -d {{ dlpa }}""")
     c.run("""install -d {{ acm }}""")
-    c.run("""install librenpython.dylib {{ acm }}""")
-    c.run("""install python {{ acm }}/python""")
-    c.run("""install python {{ acm }}/pythonw""")
-    c.run("""install renpy {{ acm }}/renpy""")
 
     c.run("""install -d {{ ac }}/Resources""")
     c.run("""install {{ runtime }}/Info.plist {{ ac }}""")
     c.run("""install {{ runtime }}/icon.icns {{ ac }}/Resources""")
+
+    def lipo(fn):
+        c.var("fn", fn)
+        c.run("""
+            {{ lipo }} -create
+            -output {{ dlpa }}/{{ fn }}
+            {{tmp}}/install.mac-x86_64/mac{{python}}/{{fn}}
+            {{tmp}}/install.mac-arm64/mac{{python}}/{{fn}}
+            """)
+
+        c.run("install {{ dlpa }}/{{ fn }} {{ acm }}/{{ fn }}")
+
+    lipo("librenpython.dylib")
+    lipo("python")
+    lipo("pythonw")
+    lipo("renpy")
 
 
 def fix_pe(c, fn):
