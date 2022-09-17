@@ -269,7 +269,6 @@ def lipo_mac(c):
     if not c.args.experimental:
         return
 
-    c.var("lipo", "llvm-lipo-13")
     c.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
 
     c.var("ac", "{{ renpy }}/renpy{{ python }}.app/Contents")

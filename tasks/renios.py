@@ -38,7 +38,6 @@ def check_sdk(name, paths):
                 obj = None
 
 def lipo(c, namefilter):
-    c.var("lipo", "llvm-lipo-13")
 
     paths = [
         c.path("{{ tmp }}/install.ios-arm64/lib"),

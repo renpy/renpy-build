@@ -301,6 +301,8 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
+        c.var("lipo", "llvm-lipo-{{ llver }}")
+
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
         c.env("MACOSX_DEPLOYMENT_TARGET", "11.0")
@@ -318,6 +320,8 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
+        c.var("lipo", "llvm-lipo-{{ llver }}")
+
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
         c.var("llver", "13")
@@ -330,6 +334,8 @@ def build_environment(c):
         c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
+
+        c.var("lipo", "llvm-lipo-{{ llver }}")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -miphoneos-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
@@ -347,6 +353,8 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
+        c.var("lipo", "llvm-lipo-{{ llver }}")
+
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
@@ -363,8 +371,11 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
+        c.var("lipo", "llvm-lipo-{{ llver }}")
+
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
+
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")
