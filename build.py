@@ -37,7 +37,7 @@ Platform("windows", "x86_64", "2")
 Platform("windows", "i686", "2")
 
 Platform("mac", "x86_64", "2")
-Platform("mac", "amd64", "2")
+Platform("mac", "arm64", "2")
 
 Platform("android", "x86_64", "2")
 Platform("android", "arm64_v8a", "2")
