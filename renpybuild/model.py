@@ -76,7 +76,7 @@ class Context:
         self.var("dist", self.renpy)
         self.var("distlib", self.renpy / "lib")
 
-        if self.arch == "mac":
+        if self.platform == "mac":
             self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
         else:
             self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
