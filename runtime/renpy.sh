@@ -29,7 +29,7 @@ if [ -z "$RENPY_PLATFORM" ] ; then
 
     case "$RENPY_PLATFORM" in
         Darwin-*|mac-*)
-            RENPY_PLATFORM="mac-x86_64"
+            RENPY_PLATFORM="mac-universal"
             ;;
         *-x86_64|amd64)
             RENPY_PLATFORM="linux-x86_64"
