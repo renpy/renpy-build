@@ -49,6 +49,7 @@ def build(c):
         --disable-jack
 
         --disable-video-wayland
+        --disable-video-kmsdrm
 
     {% if c.platform == "android" %}
         --disable-video-x11
