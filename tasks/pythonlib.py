@@ -122,6 +122,7 @@ platform.pyo
 plistlib.pyo
 pstats.pyo
 py_compile.pyo
+pydoc.pyo
 Queue.pyo
 quopri.pyo
 random.pyo
@@ -562,6 +563,7 @@ def python3(c):
         raise Exception(f"Unused rules: {rules - used_rules}")
 
     c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/site.py")
+    c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
     import socket
     if socket.gethostname() == "eileen":
@@ -571,6 +573,10 @@ def python3(c):
 
     c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/site.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/site.py")
+
+    c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
+    c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
+
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
     with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
