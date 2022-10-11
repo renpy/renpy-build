@@ -153,6 +153,9 @@ def link_android(c):
     -landroid
     """)
 
+    c.run("install -d {{ jni_unstripped }}")
+    c.run("install librenpython.so {{ jni_unstripped }}")
+
     if not c.args.nostrip:
         c.run("""{{ STRIP }} --strip-unneeded librenpython.so""")
 
