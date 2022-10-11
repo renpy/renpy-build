@@ -118,6 +118,7 @@ numbers.pyo
 opcode.pyo
 optparse.pyo
 pickle.pyo
+pkgutil.pyo
 platform.pyo
 plistlib.pyo
 pstats.pyo
