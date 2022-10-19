@@ -5,7 +5,7 @@ import re
 
 
 
-@task(kind="host-python", platforms="web")
+@task(kind="host-python", platforms="web", pythons="2")
 def clean(c):
     c.rmtree("{{ renpyweb }}/build")
     c.rmtree("{{ renpyweb }}/install")
@@ -16,7 +16,7 @@ def clean(c):
     c.rmtree("{{ renpyweb }}/python-emscripten/2.7.18/crosspython-static")
 
 
-@task(kind="host-python", platforms="web")
+@task(kind="host-python", platforms="web", pythons="2")
 def links(c):
     c.unlink("{{ renpyweb }}/renpy")
     c.unlink("{{ renpyweb }}/pygame_sdl2")
@@ -25,7 +25,7 @@ def links(c):
     c.symlink("{{ pygame_sdl2 }}", "{{ renpyweb }}/pygame_sdl2")
 
 
-@task(kind="host-python", platforms="web")
+@task(kind="host-python", platforms="web", pythons="2")
 def download_emsdk(c):
     c.var("emsdk_version", "2.0.20")
 
@@ -36,12 +36,12 @@ def download_emsdk(c):
     c.run("./emsdk activate {{ emsdk_version }}")
 
 
-@task(kind="host-python", platforms="web")
+@task(kind="host-python", platforms="web", pythons="2")
 def patch_emsdk(c):
     c.chdir("{{ renpyweb }}/emsdk/upstream/emscripten/")
     c.patch("{{ renpyweb }}/patches/emscripten.patch")
 
-@task(kind="host-python", platforms="web", always=True)
+@task(kind="host-python", platforms="web", always=True, pythons="2")
 def clean_python_emscripten(c):
     newmakefile = c.path("{{ renpyweb }}/Makefile")
     oldmakefile = c.path("{{ build }}/Makefile")
@@ -82,7 +82,7 @@ def read_environment(c):
     return rv
 
 
-@task(kind="python", platforms="web", always=True)
+@task(kind="python", platforms="web", always=True, pythons="2")
 def inittab(c):
 
     modules = [ ]
@@ -110,7 +110,7 @@ def inittab(c):
     c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "{{ renpyweb }}/inittab.c", modules=modules)
 
 
-@task(kind="host-python", platforms="web", always=True)
+@task(kind="host-python", platforms="web", always=True, pythons="2")
 def build(c):
     environ = read_environment(c)
     subprocess.check_call("make cythonobjclean", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)

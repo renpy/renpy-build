@@ -28,7 +28,7 @@ class Context:
 
     def __init__(self, platform, arch, python, root, tmp, pygame_sdl2, renpy, args):
 
-        # The platform. One of "linux", "windows", "mac", "android", "ios", or "emscripten".
+        # The platform. One of "linux", "windows", "mac", "android", "ios", or "web".
         self.platform = platform
 
         # The architecture. Varies based on the platform.
