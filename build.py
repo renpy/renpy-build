@@ -68,7 +68,7 @@ Platform("ios", "arm64", "3")
 Platform("ios", "sim-x86_64", "3")
 Platform("ios", "sim-arm64", "3")
 
-Platform("web", "wasm", "3")
+Platform("web", "wasm", "3", experimental=True)
 
 def build(args):
     platforms = set(i.strip() for i in args.platforms.split(",") if i)

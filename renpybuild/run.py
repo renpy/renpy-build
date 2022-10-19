@@ -1,14 +1,44 @@
-import jinja2
+import os
+import re
 import shlex
 import subprocess
 import sys
 import sysconfig
 
+import jinja2
+
+
+def emsdk_environment(c):
+    """
+    Loads the emsdk environment into `c`.
+    """
+
+    emsdk = c.path("{{ cross }}/emsdk")
+
+    if not emsdk.exists():
+        raise Error("Foo")
+        return
+
+    rv = dict(os.environ)
+    rv["EMSDK_BASH"] = "1"
+    rv["EMSDK_QUIET"] = "1"
+
+    bash = subprocess.check_output([ str(emsdk), "construct_env" ], env=rv, text=True)
+
+    for l in bash.split("\n"):
+        m = re.match(r'export (\w+)=\"(.*?)\";?$', l)
+        if m:
+            rv[m.group(1)] = m.group(2)
+
+    return rv
 
 def build_environment(c):
     """
     Sets up the build environment inside the context.
     """
+
+    if c.platform == "web" and c.python == "3" and c.kind not in ( "host",  "host-python", "cross" ):
+        emsdk_env = emsdk_environment(c)
 
     c.var("make", "nice make -j 12")
 
@@ -19,6 +49,8 @@ def build_environment(c):
     c.env("CFLAGS", "-I{{ install }}/include")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
+
+
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-linux-gnu")
@@ -82,7 +114,7 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
-    if c.kind == "host":
+    if c.kind == "host" or c.kind == "host-python":
 
         c.env("CC", "ccache gcc -fPIC")
         c.env("CXX", "ccache g++ -fPIC")
