@@ -7,7 +7,6 @@ import sysconfig
 
 import jinja2
 
-
 def emsdk_environment(c):
     """
     Loads the emsdk environment into `c`.
@@ -40,7 +39,12 @@ def build_environment(c):
     if c.platform == "web" and c.python == "3" and c.kind not in ( "host",  "host-python", "cross" ):
         emsdk_env = emsdk_environment(c)
 
-    c.var("make", "nice make -j 12")
+    cpuccount = os.cpu_count()
+
+    if cpuccount > 12:
+        cpuccount -= 4
+
+    c.var("make", "nice make -j " + str(cpuccount))
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -49,8 +53,6 @@ def build_environment(c):
     c.env("CFLAGS", "-I{{ install }}/include")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
-
-
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-linux-gnu")
@@ -82,6 +84,8 @@ def build_environment(c):
         c.var("host_platform", "arm-apple-darwin")
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.var("host_platform", "x86_64-apple-darwin")
+    elif (c.platform == "web") and (c.arch == "wasm"):
+        c.var("host_platform", "wasm32-unknown-emscripten")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
@@ -299,6 +303,7 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
+
     # elif (c.platform == "mac") and (c.arch == "x86_64"):
 
     #     c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
@@ -407,6 +412,24 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
+
+    elif (c.platform == "web") and (c.arch == "wasm") and (c.python == "3"):
+
+        c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
+        c.var("crossbin", "{{ cross }}/upstream/emscripten")
+
+        c.env("CC", "ccache {{ emscriptenbin }}/emcc")
+        c.env("CXX", "ccache {{ emscriptenbin }}/em++")
+        c.env("CPP", "ccache {{ emscriptenbin }}/emcc -E")
+        c.env("LD", "ccache {{ emscriptenbin }}/emcc")
+        c.env("LDSHARED", "ccache {{ emscriptenbin }}/emcc")
+        c.env("AR", "ccache {{ emscriptenbin }}/emar")
+        c.env("RANLIB", "ccache {{ emscriptenbin }}/emranlib")
+        c.env("STRIP", "ccache  {{ emscriptenbin }}/emstrip")
+        c.env("NM", "{{ crossbin}}/llvm-nm")
+        c.env("EMSCRIPTEN_TOOLS", "{{emscriptenbin}}/tools")
+        c.env("EMSCRIPTEN", "{{emscriptenbin}}")
+        c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/local/lib/pkgconfig:{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig")
 
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")

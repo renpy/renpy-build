@@ -2,12 +2,19 @@ from renpybuild.model import task, annotator
 
 version = "3.9.10"
 win_version = "3.9.10"
+web_version = "3.11.0rc2"
 
 @annotator
 def annotate(c):
     if c.python == "3":
-        c.var("pythonver", "python3.9")
-        c.var("pycver", "39")
+
+        if c.platform == "web":
+            c.var("pythonver", "python3.11")
+            c.var("pycver", "311")
+        else:
+            c.var("pythonver", "python3.9")
+            c.var("pycver", "39")
+
         c.include("{{ install }}/include/{{ pythonver }}")
 
 
@@ -16,6 +23,13 @@ def unpack(c):
     c.clean()
 
     c.var("version", version)
+    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+
+@task(kind="python", pythons="3", platforms="web")
+def unpack_web(c):
+    c.clean()
+
+    c.var("version", web_version)
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 @task(kind="python", pythons="3", platforms="windows")
@@ -82,19 +96,26 @@ def patch_windows(c):
 
 
 def common(c):
-    c.var("version", version)
+    if c.platform == "web":
+        c.var("version", web_version)
+        c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
+        c.env("PYTHON_FOR_BUILD", "{{ host }}/web/bin/python3")
+    else:
+        c.var("version", version)
+        c.env("CONFIG_SITE", "config.site")
+        c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python3")
 
     if c.platform == "windows":
         c.chdir("cpython-mingw")
     else:
         c.chdir("Python-{{ version }}")
 
-    with open(c.path("config.site"), "w") as f:
-        f.write("ac_cv_file__dev_ptmx=no\n")
-        f.write("ac_cv_file__dev_ptc=no\n")
+    if c.platform != "web":
 
-    c.env("CONFIG_SITE", "config.site")
-    c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python3")
+        with open(c.path("config.site"), "w") as f:
+            f.write("ac_cv_file__dev_ptmx=no\n")
+            f.write("ac_cv_file__dev_ptc=no\n")
+
 
 
 @task(kind="python", pythons="3", platforms="linux,mac")
@@ -175,7 +196,31 @@ def build_windows(c):
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 
-@task(kind="python", pythons="3")
+@task(kind="python", pythons="3", platforms="web")
+def build_web(c):
+    common(c)
+
+    c.run("""
+        ./configure {{ cross_config }}
+        --prefix="{{ install }}"
+        --with-emscripten-target=browser
+        --with-build-python={{host}}/web/bin/python3
+        """)
+
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
+
+    c.run("""{{ make }}""")
+    c.run("""{{ make }} install""")
+    c.copy("{{ host }}/web/bin/python3", "{{ install }}/bin/hostpython3")
+
+    for i in [ "ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+        c.var("i", i)
+
+        c.copy(
+            "{{ host }}/web/lib/{{pythonver}}/{{ i }}",
+            "{{ install }}/lib/{{pythonver}}/{{ i }}")
+
+@task(kind="python", pythons="3", platforms="all")
 def pip(c):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
     c.run("""{{ install }}/bin/hostpython3 -s -m pip install --upgrade

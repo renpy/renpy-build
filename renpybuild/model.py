@@ -456,6 +456,11 @@ class Task:
             if not check(self.pythons, context.python):
                 return
 
+        else:
+
+            context.platform = "host"
+            context.arch = "host"
+
         context.set_names(self.kind, self.task, self.name)
 
         if context.task_name in ran_tasks:
