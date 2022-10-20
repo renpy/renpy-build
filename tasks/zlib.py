@@ -19,3 +19,8 @@ def build(c):
     c.run("./configure {{ configure_cross }} --static --prefix={{install}}")
     c.run("{{ make }}")
     c.run("make install")
+
+
+@task(platforms="web", pythons="3")
+def build_web(c):
+    c.run("embuilder build zlib")
