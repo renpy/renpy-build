@@ -118,6 +118,9 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
+    c.var("llver", "13")
+    c.var("lipo", "llvm-lipo-{{ llver }}")
+
     if c.kind == "host" or c.kind == "host-python":
 
         c.env("CC", "ccache gcc -fPIC")
@@ -327,7 +330,6 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=10.10")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=10.10")
 
-        c.var("llver", "13")
         c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-darwin14 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
         c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
@@ -338,15 +340,12 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.var("lipo", "llvm-lipo-{{ llver }}")
-
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
         c.env("MACOSX_DEPLOYMENT_TARGET", "11.0")
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=11.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=11.0")
 
-        c.var("llver", "13")
         c.var("clang_args", "-fuse-ld=lld -target arm64-apple-macos11 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
         c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
@@ -357,11 +356,8 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.var("lipo", "llvm-lipo-{{ llver }}")
-
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
-        c.var("llver", "13")
         c.var("clang_args", "-fuse-ld=lld -target arm64-apple-ios13.0 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
         c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
@@ -372,14 +368,11 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.var("lipo", "llvm-lipo-{{ llver }}")
-
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -miphoneos-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
-        c.var("llver", "13")
         c.var("clang_args", "-fuse-ld=lld -target arm64-apple-ios13.0-simulator -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
         c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
@@ -390,14 +383,11 @@ def build_environment(c):
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
 
-        c.var("lipo", "llvm-lipo-{{ llver }}")
-
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
-        c.var("llver", "13")
         c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-ios13.0-simulator -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
 
         c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
@@ -407,8 +397,6 @@ def build_environment(c):
         c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
         c.env("STRIP", "ccache llvm-strip-{{ llver }}")
         c.env("NM", "llvm-nm-{{ llver }}")
-
-        c.var("lipo", "llvm-lipo-{{ llver }}")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
