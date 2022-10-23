@@ -18,18 +18,16 @@ def emsdk_environment(c):
         raise Error("Foo")
         return
 
-    rv = dict(os.environ)
-    rv["EMSDK_BASH"] = "1"
-    rv["EMSDK_QUIET"] = "1"
+    env = dict(os.environ)
+    env["EMSDK_BASH"] = "1"
+    env["EMSDK_QUIET"] = "1"
 
-    bash = subprocess.check_output([ str(emsdk), "construct_env" ], env=rv, text=True)
+    bash = subprocess.check_output([ str(emsdk), "construct_env" ], env=env, text=True)
 
     for l in bash.split("\n"):
         m = re.match(r'export (\w+)=\"(.*?)\";?$', l)
         if m:
-            rv[m.group(1)] = m.group(2)
-
-    return rv
+            c.env(m.group(1), m.group(2))
 
 def build_environment(c):
     """
