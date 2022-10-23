@@ -1,9 +1,9 @@
 from renpybuild.model import task
 
-version = "1.1.0"
+version = "1.2.4"
 
 
-@task()
+@task(platforms="all")
 def unpack(c):
     c.clean()
 
@@ -11,7 +11,7 @@ def unpack(c):
     c.run("tar xzf {{source}}/libwebp-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="all")
 def build(c):
     c.var("version", version)
     c.chdir("libwebp-{{version}}")
