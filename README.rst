@@ -49,7 +49,7 @@ Change into the renpy-build directory, and run::
 
     ./prepare.sh
 
-**This will globally change your system. **  It will install packages from Ubuntu
+**This will globally change your system.**  It will install packages from Ubuntu
 and LLVM repositories. Please make sure you're comfortable with
 this change before continuing.
 
