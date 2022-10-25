@@ -66,7 +66,7 @@ Building
 
 From the renpy-build directory, activate the virtualenv with the command::
 
-    . tmp/virtualenv.py2/bin/activate
+    . tmp/virtualenv.py3/bin/activate
 
 It should then be possible to build using the command::
 
@@ -74,29 +74,62 @@ It should then be possible to build using the command::
 
 The build command can take some options:
 
+`--python <version>`
+    The python version to build. Can be "3" or "2", defaults to 3.
+
 `--platform <name>`
-    The platform to build for. One of linux, windows, mac, android, or ios.
+    The platform to build for. One of linux, windows, mac, android, ios, or web.
 
 `--arch <name>`
     The architecture to build for. The architectures vary by platform,
     here is a copy of the table from build.py. ::
 
-        Platform("linux", "x86_64")
-        Platform("linux", "i686")
-        Platform("linux", "armv7l")
+        # Python 2
 
-        Platform("windows", "x86_64")
-        Platform("windows", "i686")
+        Platform("linux", "x86_64", "2")
+        Platform("linux", "i686", "2")
+        Platform("linux", "aarch64", "2")
+        Platform("linux", "armv7l", "2")
 
-        Platform("mac", "x86_64")
+        Platform("windows", "x86_64", "2")
+        Platform("windows", "i686", "2")
 
-        Platform("android", "x86_64")
-        Platform("android", "arm64_v8a")
-        Platform("android", "armeabi_v7a")
+        Platform("mac", "x86_64", "2")
+        Platform("mac", "arm64", "2")
 
-        Platform("ios", "arm64")
-        Platform("ios", "armv7s")
-        Platform("ios", "x86_64")
+        Platform("android", "x86_64", "2")
+        Platform("android", "arm64_v8a", "2")
+        Platform("android", "armeabi_v7a", "2")
+
+        Platform("ios", "arm64", "2")
+        Platform("ios", "sim-x86_64", "2")
+        Platform("ios", "sim-arm64", "2")
+
+        Platform("web", "wasm", "2")
+
+        # Python 3
+
+        Platform("linux", "x86_64", "3")
+        Platform("linux", "aarch64", "3")
+        Platform("linux", "armv7l", "3")
+
+        Platform("windows", "x86_64", "3")
+
+        Platform("mac", "x86_64", "3")
+        Platform("mac", "arm64", "3")
+
+        Platform("android", "x86_64", "3")
+        Platform("android", "arm64_v8a", "3")
+        Platform("android", "armeabi_v7a", "3")
+
+        Platform("ios", "arm64", "3")
+        Platform("ios", "sim-x86_64", "3")
+        Platform("ios", "sim-arm64", "3")
+
+        Platform("web", "wasm", "3", experimental=True)
+
+    `--experimental`
+        This builds platforms marked as experimental.
 
 A second build should be faster than the first, as it will only rebuild
 Ren'Py, pygame_sdl2, and other components that are likely to frequently
