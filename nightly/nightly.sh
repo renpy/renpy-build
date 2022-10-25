@@ -43,7 +43,7 @@ if [ -z "$1" ]; then
 fi
 
 BASE="$1"
-VENV="$1/tmp/virtualenv.py2"
+VENV="$1/tmp/virtualenv.py3"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 

@@ -8,7 +8,10 @@ REFS=$ROOT
 BASE="$ROOT"
 
 # Needed to build things.
-sudo apt-get install -y git build-essential ccache python-dev-is-python2 python3-dev unzip
+sudo apt-get install -y git build-essential ccache unzip autoconf autoconf-archive gcc-9 g++-9
+
+# Needed to buyld python things.
+sduo apt-get install -y python2-dev python3-dev
 
 # Needed to install python2 pip
 sudo apt-get install -y curl
@@ -26,7 +29,7 @@ sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev
 sudo apt-get install -y libssl-dev libbz2-dev
 
 # Needed for windows.
-sudo apt-get install -y mingw-w64 autoconf
+sudo apt-get install -y mingw-w64
 
 # Needed for mac
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
@@ -42,31 +45,12 @@ sudo apt-get install -y quilt
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt-get install -y \
     libavcodec-dev libavformat-dev \
-    libavresample-dev libswresample-dev libswscale-dev libfreetype6-dev libglew1.6-dev \
-    libfribidi-dev libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev \
-    libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-turbo8-dev autoconf-archive \
-    gcc-9 g++-9
+    libswresample-dev libswscale-dev libfreetype6-dev libfribidi-dev libsdl2-dev \
+    libsdl2-image-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-dev
 
-# Unpack clang. This doesn't seem to be needed.
-# sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/10/lib/ # 20.4
-# sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/14/lib/ # 22.4
+# Install the programs and virtualenvs.
 
-exit
-
-mkdir -p "$BASE/tmp"
-
-GET_PIP="$ROOT/tmp/get-pip.py"
-
-if [ ! -e $GET_PIP ]; then
-    curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o $GET_PIP
-    sudo python2 $GET_PIP
-fi
-
-pip2 install virtualenv
-
-# Set up the environment variables.
-
-VENV="$ROOT/tmp/virtualenv.py2"
+VENV="$ROOT/tmp/virtualenv.py3"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
