@@ -43,7 +43,7 @@ def build_web(c):
     c.var("version", web_version)
 
     c.chdir("Python-{{ version }}")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
 
     c.run("""./configure --prefix="{{ host }}/web" """)
     c.run("""{{ make }} install""")
