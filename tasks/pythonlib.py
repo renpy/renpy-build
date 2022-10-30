@@ -561,7 +561,8 @@ def python3(c):
     # used_rules.add("steamapi")
 
     if rules - used_rules:
-        raise Exception(f"Unused rules: {rules - used_rules}")
+        if c.platform != "web":
+            raise Exception(f"Unused rules: {rules - used_rules}")
 
     c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/site.py")
     c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
@@ -578,9 +579,20 @@ def python3(c):
     c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
-
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
     with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
         f.write("lib-dynload needs to exist to stop an exec_prefix error.\n")
 
     c.run("cp {{ install }}/lib/{{ pythonver }}/site-packages/certifi/cacert.pem {{ distlib }}/{{ pythonver }}/certifi/cacert.pem")
+
+
+@task(kind="python", platforms="web", pythons="3", always=True)
+def python3_web(c):
+    """
+    This should do the same work as Python 3, but
+    """
+
+    for k, v in sorted(c.variables.items()):
+        print(k, v)
+
+    python3(c)

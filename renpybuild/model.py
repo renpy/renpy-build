@@ -73,14 +73,6 @@ class Context:
         self.renpyweb = self.root / "renpyweb"
         self.var("renpyweb", self.renpyweb)
 
-        self.var("dist", self.renpy)
-        self.var("distlib", self.renpy / "lib")
-
-        if self.platform == "mac":
-            self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
-        else:
-            self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
-
         self.var("rapt", "{{ renpy }}/rapt")
         self.var("raptver", "{{ rapt }}" + self.python)
 
@@ -171,6 +163,18 @@ class Context:
         self.var("linuxinstall", self.tmp / "install.linux-x86_64")
 
         self.var("hostpython", "{{ install }}/bin/hostpython{{ c.python }}")
+
+        if self.platform == "web":
+            self.var("dist", self.install / "dist")
+        else:
+            self.var("dist", self.renpy)
+
+        self.var("distlib", "{{dist}}/lib")
+
+        if self.platform == "mac":
+            self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
+        else:
+            self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
 
         renpybuild.run.build_environment(self)
 

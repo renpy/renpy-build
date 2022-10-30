@@ -15,7 +15,7 @@ def emsdk_environment(c):
     emsdk = c.path("{{ cross }}/emsdk")
 
     if not emsdk.exists():
-        raise Error("Foo")
+        raise Error("Emsdk not found.")
         return
 
     env = dict(os.environ)

@@ -44,8 +44,8 @@ from . import steam
 
 from . import pygame_sdl2
 from . import librenpy
-from . import renpython
 from . import pythonlib
+from . import renpython
 
 from . import renpysh
 from . import renios

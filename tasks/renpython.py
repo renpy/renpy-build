@@ -431,3 +431,68 @@ def link_ios(c):
     c.run("""{{ AR }} -r librenpython.a librenpython.o""")
     c.run("""install -d {{install}}/lib""")
     c.run("""install librenpython.a {{ install }}/lib""")
+
+
+@task(kind="python", platforms="web", pythons="3", always=True)
+def build_web(c):
+
+    c.run("""
+    {{ CC }} {{ CFLAGS }}
+
+    -DPLATFORM=\\"{{ c.platform }}\\"
+    -DARCH=\\"{{ c.arch }}\\"
+    -DPYTHONVER=\\"{{ pythonver }}\\"
+    -DPYCVER=\\"{{ pycver }}\\"
+    -D{{ c.platform|upper }}
+
+    -c -o librenpython.o
+    {{ runtime }}/librenpython{{ c.python }}.c
+    """)
+
+
+@task(kind="python", platforms="web", pythons="3", always=True)
+def link_web(c):
+
+    c.run("""
+    {{ CC }} {{ LDFLAGS }}
+
+    -o renpy.html
+    librenpython.o
+    {{ runtime }}/launcher{{ c.python }}_posix.c
+
+    -l{{ pythonver }}
+
+    -lbz2
+    -lz
+    -lm
+
+    --preload-file {{ dist }}@/
+    """)
+
+    """
+    -shared
+    -Wl,-Bsymbolic
+
+    -lrenpy
+    -lz
+
+    -lavformat
+    -lavcodec
+    -lswscale
+    -lswresample
+    -lavutil
+
+    -lSDL2_image
+    -lSDL2
+    -lGL
+    -ljpeg
+    -lpng
+    -lwebp
+    -lfribidi
+    -lfreetype
+    -lffi
+    -ldl
+    -lssl
+    -lcrypto
+    -lpthread
+    """

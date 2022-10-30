@@ -347,7 +347,9 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
 
+#ifndef WEB
     init_librenpy();
+#endif
 
     // Initialize Config.
     if (isolated) {
@@ -423,6 +425,10 @@ int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
  * This is called from the launcher executable, to start Ren'Py running.
  */
 int EXPORT launcher_main(int argc, char **argv) {
+
+#ifdef WEB
+    argv[0] = "./main";
+#endif
 
     preinitialize(1, argc, argv);
 
