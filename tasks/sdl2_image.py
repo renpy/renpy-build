@@ -3,7 +3,7 @@ from renpybuild.model import task
 version = "2.0.5"
 
 
-@task()
+@task(platforms="all")
 def unpack(c):
     c.clean()
 
@@ -11,13 +11,15 @@ def unpack(c):
     c.run("tar xzf {{source}}/SDL2_image-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="all")
 def build(c):
     c.var("version", version)
     c.chdir("SDL2_image-{{version}}")
 
     if c.platform == "windows":
         c.env("ac_cv_lib_jpeg_jpeg_CreateDecompress", "yes")
+
+    c.run("""cp /usr/share/misc/config.sub config.sub""")
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
@@ -34,4 +36,3 @@ def build(c):
 
     c.run("""{{ make }}""")
     c.run("""make install""")
-

@@ -304,24 +304,6 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
-
-    # elif (c.platform == "mac") and (c.arch == "x86_64"):
-
-    #     c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
-
-    #     c.env("PATH", "{{ cross }}/bin:{{ PATH }}")
-
-    #     c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
-
-    #     c.env("CC", "ccache {{ crossbin }}clang -fPIC -O3 -pthread")
-    #     c.env("CXX", "ccache {{ crossbin }}clang++ -fPIC -O3 -pthread")
-    #     c.env("CPP", "ccache {{ crossbin }}clang -E ")
-    #     c.env("LD", "ccache {{ crossbin}}ld")
-    #     c.env("AR", "ccache {{ crossbin }}ar")
-    #     c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-    #     c.env("STRIP", "ccache  {{ crossbin }}strip")
-    #     c.env("NM", "{{ crossbin}}nm")
-
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
         c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
@@ -400,6 +382,8 @@ def build_environment(c):
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.python == "3"):
+
+        c.env("CFLAGS", "{{ CFLAGS }} -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
 
         c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
         c.var("crossbin", "{{ cross }}/upstream/emscripten")

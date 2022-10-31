@@ -6,7 +6,7 @@ def clean(c):
     c.clean()
 
 
-@task(kind="host-python", always=True)
+@task(kind="host-python", platforms="all", always=True)
 def gen_static(c):
 
     c.chdir("{{ renpy }}/module")
@@ -15,7 +15,7 @@ def gen_static(c):
     c.run("{{ hostpython }} setup.py generate")
 
 
-@task(kind="python", always=True)
+@task(kind="python", platforms="all", always=True)
 def build(c):
 
     c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/module" """)
@@ -39,6 +39,9 @@ def build(c):
                     continue
 
                 parts = l.split()
+
+                if parts[0] == "renpy.compat.dictviews":
+                    continue
 
                 modules.append(parts[0])
 

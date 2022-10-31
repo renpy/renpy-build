@@ -8,7 +8,7 @@ def annotate(c):
     c.include("{{ install }}/include/fribidi")
 
 
-@task()
+@task(platforms="all")
 def unpack(c):
     c.clean()
 
@@ -16,11 +16,12 @@ def unpack(c):
     c.run("tar xjf {{source}}/fribidi-{{version}}.tar.bz2")
 
 
-@task()
+@task(platforms="all")
 def build(c):
     c.var("version", version)
     c.chdir("fribidi-{{version}}")
 
+    c.run("""cp /usr/share/misc/config.sub config.sub""")
     c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
     c.run("""make install """)

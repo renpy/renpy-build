@@ -20,7 +20,7 @@ def hostunpack(c):
     c.patch("freetype-otvalid.diff")
 
 
-@task()
+@task(platforms="all")
 def unpack(c):
     c.clean()
 
@@ -45,7 +45,7 @@ def hostbuild(c):
     c.run("""cp objs/apinames {{host}}/freetype-apinames""")
 
 
-@task()
+@task(platforms="all")
 def build(c):
     c.var("version", version)
     c.chdir("freetype-{{version}}")

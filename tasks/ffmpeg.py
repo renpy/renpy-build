@@ -3,7 +3,7 @@ from renpybuild.model import task
 version = "4.3.1"
 
 
-@task()
+@task(platforms="all")
 def unpack(c):
     c.clean()
 
@@ -162,6 +162,103 @@ def build(c):
         --disable-sndio
         --disable-xlib
 
+
+        --disable-amf
+        --disable-audiotoolbox
+        --disable-cuda-llvm
+        --disable-d3d11va
+        --disable-dxva2
+        --disable-ffnvcodec
+        --disable-nvdec
+        --disable-nvenc
+        --disable-v4l2-m2m
+        --disable-vaapi
+        --disable-vdpau
+        --disable-videotoolbox
+    """)
+
+    c.run("""{{ make }} V=1""")
+    c.run("""make install""")
+
+
+@task(platforms="web")
+def build_web(c):
+
+    c.var("version", version)
+    c.chdir("ffmpeg-{{version}}")
+
+    c.run("""
+    ./configure
+        --prefix="{{ install }}"
+
+        --arch=emscripten
+        --target-os=none
+
+        --cc="{{ CC }}"
+        --cxx="{{ CXX }}"
+        --ld="{{ CC }}"
+        --ar="{{ AR }}"
+        --ranlib="{{ RANLIB }}"
+        --strip="{{ STRIP }}"
+        --nm="{{ NM }}"
+
+        --extra-cflags="{{ CFLAGS }}"
+        --extra-cxxflags="{{ CFLAGS }}"
+        --extra-ldflags="{{ LDFLAGS }}"
+        --ranlib="{{ RANLIB }}"
+
+        --enable-pic
+        --enable-static
+        --disable-stripping
+
+        --disable-pthreads
+
+        --disable-all
+        --disable-everything
+
+        --enable-cross-compile
+        --enable-runtime-cpudetect
+
+        --disable-mmx
+        --disable-mmxext
+
+        --enable-ffmpeg
+        --enable-ffplay
+        --disable-doc
+        --enable-avcodec
+        --enable-avformat
+        --enable-swresample
+        --enable-swscale
+        --enable-avfilter
+        --enable-avresample
+
+        --disable-bzlib
+
+        --enable-demuxer=au
+        --enable-demuxer=flac
+        --enable-demuxer=mp3
+        --enable-demuxer=ogg
+        --enable-demuxer=wav
+
+        --enable-decoder=flac
+        --enable-decoder=mp2
+        --enable-decoder=mp3
+        --enable-decoder=pcm_dvd
+        --enable-decoder=pcm_s16be
+        --enable-decoder=pcm_s16le
+        --enable-decoder=pcm_s8
+        --enable-decoder=pcm_u16be
+        --enable-decoder=pcm_u16le
+        --enable-decoder=pcm_u8
+        --enable-decoder=vorbis
+        --enable-decoder=opus
+
+        --disable-iconv
+        --disable-alsa
+        --disable-libxcb
+        --disable-lzma
+        --disable-sndio
+        --disable-xlib
 
         --disable-amf
         --disable-audiotoolbox
