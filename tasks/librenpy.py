@@ -6,8 +6,17 @@ def clean(c):
     c.clean()
 
 
-@task(kind="host-python", platforms="all", always=True)
-def gen_static(c):
+@task(kind="host-python", pythons="2", always=True)
+def gen_static2(c):
+
+    c.chdir("{{ renpy }}/module")
+    c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
+    c.env("RENPY_STATIC", "1")
+    c.run("{{ hostpython }} setup.py generate")
+
+
+@task(kind="host-python", platforms="all", pythons="3", always=True)
+def gen_static3(c):
 
     c.chdir("{{ renpy }}/module")
     c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
@@ -17,6 +26,9 @@ def gen_static(c):
 
 @task(kind="python", platforms="all", always=True)
 def build(c):
+
+    if c.platform == "web" and c.python == "2":
+        return
 
     c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/module" """)
 
