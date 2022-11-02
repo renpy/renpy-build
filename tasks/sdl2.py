@@ -109,8 +109,3 @@ def rapt(c):
 #     c.run("""install {{ cross }}/android-ndk-r21d/sources/cxx-stl/llvm-libc++/libs/{{ jni_arch }}/libc++_shared.so {{ jniLibs }}""")
 
     c.copytree("android-project/app/src/main/java/org/libsdl", "{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
-
-
-@task(platforms="web", pythons="3")
-def web(c):
-    c.run("""embuilder build sdl2""")

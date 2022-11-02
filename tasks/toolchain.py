@@ -165,3 +165,11 @@ def emsdk(c):
     c.chdir("{{ cross }}")
     c.run("./emsdk install {{ emsdk_version }}")
     c.run("./emsdk activate {{ emsdk_version }}")
+
+@task(platforms="web")
+def embuilder(c):
+    c.run("embuilder build bzip2")
+    c.run("embuilder build zlib")
+    c.run("embuilder build libjpeg")
+    c.run("embuilder build libpng")
+    c.run("embuilder build sdl2")
