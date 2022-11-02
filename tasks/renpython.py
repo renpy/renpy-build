@@ -462,37 +462,28 @@ def link_web(c):
 
     -l{{ pythonver }}
 
-    -lbz2
-    -lz
-    -lm
-
-    --preload-file {{ dist }}@/
-    """)
-
-    """
-    -shared
-    -Wl,-Bsymbolic
-
     -lrenpy
-    -lz
 
     -lavformat
     -lavcodec
     -lswscale
     -lswresample
     -lavutil
-
     -lSDL2_image
     -lSDL2
-    -lGL
     -ljpeg
     -lpng
     -lwebp
     -lfribidi
     -lfreetype
-    -lffi
-    -ldl
-    -lssl
-    -lcrypto
-    -lpthread
-    """
+
+    -lbz2
+    -lz
+    -lm
+
+    --preload-file {{ dist }}@/
+
+    -s FULL_ES2=1 \
+    -s MAX_WEBGL_VERSION=2 \
+    --emit-symbol-map \
+    """)

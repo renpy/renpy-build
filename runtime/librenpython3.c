@@ -347,9 +347,7 @@ static void preinitialize(int isolated, int argc, char **argv) {
 
     Py_PreInitializeFromBytesArgs(&preconfig, argc, argv);
 
-#ifndef WEB
     init_librenpy();
-#endif
 
     // Initialize Config.
     if (isolated) {
