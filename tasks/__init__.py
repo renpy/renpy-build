@@ -22,6 +22,8 @@ from . import hostpython2
 from . import python2
 from . import python3
 
+from . import emscripten_pyx
+
 from . import live2d
 
 from . import rapt
