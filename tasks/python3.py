@@ -208,6 +208,7 @@ def build_web(c):
         """)
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
 
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
