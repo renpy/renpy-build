@@ -34,7 +34,7 @@ def build_environment(c):
     Sets up the build environment inside the context.
     """
 
-    if c.platform == "web" and c.python == "3" and c.kind not in ( "host",  "host-python", "cross" ):
+    if c.platform == "web" and c.kind not in ( "host",  "host-python", "cross" ):
         emsdk_env = emsdk_environment(c)
 
     cpuccount = os.cpu_count()
