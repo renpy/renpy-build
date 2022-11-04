@@ -12,7 +12,7 @@ void init_librenpy(void);
 #define EXPORT
 #endif
 
-/* #define DEBUG_EXISTS /* */
+#undef DEBUG_EXISTS
 
 /* The name of the directory containing the exe. */
 static char *exedir;
@@ -359,4 +359,3 @@ int EXPORT launcher_main(int argc, char **argv) {
     init_librenpy();
     return Py_Main(argc + 1, new_argv);
 }
-

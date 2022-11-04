@@ -19,7 +19,7 @@ void init_librenpy(void);
 #define EXPORT
 #endif
 
-/* #define DEBUG_EXISTS /* */
+#undef DEBUG_EXISTS
 
 /* The name of the directory containing the exe. */
 static char *exedir;
