@@ -593,10 +593,7 @@ def python3(c):
 @task(kind="python", platforms="web", pythons="3", always=True)
 def python3_web(c):
     """
-    This should do the same work as Python 3, but
+    This should do the same work as Python 3, but for the web version of Python.
     """
-
-    for k, v in sorted(c.variables.items()):
-        print(k, v)
 
     python3(c)

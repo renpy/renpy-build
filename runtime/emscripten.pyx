@@ -170,7 +170,12 @@ def async_call(py_function, py_arg, millis):
 def exit_with_live_runtime():
     emscripten_exit_with_live_runtime();
 
-def sleep(ms):
+def sleep(ms,  stack_trace=False):
+    if stack_trace:
+        emscripten_run_script(r"""
+        console.log(stackTrace());
+        """);
+
     emscripten_sleep(ms)
 
 # Emterpreter-only

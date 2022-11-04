@@ -453,8 +453,15 @@ def build_web(c):
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c):
 
+    c.var("debug_asyncify", True)
+
+
     c.run("""
     {{ CC }} {{ LDFLAGS }}
+
+    {% if debug_asyncify %}
+    -g2
+    {% endif %}
 
     -o renpy.html
     librenpython.o
@@ -483,7 +490,11 @@ def link_web(c):
 
     --preload-file {{ dist }}@/
 
-    -s FULL_ES2=1 \
-    -s MAX_WEBGL_VERSION=2 \
-    --emit-symbol-map \
+    -sFULL_ES2=1
+    -sMAX_WEBGL_VERSION=2
+    --emit-symbol-map
+
+    -sASYNCIFY=1
+    -sEXPORTED_RUNTIME_METHODS=['stackTrace']
+
     """)
