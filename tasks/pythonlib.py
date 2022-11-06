@@ -568,17 +568,18 @@ def python3(c):
         if c.platform != "web":
             raise Exception(f"Unused rules: {rules - used_rules}")
 
-    c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/site.py")
+    c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/sitecustomize.py")
     c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
     import socket
     if socket.gethostname() == "eileen":
-        with open(c.path("{{ distlib }}/{{ pythonver }}/site.py"), "a") as f:
+        with open(c.path("{{ distlib }}/{{ pythonver }}/sitecustomize.py"), "a") as f:
             f.write("\n")
-            f.write("renpy_build_official = True\n")
+            f.write("import site\n")
+            f.write("site.renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/site.py")
-    c.unlink("{{ distlib }}/{{ pythonver }}/site.py")
+    c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
+    c.unlink("{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
     c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
