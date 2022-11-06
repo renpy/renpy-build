@@ -569,7 +569,6 @@ def python3(c):
             raise Exception(f"Unused rules: {rules - used_rules}")
 
     c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/sitecustomize.py")
-    c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
     import socket
     if socket.gethostname() == "eileen":
@@ -581,6 +580,7 @@ def python3(c):
     c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
+    c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
 

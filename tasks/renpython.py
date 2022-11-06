@@ -497,4 +497,7 @@ def link_web(c):
     -sASYNCIFY=1
     -sEXPORTED_RUNTIME_METHODS=['stackTrace']
 
+    -sINITIAL_MEMORY=192MB
+    -sALLOW_MEMORY_GROWTH=1
+
     """)
