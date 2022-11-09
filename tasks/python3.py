@@ -2,7 +2,7 @@ from renpybuild.model import task, annotator
 
 version = "3.9.10"
 win_version = "3.9.10"
-web_version = "3.11.0rc2"
+web_version = "3.11.0"
 
 @annotator
 def annotate(c):

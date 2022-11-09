@@ -2,7 +2,7 @@ from renpybuild.model import task
 
 version = "3.9.10"
 
-web_version = "3.11.0rc2"
+web_version = "3.11.0"
 
 
 @task(kind="host", pythons="3")
