@@ -200,8 +200,10 @@ def build_windows(c):
 def build_web(c):
     common(c)
 
+    c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
+
     c.run("""
-        ./configure {{ cross_config }}
+        ./configure -C {{ cross_config }}
         --prefix="{{ install }}"
         --with-emscripten-target=browser
         --with-build-python={{host}}/web/bin/python3
