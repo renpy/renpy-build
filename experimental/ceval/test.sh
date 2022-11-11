@@ -34,7 +34,7 @@ done
 cd $(dirname $0)
 
 rm -Rf Python-3.11.0
-tar xaf ../source/Python-3.11.0.tgz
+tar xaf ../../source/Python-3.11.0.tgz
 
 ./opfunc_transform.py Python-3.11.0/Python/ceval.c
 
