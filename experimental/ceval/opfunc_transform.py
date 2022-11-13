@@ -128,6 +128,7 @@ class LineList:
 
         while self.lines:
             line = self.lines.pop(0)
+            newlines.append(line)
 
             if line.startswith(prefix):
                 break
@@ -161,17 +162,27 @@ def handle_target(lb):
     Handle a single TARGET() block.
     """
 
+    name = re.search(r"TARGET\((.*)\)", lb.lines[0]).group(1)
+    if name == "MATCH_CLASS":
+        lb.replace("ctx->names", "names")
+
+    lb.sub(r"\breturn (.*);", r"ctx->return_value = \1; return opfunc_return_value;")
+
     lb.sub(r"TARGET\(([^)]+)\)", r"static opfunc_return opfunc_\1(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame)")
     lb.sub(r"\bgoto ", "return opfunc_goto_")
 
     lb.sub(r"\bDISPATCH\(\)", "return opfunc_goto_dispatch")
     lb.sub(r"\bDISPATCH_GOTO\(\)", "return opfunc_goto_dispatch_goto")
+    lb.sub(r"\bDISPATCH_SAME_OPARG\(\)", "return opfunc_goto_dispatch_same_oparg")
+    lb.sub(r"\bTRACE_FUNCTION_EXIT\(\)", "return opfunc_goto_trace_function_exit")
+
+
 
     return lb
 
 def handle_eval_frame(lb, opfuncs):
 
-    lb.replace("#define USE_COMPUTED_GOTOS 1", "#define USE_COMPUTED_GOTOS 0")
+    lb.replace("#define USE_COMPUTED_GOTOS 0", "#define USE_COMPUTED_GOTOS 1")
 
     lb.replace("int lastopcode = 0;", "")
     lb.replace("uint8_t opcode;", "")
@@ -201,9 +212,23 @@ def handle_eval_frame(lb, opfuncs):
 
     lb.replace("goto miss;", "return opfunc_goto_miss;")
 
+    lb.replace('#include "opcode_targets.h"', "")
+
+    lb.replace("#define is_method(ctx->stack_pointer, args)", "#define is_method(stack_pointer, args)")
+
+
     lb.replace(
-        "Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.ctx->eval_breaker;",
-        "ctx->eval_breaker = &tstate->interp->ceval->eval_breaker;")
+        "_Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;",
+        "ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;"
+    )
+
+
+
+    # lb.replace(
+    #     "_Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;
+
+    #     "_Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.ctx->eval_breaker;",
+    #     "ctx->eval_breaker = &tstate->interp->ceval->eval_breaker;")
 
 
     targets = [ ]
@@ -217,10 +242,14 @@ def handle_eval_frame(lb, opfuncs):
 
     lines += lb.rest()
 
+
     lines.insert_at_start("""
 typedef enum {
+    opfunc_return_value,
     opfunc_goto_dispatch,
     opfunc_goto_dispatch_goto,
+    opfunc_goto_dispatch_same_oparg,
+    opfunc_jump_to_instruction,
     opfunc_goto_error,
     opfunc_goto_binary_subscr_dict_error,
     opfunc_goto_call_function,
@@ -230,8 +259,17 @@ typedef enum {
     opfunc_goto_resume_with_error,
     opfunc_goto_start_frame,
     opfunc_goto_unbound_local_error,
-    opfunc_goto_miss
+    opfunc_goto_miss,
+    opfunc_goto_exit_unwind,
+    opfunc_goto_do_tracing,
+    opfunc_goto_unknown_opcode,
+    opfunc_goto_trace_function_exit,
 } opfunc_return;
+
+
+typedef struct {
+    PyObject *kwnames;
+} CtxCallShape;
 
 typedef struct {
     int lastopcode;
@@ -245,7 +283,11 @@ typedef struct {
     _Py_CODEUNIT *next_instr;
     PyObject **stack_pointer;
     _Py_atomic_int *eval_breaker;
-    CallShape call_shape;
+
+    CtxCallShape call_shape;
+
+    PyObject *return_value;
+
 } opfunc_ctx;
 
 typedef opfunc_return (*opfunc)(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame);
@@ -253,9 +295,27 @@ typedef opfunc_return (*opfunc)(opfunc_ctx *ctx, PyThreadState *tstate, _PyInter
 extern opfunc opfuncs[];
 """)
 
+    lines.insert_after("_PyEval_EvalFrameDefault(", """
+
+#undef DISPATCH
+#define DISPATCH() goto dispatch
+
+#undef DISPATCH_GOTO
+#define DISPATCH_GOTO() goto dispatch_goto
+
+    opfunc_ctx opfunc_context;
+    opfunc_ctx *ctx = &opfunc_context;
+
+    ctx->lastopcode = 0;
+    ctx->lltrace = 0;
+""", skip=1)
+
     lines.insert_at_end("""
 #undef PREDICT
 #define PREDICT(op)
+
+#undef PREDICTED
+#define PREDICTED(op)
 
 #undef CHECK_EVAL_BREAKER
 #define CHECK_EVAL_BREAKER() \\
@@ -263,11 +323,26 @@ extern opfunc opfuncs[];
     if (_Py_atomic_load_relaxed_int32(ctx->eval_breaker)) { \\
         return opfunc_goto_handle_eval_breaker; \\
     }
+
+#undef JUMP_TO_INSTRUCTION
+#define JUMP_TO_INSTRUCTION(op) { ctx->opcode = op; return opfunc_jump_to_instruction; }
 """)
 
     for t in targets:
         t.removeprefix("        ")
         lines += handle_target(t)
+
+    lines.insert_at_end("""
+static opfunc_return opfunc_unknown_opcode(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame) {
+    return opfunc_goto_unknown_opcode;
+}
+
+static opfunc_return opfunc_DO_TRACING(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame) {
+    return opfunc_goto_do_tracing;
+}
+""")
+
+
 
     lines.insert_at_end("opfunc opfuncs[] = {")
 
@@ -277,6 +352,7 @@ extern opfunc opfuncs[];
     lines.insert_at_end("};")
 
     print(lines.text())
+
     return lines
 
 def opcode_funcs(ceval):
@@ -297,8 +373,6 @@ def opcode_funcs(ceval):
             rv.append("opfunc_" + i.removeprefix("&&TARGET_"))
         elif i == "&&_unknown_opcode":
             rv.append("opfunc_unknown_opcode")
-
-    print(rv)
 
     return rv
 
