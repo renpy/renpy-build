@@ -202,39 +202,30 @@ def handle_eval_frame(lb, opfuncs):
     lb.replace("CallShape call_shape;", "")
 
 
-    lb.replace_word("lastopcode", "ctx->lastopcode")
-    lb.replace_word("opcode", "ctx->opcode")
-    lb.replace_word("oparg", "ctx->oparg")
-    lb.replace_word("lltrace", "ctx->lltrace")
-    lb.replace_word("cframe", "ctx->cframe")
-    lb.replace_word("names", "ctx->names")
-    lb.replace_word("consts", "ctx->consts")
-    lb.replace_word("first_instr", "ctx->first_instr")
-    lb.replace_word("next_instr", "ctx->next_instr")
-    lb.replace_word("stack_pointer", "ctx->stack_pointer")
-    lb.replace_word("eval_breaker", "ctx->eval_breaker")
-    lb.replace_word("call_shape", "ctx->call_shape")
+    lb.replace_word("lastopcode", "(ctx->lastopcode)")
+    lb.replace_word("opcode", "(ctx->opcode)")
+    lb.replace_word("oparg", "(ctx->oparg)")
+    lb.replace_word("lltrace", "(ctx->lltrace)")
+    lb.replace_word("cframe", "(ctx->cframe)")
+    lb.replace_word("names", "(ctx->names)")
+    lb.replace_word("consts", "(ctx->consts)")
+    lb.replace_word("first_instr", "(ctx->first_instr)")
+    lb.replace_word("next_instr", "(ctx->next_instr)")
+    lb.replace_word("stack_pointer", "(ctx->stack_pointer)")
+    lb.replace_word("eval_breaker", "(ctx->eval_breaker)")
+    lb.replace_word("call_shape", "(ctx->call_shape)")
 
     lb.replace("goto miss;", "return opfunc_goto_miss;")
 
     lb.replace('#include "opcode_targets.h"', "")
 
-    lb.replace("#define is_method(ctx->stack_pointer, args)", "#define is_method(stack_pointer, args)")
+    lb.replace("#define is_method((ctx->stack_pointer), args)", "#define is_method(stack_pointer, args)")
 
 
     lb.replace(
-        "_Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;",
+        "_Py_atomic_int * const (ctx->eval_breaker) = &tstate->interp->ceval.eval_breaker;",
         "ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;"
     )
-
-
-
-    # lb.replace(
-    #     "_Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;
-
-    #     "_Py_atomic_int * const ctx->eval_breaker = &tstate->interp->ceval.ctx->eval_breaker;",
-    #     "ctx->eval_breaker = &tstate->interp->ceval->eval_breaker;")
-
 
     targets = [ ]
 
@@ -382,6 +373,7 @@ dispatch_goto:
         goto dispatch_goto;
 
     case opfunc_jump_to_instruction:
+        ctx->next_instr--;
         goto dispatch_goto;
 
     case opfunc_goto_error:
@@ -391,8 +383,7 @@ dispatch_goto:
         goto binary_subscr_dict_error;
 
     case opfunc_goto_call_function:
-        // TODO
-        ctx->next_instr++;
+        ctx->next_instr--;
         ctx->opcode = CALL;
         goto dispatch_goto;
 
