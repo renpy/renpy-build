@@ -4,6 +4,7 @@
 import argparse
 import pathlib
 import re
+import shutil
 
 class LineList:
     """
@@ -174,9 +175,13 @@ def handle_target(lb):
     lb.sub(r"\bDISPATCH\(\)", "return opfunc_goto_dispatch")
     lb.sub(r"\bDISPATCH_GOTO\(\)", "return opfunc_goto_dispatch_goto")
     lb.sub(r"\bDISPATCH_SAME_OPARG\(\)", "return opfunc_goto_dispatch_same_oparg")
-    lb.sub(r"\bTRACE_FUNCTION_EXIT\(\)", "return opfunc_goto_trace_function_exit")
+    lb.sub(r"\bTRACE_FUNCTION_EXIT\(\)", "if (ctx->cframe.use_tracing && trace_function_exit(tstate, frame, retval)) { Py_DECREF(retval); return opfunc_goto_exit_unwind; }")
 
+    lb.replace("call_function:", "")
 
+    lb.insert_after("static opfunc_return", """
+    frame->prev_instr = ctx->next_instr++;
+""")
 
     return lb
 
@@ -263,7 +268,6 @@ typedef enum {
     opfunc_goto_exit_unwind,
     opfunc_goto_do_tracing,
     opfunc_goto_unknown_opcode,
-    opfunc_goto_trace_function_exit,
 } opfunc_return;
 
 
@@ -343,13 +347,99 @@ static opfunc_return opfunc_DO_TRACING(opfunc_ctx *ctx, PyThreadState *tstate, _
 """)
 
 
+    lines.insert_after("    dispatch_opcode:", """\
+// Opcode dispatch.
 
+dispatch:
+    NEXTOPARG();
+    PRE_DISPATCH_GOTO();
+    assert(ctx->cframe.use_tracing == 0 || ctx->cframe.use_tracing == 255);
+    ctx->opcode |= ctx->cframe.use_tracing OR_DTRACE_LINE;
+    goto dispatch_goto;
+
+dispatch_same_oparg:
+
+    ctx->opcode = _Py_OPCODE(*(ctx->next_instr));
+    PRE_DISPATCH_GOTO();
+    ctx->opcode |= ctx->cframe.use_tracing OR_DTRACE_LINE;
+    goto dispatch_goto;
+
+dispatch_goto:
+
+    opfunc_return opcode_result = opfuncs[ctx->opcode](ctx, tstate, frame);
+
+    switch (opcode_result) {
+    case opfunc_return_value:
+        return ctx->return_value;
+
+    case opfunc_goto_dispatch:
+        goto dispatch;
+
+    case opfunc_goto_dispatch_same_oparg:
+        goto dispatch_same_oparg;
+
+    case opfunc_goto_dispatch_goto:
+        goto dispatch_goto;
+
+    case opfunc_jump_to_instruction:
+        goto dispatch_goto;
+
+    case opfunc_goto_error:
+        goto error;
+
+    case opfunc_goto_binary_subscr_dict_error:
+        goto binary_subscr_dict_error;
+
+    case opfunc_goto_call_function:
+        // TODO
+        ctx->next_instr++;
+        ctx->opcode = CALL;
+        goto dispatch_goto;
+
+    case opfunc_goto_exception_unwind:
+        goto exception_unwind;
+
+    case opfunc_goto_handle_eval_breaker:
+        goto handle_eval_breaker;
+
+    case opfunc_goto_resume_frame:
+        goto resume_frame;
+
+    case opfunc_goto_resume_with_error:
+        goto resume_with_error;
+
+    case opfunc_goto_start_frame:
+        goto start_frame;
+
+    case opfunc_goto_unbound_local_error:
+        goto unbound_local_error;
+
+    case opfunc_goto_miss:
+        goto miss;
+
+    case opfunc_goto_exit_unwind:
+        goto exit_unwind;
+
+    case opfunc_goto_do_tracing:
+        goto TARGET_DO_TRACING;
+
+    case opfunc_goto_unknown_opcode:
+        goto _unknown_opcode;
+    }
+
+
+""", skip=3)
+
+
+
+
+    # Add the table of opfuncs.
     lines.insert_at_end("opfunc opfuncs[] = {")
 
     for i in opfuncs:
         lines.insert_at_end(f"    {i},")
 
-    lines.insert_at_end("};")
+    lines.insert_at_end("};\n\n")
 
     print(lines.text())
 
@@ -382,6 +472,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("ceval", help="Path to the ceval.c file to update.")
     args = ap.parse_args()
+
+    ceval = pathlib.Path(args.ceval)
+    shutil.copy(ceval, ceval.parent / "original_ceval.c")
 
     with open(args.ceval, "r") as f:
         lines = [ i.rstrip() for i in f.readlines() ]

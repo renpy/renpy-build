@@ -44,7 +44,7 @@ export LD="ccache gcc"
 if [ $BUILD = yes ]; then
     pushd Python-3.11.0
     ./configure --cache-file=../config.cache > python.log
-    nice make -j$(nproc) >> python.log
+    nice make >> python.log
     echo "Python build complete."
 
     if [ $TEST = yes ]; then
