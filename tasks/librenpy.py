@@ -52,7 +52,7 @@ def build(c):
 
                 parts = l.split()
 
-                if parts[0] == "renpy.compat.dictviews":
+                if parts[0] == "renpy.compat.dictviews" and c.python != "2":
                     continue
 
                 modules.append(parts[0])
