@@ -169,19 +169,19 @@ def handle_target(lb):
 
     lb.sub(r"\breturn (.*);", r"ctx->return_value = \1; return opfunc_return_value;")
 
-    lb.sub(r"TARGET\(([^)]+)\)", r"static opfunc_return opfunc_\1(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame)")
+    lb.sub(r"TARGET\(([^)]+)\)", r"static opfunc_return opfunc_\1(opfunc_ctx *ctx, PyThreadState *tstate)")
     lb.sub(r"\bgoto ", "return opfunc_goto_")
 
     lb.sub(r"\bDISPATCH\(\)", "return opfunc_goto_dispatch")
     lb.sub(r"\bDISPATCH_GOTO\(\)", "return opfunc_goto_dispatch_goto")
     lb.sub(r"\bDISPATCH_SAME_OPARG\(\)", "return opfunc_goto_dispatch_same_oparg")
-    lb.sub(r"\bTRACE_FUNCTION_EXIT\(\)", "if (ctx->cframe.use_tracing && trace_function_exit(tstate, frame, retval)) { Py_DECREF(retval); return opfunc_goto_exit_unwind; }")
+    lb.sub(r"\bTRACE_FUNCTION_EXIT\(\)", "if ((ctx->cframe).use_tracing && trace_function_exit(tstate, (ctx->frame), retval)) { Py_DECREF(retval); return opfunc_goto_exit_unwind; }")
 
     lb.replace("call_function:", "")
 
     lb.insert_after("static opfunc_return", """
-    frame->prev_instr = ctx->next_instr++;
-""")
+    ctx->frame->prev_instr = ctx->next_instr++;
+""".replace("NAME", name))
 
     return lb
 
@@ -201,7 +201,6 @@ def handle_eval_frame(lb, opfuncs):
     lb.replace("PyObject **stack_pointer;", "")
     lb.replace("CallShape call_shape;", "")
 
-
     lb.replace_word("lastopcode", "(ctx->lastopcode)")
     lb.replace_word("opcode", "(ctx->opcode)")
     lb.replace_word("oparg", "(ctx->oparg)")
@@ -214,6 +213,7 @@ def handle_eval_frame(lb, opfuncs):
     lb.replace_word("stack_pointer", "(ctx->stack_pointer)")
     lb.replace_word("eval_breaker", "(ctx->eval_breaker)")
     lb.replace_word("call_shape", "(ctx->call_shape)")
+    lb.replace_word("frame", "(ctx->frame)")
 
     lb.replace("goto miss;", "return opfunc_goto_miss;")
 
@@ -221,10 +221,14 @@ def handle_eval_frame(lb, opfuncs):
 
     lb.replace("#define is_method((ctx->stack_pointer), args)", "#define is_method(stack_pointer, args)")
 
-
     lb.replace(
         "_Py_atomic_int * const (ctx->eval_breaker) = &tstate->interp->ceval.eval_breaker;",
         "ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;"
+    )
+
+    lb.replace(
+        "_PyInterpreterFrame *(ctx->frame)",
+        "_PyInterpreterFrame *frame",
     )
 
     targets = [ ]
@@ -238,6 +242,23 @@ def handle_eval_frame(lb, opfuncs):
 
     lines += lb.rest()
 
+
+    # Fix up overuse of ctx->frame.
+
+    newlines = lines.consume_before("trace_function_entry(")
+
+    fix = lines.consume_to("}")
+    fix += lines.consume_to("}")
+    fix += lines.consume_to("}")
+
+    fix.replace("(ctx->frame)", "frame")
+
+    newlines += fix
+    newlines += lines.rest()
+
+    lines = newlines
+
+    # Insert code.
 
     lines.insert_at_start("""
 typedef enum {
@@ -281,11 +302,13 @@ typedef struct {
 
     CtxCallShape call_shape;
 
+    _PyInterpreterFrame *frame;
+
     PyObject *return_value;
 
 } opfunc_ctx;
 
-typedef opfunc_return (*opfunc)(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame);
+typedef opfunc_return (*opfunc)(opfunc_ctx *ctx, PyThreadState *tstate);
 
 extern opfunc opfuncs[];
 """)
@@ -303,6 +326,7 @@ extern opfunc opfuncs[];
 
     ctx->lastopcode = 0;
     ctx->lltrace = 0;
+    ctx->frame = frame;
 """, skip=1)
 
     lines.insert_at_end("""
@@ -328,11 +352,11 @@ extern opfunc opfuncs[];
         lines += handle_target(t)
 
     lines.insert_at_end("""
-static opfunc_return opfunc_unknown_opcode(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame) {
+static opfunc_return opfunc_unknown_opcode(opfunc_ctx *ctx, PyThreadState *tstate) {
     return opfunc_goto_unknown_opcode;
 }
 
-static opfunc_return opfunc_DO_TRACING(opfunc_ctx *ctx, PyThreadState *tstate, _PyInterpreterFrame *frame) {
+static opfunc_return opfunc_DO_TRACING(opfunc_ctx *ctx, PyThreadState *tstate) {
     return opfunc_goto_do_tracing;
 }
 """)
@@ -357,7 +381,7 @@ dispatch_same_oparg:
 
 dispatch_goto:
 
-    opfunc_return opcode_result = opfuncs[ctx->opcode](ctx, tstate, frame);
+    opfunc_return opcode_result = opfuncs[ctx->opcode](ctx, tstate);
 
     switch (opcode_result) {
     case opfunc_return_value:
