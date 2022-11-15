@@ -261,7 +261,7 @@ def handle_eval_frame(lb, opfuncs):
     # Insert code.
 
     lines.insert_at_start("""
-typedef enum {
+enum opfunc_return {
     opfunc_return_value,
     opfunc_goto_dispatch,
     opfunc_goto_dispatch_goto,
@@ -280,7 +280,9 @@ typedef enum {
     opfunc_goto_exit_unwind,
     opfunc_goto_do_tracing,
     opfunc_goto_unknown_opcode,
-} opfunc_return;
+};
+
+typedef enum opfunc_return opfunc_return;
 
 
 typedef struct {
@@ -381,67 +383,70 @@ dispatch_same_oparg:
 
 dispatch_goto:
 
-    opfunc_return opcode_result = opfuncs[ctx->opcode](ctx, tstate);
+    {
 
-    switch (opcode_result) {
-    case opfunc_return_value:
-        return ctx->return_value;
+        opfunc_return opcode_result = opfuncs[ctx->opcode](ctx, tstate);
 
-    case opfunc_goto_dispatch:
-        goto dispatch;
+        switch (opcode_result) {
+        case opfunc_return_value:
+            return ctx->return_value;
 
-    case opfunc_goto_dispatch_same_oparg:
-        goto dispatch_same_oparg;
+        case opfunc_goto_dispatch:
+            goto dispatch;
 
-    case opfunc_goto_dispatch_goto:
-        goto dispatch_goto;
+        case opfunc_goto_dispatch_same_oparg:
+            goto dispatch_same_oparg;
 
-    case opfunc_jump_to_instruction:
-        ctx->next_instr--;
-        goto dispatch_goto;
+        case opfunc_goto_dispatch_goto:
+            goto dispatch_goto;
 
-    case opfunc_goto_error:
-        goto error;
+        case opfunc_jump_to_instruction:
+            ctx->next_instr--;
+            goto dispatch_goto;
 
-    case opfunc_goto_binary_subscr_dict_error:
-        goto binary_subscr_dict_error;
+        case opfunc_goto_error:
+            goto error;
 
-    case opfunc_goto_call_function:
-        ctx->next_instr--;
-        ctx->opcode = CALL;
-        goto dispatch_goto;
+        case opfunc_goto_binary_subscr_dict_error:
+            goto binary_subscr_dict_error;
 
-    case opfunc_goto_exception_unwind:
-        goto exception_unwind;
+        case opfunc_goto_call_function:
+            ctx->next_instr--;
+            ctx->opcode = CALL;
+            goto dispatch_goto;
 
-    case opfunc_goto_handle_eval_breaker:
-        goto handle_eval_breaker;
+        case opfunc_goto_exception_unwind:
+            goto exception_unwind;
 
-    case opfunc_goto_resume_frame:
-        goto resume_frame;
+        case opfunc_goto_handle_eval_breaker:
+            goto handle_eval_breaker;
 
-    case opfunc_goto_resume_with_error:
-        goto resume_with_error;
+        case opfunc_goto_resume_frame:
+            goto resume_frame;
 
-    case opfunc_goto_start_frame:
-        goto start_frame;
+        case opfunc_goto_resume_with_error:
+            goto resume_with_error;
 
-    case opfunc_goto_unbound_local_error:
-        goto unbound_local_error;
+        case opfunc_goto_start_frame:
+            goto start_frame;
 
-    case opfunc_goto_miss:
-        goto miss;
+        case opfunc_goto_unbound_local_error:
+            goto unbound_local_error;
 
-    case opfunc_goto_exit_unwind:
-        goto exit_unwind;
+        case opfunc_goto_miss:
+            goto miss;
 
-    case opfunc_goto_do_tracing:
-        goto TARGET_DO_TRACING;
+        case opfunc_goto_exit_unwind:
+            goto exit_unwind;
 
-    case opfunc_goto_unknown_opcode:
-        goto _unknown_opcode;
+        case opfunc_goto_do_tracing:
+            goto TARGET_DO_TRACING;
+
+        case opfunc_goto_unknown_opcode:
+            goto _unknown_opcode;
+        }
+
     }
-
 
 """, skip=3)
 

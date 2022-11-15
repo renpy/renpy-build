@@ -25,12 +25,6 @@ def unpack(c):
     c.var("version", version)
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
-@task(kind="python", pythons="3", platforms="web")
-def unpack_web(c):
-    c.clean()
-
-    c.var("version", web_version)
-    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 @task(kind="python", pythons="3", platforms="windows")
 def unpack_windows(c):
@@ -198,12 +192,18 @@ def build_windows(c):
 
 @task(kind="python", pythons="3", platforms="web")
 def build_web(c):
+
+    c.clean()
+
+    c.var("version", web_version)
+    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+
     common(c)
 
     c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
 
     c.run("""
-        ./configure -C {{ cross_config }}
+        ./configure -C {{ cross_config }} --cache-file=/tmp/config.cache.python
         --prefix="{{ install }}"
         --with-emscripten-target=browser
         --with-build-python={{host}}/web/bin/python3
@@ -211,6 +211,10 @@ def build_web(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
+
+    c.run("""{{ make }}""")
+
+    c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
 
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
