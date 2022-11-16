@@ -500,4 +500,7 @@ def link_web(c):
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
 
+    --pre-js {{ runtime }}/web/pre.js
+    --shell-file {{ runtime }}/web/shell.html
+
     """)
