@@ -488,14 +488,17 @@ def link_web(c):
     -lz
     -lm
 
+    -lidbfs.js
+
     --preload-file {{ dist }}@/
 
     -sFULL_ES2=1
     -sMAX_WEBGL_VERSION=2
     --emit-symbol-map
 
+    -sFILESYSTEM=1
     -sASYNCIFY=1
-    -sEXPORTED_RUNTIME_METHODS=['stackTrace']
+    -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS']
 
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
