@@ -497,8 +497,10 @@ def link_web(c):
     --emit-symbol-map
 
     -sFILESYSTEM=1
-    -sASYNCIFY=1
     -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS']
+
+    -sASYNCIFY=1
+    -sASYNCIFY_STACK_SIZE=65535
 
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
@@ -506,4 +508,9 @@ def link_web(c):
     --pre-js {{ runtime }}/web/pre.js
     --shell-file {{ runtime }}/web/shell.html
 
+
     """)
+
+    # -sASSERTIONS=1
+
+    # -sASYNCIFY_IGNORE_INDIRECT=1
