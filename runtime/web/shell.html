@@ -18,15 +18,57 @@
       background: #000;
       border: 0 none;
     }
+
+    .visible {
+      visibility: visible;
+      opacity: .75;
+      transition: opacity .1s linear;
+    }
+
+    .hidden {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s .25s, opacity .25s linear;
+    }
+
+    #statusDiv {
+      background: #000;
+      width: 50%;
+      margin: auto;
+      min-width: 340px;
+      padding: 10px;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      border-radius: 0 0 5px 5px;
+
+    }
+
+    #statusTextDiv {
+      overflow: auto;
+      max-height: 40vh;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    #statusProgress {
+      display: none;
+      width: 100%;
+    }
+
   </style>
 
 </head>
 
 <body>
-  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 
-  <div class="emscripten">
-    <progress value="0" max="100" id="progress" hidden=1></progress>
+  <div id="statusDiv" class="hidden">
+    <div id="statusTextDiv"></div>
+    <progress id="statusProgress" value="0" max="100"></progress>
   </div>
 
   {{{ SCRIPT }}}
