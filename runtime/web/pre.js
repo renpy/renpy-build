@@ -218,22 +218,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   Module.canvas = canvas;
 
   /**
-   * Initializes the runtime environment before the game starts.
+   * Initialize the filesystem.
    */
-  function init() {
-      // Set up the canvas.
-
+  function initFs() {
       // Create the save directory, and mount the IDBFS filesystem.
       try {
           FS.mkdir('/home/web_user/.renpy');
           FS.mount(IDBFS, {}, '/home/web_user/.renpy');
-      } catch(e) {
+          FS.syncfs(true);
+        } catch(e) {
           reportError(`Could not create ~/.renpy/: ${e.message}`);
       }
-  }
+    }
 
-  Module['preRun'].push(function() {
-      init();
-  });
+  Module['preRun'].push(initFs);
 
 })();
