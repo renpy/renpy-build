@@ -437,17 +437,22 @@ def unpack_web():
     """
 
     import zipfile
+    import emscripten
 
+    print("")
     print("Unpacking...")
 
     zf = zipfile.ZipFile("/game.zip", "r")
 
     infolist = zf.infolist()
 
-    print("Infolist has %d entries." % len(infolist))
-
-    for zi in infolist:
+    for i, zi in enumerate(infolist):
         zf.extract(zi, "/")
+
+        if i % 25 == 0 or i == len(infolist) - 1:
+            emscripten.run_script("""progress(%d, %d);""" % (i+1, len(infolist)))
+            emscripten.sleep(0)
+
 
     zf.close()
 

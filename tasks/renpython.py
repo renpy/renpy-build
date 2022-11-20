@@ -508,8 +508,6 @@ def link_web(c):
     --pre-js {{ runtime }}/web/pre.js
     --shell-file {{ runtime }}/web/shell.html
 
-    -sASSERTIONS=1
-
     """)
 
     c.run("""install -d {{ renpy }}/web3""")
@@ -521,3 +519,4 @@ def link_web(c):
 
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
+    # -sASSERTIONS=1
