@@ -26,211 +26,327 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (function () {
 
-  // The div containing the status and progress bar.
-  let statusDiv = document.getElementById("statusDiv");
-  let statusTextDiv = document.getElementById("statusTextDiv");
-  let statusProgress = document.getElementById("statusProgress");
+    // The div containing the status and progress bar.
+    let statusDiv = document.getElementById("statusDiv");
+    let statusTextDiv = document.getElementById("statusTextDiv");
+    let statusProgress = document.getElementById("statusProgress");
 
-  // The timeout before the status div hides itself.
-  let statusTimeout = null;
+    // The timeout before the status div hides itself.
+    let statusTimeout = null;
 
-  // The status message.
-  let statusText = "";
+    // The status message.
+    let statusText = "";
 
-  // How long before the status div starts hiding, in seconds.
-  const STATUS_TIMEOUT = 2500;
+    // How long before the status div starts hiding, in seconds.
+    const STATUS_TIMEOUT = 2500;
 
-  /**
-   * Hide the status div. Once it's hidden, clears the status text.
-   */
-  function hideStatus() {
-      statusDiv.classList.remove("visible");
-      statusDiv.classList.add("hidden");
+    // The last time the progress was updated.
+    let lastProgressTime = 0;
 
-      statusTimeout = setTimeout(() => {
-          statusText = "";
-      }, 250);
-  }
+    // Has an error been reported?
+    let errorReported = false;
 
-  /**
-   * Show the status div.
-   */
-  function showStatus() {
-      statusDiv.classList.remove("hidden");
-      statusDiv.classList.add("visible");
-      statusTextDiv.scrollTop = statusTextDiv.scrollHeight;
-      statusProgress.style.display = "none";
-  }
-
-  /**
-   * Cancels the timeout that hides the status div.
-   */
-  function cancelStatusTimeout() {
-      if (statusTimeout) {
-          clearTimeout(statusTimeout);
-          statusTimeout = null;
-      }
-  }
-
-  /**
-   * Start the timeout that hides the status div.
-   */
-  function startStatusTimeout() {
-      cancelStatusTimeout();
-      statusTimeout = setTimeout(hideStatus, STATUS_TIMEOUT);
-  }
-
-  /**
-   * Reports an error that will persist.
-   */
-  function reportError(s) {
-      cancelStatusTimeout();
-
-      if (statusText) {
-          statusText += "<br>";
-      }
-
-      if (s == "\n") {
-          statusText = "";
-          s = "";
-      }
-
-      s = String(s);
-      s = s.replace(/&/g, "&amp;");
-      s = s.replace(/</g, "&lt;");
-      s = s.replace(/>/g, "&gt;");
-      s = s.replace('\n', '<br />', 'g');
-
-      statusText += s;
-      statusTextDiv.innerHTML = statusText;
-
-      showStatus();
-  }
-
-  /**
-   * Reports a message that will eventually be hidden.
-   */
-  function printMessage(s)
-  {
-      reportError(s);
-      startStatusTimeout();
-  }
-
-  /**
-   * Updates the progress bar.
-   */
-  function progress(done, total) {
-      _cancelStatusTimeout();
-      showStatus();
-      statusProgress.value = done;
-      statusProgress.max = total;
-      statusProgress.style.display = "block";
-      startStatusTimeout();
-  }
-
-  Module.print = printMessage;
-  Module.printErr = printMessage;
-
-  Module.setStatus = function (s) {
-    console.log(s);
-  }
-
-  /*
-  var Module = {
-      preRun: [],
-      postRun: [],
-      print: (function() {
-        var element = document.getElementById('output');
-        if (element) element.value = ''; // clear browser cache
-        return function(text) {
-          if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-          // These replacements are necessary if you render to raw HTML
-          //text = text.replace(/&/g, "&amp;");
-          //text = text.replace(/</g, "&lt;");
-          //text = text.replace(/>/g, "&gt;");
-          //text = text.replace('\n', '<br>', 'g');
-          console.log(text);
-          if (element) {
-            element.value += text + "\n";
-            element.scrollTop = element.scrollHeight; // focus on bottom
-          }
-        };
-      })(),
-      canvas: (function() {
-        var canvas = document.getElementById('canvas');
-
-        // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-        // application robust, you may want to override this behavior before shipping!
-        // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-        canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-
-        return canvas;
-      })(),
-      setStatus: function(text) {
-        if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
-        if (text === Module.setStatus.last.text) return;
-        var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-        var now = Date.now();
-        if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
-        Module.setStatus.last.time = now;
-        Module.setStatus.last.text = text;
-        if (m) {
-          text = m[1];
-          progressElement.value = parseInt(m[2])*100;
-          progressElement.max = parseInt(m[4])*100;
-          progressElement.hidden = false;
-          spinnerElement.hidden = false;
-        } else {
-          progressElement.value = null;
-          progressElement.max = null;
-          progressElement.hidden = true;
-          if (!text) spinnerElement.style.display = 'none';
+    /**
+     * Hide the status div. Once it's hidden, clears the status text.
+     */
+    function hideStatus() {
+        if (errorReported) {
+            return;
         }
-        statusElement.innerHTML = text;
-      },
-      totalDependencies: 0,
-      monitorRunDependencies: function(left) {
-        this.totalDependencies = Math.max(this.totalDependencies, left);
-        Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-      }
-    };
-    Module.setStatus('Downloading...');
-    window.onerror = function(event) {
-      // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
-      Module.setStatus('Exception thrown, see JavaScript console');
-      spinnerElement.style.display = 'none';
-      Module.setStatus = function(text) {
-        if (text) console.error('[post-exception status] ' + text);
-      };
-    };
-  */
 
+        statusDiv.classList.remove("visible");
+        statusDiv.classList.add("hidden");
 
-  window.presplashEnd = () => {
-  }
-
-
-  /** Set up the canvas. */
-  let canvas = document.getElementById('canvas');
-  canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-  canvas.addEventListener('mouseenter', function(e) { window.focus() });
-  canvas.addEventListener('click', function(e) { window.focus() });
-  Module.canvas = canvas;
-
-  /**
-   * Initialize the filesystem.
-   */
-  function initFs() {
-      // Create the save directory, and mount the IDBFS filesystem.
-      try {
-          FS.mkdir('/home/web_user/.renpy');
-          FS.mount(IDBFS, {}, '/home/web_user/.renpy');
-          FS.syncfs(true);
-        } catch(e) {
-          reportError(`Could not create ~/.renpy/: ${e.message}`);
-      }
+        statusTimeout = setTimeout(() => {
+            statusText = "";
+        }, 250);
     }
 
-  Module['preRun'].push(initFs);
+    /**
+     * Show the status div.
+     */
+    function showStatus() {
+        statusDiv.classList.remove("hidden");
+        statusDiv.classList.add("visible");
+        statusTextDiv.scrollTop = statusTextDiv.scrollHeight;
+        statusProgress.style.display = "none";
+    }
+
+    /**
+     * Cancels the timeout that hides the status div.
+     */
+    function cancelStatusTimeout() {
+        if (statusTimeout) {
+            clearTimeout(statusTimeout);
+            statusTimeout = null;
+        }
+    }
+
+    /**
+     * Start the timeout that hides the status div.
+     */
+    function startStatusTimeout() {
+        cancelStatusTimeout();
+        statusTimeout = setTimeout(hideStatus, STATUS_TIMEOUT);
+    }
+
+    /**
+     * Reports an error that will persist.
+     */
+    function printCommon(s) {
+        cancelStatusTimeout();
+        lastProgressTime = 0;
+
+        if (statusText) {
+            statusText += "<br>";
+        }
+
+        if (s == "\n" && !errorReported) {
+            statusText = "";
+            s = "";
+        }
+
+        s = String(s);
+        s = s.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace('\n', '<br />', 'g');
+
+        statusText += s;
+        statusTextDiv.innerHTML = statusText;
+
+        showStatus();
+    }
+
+    /**
+     * Reports a message that will eventually be hidden.
+     */
+    function printMessage(s) {
+        printCommon(s);
+        startStatusTimeout();
+    }
+
+    function reportError(s, e) {
+        if (e) {
+            console.log(s);
+            console.error(e, e.stack);
+            s += ": " + e.message;
+        }
+
+        s += "\nMore information may be available in the browser console.";
+
+        printCommon(s);
+    }
+
+    /**
+     * Updates the progress bar.
+     */
+    function progress(done, total) {
+        let now = +Date.now();
+
+        if (now < lastProgressTime + 32) {
+            return
+        }
+
+        lastProgressTime = now;
+
+        cancelStatusTimeout();
+        showStatus();
+        statusProgress.value = done;
+        statusProgress.max = total;
+        statusProgress.style.display = "block";
+        startStatusTimeout();
+
+        console.log("Progress: " + done + "/" + total);
+    }
+
+    Module.print = printMessage;
+    Module.printErr = printMessage;
+
+    /*
+    var Module = {
+        preRun: [],
+        postRun: [],
+        print: (function() {
+          var element = document.getElementById('output');
+          if (element) element.value = ''; // clear browser cache
+          return function(text) {
+            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+            // These replacements are necessary if you render to raw HTML
+            //text = text.replace(/&/g, "&amp;");
+            //text = text.replace(/</g, "&lt;");
+            //text = text.replace(/>/g, "&gt;");
+            //text = text.replace('\n', '<br>', 'g');
+            console.log(text);
+            if (element) {
+              element.value += text + "\n";
+              element.scrollTop = element.scrollHeight; // focus on bottom
+            }
+          };
+        })(),
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+          return canvas;
+        })(),
+        setStatus: function(text) {
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.last.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+          Module.setStatus.last.time = now;
+          Module.setStatus.last.text = text;
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2])*100;
+            progressElement.max = parseInt(m[4])*100;
+            progressElement.hidden = false;
+            spinnerElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+            if (!text) spinnerElement.style.display = 'none';
+          }
+          statusElement.innerHTML = text;
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+      window.onerror = function(event) {
+        // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
+        Module.setStatus('Exception thrown, see JavaScript console');
+        spinnerElement.style.display = 'none';
+        Module.setStatus = function(text) {
+          if (text) console.error('[post-exception status] ' + text);
+        };
+      };
+    */
+
+
+    window.presplashEnd = () => {
+    }
+
+
+    /** Set up the canvas. */
+    let canvas = document.getElementById('canvas');
+    canvas.addEventListener("webglcontextlost", function (e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+    canvas.addEventListener('mouseenter', function (e) { window.focus() });
+    canvas.addEventListener('click', function (e) { window.focus() });
+    Module.canvas = canvas;
+
+
+    /**
+     * Initialize the filesystem.
+     */
+    function initFs() {
+        // Create the save directory, and mount the IDBFS filesystem.
+        try {
+            Module.addRunDependency('initFs');
+            FS.mkdir('/home/web_user/.renpy');
+            FS.mount(IDBFS, {}, '/home/web_user/.renpy');
+            FS.syncfs(true, (err) => {
+                if (err) {
+                    printMessage("Error syncing IDBFS: " + err);
+                    printMessage("The game may not be able to save properly.");
+                }
+
+                Module.removeRunDependency('initFs');
+            });
+        } catch (e) {
+            reportError("Could not create ~/.renpy/", e);
+        }
+    }
+
+    Module.preRun.push(initFs);
+
+    // The size of the data and gamezip files.
+    let dataSize = 0;
+    let gameZipSize = 0;
+
+    // The number of bytes downloaded.
+    let dataDownloaded = 0;
+    let gameZipDownloaded = 0;
+
+    function updateDownloadProgress() {
+        if (dataSize == 0 || gameZipSize == 0) {
+            return;
+        }
+
+        let total = dataSize + gameZipSize;
+        let downloaded = dataDownloaded + gameZipDownloaded;
+
+        progress(downloaded, total);
+    }
+
+    Module.setStatus = function (s) {
+        var m = s.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+
+        if (m) {
+            dataSize = parseInt(m[2]);
+            dataDownloaded = parseInt(m[4]);
+            updateDownloadProgress();
+            return;
+        }
+
+        console.log(s);
+    }
+
+    async function loadGameZip() {
+
+        try {
+            let response = await fetch('game.zip');
+            try {
+                gameZipSize = parseInt(response.headers.get('Content-Length'), 10);
+            } catch (e) {
+                // Ignore.
+            }
+
+            let reader = await response.body.getReader();
+
+            let f = FS.open('/game.zip', 'w');
+
+            while (true) {
+
+                let { done, value } = await reader.read();
+
+                if (done) {
+                    break;
+                }
+
+                FS.write(f, value, 0, value.length, null);
+                gameZipDownloaded += value.length;
+
+                updateDownloadProgress();
+            }
+
+            FS.close(f);
+
+        } catch (e) {
+            reportError("Could not download game.zip", e);
+        }
+    }
+
+    function runLoadGameZip() {
+        printMessage("Downloading game data...");
+        Module.addRunDependency('loadGameZip');
+
+        loadGameZip().then(() => {
+            Module.removeRunDependency('loadGameZip');
+        });
+
+    }
+
+    Module['preRun'].push(runLoadGameZip);
 
 })();
