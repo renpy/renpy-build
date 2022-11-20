@@ -38,7 +38,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     let statusText = "";
 
     // How long before the status div starts hiding, in seconds.
-    const STATUS_TIMEOUT = 2500;
+    const STATUS_TIMEOUT = 5000;
 
     // The last time the progress was updated.
     let lastProgressTime = 0;
@@ -90,10 +90,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         statusTimeout = setTimeout(hideStatus, STATUS_TIMEOUT);
     }
 
-    /**
-     * Reports an error that will persist.
-     */
     function printCommon(s) {
+
         cancelStatusTimeout();
         lastProgressTime = 0;
 
@@ -104,6 +102,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (s == "\n" && !errorReported) {
             statusText = "";
             s = "";
+        }
+
+        for (let i of s.split("\n")) {
+            console.log(i);
         }
 
         s = String(s);
@@ -128,7 +130,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     function reportError(s, e) {
         if (e) {
-            console.log(s);
             console.error(e, e.stack);
             s += ": " + e.message;
         }
@@ -324,7 +325,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     break;
                 }
 
-                FS.write(f, value, 0, value.length, null);
+                FS.write(f, value, 0, value.length);
                 gameZipDownloaded += value.length;
 
                 updateDownloadProgress();

@@ -429,6 +429,35 @@ if RENPY_PLATFORM.startswith("mac-"):
 
     _renpy_argv_emulation()
 
+# Web ##########################################################################
+
+def unpack_web():
+    """
+    This unpacks the web archive.
+    """
+
+    import zipfile
+
+    print("Unpacking...")
+
+    zf = zipfile.ZipFile("/game.zip", "r")
+
+    infolist = zf.infolist()
+
+    print("Infolist has %d entries." % len(infolist))
+
+    for zi in infolist:
+        zf.extract(zi, "/")
+
+    zf.close()
+
+    import os
+    os.rename("/the_question.py", "/main.py")
+
+
+if RENPY_PLATFORM.startswith("web-"):
+    unpack_web()
+
 # Platform specific python path. ###############################################
 
 
