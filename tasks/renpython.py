@@ -505,14 +505,13 @@ def link_web(c):
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
 
-    --pre-js {{ runtime }}/web/pre.js
     --shell-file {{ runtime }}/web/shell.html
-
     """)
 
     c.run("""install -d {{ renpy }}/web3""")
     c.run("""install renpy.html {{ renpy }}/web3/renpy.html""")
     c.run("""install renpy.html.symbols {{ renpy }}/web3/renpy.html.symbols""")
+    c.run("""install {{ runtime }}/web/renpy-pre.js {{ renpy }}/web3/renpy-pre.js""")
     c.run("""install renpy.js {{ renpy }}/web3/renpy.js""")
     c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
     c.run("""install renpy.data {{ renpy }}/web3/renpy.data""")
