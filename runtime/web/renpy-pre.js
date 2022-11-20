@@ -29,6 +29,10 @@ Module.preRun = Module.preRun || [ ];
 
 (function () {
 
+    /***************************************************************************
+     * Report messages, errors, and progress.
+     **************************************************************************/
+
     // The div containing the status and progress bar.
     let statusDiv = document.getElementById("statusDiv");
     let statusTextDiv = document.getElementById("statusTextDiv");
@@ -142,12 +146,25 @@ Module.preRun = Module.preRun || [ ];
         s += "\nMore information may be available in the browser console.";
 
         printCommon(s);
+
+        errorReported = true;
+
+        try {
+            Module.addRunDependency("error");
+        } catch (e) {
+            window.stop();
+        }
     }
 
     /**
      * Updates the progress bar.
      */
     function progress(done, total) {
+
+        if (errorReported) {
+            return;
+        }
+
         let now = +Date.now();
 
         if ((now < lastProgressTime + 32) && (done < total) && (done > 1)) {
@@ -170,6 +187,30 @@ Module.preRun = Module.preRun || [ ];
     Module.print = printMessage;
     Module.printErr = printMessage;
 
+
+    /***************************************************************************
+     * Browser capability checks.
+     **************************************************************************/
+
+    // Report the lack of WebAssembly support.
+    if (typeof WebAssembly !== 'object') {
+        reportError("This browser does not support WebAssembly.");
+    }
+
+    // Report the lack of the fetch function.
+    if (typeof fetch !== 'function') {
+        reportError("This browser does not support fetch.");
+    }
+
+    // Clear error when running without a server.
+    if (location.href.startsWith('file://')) {
+        reportError("This browser requires the game to be run from a web server (i.e. double-clicking on index.html won't work).");
+    }
+
+
+    /***************************************************************************
+     * Emscripten initialization.
+     **************************************************************************/
 
     window.presplashEnd = () => {
     }
@@ -243,6 +284,11 @@ Module.preRun = Module.preRun || [ ];
 
         try {
             let response = await fetch('game.zip');
+
+            if (!response.ok) {
+                reportError("Could not load game.zip: " + response.status + " " + response.statusText);
+            }
+
             try {
                 gameZipSize = parseInt(response.headers.get('Content-Length'), 10);
             } catch (e) {
