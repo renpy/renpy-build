@@ -494,20 +494,26 @@ Module.preRun = Module.preRun || [ ];
         reader = new FileReader();
         reader.onload = function (e) {
             FS.writeFile('savegames.zip', new Uint8Array(e.target.result));
-            Module._emSavegamesImport();
-            FS.syncfs(false, function (err) {
-                if (err) {
-                    console.trace(); console.log(err, err.message);
-                    Module.print("Warning: cannot import savegames: write error: " + err.message + "\n");
-                } else {
-                    renpy_exec('renpy.loadsave.location.scan()').then(result => {
-                        Module.print("Saves imported successfully\n");
-                    }).catch(error => {
-                        console.error('Cannot rescan saves folder', error);
-                        Module.print("Saves imported - restart game to apply.\n");
-                    });
-                }
-            });
+
+            renpy_exec('result = renpy.savelocation.unzip_saves()').then((result) => {
+                FS.syncfs(false, function (err) {
+                    if (err) {
+                        console.trace();
+                        console.log(err, err.message);
+                        printMessage("Warning: cannot import savegames: write error: " + err.message );
+                    } else {
+                        renpy_exec('renpy.loadsave.location.scan()').then(result => {
+                            printMessage("Saves imported successfully.");
+                        }).catch(error => {
+                            console.error('Cannot rescan saves folder:', error);
+                            printMessage("Saves imported - restart game to apply.");
+                        });
+                    }
+                });
+            }).catch(error => {
+                console.error('Cannot import savegames', error);
+                printMessage("Couldn't import the savegames: " + error.message);
+            })
         }
         reader.readAsArrayBuffer(input.files[0])
         input.type = ''; input.type = 'file'; // reset field
