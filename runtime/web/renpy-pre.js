@@ -469,4 +469,85 @@ Module.preRun = Module.preRun || [ ];
     window.renpy_set = renpy_set;
 
 
+    /***************************************************************************
+     * Context menu.
+     **************************************************************************/
+
+
+    const menu = document.getElementById('ContextMenu');
+    document.getElementById('ContextButton').addEventListener('click', function (e) {
+        if (menu.style.display == 'none')
+            menu.style.display = 'block';
+        else
+            menu.style.display = 'none';
+        e.preventDefault();
+    });
+
+    menu.addEventListener('click', function (e) {
+        if (e.target.tagName == 'A') {
+            // Close context menu when a menu item is selected
+            menu.style.display = 'none';
+        }
+    });
+
+    async function onSavegamesImport(input) {
+        reader = new FileReader();
+        reader.onload = function (e) {
+            FS.writeFile('savegames.zip', new Uint8Array(e.target.result));
+            Module._emSavegamesImport();
+            FS.syncfs(false, function (err) {
+                if (err) {
+                    console.trace(); console.log(err, err.message);
+                    Module.print("Warning: cannot import savegames: write error: " + err.message + "\n");
+                } else {
+                    renpy_exec('renpy.loadsave.location.scan()').then(result => {
+                        Module.print("Saves imported successfully\n");
+                    }).catch(error => {
+                        console.error('Cannot rescan saves folder', error);
+                        Module.print("Saves imported - restart game to apply.\n");
+                    });
+                }
+            });
+        }
+        reader.readAsArrayBuffer(input.files[0])
+        input.type = ''; input.type = 'file'; // reset field
+    }
+
+    window.onSavegamesImport = onSavegamesImport;
+
+    function onSavegamesExport() {
+       renpy_exec('result = renpy.savelocation.zip_saves()').then((ret) => {
+            if (ret) {
+                FSDownload('savegames.zip', 'application/zip');
+                printMessage("Saves exported successfully.\n");
+            }
+        });
+    }
+
+    window.onSavegamesExport = onSavegamesExport;
+
+    function FSDownload(filename, mimetype) {
+        console.log('download', filename);
+        var a = document.createElement('a');
+        a.download = filename.replace(/.*\//, '');
+        try {
+            a.href = window.URL.createObjectURL(new Blob([FS.readFile(filename)],
+                { type: mimetype || '' }));
+        } catch (e) {
+            Module.print("Error opening " + filename + "\n");
+            return;
+        }
+        document.body.appendChild(a);
+        a.click();
+
+        // delay clean-up to avoid iOS issue:
+        // The operation couldn’t be completed. (WebKitBlobResource error 1.)
+        setTimeout(function () {
+            window.URL.revokeObjectURL(a.href);
+            document.body.removeChild(a);
+        }, 1000);
+    }
+
+    window.FSDownload = FSDownload;
+
 })();
