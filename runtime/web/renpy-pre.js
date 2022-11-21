@@ -213,6 +213,7 @@ Module.preRun = Module.preRun || [ ];
      **************************************************************************/
 
     window.presplashEnd = () => {
+        document.getElementById('presplash').remove();
     }
 
 

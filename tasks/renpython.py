@@ -515,6 +515,7 @@ def link_web(c):
     c.run("""install renpy.js {{ renpy }}/web3/renpy.js""")
     c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
     c.run("""install renpy.data {{ renpy }}/web3/renpy.data""")
+    c.run("""install {{runtime}}/web/web-presplash.jpg {{ renpy }}/web3/web-presplash.jpg""")
 
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
