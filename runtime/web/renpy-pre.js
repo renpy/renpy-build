@@ -557,4 +557,15 @@ Module.preRun = Module.preRun || [ ];
 
     window.FSDownload = FSDownload;
 
+
+    /***************************************************************************
+     * "Hidden" developer functions.
+     **************************************************************************/
+
+    function downloadBytecode() {
+        FSDownload('/game/cache/bytecode-311.rpyb', 'application/octet-stream');
+    }
+
+    window.downloadBytecode = downloadBytecode;
+
 })();
