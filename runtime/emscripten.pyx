@@ -170,13 +170,6 @@ def async_call(py_function, py_arg, millis):
 def exit_with_live_runtime():
     emscripten_exit_with_live_runtime();
 
-def sleep(ms,  stack_trace=False):
-    if stack_trace:
-        emscripten_run_script(r"""
-        console.log(stackTrace());
-        """);
-
-    emscripten_sleep(ms)
 
 # Emterpreter-only
 #def sleep_with_yield(ms):
@@ -190,6 +183,42 @@ def run_script_int(script):
 
 def run_script_string(script):
     return emscripten_run_script_string(script.encode('UTF-8'));
+
+
+TRACE = False
+
+trace_set = set()
+old_trace_set = set()
+
+def process_trace(trace):
+    global trace_set
+    global old_trace_set
+
+    lines = trace.splitlines()
+    lines.pop(0)
+
+    for i in lines:
+        i = i.strip()
+        i = i.split(' ')[1]
+        trace_set.add(i)
+
+    if trace_set != old_trace_set:
+        old_trace_set |= trace_set
+        l = list(trace_set)
+        l.sort()
+        print(repr(l))
+
+
+
+if TRACE:
+    emscripten_run_script("""Error.stackTraceLimit = 1024;""")
+
+def sleep(ms):
+    if TRACE:
+        trace = emscripten_run_script_string(r"""stackTrace()""".encode('UTF-8'))
+        process_trace(trace)
+
+    emscripten_sleep(ms)
 
 
 # async_wget
