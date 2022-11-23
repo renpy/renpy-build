@@ -133,6 +133,11 @@ Module.preRun = Module.preRun || [ ];
      * Reports a message that will eventually be hidden.
      */
     function printMessage(s) {
+        if (s.startsWith("warning: ")) {
+            console.log(s);
+            return;
+        }
+
         printCommon(s);
         startStatusTimeout();
     }
