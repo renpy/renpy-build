@@ -206,7 +206,7 @@ def process_trace(trace):
         old_trace_set |= trace_set
         l = list(trace_set)
         l.sort()
-        print(repr(l))
+        print(repr(l).replace(" ", ""))
 
 
 

@@ -453,14 +453,67 @@ def build_web(c):
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c):
 
-    c.var("debug_asyncify", True)
+    c.var("debug_asyncify", False)
 
+
+    asyncify_only = [
+        'PyEval_EvalCode',
+        'PyImport_Import',
+        'PyImport_ImportModule',
+        'PyImport_ImportModuleLevelObject',
+        'PyObject_Call',
+        'PyObject_CallFunction',
+        'PyObject_CallMethodObjArgs',
+        'PyObject_Vectorcall',
+        '_PyEval_EvalFrameDefault',
+        '_PyEval_Vector',
+        '_PyFunction_Vectorcall',
+        '_PyObject_Call',
+        '_PyObject_CallFunctionVa',
+        '_PyObject_Call_Prepend',
+        '_PyObject_FastCallDictTstate',
+        '_PyRun_AnyFileObject',
+        '_PyRun_SimpleFileObject',
+        '_PyVectorcall_Call',
+        '__pyx_pw_10emscripten_19sleep',
+        'builtin___import__',
+        'builtin_exec',
+        'byn$fpcast-emu$_PyFunction_Vectorcall',
+        'byn$fpcast-emu$__pyx_pw_10emscripten_19sleep',
+        'byn$fpcast-emu$builtin___import__',
+        'byn$fpcast-emu$builtin_exec',
+        'byn$fpcast-emu$cfunction_vectorcall_FASTCALL_KEYWORDS',
+        'byn$fpcast-emu$cfunction_vectorcall_O',
+        'byn$fpcast-emu$method_vectorcall',
+        'byn$fpcast-emu$opfunc_CALL',
+        'byn$fpcast-emu$opfunc_CALL_FUNCTION_EX',
+        'byn$fpcast-emu$opfunc_IMPORT_NAME',
+        'byn$fpcast-emu$opfunc_PRECALL_BUILTIN_FAST_WITH_KEYWORDS',
+        'byn$fpcast-emu$opfunc_PRECALL_NO_KW_BUILTIN_O',
+        'byn$fpcast-emu$slot_tp_call',
+        'cfunction_vectorcall_FASTCALL_KEYWORDS',
+        'cfunction_vectorcall_O',
+        'main',
+        'method_vectorcall',
+        'object_vacall',
+        'opfunc_CALL',
+        'opfunc_CALL_FUNCTION_EX',
+        'opfunc_IMPORT_NAME',
+        'opfunc_PRECALL_BUILTIN_FAST_WITH_KEYWORDS',
+        'opfunc_PRECALL_NO_KW_BUILTIN_O',
+        'run_mod',
+        'slot_tp_call',
+        ]
+
+    c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
 
     {% if debug_asyncify %}
     -g2
+    {% else %}
+    -g0
     {% endif %}
 
     -o renpy.html
@@ -501,7 +554,7 @@ def link_web(c):
 
     -sASYNCIFY=1
     -sASYNCIFY_STACK_SIZE=65535
-
+    -sASYNCIFY_ONLY="{{ asyncify_only }}"
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
 
