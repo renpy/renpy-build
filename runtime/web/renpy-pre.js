@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019-2021  Sylvain Beucler
+Copyright 2019-2021 Sylvain Beucler
 Copyright 2022 Teyut <teyut@free.fr>
 Copyright 2019-2022 Tom Rothamel <pytom@bishoujo.us>
 
@@ -264,23 +264,43 @@ Module.preRun = Module.preRun || [ ];
     let dataDownloaded = 0;
     let gameZipDownloaded = 0;
 
+    // Have we issued the data and gameZip prompts?
+    let dataPrompt = false;
+    let gameZipPrompt = false;
+
     function updateDownloadProgress() {
-        if (dataSize == 0 || gameZipSize == 0) {
+        if (dataSize == 0) {
             return;
         }
 
-        let total = dataSize + gameZipSize;
-        let downloaded = dataDownloaded + gameZipDownloaded;
+        if (dataDownloaded < dataSize || gameZipSize == 0) {
+            if (!dataPrompt) {
+                printMessage("");
+                printMessage("Downloading engine...");
+                dataPrompt = true;
+            }
 
-        progress(downloaded, total);
+            progress(dataDownloaded, dataSize);
+            return;
+        }
+
+        if (!gameZipPrompt) {
+            printMessage("");
+            printMessage("Downloading game data...");
+            gameZipPrompt = true;
+        }
+
+        progress(gameZipDownloaded, gameZipSize);
+
     }
 
     Module.setStatus = function (s) {
+
         var m = s.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
 
         if (m) {
-            dataSize = parseInt(m[2]);
-            dataDownloaded = parseInt(m[4]);
+            dataDownloaded = parseInt(m[2]);
+            dataSize = parseInt(m[4]);
             updateDownloadProgress();
             return;
         }
@@ -329,7 +349,6 @@ Module.preRun = Module.preRun || [ ];
     }
 
     function runLoadGameZip() {
-        printMessage("Downloading game data...");
         Module.addRunDependency('loadGameZip');
 
         loadGameZip().then(() => {
