@@ -1,6 +1,6 @@
 from renpybuild.model import task
 import os
-
+import time
 
 @task(kind="python", always=True)
 def clean(c):
@@ -569,6 +569,9 @@ def link_web(c):
     c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
     c.run("""install renpy.data {{ renpy }}/web3/renpy.data""")
     c.run("""install {{runtime}}/web/web-presplash.jpg {{ renpy }}/web3/web-presplash.jpg""")
+
+    with open(c.path("{{ renpy }}/web3/renpyweb-version.txt"), "w") as f:
+        f.write(str(int(time.time())))
 
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
