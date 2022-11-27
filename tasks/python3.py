@@ -203,7 +203,7 @@ def build_web(c):
     c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
 
     c.run("""
-        ./configure -C {{ cross_config }} --cache-file=/tmp/config.cache.python
+        ./configure {{ cross_config }}
         --prefix="{{ install }}"
         --with-emscripten-target=browser
         --with-build-python={{host}}/web/bin/python3
