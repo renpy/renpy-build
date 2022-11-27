@@ -13,7 +13,6 @@ def main():
     path = Path(args.path)
 
     def link(glob, target):
-        print(list(sorted(path.glob(glob))))
 
         source = max(path.glob(glob))
         target = path / target
