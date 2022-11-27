@@ -562,8 +562,8 @@ def link_web(c):
     """)
 
     c.run("""install -d {{ renpy }}/web3""")
-    c.run("""install renpy.html {{ renpy }}/web3/renpy.html""")
-    c.run("""install renpy.html.symbols {{ renpy }}/web3/renpy.html.symbols""")
+    c.run("""install renpy.html {{ renpy }}/web3/index.html""")
+    c.run("""install renpy.html.symbols {{ renpy }}/web3/index.html.symbols""")
     c.run("""install {{ runtime }}/web/renpy-pre.js {{ renpy }}/web3/renpy-pre.js""")
     c.run("""install renpy.js {{ renpy }}/web3/renpy.js""")
     c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
