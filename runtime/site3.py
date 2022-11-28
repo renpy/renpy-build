@@ -456,9 +456,6 @@ def unpack_web():
 
     zf.close()
 
-    import os
-    os.rename("/the_question.py", "/main.py")
-
 
 if RENPY_PLATFORM.startswith("web-"):
     unpack_web()
