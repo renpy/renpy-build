@@ -33,12 +33,6 @@ ln -s renios2 renios
 # Update the README.
 cp /home/tom/ab/renpy-deps/scripts/README.nightly /home/tom/ab/WWW.nightly/README.txt
 
-# Activate the virtualenv for the prebuild.
-. /home/tom/.virtualenvs/nightlyrenpy/bin/activate
-
-# Run the after checkout script.
-# ./after_checkout.sh
-
 link $BASE/pygame_sdl2 pygame_sdl2
 link $BASE/live2d live2d
 link /home/tom/ab/WWW.nightly dl
@@ -55,9 +49,9 @@ export RENPY_SIMPLE_EXCEPTIONS=1
 ./renpy.sh tutorial quit
 
 # Build the documentation.
-# pushd $BASE/renpy/sphinx
-# ./build.sh
-# popd
+pushd $BASE/renpy/sphinx
+./build.sh
+popd
 
 # Build the distribution.
 ./lib/py3-linux-x86_64/python -O distribute.py "$RENPY_8_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --append-version

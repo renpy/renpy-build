@@ -14,5 +14,5 @@ rm -Rf $nightly/renpybuild
 cp -a renpybuild $nightly/
 
 cd $nightly/
-. tmp/virtualenv.py2/bin/activate
+. tmp/virtualenv.py3/bin/activate
 exec ./build.py "$@"

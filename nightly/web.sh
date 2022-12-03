@@ -1,5 +1,8 @@
-# Upload the nightly build to the web.
+# Copy the documentation to the website.
+rm -Rf $BASE/renpy/dl/doc|| true
+cp -a $BASE/renpy/doc-web $BASE/renpy/dl/doc
 
+# Upload the nightly build to the web.
 pushd $BASE/renpy/dl
 
 SSH="ssh"
