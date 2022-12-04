@@ -2,6 +2,7 @@ var cacheName = 'renpy-web-game';
 var filesToCache = [
     '/',
     '/index.html',
+    '/game.zip',
     '/renpy-pre.js',
     '/renpy.js',
     '/renpy.data',
