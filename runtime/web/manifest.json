@@ -54,5 +54,8 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "black",
-  "theme_color": "black"
+  "theme_color": "black",
+  "launch_handler": { "route_to": "existing-client", "navigate_existing_client": "always" },
+  "orientation": "landscape-primary",
+  "display_override": [ "fullscreen", "minimal-ui" ]
 }
