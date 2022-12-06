@@ -10,11 +10,32 @@ var filesToCache = [
     '/web-presplash.jpg'
 ];
 
-/* Start the service worker and cache all of the app's content */
+/* Start the service worker and cache all of the app's content or use the existing one */
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(cacheName).then(function(cache) {
-      return cache.addAll(filesToCache);
+      // Cache files and save content-length
+      return filesToCache.map(function(url) {
+        return fetch(url, { method: 'HEAD' }).then(function(response) {
+          caches.match(url).then(function(cached_response) {
+            if (cached_response) {
+              // Check if content length has changed
+              if (response.headers.get('content-length') !== cached_response.headers.get('content-length')) {
+                console.log('Deleting ' + url + ' from current cache and retrieving it from the server');
+                return cache.delete(url).then(function() {
+                  return cache.add(url);
+                });
+              } else {
+                // Put existing response into the cache
+                return cache.put(url, cached_response);
+              }
+            } else {
+              // Cache not found, make a call to the server
+              return cache.add(url);
+            }
+          });
+        });
+      });
     })
   );
   self.skipWaiting();
