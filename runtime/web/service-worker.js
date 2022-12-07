@@ -14,13 +14,13 @@ var filesToCache = [
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(cacheName).then(function(cache) {
-      // Cache files and save content-length
+      // Cache files and save etag
       return filesToCache.map(function(url) {
         return fetch(url, { method: 'HEAD' }).then(function(response) {
           caches.match(url).then(function(cached_response) {
             if (cached_response) {
               // Check if content length has changed
-              if (response.headers.get('content-length') !== cached_response.headers.get('content-length')) {
+              if (response.headers.get('etag') !== cached_response.headers.get('etag')) {
                 console.log('Deleting ' + url + ' from current cache and retrieving it from the server');
                 return cache.delete(url).then(function() {
                   return cache.add(url);
