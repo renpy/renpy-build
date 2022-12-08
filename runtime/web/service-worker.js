@@ -19,15 +19,29 @@ self.addEventListener('install', function(e) {
         return fetch(url, { method: 'HEAD' }).then(function(response) {
           caches.match(url).then(function(cached_response) {
             if (cached_response) {
-              // Check if content length has changed
-              if (response.headers.get('etag') !== cached_response.headers.get('etag')) {
-                console.log('Deleting ' + url + ' from current cache and retrieving it from the server');
-                return cache.delete(url).then(function() {
-                  return cache.add(url);
-                });
-              } else {
-                // Put existing response into the cache
-                return cache.put(url, cached_response);
+              // If etag is in the response headers, use it to check if the content has changed
+              if (response.headers.get('etag')) {
+                // Check if content length has changed
+                if (response.headers.get('etag') !== cached_response.headers.get('etag')) {
+                  console.log('Deleting ' + url + ' from current cache and retrieving it from the server');
+                  return cache.delete(url).then(function() {
+                    return cache.add(url);
+                  });
+                } else {
+                  // Put existing response into the cache
+                  return cache.put(url, cached_response);
+                }
+              } else if (response.headers.get('content-length')) { // Use content length if etag is not available as a fallback
+                // Check if content length has changed
+                if (response.headers.get('content-length') !== cached_response.headers.get('content-length')) {
+                  console.log('Deleting ' + url + ' from current cache and retrieving it from the server');
+                  return cache.delete(url).then(function() {
+                    return cache.add(url);
+                  });
+                } else {
+                  // Put existing response into the cache
+                  return cache.put(url, cached_response);
+                }
               }
             } else {
               // Cache not found, make a call to the server
