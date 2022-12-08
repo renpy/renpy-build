@@ -224,6 +224,12 @@ class Context:
         else:
             self.variables[variable] = value
 
+    def get(self, variable):
+        if variable in self.variables:
+            return self.variables[variable]
+
+        raise Exception(f"Unknown variable {variable!r}.")
+
     def chdir(self, d):
         self.cwd = self.cwd / self.expand(d)
 

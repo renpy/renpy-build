@@ -455,11 +455,11 @@ def link_web(c):
 
     c.var("debug_asyncify", False)
 
-
     asyncify_only = [
         'PyEval_EvalCode',
         'PyImport_Import',
         'PyImport_ImportModule',
+
         'PyImport_ImportModuleLevelObject',
         'PyObject_Call',
         'PyObject_CallFunction',
@@ -478,31 +478,25 @@ def link_web(c):
         '__pyx_pw_10emscripten_19sleep',
         'builtin___import__',
         'builtin_exec',
-        'byn$fpcast-emu$_PyFunction_Vectorcall',
-        'byn$fpcast-emu$__pyx_pw_10emscripten_19sleep',
-        'byn$fpcast-emu$builtin___import__',
-        'byn$fpcast-emu$builtin_exec',
-        'byn$fpcast-emu$cfunction_vectorcall_FASTCALL_KEYWORDS',
-        'byn$fpcast-emu$cfunction_vectorcall_O',
-        'byn$fpcast-emu$method_vectorcall',
-        'byn$fpcast-emu$opfunc_CALL',
-        'byn$fpcast-emu$opfunc_CALL_FUNCTION_EX',
-        'byn$fpcast-emu$opfunc_IMPORT_NAME',
-        'byn$fpcast-emu$opfunc_PRECALL_BUILTIN_FAST_WITH_KEYWORDS',
-        'byn$fpcast-emu$opfunc_PRECALL_NO_KW_BUILTIN_O',
-        'byn$fpcast-emu$slot_tp_call',
+        'builtin_eval',
         'cfunction_vectorcall_FASTCALL_KEYWORDS',
         'cfunction_vectorcall_O',
         'main',
         'method_vectorcall',
         'object_vacall',
-        'opfunc_CALL',
-        'opfunc_CALL_FUNCTION_EX',
-        'opfunc_IMPORT_NAME',
-        'opfunc_PRECALL_BUILTIN_FAST_WITH_KEYWORDS',
-        'opfunc_PRECALL_NO_KW_BUILTIN_O',
+        'opfunc_*',
         'run_mod',
         'slot_tp_call',
+        'byn$fpcast-emu$_PyFunction_Vectorcall',
+        'byn$fpcast-emu$__pyx_pw_10emscripten_19sleep',
+        'byn$fpcast-emu$builtin___import__',
+        'byn$fpcast-emu$builtin_exec',
+        'byn$fpcast-emu$builtin_eval',
+        'byn$fpcast-emu$cfunction_vectorcall_FASTCALL_KEYWORDS',
+        'byn$fpcast-emu$cfunction_vectorcall_O',
+        'byn$fpcast-emu$method_vectorcall',
+        'byn$fpcast-emu$slot_tp_call',
+        'byn$fpcast-emu$opfunc_*',
         ]
 
     c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
@@ -511,7 +505,7 @@ def link_web(c):
     {{ CC }} {{ LDFLAGS }}
 
     {% if debug_asyncify %}
-    -g2
+    -g2 -gsource-map --source-map-base ./
     {% else %}
     -g0
     {% endif %}
@@ -550,13 +544,15 @@ def link_web(c):
     --emit-symbol-map
 
     -sFILESYSTEM=1
-    -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS']
+    -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS','ccall']
 
     -sASYNCIFY=1
     -sASYNCIFY_STACK_SIZE=65535
     -sASYNCIFY_ONLY="{{ asyncify_only }}"
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
+
+    -sEXPORTED_FUNCTIONS=['_main']
 
     --shell-file {{ runtime }}/web/shell.html
     """)
@@ -569,6 +565,10 @@ def link_web(c):
     c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
     c.run("""install renpy.data {{ renpy }}/web3/renpy.data""")
     c.run("""install {{runtime}}/web/web-presplash.jpg {{ renpy }}/web3/web-presplash.jpg""")
+
+    if c.get("debug_asyncify"):
+        c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")
+
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
     # -sASSERTIONS=1
