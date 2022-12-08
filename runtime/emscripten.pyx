@@ -203,22 +203,31 @@ def process_trace(trace):
         trace_set.add(i)
 
     if trace_set != old_trace_set:
+
+        print("New sleep trace:", trace_set - old_trace_set)
+
         old_trace_set |= trace_set
+
         l = list(trace_set)
         l.sort()
-        print(repr(l).replace(" ", ""))
-
+        print("Full sleep trace:", repr(l).replace(" ", ""))
 
 
 if TRACE:
     emscripten_run_script("""Error.stackTraceLimit = 1024;""")
 
 def sleep(ms):
+
+
     if TRACE:
+        print("Before sleep.")
         trace = emscripten_run_script_string(r"""stackTrace()""".encode('UTF-8'))
         process_trace(trace)
 
     emscripten_sleep(ms)
+
+    if TRACE:
+        print("After sleep.")
 
 
 # async_wget
