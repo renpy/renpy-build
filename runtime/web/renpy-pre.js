@@ -53,6 +53,9 @@ Module.preRun = Module.preRun || [ ];
     // Has an error been reported?
     let errorReported = false;
 
+    // Should output only go to the console?
+    let printConsoleOnly = false;
+
     /**
      * Hide the status div. Once it's hidden, clears the status text.
      */
@@ -108,13 +111,17 @@ Module.preRun = Module.preRun || [ ];
 
         if (s == "" && !errorReported) {
             statusText = "";
-            s = "";
+            return;
         }
 
         for (let i of s.split("\n")) {
             if (i.length > 0) {
                 console.log(i);
             }
+        }
+
+        if (printConsoleOnly) {
+            return;
         }
 
         s = String(s);
@@ -593,5 +600,12 @@ Module.preRun = Module.preRun || [ ];
     }
 
     window.downloadBytecode = downloadBytecode;
+
+    function traceSleep() {
+        printConsoleOnly = true;
+        renpy_exec('import emscripten; emscripten.TRACE = True')
+    }
+
+    window.traceSleep = traceSleep;
 
 })();
