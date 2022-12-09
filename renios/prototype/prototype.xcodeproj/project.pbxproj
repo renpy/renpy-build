@@ -202,7 +202,6 @@
 				E26635412425BD62005FA50B /* LaunchImage-background.png in Resources */,
 				E26D5A9A241A038B00D17256 /* base in Resources */,
 				E2BB98831A631363009C927E /* Media.xcassets in Resources */,
-				E21AB820285E856F002B88AF /* Frameworks in Resources */,
 				E2907EC324284D42003439CC /* Launch Screen.storyboard in Resources */,
 				E26635402425BD62005FA50B /* LaunchImage-foreground.png in Resources */,
 			);
