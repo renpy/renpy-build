@@ -34,7 +34,10 @@
         return nil;
     }
 
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated"
     window = [[ UIApplication sharedApplication] keyWindow];
+    #pragma clang diagnostic pop
 
     NSString *string = [NSString stringWithUTF8String: fn];
     NSURL *url = [ NSURL fileURLWithPath: string ];

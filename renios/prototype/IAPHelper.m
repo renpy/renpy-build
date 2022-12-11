@@ -54,7 +54,7 @@ UIAlertController *alert;
     self.finished = 1;
     self.initialized_queue = 0;
     self.dialogTitle = @"Contacting App Store\nPlease Wait...";
-    
+
     return self;
 }
 
@@ -76,40 +76,40 @@ UIAlertController *alert;
 }
 
 - (void) validateProductIdentifiers {
- 
+
     printf("Starting validation.\n");
-    
+
     if (self.validated) {
         printf("Already validated.\n");
         self.finished = 1;
         return;
     }
-    
+
     [self showDialog];
-    
+
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc]
                                           initWithProductIdentifiers:[NSSet setWithArray: self.productIdentifiers]];
     self.finished = 0;
     productsRequest.delegate = self;
     [productsRequest start];
-    
+
 }
 
 - (void) validateProductIdentifiersInBackground {
-    
+
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc]
                                           initWithProductIdentifiers:[NSSet setWithArray: self.productIdentifiers]];
     self.validated = 0;
     productsRequest.delegate = self;
     [productsRequest start];
-    
+
 }
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     for (SKProduct *prod in response.products) {
         [ self.products setObject: prod forKey: prod.productIdentifier ];
     }
-    
+
     [self hideDialog];
 
     self.validated = 1;
@@ -123,13 +123,13 @@ UIAlertController *alert;
     if (alert != nil) {
         return;
     }
-    
+
     alert = [UIAlertController
              alertControllerWithTitle:self.dialogTitle
              message:nil
              preferredStyle:UIAlertControllerStyleAlert ];
- 
-    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
 
     // Adjust the indicator so it is up a few pixels from the bottom of the alert
 
@@ -137,8 +137,11 @@ UIAlertController *alert;
     [indicator startAnimating];
 
     [alert.view addSubview: indicator];
+
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated"
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alert animated:YES completion:nil];
-    
+    #pragma clang diagnostic pop
 
 }
 
