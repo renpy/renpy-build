@@ -1,6 +1,6 @@
 from renpybuild.model import task
 
-version = "1.1.1g"
+version = "1.1.1s"
 
 
 @task()
@@ -18,8 +18,6 @@ def build(c):
 
     if c.platform == "mac":
         c.env("KERNEL_BITS", "64")
-
-
 
     if (c.platform == "windows") and (c.arch == "x86_64"):
         # c.env("CFLAGS", "{{ CFLAGS }} -DNOCRYPT")
