@@ -565,6 +565,10 @@ def link_web(c):
     c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
     c.run("""install renpy.data {{ renpy }}/web3/renpy.data""")
     c.run("""install {{runtime}}/web/web-presplash.jpg {{ renpy }}/web3/web-presplash.jpg""")
+    c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web3/web-icon.png""")
+    c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web3/manifest.json""")
+    c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web3/service-worker.js""")
+
 
     if c.get("debug_asyncify"):
         c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")
