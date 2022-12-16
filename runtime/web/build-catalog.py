@@ -69,8 +69,13 @@ def main():
             # Get the MD5 hash of the file
             file_hash = get_md5_hash(file_path)
             # Add the file to the catalog
-            catalog_files[file_hash] = file_name
-    
+            catalog_files[file_name] = file_hash
+
+    # Generate MD5 hash sum for the core files
+    for file in catalog["core"]:
+        file_path = os.path.join(destination, file)
+        file_hash = get_md5_hash(file_path)
+        catalog_files[file] = file_hash
 
     # Update catalog
     catalog["files"] = catalog_files
