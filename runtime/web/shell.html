@@ -163,6 +163,9 @@
     window.addEventListener('load', function() {
       if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('/service-worker.js');
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
+              window.location.reload(true);
+          });
       }
     });
   </script>
