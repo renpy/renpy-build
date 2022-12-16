@@ -55,6 +55,7 @@ def main():
         catalog = json.load(f)
     
     catalog_files = {}
+    core_files = {}
     # Get current directory
     destination = os.path.dirname(os.path.realpath(__file__))
     # Walk through the game folder
@@ -75,10 +76,11 @@ def main():
     for file in catalog["core"]:
         file_path = os.path.join(destination, file)
         file_hash = get_md5_hash(file_path)
-        catalog_files[file] = file_hash
+        core_files[file] = file_hash
 
     # Update catalog
     catalog["files"] = catalog_files
+    catalog["core"] = core_files
 
     # Write new catalog
     with open("pwa_catalog.json", "w") as f:
