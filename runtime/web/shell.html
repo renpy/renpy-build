@@ -160,14 +160,12 @@
 
   <script>
     // PWA
-    window.addEventListener('load', function() {
-      if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('/service-worker.js');
-          navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (navigator.serviceWorker && !navigator.serviceWorker.controller) {
+        navigator.serviceWorker.register('./service-worker.js', { scope: '/' });
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
               window.location.reload(true);
           });
-      }
-    });
+    }
   </script>
   <script src="renpy-pre.js"></script>
   {{{ SCRIPT }}}
