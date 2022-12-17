@@ -161,7 +161,7 @@
   <script>
     // PWA
     if (navigator.serviceWorker) {
-      if (navigator.serviceWorker.controller) {
+      if (!navigator.serviceWorker.controller) {
         navigator.serviceWorker.register('./service-worker.js', { scope: '/' });
       }  
       navigator.serviceWorker.addEventListener('controllerchange', function() {
