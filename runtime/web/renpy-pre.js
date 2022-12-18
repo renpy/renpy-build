@@ -140,7 +140,8 @@ Module.preRun = Module.preRun || [ ];
      * Reports a message that will eventually be hidden.
      */
     function printMessage(s) {
-        if (s.startsWith("warning: ")) {
+
+        if (s.startsWith("warning: ") || s.startsWith("wasm streaming compile failed") || s.startsWith("falling back to ArrayBuffer") ) {
             console.log(s);
             return;
         }
