@@ -568,6 +568,7 @@ def link_web(c):
     c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web3/web-icon.png""")
     c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web3/manifest.json""")
     c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web3/service-worker.js""")
+    c.run("""install {{runtime}}/web/pwa_catalog.json {{ renpy }}/web3/pwa_catalog.json""")
 
 
     if c.get("debug_asyncify"):
