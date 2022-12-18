@@ -156,7 +156,7 @@ Module.preRun = Module.preRun || [ ];
             s += ": " + e.message;
         }
 
-        s += "\nMore information may be available in the browser console.";
+        s += "\nMore information may be available in the browser console or contained in the log.";
 
         printCommon(s);
 
@@ -222,15 +222,8 @@ Module.preRun = Module.preRun || [ ];
 
 
     /***************************************************************************
-     * Emscripten initialization.
+     * Emscripten initialization and termination.
      **************************************************************************/
-
-    window.presplashEnd = () => {
-        document.getElementById('presplash').remove();
-        cancelStatusTimeout();
-        hideStatus();
-    }
-
 
     /** Set up the canvas. */
     let canvas = document.getElementById('canvas');
@@ -239,6 +232,22 @@ Module.preRun = Module.preRun || [ ];
     canvas.addEventListener('click', function (e) { window.focus() });
     Module.canvas = canvas;
 
+
+    window.presplashEnd = () => {
+        document.getElementById('presplash').remove();
+        cancelStatusTimeout();
+        hideStatus();
+    };
+
+    window.atExit = () => {
+        canvas.remove();
+        reportError("The game exited unexpectedly.");
+    };
+
+    Module.onAbort = () => {
+        canvas.remove();
+        reportError("The game aborted unexpectedly.");
+    };
 
     /**
      * Initialize the filesystem.

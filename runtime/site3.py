@@ -456,9 +456,21 @@ def unpack_web():
 
     zf.close()
 
+def web_atexit():
+    """
+    This is called when the web version exits.
+    """
+
+    import emscripten
+
+    emscripten.run_script("""atExit();""")
+
 
 if RENPY_PLATFORM.startswith("web-"):
     unpack_web()
+
+    import atexit
+    atexit.register(web_atexit)
 
 # Platform specific python path. ###############################################
 
