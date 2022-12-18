@@ -82,38 +82,54 @@
 
     #ContextContainer {
       position: absolute;
-      left: 10px;
-      top: 10px;
+      left: 0px;
+      top: 0px;
       color: white;
+    }
+
+    #ContextContainer.shown {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 0px 0px 5px 0px;
     }
 
     #ContextButton {
       text-decoration: none;
-      color: grey;
+      color: lightgrey;
       font-size: xx-large;
       cursor: pointer;
       user-select: none;
       -moz-user-select: none;
+      padding: 10px 10px;
+      opacity: .75;
     }
 
     #ContextButton:focus {
       outline: none;
+      color: #ffffff;
+      opacity: 1.0;
     }
 
     #ContextMenu a {
       text-decoration: none;
       color: lightgrey;
+      background: #444;
+      height: 48px;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid lightgrey;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 5px 5px;
+      opacity: 1.0;
     }
 
     #ContextMenu a:hover {
-      text-decoration: nsone;
-      color: grey;
+      text-decoration: none;
+      background: #666666;
+      color: #ffffff
     }
 
-    #ContextMenu {
-      background-color: rgb(40, 40, 40);
-      padding: 5px;
-    }
 
     #presplash {
         position: absolute;
@@ -133,25 +149,22 @@
 <body>
   <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 
+  <img id="presplash" src="web-presplash.jpg">
+
   <div id="ContextContainer">
     <a id="ContextButton">&#8801;</a><br />
     <div id="ContextMenu" style="display: none;">
       <input id="ID_SavegamesImport" type="file" onchange="onSavegamesImport(this)" accept="application/zip"
         style=display:none></input>
-      <a href="javascript:document.getElementById('ID_SavegamesImport').click();">Import saves</a><br />
-      <a href="javascript:onSavegamesExport();">Export saves</a><br />
-      <a href="javascript:FSDownload('/log.txt', 'text/plain');">Ren'Py log</a><br />
+      <a href="javascript:document.getElementById('ID_SavegamesImport').click();">Import Saves</a>
+      <a href="javascript:onSavegamesExport();">Export Saves</a>
+      <a href="javascript:FSDownload('/log.txt', 'text/plain');">Download Log</a>
       <a href="https://www.renpy.org/" target="_blank">
-        <span style="font-size: smaller">
-          <span style="color: dimgrey">Powered by</span>
-          Ren'Py
-        </span>
+          Powered by Ren'Py
       </a>
       </span>
     </div>
   </div>
-
-  <img id="presplash" src="web-presplash.jpg">
 
   <div id="statusDiv" class="hidden">
     <div id="statusTextDiv"></div>

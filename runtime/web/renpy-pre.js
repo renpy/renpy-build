@@ -508,13 +508,18 @@ Module.preRun = Module.preRun || [ ];
      * Context menu.
      **************************************************************************/
 
-
     const menu = document.getElementById('ContextMenu');
+
+    const contextContainer = document.getElementById('ContextContainer');
+
     document.getElementById('ContextButton').addEventListener('click', function (e) {
-        if (menu.style.display == 'none')
+        if (menu.style.display == 'none') {
             menu.style.display = 'block';
-        else
+            contextContainer.classList.add("shown");
+        } else {
             menu.style.display = 'none';
+            contextContainer.classList.remove("shown");
+        }
         e.preventDefault();
     });
 
