@@ -10,6 +10,12 @@ self.addEventListener('activate', function (e) {
     return self.clients.claim();
 });
 
+
+/**
+ * True if the service worker should add the request to a persistent cache.
+ */
+let addToCache = false;
+
 /**
  * Serves the cached version of the request if it exists, otherwise fetches the
  * request from the network and caches it. Fetch is used in the default mode,
@@ -21,7 +27,11 @@ async function fetchAndCache(request) {
 
     try {
         const response = await fetch(request);
-        await cache.put(request, response.clone());
+
+        if (addToCache) {
+            await cache.put(request, response.clone());
+        }
+
         return response;
     } catch (e) {
         try {
@@ -50,5 +60,9 @@ self.addEventListener('message', function (e) {
     if (e.data == "clearCache") {
         caches.delete(cacheName);
         console.log("Cache cleared in service worker.");
+
+        addToCache = false;
+    } else if (e.data == "loadCache") {
+        addToCache = true;
     }
 });

@@ -597,6 +597,9 @@ Module.preRun = Module.preRun || [ ];
 
 
     function loadCache() {
+
+        navigator.serviceWorker.controller.postMessage("loadCache");
+
         async function loadCacheWorker() {
             let response = await fetch("pwa_catalog.json");
             let catalog = await response.json();
