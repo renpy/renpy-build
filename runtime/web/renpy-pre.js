@@ -590,6 +590,45 @@ Module.preRun = Module.preRun || [ ];
 
     window.FSDownload = FSDownload;
 
+    /***************************************************************************
+     * Precaching.
+     **************************************************************************/
+
+
+
+    function loadCache() {
+        async function loadCacheWorker() {
+            let response = await fetch("pwa_catalog.json");
+            let catalog = await response.json();
+
+            // TODO: Check catalog.version.
+
+            printMessage("Updating cached game files...")
+            progress(0, catalog.files.length);
+
+            for (let i = 0; i < catalog.files.length; i++) {
+                let response = await fetch(catalog.files[i]);
+                await response.blob();
+
+                progress(i + 1, catalog.files.length);
+            }
+
+        }
+
+        loadCacheWorker();
+    }
+
+    window.loadCache = loadCache;
+
+    function clearCache() {
+        try {
+            navigator.serviceWorker.controller.postMessage("clearCache");
+        } catch (e) {
+        }
+    }
+
+    window.clearCache = clearCache;
+
 
     /***************************************************************************
      * "Hidden" developer functions.

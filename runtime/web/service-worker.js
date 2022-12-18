@@ -40,7 +40,15 @@ async function fetchAndCache(request) {
     }
 }
 
+
 /* Serve cached content when offline */
 self.addEventListener('fetch', function (e) {
     e.respondWith(fetchAndCache(e.request));
+});
+
+self.addEventListener('message', function (e) {
+    if (e.data == "clearCache") {
+        caches.delete(cacheName);
+        console.log("Cache cleared in service worker.");
+    }
 });
