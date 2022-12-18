@@ -601,9 +601,8 @@ Module.preRun = Module.preRun || [ ];
             let response = await fetch("pwa_catalog.json");
             let catalog = await response.json();
 
-            // TODO: Check catalog.version.
-
-            printMessage("Updating cached game files...")
+            printMessage("");
+            printMessage("Preloading game files into browser cache...")
             progress(0, catalog.files.length);
 
             for (let i = 0; i < catalog.files.length; i++) {
@@ -613,6 +612,8 @@ Module.preRun = Module.preRun || [ ];
                 progress(i + 1, catalog.files.length);
             }
 
+            cancelStatusTimeout();
+            hideStatus();
         }
 
         loadCacheWorker();
