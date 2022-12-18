@@ -24,24 +24,38 @@ let addToCache = false;
  */
 async function fetchAndCache(request) {
     const cache = await caches.open(cacheName);
+    const cachedResponse = await cache.match(request);
 
     try {
-        const response = await fetch(request);
 
-        if (addToCache) {
+        let headers = { }
+
+        if (cachedResponse) {
+            if (cachedResponse.headers.get('Last-Modified')) {
+                headers['If-Modified-Since'] = cachedResponse.headers.get('Last-Modified');
+            }
+            if (cachedResponse.headers.get('ETag')) {
+                headers['If-None-Match'] = cachedResponse.headers.get('ETag');
+            }
+        }
+
+        const response = await fetch(request, { headers: headers });
+
+        if (cachedResponse && response.status == 304) {
+            return cachedResponse;
+        }
+
+        if (addToCache && response.status == 200) {
             await cache.put(request, response.clone());
         }
 
         return response;
+
     } catch (e) {
-        try {
-            const response = await cache.match(request);
-            if (response) {
-                console.log('Served from cache: ' + request.url);
-                return response;
-            }
-        } catch (e) {
-            // pass
+
+        if (cachedResponse) {
+            console.log('Served from cache: ' + request.url);
+            return response;
         }
 
         console.log('Not found in cache: ' + request.url);

@@ -594,8 +594,6 @@ Module.preRun = Module.preRun || [ ];
      * Precaching.
      **************************************************************************/
 
-
-
     function loadCache() {
 
         navigator.serviceWorker.controller.postMessage("loadCache");
@@ -603,6 +601,10 @@ Module.preRun = Module.preRun || [ ];
         async function loadCacheWorker() {
             let response = await fetch("pwa_catalog.json");
             let catalog = await response.json();
+
+            if (catalog.version == localStorage.cacheVersion) {
+                return;
+            }
 
             printMessage("");
             printMessage("Preloading game files into browser cache...")
@@ -617,6 +619,8 @@ Module.preRun = Module.preRun || [ ];
 
             cancelStatusTimeout();
             hideStatus();
+
+            localStorage.cacheVersion = catalog.version;
         }
 
         loadCacheWorker();
@@ -627,6 +631,7 @@ Module.preRun = Module.preRun || [ ];
     function clearCache() {
         try {
             navigator.serviceWorker.controller.postMessage("clearCache");
+            localStorage.cacheVersion = -1;
         } catch (e) {
         }
     }
