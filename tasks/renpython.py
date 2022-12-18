@@ -453,7 +453,7 @@ def build_web(c):
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c):
 
-    c.var("debug_asyncify", False)
+    c.var("debug_asyncify", False, expand=False)
 
     asyncify_only = [
         'PyEval_EvalCode',
@@ -571,7 +571,6 @@ def link_web(c):
 
     if c.get("debug_asyncify"):
         c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")
-
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
     # -sASSERTIONS=1
