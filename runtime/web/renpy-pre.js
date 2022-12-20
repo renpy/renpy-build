@@ -690,4 +690,15 @@ Module.preRun = Module.preRun || [ ];
 
     window.traceSleep = traceSleep;
 
+    function loseContext() {
+        let e = canvas.getContext("webgl2").getExtension("WEBGL_lose_context");
+        e.loseContext();
+
+        setTimeout(function () {
+            e.restoreContext();
+        }, 1000);
+    }
+
+    window.loseContext = loseContext;
+
 })();
