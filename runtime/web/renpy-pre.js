@@ -227,11 +227,30 @@ Module.preRun = Module.preRun || [ ];
 
     /** Set up the canvas. */
     let canvas = document.getElementById('canvas');
-    canvas.addEventListener("webglcontextlost", function (e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-    canvas.addEventListener('mouseenter', function (e) { window.focus() });
-    canvas.addEventListener('click', function (e) { window.focus() });
-    Module.canvas = canvas;
 
+    /** Set when the webGlContext is lost. */
+    window.webglContextLost = false;
+
+    /** Set when the webGlContext is restored. Cleared by Ren'Py in core.py. */
+    window.webglContextRestored = false;
+
+    canvas.addEventListener("webglcontextlost", (e) => {
+        window.webglContextRestored = false;
+        window.webglContextLost = true;
+        e.preventDefault();
+    }, false);
+
+    canvas.addEventListener("webglcontextrestored", (e) => {
+        window.webglContextLost = false;
+        window.webglContextRestored = true;
+    }, false);
+
+
+    canvas.addEventListener('mouseenter', function (e) { window.focus() });
+
+    canvas.addEventListener('click', function (e) { window.focus() });
+
+    Module.canvas = canvas;
 
     window.presplashEnd = () => {
         document.getElementById('presplash').remove();
