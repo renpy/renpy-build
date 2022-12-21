@@ -466,11 +466,32 @@ def web_atexit():
     emscripten.run_script("""atExit();""")
 
 
+class WebBrowserController:
+    """
+    This is a browser object that can be used to open URLs.
+    """
+
+    def open(self, url, new=0, autoraise=True):
+        import emscripten
+        import json
+
+        emscripten.run_script("""window.open({}, '_blank');""".format(json.dumps(url)))
+
+    def open_new(self, url):
+        return open(url, new=1)
+
+    def open_new_tab(self, url):
+        return open(url, new=2)
+
+
 if RENPY_PLATFORM.startswith("web-"):
     unpack_web()
 
     import atexit
     atexit.register(web_atexit)
+
+    import webbrowser
+    webbrowser.register('web', WebBrowserController, preferred=True)
 
 # Platform specific python path. ###############################################
 
