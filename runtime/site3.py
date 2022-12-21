@@ -478,10 +478,10 @@ class WebBrowserController:
         emscripten.run_script("""window.open({}, '_blank');""".format(json.dumps(url)))
 
     def open_new(self, url):
-        return open(url, new=1)
+        return self.open(url, new=1)
 
     def open_new_tab(self, url):
-        return open(url, new=2)
+        return self.open(url, new=2)
 
 
 if RENPY_PLATFORM.startswith("web-"):
