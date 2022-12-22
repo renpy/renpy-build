@@ -26,7 +26,19 @@ async function fetchAndCache(request) {
     const cache = await caches.open(cacheName);
     const cachedResponse = await cache.match(request);
 
+
     try {
+
+        if (request.url.endsWith("?cached")) {
+            request = new Request(request.url.replace("?cached", "?uncached"), request);
+            let rv = await cache.match(request);
+
+            if (rv == null) {
+                rv = new Response("Not found in cache.", { status: 404, statusText: "Not found in cache." });
+            }
+
+            return rv;
+        }
 
         let headers = { }
 
@@ -55,7 +67,7 @@ async function fetchAndCache(request) {
 
         if (cachedResponse) {
             console.log('Served from cache: ' + request.url);
-            return response;
+            return cachedResponse;
         }
 
         console.log('Not found in cache: ' + request.url);
@@ -71,12 +83,12 @@ self.addEventListener('fetch', function (e) {
 });
 
 self.addEventListener('message', function (e) {
-    if (e.data == "clearCache") {
+    if (e.data[0] == "clearCache") {
         caches.delete(cacheName);
         console.log("Cache cleared in service worker.");
 
         addToCache = false;
-    } else if (e.data == "loadCache") {
+    } else if (e.data[0] == "loadCache") {
         addToCache = true;
     }
 });

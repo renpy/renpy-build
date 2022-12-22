@@ -590,7 +590,7 @@ Module.preRun = Module.preRun || [ ];
     window.onSavegamesImport = onSavegamesImport;
 
     function onSavegamesExport() {
-       renpy_exec('result = renpy.savelocation.zip_saves()').then((ret) => {
+        renpy_exec('result = renpy.savelocation.zip_saves()').then((ret) => {
             if (ret) {
                 FSDownload('savegames.zip', 'application/zip');
                 printMessage("Saves exported successfully.\n");
@@ -630,13 +630,28 @@ Module.preRun = Module.preRun || [ ];
 
     function loadCache() {
 
-        navigator.serviceWorker.controller.postMessage("loadCache");
+        try {
+            navigator.serviceWorker.controller.postMessage(["loadCache"]);
+        } catch (e) {
+            // pass
+        }
 
         async function loadCacheWorker() {
+
             let response = await fetch("pwa_catalog.json");
             let catalog = await response.json();
 
-            if (catalog.version == localStorage.cacheVersion) {
+            let cachedCatalog;
+
+            try {
+                let cachedCatalogResponse = await fetch("pwa_catalog.json?cached")
+                cachedCatalog = await cachedCatalogResponse.json();
+            } catch (e) {
+                console.log("No cached catalog found.");
+                cachedCatalog = { version: -1 };
+            }
+
+            if (cachedCatalog.version == catalog.version) {
                 return;
             }
 
@@ -654,7 +669,9 @@ Module.preRun = Module.preRun || [ ];
             cancelStatusTimeout();
             hideStatus();
 
-            localStorage.cacheVersion = catalog.version;
+            // This will add the catalog to the cache, such that
+            // fetch("pwa_catalog.json?cached") will return it.
+            fetch("pwa_catalog.json?uncached");
         }
 
         loadCacheWorker();
@@ -664,10 +681,12 @@ Module.preRun = Module.preRun || [ ];
 
     function clearCache() {
         try {
-            navigator.serviceWorker.controller.postMessage("clearCache");
-            localStorage.cacheVersion = -1;
+            navigator.serviceWorker.controller.postMessage(["clearCache"]);
         } catch (e) {
+            // pass
         }
+
+        localStorage.cacheVersion = -1;
     }
 
     window.clearCache = clearCache;
