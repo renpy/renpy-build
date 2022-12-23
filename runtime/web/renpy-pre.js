@@ -691,6 +691,64 @@ Module.preRun = Module.preRun || [ ];
 
     window.clearCache = clearCache;
 
+    /***************************************************************************
+     * Text input.
+     **************************************************************************/
+
+    const inputDiv = document.getElementById("inputDiv");
+    const inputForm = document.getElementById("inputForm");
+    const inputPrompt = document.getElementById("inputPrompt");
+    const inputText = document.getElementById("inputText");
+
+    // This stores the input after enter is pressed.
+    window.inputResult = null;
+
+
+    function submitInput(e) {
+        e.preventDefault();
+        window.inputResult = inputText.value;
+    }
+
+    inputForm.addEventListener("submit", submitInput);
+
+    inputDiv.addEventListener("keydown", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("keyup", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("keypress", function (e) { e.stopPropagation(); });
+
+    inputDiv.addEventListener("mousemove", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("mousedown", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("mouseup", function (e) { e.stopPropagation(); });
+
+    inputDiv.addEventListener("touchstart", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("touchend", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("touchcancel", function (e) { e.stopPropagation(); });
+    inputDiv.addEventListener("touchmove", function (e) { e.stopPropagation(); });
+
+    function startInput(prompt, value) {
+        window.inputResult = null;
+
+        inputDiv.classList.remove("hidden");
+        inputDiv.classList.add("visible");
+
+        while (inputPrompt.firstChild) {
+            inputPrompt.removeChild(inputPrompt.firstChild);
+        }
+
+        let promptText = document.createTextNode(prompt);
+        inputPrompt.appendChild(promptText);
+
+        inputText.value = value;
+        inputText.focus();
+    }
+
+    window.startInput = startInput;
+
+    function endInput() {
+        inputDiv.classList.remove("visible");
+        inputDiv.classList.add("hidden");
+    }
+
+    window.endInput = endInput;
 
     /***************************************************************************
      * "Hidden" developer functions.

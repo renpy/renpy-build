@@ -47,7 +47,7 @@
 
     .visible {
       visibility: visible;
-      opacity: .75;
+      opacity: 1.0;
       transition: opacity .1s linear;
     }
 
@@ -57,8 +57,8 @@
       transition: visibility 0s .25s, opacity .25s linear;
     }
 
-    #statusDiv {
-      background: #000;
+    #statusDiv, #inputDiv {
+      background: rgba(0, 0, 0, 0.75);
       width: 50%;
       margin: auto;
       min-width: 340px;
@@ -75,7 +75,7 @@
     #statusTextDiv {
       overflow: auto;
       max-height: 40vh;
-      color: #fff;
+      color: #ccc;
       font-size: 14px;
     }
 
@@ -84,6 +84,30 @@
       width: 100%;
     }
 
+    #inputDiv {
+      width: 65%;
+      padding-left: 10px;
+      padding-right: 20px;
+    }
+
+    #inputPrompt {
+      color: #eee;
+      font-size: 150%;
+      margin-bottom: .5em;
+
+    }
+
+    #inputText {
+      width: 100%;
+      font-size: 175%;
+      padding: 5px;
+      background: inherit;
+      color: #eee;
+    }
+
+    #inputText:focus {
+      color: #ffffff;
+    }
 
     #ContextContainer {
       position: absolute;
@@ -135,7 +159,6 @@
       color: #ffffff
     }
 
-
     #presplash {
         position: absolute;
         top: 0;
@@ -175,6 +198,14 @@
     <div id="statusTextDiv"></div>
     <progress id="statusProgress" value="0" max="100"></progress>
   </div>
+
+  <div id="inputDiv" class="hidden">
+    <form id="inputForm">
+      <div id="inputPrompt"></div>
+      <input id="inputText" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    </form>
+  </div>
+
 
   <script>
       // Register the service worker.
