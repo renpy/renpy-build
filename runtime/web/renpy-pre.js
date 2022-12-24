@@ -703,7 +703,6 @@ Module.preRun = Module.preRun || [ ];
     // This stores the input after enter is pressed.
     window.inputResult = null;
 
-
     function submitInput(e) {
         e.preventDefault();
         window.inputResult = inputText.value;
@@ -724,7 +723,33 @@ Module.preRun = Module.preRun || [ ];
     inputDiv.addEventListener("touchcancel", function (e) { e.stopPropagation(); });
     inputDiv.addEventListener("touchmove", function (e) { e.stopPropagation(); });
 
-    function startInput(prompt, value) {
+    let inputAllow = null;
+    let inputExclude = null;
+
+    inputText.addEventListener("input", (e) => {
+        let newValue = "";
+
+        for (let c of inputText.value) {
+            if (inputAllow && !inputAllow.includes(c)) {
+                continue;
+            }
+
+            if (inputExclude && inputExclude.includes(c)) {
+                continue;
+            }
+
+            newValue += c;
+        }
+
+        if (newValue != inputText.value) {
+            let end = inputText.selectionEnd;
+            inputText.value = newValue;
+            inputText.setSelectionRange(end-1, end-1);
+        }
+    });
+
+
+    function startInput(prompt, value, allow, exclude, mask) {
         window.inputResult = null;
 
         inputDiv.classList.remove("hidden");
@@ -739,6 +764,16 @@ Module.preRun = Module.preRun || [ ];
 
         inputText.value = value;
         inputText.focus();
+
+        inputAllow = allow;
+        inputExclude = exclude;
+
+        if (mask) {
+            inputText.type = "password";
+        } else {
+            inputText.type = "text";
+        }
+
     }
 
     window.startInput = startInput;
