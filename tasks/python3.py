@@ -243,7 +243,7 @@ def pip(c):
         six==1.12.0
         rsa==3.4.2
         pyasn1==0.4.2
-        ecdsa==0.17.0
+        ecdsa==0.18.0
         urllib3==1.22
         certifi
         idna==2.6
