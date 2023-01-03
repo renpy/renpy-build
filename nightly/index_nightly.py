@@ -4,6 +4,8 @@ import datetime
 import os.path
 import argparse
 import re
+import json
+from collections import namedtuple
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
@@ -12,11 +14,15 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml']),
 )
 
+gh = 'https://github.com/renpy'
+src = namedtuple('Source', 'text url')
+
 
 def directory(name, full):
 
     sdk = [ ]
     other = [ ]
+    vcs = [ ]
 
     dirtime = 0
 
@@ -35,6 +41,12 @@ def directory(name, full):
             continue
 
         if i.endswith(".zsync"):
+            continue
+
+        if i == "vcs.json":
+            with open(os.path.join(full, i)) as f:
+                vcs = [ src(f'{repo}:{rev}', f'{gh}/{repo}/commits/{sha}')
+                        for repo, sha, rev in json.load(f) ]
             continue
 
         mtime = os.path.getmtime(os.path.join(full, i))
@@ -67,7 +79,7 @@ def directory(name, full):
     other.sort()
 
     tmpl = env.get_template("nightly.html")
-    html = tmpl.render(date=date, name=name, sdk=sdk, other=other)
+    html = tmpl.render(date=date, name=name, sdk=sdk, other=other, vcs=vcs)
 
     with open(os.path.join(full, "index.html"), "w") as f:
         f.write(html)

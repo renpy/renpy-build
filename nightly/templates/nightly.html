@@ -33,8 +33,15 @@
       <p>
       This build is temporary, it will be removed from the web after a few
       days.
+      {% if vcs|length > 2 %}
+      It was built from
+      {%- for src in vcs[:-2] %}
+      <code><a href="{{ src.url }}">{{ src.text }}</a></code>,
+      {%- endfor %} and
+      <code><a href="{{ vcs[-2].url }}">{{ vcs[-2].text }}</a></code>, using
+      <code><a href="{{ vcs[-1].url }}">{{ vcs[-1].text }}</a></code>.
+      {% endif -%}
       </p>
-
 
       <h3>SDK Downloads</h3>
         <table class="table">
@@ -57,7 +64,6 @@
             </tr>
             {% endfor %}
         </table>
-
 
     </div>
 
