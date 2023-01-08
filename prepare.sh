@@ -34,11 +34,6 @@ sudo apt-get install -y mingw-w64
 # Needed for mac
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
 
-# Needed for iOS
-wget https://apt.llvm.org/llvm.sh
-chmod +x llvm.sh
-sudo ./llvm.sh 13
-
 # Needed for web
 sudo apt-get install -y quilt
 
@@ -47,6 +42,11 @@ sudo apt-get install -y \
     libavcodec-dev libavformat-dev \
     libswresample-dev libswscale-dev libfreetype6-dev libfribidi-dev libsdl2-dev \
     libsdl2-image-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-dev
+
+# Clang is needed to compile for many platforms.
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 15
 
 # Install the programs and virtualenvs.
 

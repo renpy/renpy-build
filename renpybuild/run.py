@@ -28,6 +28,29 @@ def emsdk_environment(c):
         if m:
             c.env(m.group(1), m.group(2))
 
+
+def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
+
+    if bin and not bin.endswith("/"):
+        bin += "/"
+
+    c.var("llvm_bin", bin)
+    c.var("llvm_prefix", prefix)
+    c.var("llvm_suffix", suffix)
+
+    ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
+    c.var("clang_args", "-std=gnu17 -fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args)
+
+    c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }}")
+    c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }}")
+    c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
+
+    c.env("LD", "ccache " + ld)
+    c.env("AR", "ccache {{llvm_bin}}llvm-ar{{llvm_suffix}}")
+    c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
+    c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
+    c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
+
 def build_environment(c):
     """
     Sets up the build environment inside the context.
@@ -46,8 +69,9 @@ def build_environment(c):
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
 
-    c.env("CPPFLAGS", "-I{{ install }}/include")
-    c.env("CFLAGS", "-I{{ install }}/include")
+    c.env("CPPFLAGS", "-O3 -I{{ install }}/include")
+    c.env("CFLAGS", "-O3 -I{{ install }}/include")
+    c.env("LDFLAGS", "-O3 -L{{install}}/lib")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
 
@@ -104,8 +128,6 @@ def build_environment(c):
     else:
         c.var("ffi_host_platform", "{{ host_platform }}")
 
-    c.env("LDFLAGS", "-L{{install}}/lib")
-
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
@@ -115,114 +137,33 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
-    c.var("llver", "13")
-    c.var("lipo", "llvm-lipo-{{ llver }}")
+    c.var("lipo", "llvm-lipo-15")
 
-    if c.kind == "host" or c.kind == "host-python":
+    if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
 
-        c.env("CC", "ccache gcc -fPIC")
-        c.env("CXX", "ccache g++ -fPIC")
-        c.env("CPP", "ccache gcc -E")
-        c.env("LD", "ccache ld")
-        c.env("AR", "ccache ar")
-        c.env("RANLIB", "ccache ranlib")
-
+        llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-
-    elif c.kind == "cross":
-
-        if (c.platform == "mac") or (c.platform == "ios"):
-
-            c.env("CC", "ccache clang")
-            c.env("CXX", "ccache clang++")
-            c.env("CPP", "ccache clang -E")
-            c.env("LD", "ccache llvm-ld")
-            c.env("AR", "ccache llvm-ar")
-            c.env("RANLIB", "ccache llvm-ranlib")
-
-            c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-
-        else:
-
-            c.env("CC", "ccache gcc -fPIC")
-            c.env("CXX", "ccache g++ -fPIC")
-            c.env("CPP", "ccache gcc -E")
-            c.env("LD", "ccache ld")
-            c.env("AR", "ccache ar")
-            c.env("RANLIB", "ccache ranlib")
-
-            c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform}}-")
-
-        c.env("CC", "ccache {{ crossbin }}gcc -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache {{ crossbin }}g++ -m64 -O3 -fPIC -pthread --sysroot {{ sysroot }}")
-        c.env("CPP", "ccache {{ crossbin }}gcc -m64 -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld -fPIC")
-        c.env("AR", "ccache {{ crossbin }}gcc-ar")
-        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("STRIP", "ccache {{ cross }}/bin/strip")
-        c.env("NM", "{{ cross }}/bin/nm")
-
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/x86_64-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/x86_64-linux-gnu/mesa")
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
     elif (c.platform == "linux") and (c.arch == "aarch64"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
-
-        c.env("CC", "ccache {{ crossbin }}gcc -O3 -fPIC -pthread --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache {{ crossbin }}g++ -O3 -fPIC -pthread --sysroot {{ sysroot }}")
-        c.env("CPP", "ccache {{ crossbin }}gcc -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld -fPIC")
-        c.env("AR", "ccache {{ crossbin }}gcc-ar")
-        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("STRIP", "ccache {{ crossbin }}strip")
-        c.env("NM", "{{ cross }}/bin/nm")
-
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/aarch64-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/aarch64-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/aarch64-linux-gnu/mesa")
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
-
-        c.env("CC", "ccache {{ crossbin }}gcc -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache {{ crossbin }}g++ -m32 -fPIC -O3 -pthread --sysroot {{ sysroot }}")
-        c.env("CPP", "ccache {{ crossbin }}gcc -m32 -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld -fPIC")
-        c.env("AR", "ccache {{ crossbin }}gcc-ar")
-        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("STRIP", "ccache {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin }}nm")
-
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/i386-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/i386-linux-gnu")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/i386-linux-gnu/mesa")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32")
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
 
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
-        c.var("crossbin", "{{ cross }}/bin/{{ host_platform }}-")
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
 
-        c.env("CC", "ccache {{ crossbin }}gcc -fPIC -O3 -pthread --sysroot {{ sysroot }}")
-        c.env("CXX", "ccache {{ crossbin }}g++ -fPIC -O3 -pthread --sysroot {{ sysroot }}")
-        c.env("CPP", "ccache {{ crossbin }}gcc -E --sysroot {{ sysroot }}")
-        c.env("LD", "ccache {{ crossbin}}ld -fPIC")
-        c.env("AR", "ccache {{ crossbin }}gcc-ar")
-        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("STRIP", "ccache {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin }}nm")
-
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/lib/arm-linux-gnueabihf")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-rpath-link -Wl,{{ sysroot }}/usr/lib/arm-linux-gnueabihf")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{ sysroot }}/usr/lib/i386-linux-gnu -L{{install}}/lib32 ")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
@@ -407,6 +348,7 @@ def build_environment(c):
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
 
+    # Used by zlib.
     if c.kind != "host":
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
         c.var("sdl_cross_config", "--host={{ sdl_host_platform }} --build={{ build_platform }}")
