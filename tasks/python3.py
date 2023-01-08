@@ -181,6 +181,8 @@ def build_windows(c):
     with open(c.path("Modules/timemodule.c"), "a") as f:
         f.write("/* MKTIME FIX */\n")
 
+    c.env("CFLAGS", "{{ CFLAGS }} -Wno-implicit-function-declaration")
+
     c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-system-ffi""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")

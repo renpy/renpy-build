@@ -313,7 +313,7 @@ def link_windows(c):
     librenpython.o
     -lrenpy
 
-    {{install}}/lib/libfribidi.a
+    -llibfribidi
 
     {% if c.python == "2" %}
     {{install}}/lib/{{ pythonver }}/config/lib{{ pythonver }}.dll.a
@@ -327,13 +327,13 @@ def link_windows(c):
     -lswresample
     -lavutil
 
-    -lSDL2_image
+    -llibSDL2_image
     -lSDL2
     -lopengl32
-    -ljpeg
-    -lpng
-    -lwebp
-    -lfreetype
+    -llibjpeg
+    -llibpng16
+    -llibwebp
+    -llibfreetype
     -lffi
     -lssl
     -lcrypto
@@ -416,12 +416,15 @@ def link_windows(c):
         c.copy("/usr/lib/gcc/i686-w64-mingw32/{{ mingw_version }}/libgcc_s_dw2-1.dll", "{{ dlpa }}/libgcc_s_dw2-1.dll")
         c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
-        c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
+        if c.python == "3":
+            c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
 
     elif c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")
+        c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
+        c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
 
-        if c.python == "2":
+        if c.python == "3":
             c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
 
 

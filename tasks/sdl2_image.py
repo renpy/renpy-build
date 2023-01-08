@@ -21,6 +21,8 @@ def build(c):
 
     c.run("""cp /usr/share/misc/config.sub config.sub""")
 
+    c.run("""./autogen.sh""")
+
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
 
@@ -39,5 +41,5 @@ def build(c):
     --disable-qoi
     """)
 
-    c.run("""{{ make }}""")
+    c.run("""make""")
     c.run("""make install""")

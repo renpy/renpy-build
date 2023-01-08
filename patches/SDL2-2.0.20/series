@@ -7,3 +7,4 @@ chromebook-mouse.diff
 ios-configure-uikit.diff
 opensles-library.diff
 use-metalangle.diff
+fix-windows_gaming_input.diff

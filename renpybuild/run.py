@@ -39,7 +39,13 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.var("llvm_suffix", suffix)
 
     ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
-    c.var("clang_args", "-std=gnu17 -fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args)
+
+    clang_args = "-std=gnu17 " + clang_args
+
+    if use_ld:
+        clang_args = "-fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args
+
+    c.var("clang_args", clang_args)
 
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }}")
     c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }}")
@@ -50,6 +56,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
     c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
     c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
+    c.env("WINDRES", "ccache {{llvm_bin}}llvm-windres{{llvm_suffix}}")
 
 def build_environment(c):
     """
@@ -166,18 +173,25 @@ def build_environment(c):
 
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
+        llvm(
+            c,
+            bin="{{ cross }}/llvm-mingw/bin",
+            prefix="x86_64-w64-mingw32-",
+            suffix="",
+            clang_args="-fPIC -pthread",
+            use_ld=False)
 
-        c.var("crossbin", "/usr/bin/{{ host_platform }}-")
+        # c.var("crossbin", "/usr/bin/{{ host_platform }}-")
 
-        c.env("CC", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++ --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
-        c.env("CPP", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -E")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}gcc-ar")
-        c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        c.env("WINDRES", "ccache {{ crossbin }}windres")
-        c.env("STRIP", "ccache {{crossbin }}strip" )
-        c.env("NM", "{{ crossbin}}nm")
+        # c.env("CC", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
+        # c.env("CXX", "ccache {{ crossbin }}g++ --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
+        # c.env("CPP", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -E")
+        # c.env("LD", "ccache {{ crossbin}}ld")
+        # c.env("AR", "ccache {{ crossbin }}gcc-ar")
+        # c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
+        # c.env("WINDRES", "ccache {{ crossbin }}windres")
+        # c.env("STRIP", "ccache {{crossbin }}strip" )
+        # c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 

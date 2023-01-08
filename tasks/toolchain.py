@@ -21,6 +21,16 @@ class ZipFileWithPermissions(ZipFile):
         return targetpath
 
 
+@task(kind="cross", platforms="windows")
+def unpack(c):
+
+    c.clean("{{cross}}")
+    c.chdir("{{cross}}")
+
+    c.run("tar xaf {{ tars }}/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
+    c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
+
+
 @task(kind="cross", platforms="android")
 def build(c):
 
