@@ -1,6 +1,6 @@
 from renpybuild.model import task
 
-version = "2.0.5"
+version = "2.6.2"
 
 
 @task(platforms="all")
@@ -24,14 +24,19 @@ def build(c):
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
 
-    --disable-tif
     --disable-imageio
+    --disable-stb-image
+
+    --disable-avif
     --disable-jpg-shared
+    --disable-jxl-shared
+    --disable-lbm
+    --disable-pcx
     --disable-png-shared
-    --enable-webp
-    --disable-webp-shared
+    --disable-tif
     --disable-xcf
-    --disable-svg
+    --disable-webp-shared
+    --disable-qoi
     """)
 
     c.run("""{{ make }}""")
