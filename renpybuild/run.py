@@ -56,7 +56,25 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
     c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
     c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
+    c.env("READELF", "ccache {{llvm_bin}}llvm-readelf{{llvm_suffix}}")
+
     c.env("WINDRES", "ccache {{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
+
+def android_llvm(c, arch):
+
+    if arch == "armv7a":
+        eabi = "eabi"
+    else:
+        eabi = ""
+
+    llvm(
+        c,
+        bin="{{cross}}/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin",
+        prefix=f"{arch}-linux-android{ eabi }21-",
+        suffix="",
+        clang_args="",
+        use_ld=False,
+    )
 
 def build_environment(c):
     """
@@ -146,6 +164,7 @@ def build_environment(c):
 
     c.var("lipo", "llvm-lipo-15")
 
+
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
 
         llvm(c)
@@ -195,52 +214,19 @@ def build_environment(c):
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
-        c.var("crossbin", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}-")
-        c.var("crossclang", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}21-")
-
-        c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossclang }}clang -E")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin }}nm")
-        c.env("READELF", "{{ crossbin }}readelf")
+        android_llvm(c, "x86_64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
 
-        c.var("crossbin", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}-")
-        c.var("crossclang", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}21-")
-
-        c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread")
-        c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread")
-        c.env("CPP", "ccache {{ crossclang }}clang -E")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
-        c.env("READELF", "{{ crossbin }}readelf")
+        android_llvm(c, "aarch64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
 
-        c.var("crossbin", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-")
-        c.var("crossclang", "{{ cross }}/android-ndk-r21d/toolchains/llvm/prebuilt/linux-x86_64/bin/{{ host_platform }}21-")
-
-        c.env("CC", "ccache {{ crossclang }}clang -fPIC -O3 -pthread -fno-integrated-as")
-        c.env("CXX", "ccache {{ crossclang }}clang++ -fPIC -O3 -pthread  -fno-integrated-as")
-        c.env("CPP", "ccache {{ crossclang }}clang -E")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("STRIP", "ccache  {{ crossbin }}strip")
-        c.env("NM", "{{ crossbin}}nm")
-        c.env("READELF", "{{ crossbin }}readelf")
+        android_llvm(c, "armv7a")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 

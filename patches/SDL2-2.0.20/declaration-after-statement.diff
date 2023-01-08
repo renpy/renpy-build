@@ -1,0 +1,53 @@
+Fix declaration-after-statement errors.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ configure.ac |   19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 72e3a82..82cf2a4 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1471,20 +1471,7 @@ dnl  This lets us catch things that would fail on a C89 compiler when using
+ dnl  a modern GCC.
+ CheckDeclarationAfterStatement()
+ {
+-    AC_MSG_CHECKING(for GCC -Wdeclaration-after-statement option)
+-    have_gcc_declaration_after_statement=no
+-
+-    save_CFLAGS="$CFLAGS"
+-    CFLAGS="$save_CFLAGS -Wdeclaration-after-statement -Werror=declaration-after-statement"
+-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+-    int x = 0;
+-    ]],[])], [have_gcc_declaration_after_statement=yes],[])
+-    AC_MSG_RESULT($have_gcc_declaration_after_statement)
+-    CFLAGS="$save_CFLAGS"
+-
+-    if test x$have_gcc_declaration_after_statement = xyes; then
+-        EXTRA_CFLAGS="$EXTRA_CFLAGS -Wdeclaration-after-statement -Werror=declaration-after-statement"
+-    fi
++    true
+ }
+ 
+ dnl See if GCC's -Wall is supported.
+@@ -2448,7 +2435,7 @@ CheckOpenGL()
+          #include <GL/glext.h>
+         ]],[])], [video_opengl=yes],[])
+         AC_MSG_RESULT($video_opengl)
+-        if test x$video_opengl = xyes; then 
++        if test x$video_opengl = xyes; then
+             AC_DEFINE(SDL_VIDEO_OPENGL, 1, [ ])
+             AC_DEFINE(SDL_VIDEO_RENDER_OGL, 1, [ ])
+             SUMMARY_video="${SUMMARY_video} opengl"
+@@ -4728,7 +4715,7 @@ if test x$enable_static = xyes; then
+     SUMMARY="${SUMMARY}Building Static Libraries\n"
+ fi
+ SUMMARY="${SUMMARY}Enabled modules :${SUMMARY_modules}\n"
+-SUMMARY="${SUMMARY}Assembly Math   :${SUMMARY_math}\n" 
++SUMMARY="${SUMMARY}Assembly Math   :${SUMMARY_math}\n"
+ SUMMARY="${SUMMARY}Audio drivers   :${SUMMARY_audio}\n"
+ SUMMARY="${SUMMARY}Video drivers   :${SUMMARY_video}\n"
+ if test x$have_x = xyes; then

@@ -31,15 +31,16 @@ def unpack(c):
     c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
 
 
-@task(kind="cross", platforms="android")
+@task(kind="cross", platforms="android", always=True)
 def build(c):
 
     if c.path("{{cross}}/android-ndk-r25b").exists():
         return
 
-    zf = ZipFileWithPermissions(c.path("{{ tars }}/android-ndk-r25b-linux.zip"))
-    zf.extractall(c.path("{{ install }}"))
-    zf.close()
+    c.clean("{{cross}}")
+    c.chdir("{{cross}}")
+
+    c.run("""unzip -q {{ tars }}/android-ndk-r25b-linux.zip""")
 
 
 @task(kind="cross", platforms="mac", archs="x86_64")
