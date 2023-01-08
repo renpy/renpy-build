@@ -56,7 +56,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
     c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
     c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
-    c.env("WINDRES", "ccache {{llvm_bin}}llvm-windres{{llvm_suffix}}")
+    c.env("WINDRES", "ccache {{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
 
 def build_environment(c):
     """
@@ -173,6 +173,7 @@ def build_environment(c):
 
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
+
         llvm(
             c,
             bin="{{ cross }}/llvm-mingw/bin",
@@ -181,31 +182,16 @@ def build_environment(c):
             clang_args="-fPIC -pthread",
             use_ld=False)
 
-        # c.var("crossbin", "/usr/bin/{{ host_platform }}-")
-
-        # c.env("CC", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
-        # c.env("CXX", "ccache {{ crossbin }}g++ --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -fPIC -O3")
-        # c.env("CPP", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/x86_64-ucrt -E")
-        # c.env("LD", "ccache {{ crossbin}}ld")
-        # c.env("AR", "ccache {{ crossbin }}gcc-ar")
-        # c.env("RANLIB", "ccache {{ crossbin }}gcc-ranlib")
-        # c.env("WINDRES", "ccache {{ crossbin }}windres")
-        # c.env("STRIP", "ccache {{crossbin }}strip" )
-        # c.env("NM", "{{ crossbin}}nm")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
-        c.var("crossbin", "/usr/bin/{{ host_platform }}-")
-
-        c.env("CC", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/i686-ucrt -fPIC -O3")
-        c.env("CXX", "ccache {{ crossbin }}g++ --ccache-skip -specs --ccache-skip {{root}}/specs/i686-ucrt -fPIC -O3")
-        c.env("CPP", "ccache {{ crossbin }}gcc --ccache-skip -specs --ccache-skip {{root}}/specs/i686-ucrt -E")
-        c.env("LD", "ccache {{ crossbin}}ld")
-        c.env("AR", "ccache {{ crossbin }}ar")
-        c.env("RANLIB", "ccache {{ crossbin }}ranlib")
-        c.env("WINDRES", "ccache {{ crossbin }}windres")
-        c.env("STRIP", "ccache {{ crossbin}}strip")
-        c.env("NM", "{{ crossbin}}nm")
+        llvm(
+            c,
+            bin="{{ cross }}/llvm-mingw/bin",
+            prefix="i686-w64-mingw32-",
+            suffix="",
+            clang_args="-fPIC -pthread",
+            use_ld=False)
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 

@@ -159,6 +159,8 @@ def build_windows(c):
     with open(c.path("config.site"), "w") as f:
         f.write("ac_cv_func_mktime=yes")
 
+    c.env("CFLAGS", "{{ CFLAGS }} -Wno-implicit-function-declaration -Wno-ignored-attributes -Wno-int-conversion")
+
     # Force a recompile.
     with open(c.path("Modules/timemodule.c"), "a") as f:
         f.write("/* MKTIME FIX */\n")
@@ -179,7 +181,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
 """)
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
+    c.run("""make install""")
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
 

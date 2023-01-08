@@ -413,11 +413,13 @@ def link_windows(c):
             if i.endswith("-win32"):
                 c.var("mingw_version", i)
 
-        c.copy("/usr/lib/gcc/i686-w64-mingw32/{{ mingw_version }}/libgcc_s_dw2-1.dll", "{{ dlpa }}/libgcc_s_dw2-1.dll")
-        c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
+        # c.copy("/usr/lib/gcc/i686-w64-mingw32/{{ mingw_version }}/libgcc_s_dw2-1.dll", "{{ dlpa }}/libgcc_s_dw2-1.dll")
+        # c.copy("/usr/i686-w64-mingw32/lib/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
 
-        if c.python == "3":
-            c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
+        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
+        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
+
+        c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
 
     elif c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")

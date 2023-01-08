@@ -21,7 +21,8 @@ def build(c):
 
     c.run("""cp /usr/share/misc/config.sub config.sub""")
 
-    c.run("""./autogen.sh""")
+    # c.run("""./autogen.sh""")
+    c.run("autoreconf -f")
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --disable-shared
