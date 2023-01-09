@@ -43,7 +43,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     clang_args = "-std=gnu17 " + clang_args
 
     if use_ld:
-        clang_args = "-fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args
+        clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
     c.var("clang_args", clang_args)
 
@@ -190,7 +190,6 @@ def build_environment(c):
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
 
-
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
         llvm(
@@ -200,7 +199,6 @@ def build_environment(c):
             suffix="",
             clang_args="-fPIC -pthread",
             use_ld=False)
-
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -232,77 +230,52 @@ def build_environment(c):
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
+        llvm(
+            c,
+            clang_args="-target x86_64-apple-darwin14 --sysroot {{cross}}/sdk",
+        )
+
         c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=10.10")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=10.10")
 
-        c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-darwin14 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
-
-        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk")
-        c.env("AR", "ccache llvm-ar-{{ llver }}")
-        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
-        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
-        c.env("NM", "llvm-nm-{{ llver }}")
-
     elif (c.platform == "mac") and (c.arch == "arm64"):
+
+        llvm(
+            c,
+            clang_args="-target arm64-apple-macos11 --sysroot {{cross}}/sdk",
+        )
 
         c.env("MACOSX_DEPLOYMENT_TARGET", "11.0")
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=11.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=11.0")
 
-        c.var("clang_args", "-fuse-ld=lld -target arm64-apple-macos11 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
-
-        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk")
-        c.env("AR", "ccache llvm-ar-{{ llver }}")
-        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
-        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
-        c.env("NM", "llvm-nm-{{ llver }}")
-
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
-        c.var("clang_args", "-fuse-ld=lld -target arm64-apple-ios13.0 -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
-
-        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk ")
-        c.env("AR", "ccache llvm-ar-{{ llver }}")
-        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
-        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
-        c.env("NM", "llvm-nm-{{ llver }}")
+        llvm(
+            c,
+            clang_args="-target arm64-apple-ios13.0 --sysroot {{cross}}/sdk",
+        )
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -miphoneos-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
-        c.var("clang_args", "-fuse-ld=lld -target arm64-apple-ios13.0-simulator -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
-
-        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk ")
-        c.env("AR", "ccache llvm-ar-{{ llver }}")
-        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
-        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
-        c.env("NM", "llvm-nm-{{ llver }}")
+        llvm(
+            c,
+            clang_args="-target arm64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
+        )
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
-        c.var("clang_args", "-fuse-ld=lld -target x86_64-apple-ios13.0-simulator -isysroot {{cross}}/sdk -Wno-unused-command-line-argument")
-
-        c.env("CC", "ccache clang-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CXX", "ccache clang++-{{ llver }} {{ clang_args }} -fPIC -O3 -pthread")
-        c.env("CPP", "ccache clang-{{ llver }} {{ clang_args }} -E --sysroot {{ cross }}/sdk ")
-        c.env("AR", "ccache llvm-ar-{{ llver }}")
-        c.env("RANLIB", "ccache llvm-ranlib-{{ llver }}")
-        c.env("STRIP", "ccache llvm-strip-{{ llver }}")
-        c.env("NM", "llvm-nm-{{ llver }}")
+        llvm(
+            c,
+            clang_args="-target x86_64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
+        )
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
@@ -324,8 +297,10 @@ def build_environment(c):
         c.env("RANLIB", "ccache {{ emscriptenbin }}/emranlib")
         c.env("STRIP", "ccache  {{ emscriptenbin }}/emstrip")
         c.env("NM", "{{ crossbin}}/llvm-nm")
+
         c.env("EMSCRIPTEN_TOOLS", "{{emscriptenbin}}/tools")
         c.env("EMSCRIPTEN", "{{emscriptenbin}}")
+
         c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/local/lib/pkgconfig:{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig")
 
 
