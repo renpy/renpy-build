@@ -25,6 +25,8 @@ def build(c: Context):
     # c.run("""./autogen.sh""")
     c.run("autoreconf -f")
 
+    c.env("LDFLAGS", "{{LDFLAGS}} -laom")
+
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --with-gnu-ld
     --disable-shared
@@ -32,8 +34,10 @@ def build(c: Context):
     --disable-imageio
     --disable-stb-image
 
-    --disable-avif
+    --enable-avif
+    --disable-avif-shared
     --disable-jpg-shared
+    --disable-jxl
     --disable-jxl-shared
     --disable-lbm
     --disable-pcx
@@ -52,6 +56,5 @@ def build(c: Context):
 
     libtool.write_text(text)
 
-
-    c.run("""make""")
+    c.run("""{{ make }}""")
     c.run("""make install""")

@@ -17,6 +17,8 @@ from . import libffi
 from . import libpng
 from . import libjpeg_turbo
 from . import libwebp
+from . import aom
+from . import libavif
 
 from . import hostpython3
 from . import hostpython2

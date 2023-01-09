@@ -48,15 +48,13 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
 
     ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
 
-    clang_args = "-std=gnu17 " + clang_args
-
     if use_ld:
         clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
     c.var("clang_args", clang_args)
 
-    c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }}")
-    c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }}")
+    c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
+    c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17")
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
 
     # c.env("LD", "ccache " + ld)
@@ -181,25 +179,40 @@ def build_environment(c):
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "x86_64")
+
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "x86_64")
 
     elif (c.platform == "linux") and (c.arch == "aarch64"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "aarch64")
+
     elif (c.platform == "linux") and (c.arch == "i686"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
 
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "i386")
+
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
+
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "armv7")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
@@ -211,6 +224,9 @@ def build_environment(c):
             clang_args="-fPIC -pthread",
             use_ld=False)
 
+        c.var("cmake_system_name", "Windows")
+        c.var("cmake_system_processor", "x86_64")
+
     elif (c.platform == "windows") and (c.arch == "i686"):
 
         llvm(
@@ -221,11 +237,17 @@ def build_environment(c):
             clang_args="-fPIC -pthread",
             use_ld=False)
 
+        c.var("cmake_system_name", "Windows")
+        c.var("cmake_system_processor", "i386")
+
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
         android_llvm(c, "x86_64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "x86_64")
 
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
 
@@ -233,11 +255,17 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "aarch64")
+
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
 
         android_llvm(c, "armv7a")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+
+        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_processor", "armv7")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
@@ -250,6 +278,9 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=10.10")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=10.10")
 
+        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_processor", "x86_64")
+
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
         llvm(
@@ -261,6 +292,9 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=11.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=11.0")
 
+        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_processor", "aarch64")
+
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
         llvm(
@@ -270,6 +304,9 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -miphoneos-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
+
+        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_processor", "aarch64")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
@@ -281,6 +318,9 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
+        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_processor", "aarch64")
+
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
         llvm(
@@ -290,6 +330,9 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
+
+        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_processor", "x86_64")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.python == "3"):
 
@@ -314,11 +357,16 @@ def build_environment(c):
 
         c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/local/lib/pkgconfig:{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig")
 
+        c.var("cmake_system_name", "Emscripten")
+        c.var("cmake_system_processor", "generic")
+
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
     c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
+
+    c.var("cmake", "cmake -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_BUILD_TYPE=Release")
 
     # Used by zlib.
     if c.kind != "host":
