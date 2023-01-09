@@ -178,7 +178,7 @@ class Context:
 
         renpybuild.run.build_environment(self)
 
-    def expand(self, s, **kwargs):
+    def expand(self, s : str, **kwargs) -> str:
         """
         Expands `s` as a jinja template.
         """
@@ -264,7 +264,7 @@ class Context:
 
         d.mkdir(exist_ok=True, parents=True)
 
-    def path(self, p):
+    def path(self, p : str) -> pathlib.Path:
         """
         Returns a path object for `p`.
         """

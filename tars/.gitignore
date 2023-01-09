@@ -1,10 +1,10 @@
 old/
 
-binutils-2.33.1.tar.gz
-gcc-9.2.0.tar.gz
-MacOSX*.sdk.*
-android-ndk-r21d-linux-x86_64.zip
-iPhoneOS*.sdk.tar.gz
-iPhoneSimulator*.sdk.tar.gz
-Cubism*
-steamworks_sdk_*.zip
+android-ndk-r25b-linux.zip
+CubismSdkForNative-4-r.1.zip
+iPhoneOS14.0.sdk.tar.gz
+iPhoneSimulator14.0.sdk.tar.gz
+llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz
+MacOSX10.10.sdk.tar.bz2
+MacOSX12.3.sdk.tar.bz2
+steamworks_sdk_153a.zip

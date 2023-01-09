@@ -1,33 +1,38 @@
-from renpybuild.model import task
-import zipfile
+from renpybuild.model import task, Context
 
-
-from zipfile import ZipFile, ZipInfo
 import os
+import requests
 
 
-class ZipFileWithPermissions(ZipFile):
-    """ Custom ZipFile class handling file permissions. """
+@task(kind="cross", platforms="windows", always=True)
+def download(c : Context):
 
-    def _extract_member(self, member, targetpath, pwd):
-        if not isinstance(member, ZipInfo):
-            member = self.getinfo(member)
+    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20220906/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz"
+    dest = c.path("{{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
 
-        targetpath = super()._extract_member(member, targetpath, pwd)
+    if os.path.exists(dest):
+        return
 
-        attr = member.external_attr >> 16
-        if attr != 0:
-            os.chmod(targetpath, attr)
-        return targetpath
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading windows toolchain.")
+
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
 
 
-@task(kind="cross", platforms="windows")
+@task(kind="cross", platforms="windows", always=True)
 def unpack(c):
 
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
 
-    c.run("tar xaf {{ tars }}/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
+    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
     c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
 
 
