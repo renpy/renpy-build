@@ -192,37 +192,29 @@ def build_windows(c):
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 
-# Set this true to rebuild Python in place.
-REBUILD_WEB = False
-
-@task(kind="python", pythons="3", platforms="web", always=REBUILD_WEB)
+@task(kind="python", pythons="3", platforms="web")
 def build_web(c):
 
     c.var("version", web_version)
 
-    if REBUILD_WEB:
-        c.clean()
-        c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+    c.clean()
+    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
     common(c)
 
     c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
 
-    if REBUILD_WEB:
-        c.run("""
-            ./configure {{ cross_config }}
-            --prefix="{{ install }}"
-            --with-emscripten-target=browser
-            --with-build-python={{host}}/web/bin/python3
-            """)
+    c.run("""
+        ./configure {{ cross_config }}
+        --prefix="{{ install }}"
+        --with-emscripten-target=browser
+        --with-build-python={{host}}/web/bin/python3
+        """)
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
 
     c.run("""{{ make }}""")
-
-    if REBUILD_WEB:
-        c.run("""cp Python/original_ceval.c Python/ceval.c""")
 
     c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
 
