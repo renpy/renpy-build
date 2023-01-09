@@ -208,7 +208,7 @@ def build_environment(c):
 
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
-        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
 
         c.var("cmake_system_name", "Linux")
