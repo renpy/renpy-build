@@ -4,15 +4,19 @@ from renpybuild.task import task
 @task(kind="host", platforms="all")
 def download(c : Context):
 
-    if c.path.exists("{{ tmp }}/source/aom"):
+    if c.path("{{ tmp }}/source/aom").exists():
         c.chdir("{{ tmp }}/source/aom")
+        c.run("git checkout master")
         c.run("git pull")
+        c.run("git checkout v3.5.0")
         return
 
     c.clean("{{ tmp }}/source/aom")
     c.chdir("{{ tmp }}/source")
 
-    c.run("git clone --branch v3.5.0 https://aomedia.googlesource.com/aom")
+    c.run("git clone https://aomedia.googlesource.com/aom")
+    c.chdir("{{ tmp }}/source/aom")
+    c.run("git checkout v3.5.0")
 
 @task(platforms="all")
 def build(c : Context):
