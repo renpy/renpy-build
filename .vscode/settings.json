@@ -22,12 +22,23 @@
     "**/renpyweb/cache/**": true,
     "**/tmp/**": true
   },
-  "files.associations": {
-    "algorithm": "c",
-    "string": "c",
-    "*.tcc": "c",
-    "stdlib.h": "c"
-  },
   "esbonio.server.enabled": true,
-  "esbonio.sphinx.confDir": ""
+  "esbonio.sphinx.confDir": "",
+  "python.languageServer": "Pylance",
+  "python.analysis.exclude": [
+    "0old",
+    "prebuilt",
+    "rapt/prototype",
+    "renios/base",
+    "renios/prototype",
+    "renpyweb",
+    "pygame_sdl2",
+    "source",
+    "tmp",
+    "tools/opfunc/Python-3.11.0",
+    "unpacked",
+    "renpy",
+    "0old"
+  ],
+  "python.analysis.diagnosticMode": "openFilesOnly",
 }
