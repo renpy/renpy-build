@@ -7,6 +7,9 @@ import sysconfig
 
 import jinja2
 
+# This caches the results of emsdk_environment.
+emsdk_cache : dict[str, str] = { }
+
 def emsdk_environment(c):
     """
     Loads the emsdk environment into `c`.
@@ -17,16 +20,21 @@ def emsdk_environment(c):
     if not emsdk.exists():
         return
 
-    env = dict(os.environ)
-    env["EMSDK_BASH"] = "1"
-    env["EMSDK_QUIET"] = "1"
+    if not emsdk_cache:
 
-    bash = subprocess.check_output([ str(emsdk), "construct_env" ], env=env, text=True)
+        env = dict(os.environ)
+        env["EMSDK_BASH"] = "1"
+        env["EMSDK_QUIET"] = "1"
 
-    for l in bash.split("\n"):
-        m = re.match(r'export (\w+)=\"(.*?)\";?$', l)
-        if m:
-            c.env(m.group(1), m.group(2))
+        bash = subprocess.check_output([ str(emsdk), "construct_env" ], env=env, text=True)
+
+        for l in bash.split("\n"):
+            m = re.match(r'export (\w+)=\"(.*?)\";?$', l)
+            if m:
+                emsdk_cache[m.group(1)] = m.group(2)
+
+    for k, v in emsdk_cache.items():
+        c.env(k, v)
 
 
 def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
