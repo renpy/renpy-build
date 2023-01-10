@@ -25,7 +25,7 @@ def build(c: Context):
     # c.run("""./autogen.sh""")
     c.run("autoreconf -f")
 
-    c.env("LDFLAGS", "{{LDFLAGS}} -laom")
+    c.env("LIBAVIF_LIBS", "-lavif -laom")
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --with-gnu-ld
