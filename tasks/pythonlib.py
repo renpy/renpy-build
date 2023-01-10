@@ -242,7 +242,7 @@ def python2(c: Context):
     dist = c.path("{{ distlib }}/{{ pythonver }}")
 
     c.clean("{{ distlib }}/{{ pythonver }}")
-    c.run("{{ hostpython }} -OO -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
+    c.run("{{ hostpython }} -OO -m compileall -q {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for i in PYTHON27_MODULES.split():
 
@@ -264,7 +264,7 @@ def python2(c: Context):
             f.write("\n")
             f.write("renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -OO -m compileall {{ distlib }}/{{ pythonver }}/site.py")
+    c.run("{{ hostpython }} -OO -m compileall -q {{ distlib }}/{{ pythonver }}/site.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/site.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
@@ -533,7 +533,7 @@ def python3(c: Context):
     dist = c.path("{{ distlib }}/{{ pythonver }}")
 
     c.clean("{{ distlib }}/{{ pythonver }}")
-    c.run("{{ hostpython }} -m compileall {{ install }}/lib/{{ pythonver }}/site-packages")
+    c.run("{{ hostpython }} -m compileall -q {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for base in search:
 
@@ -578,11 +578,11 @@ def python3(c: Context):
             f.write("import site\n")
             f.write("site.renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
+    c.run("{{ hostpython }} -m compileall -q -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
     c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
-    c.run("{{ hostpython }} -m compileall -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
+    c.run("{{ hostpython }} -m compileall -q -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
