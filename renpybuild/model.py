@@ -196,7 +196,7 @@ class Context:
     def generate(self, src, dest, **kwargs):
         """
         Loads in `src`, a template file, substitutes in ``kwargs`` and all
-        the other variables that are define, and writes it out into ``dest``.
+        the other variables that are defined, and writes it out into ``dest``.
         """
 
         template = self.path(src).read_text()
@@ -206,6 +206,20 @@ class Context:
             text = text + "\n"
 
         self.path(dest).write_text(text)
+
+    def generate_text(self, template, dest, **kwargs):
+        """
+        This uses `template` as a template, and writes it out to `dest`,
+        substituting in ``kwargs`` and all the other variables that are defined.
+        """
+
+        text = self.expand(template, **kwargs)
+
+        if not text.endswith("\n"):
+            text = text + "\n"
+
+        self.path(dest).write_text(text)
+
 
     def env(self, variable, value):
         """
@@ -231,6 +245,10 @@ class Context:
         raise Exception(f"Unknown variable {variable!r}.")
 
     def chdir(self, d):
+        """
+        Changes the directory to `d`.
+        """
+
         self.cwd = self.cwd / self.expand(d)
 
     def run(self, command, verbose=False, quiet=False):
