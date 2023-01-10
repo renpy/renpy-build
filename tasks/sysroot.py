@@ -33,7 +33,7 @@ PACKAGES = [
 
 
 @task(platforms="linux", archs="x86_64,i686,aarch64", always=True)
-def install(c: Context):
+def install_linux(c: Context):
 
     if c.arch == "i686":
         deb_arch = "i386"
@@ -44,6 +44,8 @@ def install(c: Context):
     elif c.arch == "aarch64":
         deb_arch = "arm64"
         release = "focal"
+    else:
+        raise Exception("Unknown arch {}".format(c.arch))
 
 
     c.var("deb_arch", deb_arch)
@@ -98,7 +100,7 @@ RASPI_PACKAGES = [
 
 
 @task(platforms="linux", archs="armv7l")
-def install(c: Context):
+def install_linux_raspi(c: Context):
 
     if not c.path("{{ sysroot }}").exists():
 

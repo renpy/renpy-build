@@ -13,7 +13,7 @@ class Task:
     proceed.
     """
 
-    def __init__(self, task, name, *, function=None, kind="arch", always=False, platforms="-web", archs=None, pythons=None):
+    def __init__(self, task, name, function, *, kind="arch", always=False, platforms="-web", archs=None, pythons=None):
 
         self.task = task
         self.name = name
@@ -113,11 +113,16 @@ def task(**kwargs):
     `kind`
         Determines how often this task shold run. One of:
 
-        "platform" - Once per platform.
         "arch" - Once per platform/architecture pair.
+        "arch-python" - Once per platform/architecture/python version triple, but sharing a build directory with "arch".
         "python" - Once per platform/architecture/python version triple.
+        "platform" - Once per platform.
+        "platform-python" - Once per platform/python version pair.
+        "host" - Only runs, compiling for the host.
+        "host-python" - Once per python, compiling for the host.
+        "cross" - Once per platform/architecture pair, compiling for the host, and targeting the "{{cross}}" directory for installs.
 
-        This defaults to "arch"
+        This defaults to "arch".
 
     `always`
         If True, this task will run even if it has been run as part of a
@@ -139,7 +144,7 @@ def task(**kwargs):
     def create_task(f):
         task = f.__name__
         name = f.__module__.split(".")[-1]
-        Task(task, name, function=f, **kwargs)
+        Task(task, name, f, **kwargs)
 
         return f
 

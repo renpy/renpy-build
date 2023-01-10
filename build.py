@@ -5,7 +5,7 @@ import argparse
 import shutil
 from pathlib import Path
 
-sys.path.insert(1, Path(__file__).parent / 'deps')
+sys.path.insert(1, str(Path(__file__).parent / 'deps'))
 
 import renpybuild.task
 from renpybuild.context import Context
@@ -117,9 +117,6 @@ def build(args):
                 p.arch,
                 p.python,
                 root,
-                tmp,
-                pygame_sdl2,
-                renpy,
                 args)
 
             task.run(context)
@@ -165,10 +162,6 @@ def clean(args):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tmp", default="tmp")
-    ap.add_argument("--pygame_sdl2", default="pygame_sdl2")
-    ap.add_argument("--renpy", default="renpy")
-
     ap.add_argument("--platforms", "--platform", default="")
     ap.add_argument("--archs", "--arch", default="")
     ap.add_argument("--pythons", "--python", default="3")
@@ -194,19 +187,14 @@ def main():
 
     global tmp
     global root
-    global pygame_sdl2
-    global renpy
 
     args = ap.parse_args()
 
     if not args.experimental:
         known_platforms[:] = [ i for i in known_platforms if not i.experimental ]
 
-    tmp = Path(args.tmp).resolve()
     root = Path(__file__).parent.resolve()
-
-    pygame_sdl2 = Path(args.pygame_sdl2).resolve()
-    renpy = Path(args.renpy).resolve()
+    tmp = root / "tmp"
 
     args.function(args)
 

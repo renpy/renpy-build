@@ -14,7 +14,7 @@ def unpack(c: Context):
     c.run("""cp /usr/share/autoconf/build-aux/config.sub zsync-{{version}}/autotools""")
 
 @task(kind="python", platforms="linux")
-def build(c: Context):
+def build_linux(c: Context):
 
     c.var("version", version)
     c.chdir("zsync-{{ version }}")
@@ -30,7 +30,7 @@ def build(c: Context):
 
 
 @task(kind="python", platforms="mac")
-def build(c: Context):
+def build_mac(c: Context):
 
     c.var("version", version)
     c.chdir("zsync-{{ version }}")

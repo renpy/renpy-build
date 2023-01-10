@@ -86,6 +86,9 @@ def build_environment(c):
 
     cpuccount = os.cpu_count()
 
+    if cpuccount is None:
+        cpuccount = 4
+
     if cpuccount > 12:
         cpuccount -= 4
 

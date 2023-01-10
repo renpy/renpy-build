@@ -44,8 +44,6 @@ def lipo(c: Context, namefilter):
         c.path("{{ tmp }}/install.ios-arm64/lib"),
         ]
 
-    c.var("paths", paths, expand=False)
-
     c.run("install -d {{ renios }}/prototype/prebuilt/release")
 
     for i in paths[0].glob("*.a"):
@@ -69,7 +67,7 @@ def lipo(c: Context, namefilter):
         {{ p }}/{{ i }}
 {% endfor %}
         -output {{ renios }}/prototype/prebuilt/release/{{ i }}
-        """)
+        """, paths=paths)
 
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/release/{{ i }}"), 0o755)
 
@@ -79,8 +77,6 @@ def lipo(c: Context, namefilter):
         c.path("{{ tmp }}/install.ios-sim-x86_64/lib"),
         c.path("{{ tmp }}/install.ios-sim-arm64/lib"),
         ]
-
-    c.var("paths", paths, expand=False)
 
     c.run("install -d {{ renios }}/prototype/prebuilt/debug")
 
@@ -105,7 +101,7 @@ def lipo(c: Context, namefilter):
         {{ p }}/{{ i }}
 {% endfor %}
         -output {{ renios }}/prototype/prebuilt/debug/{{ i }}
-        """)
+        """, paths=paths)
 
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
 

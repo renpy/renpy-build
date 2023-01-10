@@ -459,7 +459,7 @@ def build_web(c: Context):
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c: Context):
 
-    c.var("debug_asyncify", False, expand=False)
+    debug_asyncify = False
 
     asyncify_only = [
         'PyEval_EvalCode',
@@ -561,7 +561,7 @@ def link_web(c: Context):
     -sEXPORTED_FUNCTIONS=['_main']
 
     --shell-file {{ runtime }}/web/shell.html
-    """)
+    """, debug_asyncify=debug_asyncify)
 
     c.run("""install -d {{ renpy }}/web3""")
     c.run("""install renpy.html {{ renpy }}/web3/index.html""")
@@ -575,7 +575,7 @@ def link_web(c: Context):
     c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web3/manifest.json""")
     c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web3/service-worker.js""")
 
-    if c.get("debug_asyncify"):
+    if debug_asyncify:
         c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
