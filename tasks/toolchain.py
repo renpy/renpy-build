@@ -4,7 +4,7 @@ import os
 import requests
 
 
-@task(kind="cross", platforms="windows", always=True)
+@task(kind="cross", platforms="windows")
 def download(c : Context):
 
     url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20220906/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz"
@@ -26,7 +26,7 @@ def download(c : Context):
     dest.with_suffix(".tmp").rename(dest)
 
 
-@task(kind="cross", platforms="windows", always=True)
+@task(kind="cross", platforms="windows")
 def unpack(c):
 
     c.clean("{{cross}}")
