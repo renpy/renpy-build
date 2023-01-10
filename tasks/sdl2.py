@@ -1,17 +1,18 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 import shutil
 
 version = "2.0.20"
 
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     if c.name != "sdl2":
         c.include("{{ install }}/include/SDL2")
 
 
 @task()
-def unpack(c):
+def unpack(c: Context):
 
     if not c.args.sdl:
 
@@ -27,7 +28,7 @@ def unpack(c):
 
 
 @task()
-def build(c):
+def build(c: Context):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 
@@ -97,7 +98,7 @@ def build(c):
 
 
 @task(kind="arch-python", platforms="android", archs="x86_64", always=True)
-def rapt(c):
+def rapt(c: Context):
     c.var("version", version)
     c.chdir("SDL2-{{version}}")
 

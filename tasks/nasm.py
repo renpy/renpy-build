@@ -1,10 +1,11 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "2.14.02"
 
 
 @task(kind="host")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +13,7 @@ def unpack(c):
 
 
 @task(kind="host")
-def build(c):
+def build(c: Context):
     c.var("version", version)
 
     c.chdir("nasm-{{version}}")

@@ -1,10 +1,11 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "2.6.2"
 
 
 @task(platforms="all")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +13,7 @@ def unpack(c):
 
 
 @task(platforms="all")
-def build(c):
+def build(c: Context):
     c.var("version", version)
     c.chdir("SDL2_image-{{version}}")
 

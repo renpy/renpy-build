@@ -1,4 +1,5 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 import sys
 import os
 import subprocess
@@ -6,7 +7,7 @@ import re
 
 
 @task(kind="host-python")
-def copytree(c):
+def copytree(c: Context):
     c.copytree("{{ root }}/renios", "{{ renios }}")
 
     c.rmtree("{{ renios }}/prototype/prebuilt")
@@ -37,7 +38,7 @@ def check_sdk(name, paths):
             if "minos" in l:
                 obj = None
 
-def lipo(c, namefilter):
+def lipo(c: Context, namefilter):
 
     paths = [
         c.path("{{ tmp }}/install.ios-arm64/lib"),
@@ -110,7 +111,7 @@ def lipo(c, namefilter):
 
 
 @task(kind="host-python", platforms="ios")
-def lipo_all(c):
+def lipo_all(c: Context):
 
     python = "libpython{}.".format(c.python)
 
@@ -124,17 +125,17 @@ def lipo_all(c):
     lipo(c, namefilter)
 
 @task(kind="host-python", platforms="ios", always=True)
-def lipo_renpy(c):
+def lipo_renpy(c: Context):
     lipo(c, lambda n : "librenpy" in n)
 
 
 @task(kind="host-python", platforms="ios", always=True)
-def unpack_metalangle(c):
+def unpack_metalangle(c: Context):
     c.clean("{{ renios }}/prototype/Frameworks")
     c.chdir("{{ renios }}/prototype/Frameworks")
 
     c.run("tar xvaf {{ source }}/MetalANGLE.xcframework.tar.gz")
 
 @task(kind="host-python", platforms="ios", always=True, pythons="2")
-def copyback(c):
+def copyback(c: Context):
     c.copytree("{{ renios }}/prototype/prebuilt", "{{ root }}/renios/prototype/prebuilt")

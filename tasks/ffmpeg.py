@@ -1,10 +1,11 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "4.3.1"
 
 
 @task(platforms="all")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -17,7 +18,7 @@ def unpack(c):
 
 
 @task()
-def build(c):
+def build(c: Context):
 
     if c.arch == "i686":
         c.var("arch", "x86")
@@ -182,7 +183,7 @@ def build(c):
 
 
 @task(platforms="web")
-def build_web(c):
+def build_web(c: Context):
 
     c.var("version", version)
     c.chdir("ffmpeg-{{version}}")

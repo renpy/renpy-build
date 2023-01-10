@@ -1,15 +1,16 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 
 version = "1.0.7"
 
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     c.include("{{ install }}/include/fribidi")
 
 
 @task(platforms="all")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -17,7 +18,7 @@ def unpack(c):
 
 
 @task(platforms="all")
-def build(c):
+def build(c: Context):
     c.var("version", version)
     c.chdir("fribidi-{{version}}")
 

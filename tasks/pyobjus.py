@@ -1,16 +1,17 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 import re
 
 version = "1.1.0"
 
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     c.env("CFLAGS", "{{ CFLAGS }} -DOBJC_OLD_DISPATCH_PROTOTYPES=1")
 
 
 @task(kind="python", platforms="mac,ios")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     # c.var("version", version)
@@ -27,7 +28,7 @@ def unpack(c):
 
 
 @task(kind="host-python")
-def host_unpack(c):
+def host_unpack(c: Context):
     c.clean()
 
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
@@ -36,7 +37,7 @@ def host_unpack(c):
 
 
 @task(kind="python", platforms="mac,ios")
-def build(c):
+def build(c: Context):
 
     c.var("version", version)
     c.chdir("pyobjus/pyobjus")
@@ -79,7 +80,7 @@ pyobjus.pyobjus pyobjus.c
 
 
 @task(kind="host-python")
-def host_build(c):
+def host_build(c: Context):
 
     c.var("version", version)
     c.chdir("pyobjus/pyobjus")

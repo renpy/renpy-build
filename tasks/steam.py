@@ -1,9 +1,10 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 import zipfile
 
 
 @task(kind="host")
-def unpack_sdk(c):
+def unpack_sdk(c: Context):
 
     c.clean("{{ install }}/steam")
 
@@ -16,7 +17,7 @@ def unpack_sdk(c):
 
 
 @task(kind="host")
-def patch_sdk(c):
+def patch_sdk(c: Context):
 
     if not c.path("{{host}}/steam/sdk").exists():
         return
@@ -26,7 +27,7 @@ def patch_sdk(c):
 
 
 @task(kind="python", platforms="linux,windows,mac", archs="x86_64,i686", always=True)
-def build(c):
+def build(c: Context):
 
     if not c.path("{{host}}/steam/sdk").exists():
         return

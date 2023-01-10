@@ -1,11 +1,12 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 import shutil
 import time
 import os
 
 
 @task(kind="platform-python", platforms="android", always=True)
-def copy(c):
+def copy(c: Context):
 
     c.copytree("{{ root }}/rapt", "{{ raptver }}")
 
@@ -42,7 +43,7 @@ def copy(c):
 
 
 @task(kind="host-python", always=True)
-def android_module(c):
+def android_module(c: Context):
     c.run("""install -d {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/__init__.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/apk.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")

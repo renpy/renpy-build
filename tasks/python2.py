@@ -1,17 +1,18 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 
 version = "2.7.18"
 
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     if c.python == "2":
         c.var("pythonver", "python2.7")
         c.include("{{ install }}/include/{{ pythonver }}")
 
 
 @task(kind="python", pythons="2")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -19,7 +20,7 @@ def unpack(c):
 
 
 @task(kind="python", pythons="2", platforms="linux,mac,ios")
-def patch_posix(c):
+def patch_posix(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -32,7 +33,7 @@ def patch_posix(c):
 
 
 @task(kind="python", pythons="2", platforms="ios")
-def patch_ios(c):
+def patch_ios(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -44,7 +45,7 @@ def patch_ios(c):
 
 
 @task(kind="python", pythons="2", platforms="windows")
-def patch_windows(c):
+def patch_windows(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -56,7 +57,7 @@ def patch_windows(c):
 
 
 @task(kind="python", pythons="2", platforms="android")
-def patch_android(c):
+def patch_android(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -69,7 +70,7 @@ def patch_android(c):
 
 
 @task(kind="python", pythons="2", platforms="linux,mac")
-def build_posix(c):
+def build_posix(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -93,7 +94,7 @@ def build_posix(c):
 
 
 @task(kind="python", pythons="2", platforms="ios")
-def build_ios(c):
+def build_ios(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -121,7 +122,7 @@ def build_ios(c):
 
 
 @task(kind="python", pythons="2", platforms="android")
-def build_android(c):
+def build_android(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -147,7 +148,7 @@ def build_android(c):
 
 
 @task(kind="python", pythons="2", platforms="windows")
-def build_windows(c):
+def build_windows(c: Context):
 
     c.var("version", version)
 
@@ -182,7 +183,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" {{cross}}/llv
 
 
 @task(kind="python", pythons="2")
-def pip(c):
+def pip(c: Context):
     c.run("{{ install }}/bin/hostpython2 -s -m ensurepip")
     c.run("""{{ install }}/bin/hostpython2 -s -m pip install --upgrade
         future==0.18.2

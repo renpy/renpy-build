@@ -1,9 +1,10 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 import sys
 
 
 @task(kind="python", always=True)
-def check(c):
+def check(c: Context):
     """
     Check that cython works.
     """

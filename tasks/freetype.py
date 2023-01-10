@@ -1,15 +1,16 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 
 version = "2.10.1"
 
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     c.include("{{ install }}/include/freetype2")
 
 
 @task(kind="host")
-def hostunpack(c):
+def hostunpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -21,7 +22,7 @@ def hostunpack(c):
 
 
 @task(platforms="all")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -33,7 +34,7 @@ def unpack(c):
 
 
 @task(kind="host")
-def hostbuild(c):
+def hostbuild(c: Context):
     c.var("version", version)
     c.chdir("freetype-{{version}}")
 
@@ -46,7 +47,7 @@ def hostbuild(c):
 
 
 @task(platforms="all")
-def build(c):
+def build(c: Context):
     c.var("version", version)
     c.chdir("freetype-{{version}}")
 

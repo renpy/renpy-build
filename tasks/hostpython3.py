@@ -1,4 +1,5 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "3.9.10"
 
@@ -6,7 +7,7 @@ web_version = "3.11.0"
 
 
 @task(kind="host", pythons="3")
-def unpack_hostpython(c):
+def unpack_hostpython(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -14,7 +15,7 @@ def unpack_hostpython(c):
 
 
 @task(kind="host", pythons="3")
-def build_host(c):
+def build_host(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -31,7 +32,7 @@ def build_host(c):
 
 
 @task(kind="host", pythons="3")
-def unpack_web(c):
+def unpack_web(c: Context):
     c.clean()
 
     c.var("version", web_version)
@@ -39,7 +40,7 @@ def unpack_web(c):
 
 
 @task(kind="host", pythons="3")
-def build_web(c):
+def build_web(c: Context):
     c.var("version", web_version)
 
     c.chdir("Python-{{ version }}")

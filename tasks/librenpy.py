@@ -1,13 +1,14 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 
 @task(kind="python")
-def clean(c):
+def clean(c: Context):
     c.clean()
 
 
 @task(kind="host-python", pythons="2", always=True)
-def gen_static2(c):
+def gen_static2(c: Context):
 
     c.chdir("{{ renpy }}/module")
     c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
@@ -16,7 +17,7 @@ def gen_static2(c):
 
 
 @task(kind="host-python", platforms="all", pythons="3", always=True)
-def gen_static3(c):
+def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}/module")
     c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
@@ -25,7 +26,7 @@ def gen_static3(c):
 
 
 @task(kind="python", platforms="all", always=True)
-def build(c):
+def build(c: Context):
 
     if c.platform == "web" and c.python == "2":
         return

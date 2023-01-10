@@ -1,14 +1,15 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 import os
 import time
 
 @task(kind="python", always=True)
-def clean(c):
+def clean(c: Context):
     c.clean()
 
 
 @task(kind="python", always=True)
-def build(c):
+def build(c: Context):
 
     c.run("""
     {{ CC }} {{ CFLAGS }}
@@ -25,7 +26,7 @@ def build(c):
 
 
 @task(kind="python", always=True, platforms="android")
-def build_android(c):
+def build_android(c: Context):
 
     c.run("""
     {{ CC }} {{ CFLAGS }}
@@ -41,7 +42,7 @@ def build_android(c):
 
 
 @task(kind="python", always=True, platforms="linux")
-def link_linux(c):
+def link_linux(c: Context):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -108,7 +109,7 @@ def link_linux(c):
 
 
 @task(kind="python", always=True, platforms="android")
-def link_android(c):
+def link_android(c: Context):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -164,7 +165,7 @@ def link_android(c):
 
 
 @task(kind="python", always=True, platforms="mac")
-def link_mac(c):
+def link_mac(c: Context):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -243,7 +244,7 @@ def link_mac(c):
 
 
 @task(kind="host-python", platforms="mac", always=True)
-def lipo_mac(c):
+def lipo_mac(c: Context):
 
     c.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
 
@@ -274,7 +275,7 @@ def lipo_mac(c):
     lipo("renpy")
 
 
-def fix_pe(c, fn):
+def fix_pe(c: Context, fn):
     """
     Sets the PE file characteristics to mark the relocations as stripped.
     """
@@ -304,7 +305,7 @@ pe.write(fn)
     c.run("""{{ hostpython }} fix_pe.py """ + fn)
 
 @task(kind="python", always=True, platforms="windows")
-def link_windows(c):
+def link_windows(c: Context):
 
     c.run("""
     {{ CC }} {{ LDFLAGS }}
@@ -431,7 +432,7 @@ def link_windows(c):
 
 
 @task(kind="python", always=True, platforms="ios")
-def link_ios(c):
+def link_ios(c: Context):
 
     c.run("""{{ AR }} -r librenpython.a librenpython.o""")
     c.run("""install -d {{install}}/lib""")
@@ -439,7 +440,7 @@ def link_ios(c):
 
 
 @task(kind="python", platforms="web", pythons="3", always=True)
-def build_web(c):
+def build_web(c: Context):
 
     c.run("""
     {{ CC }} {{ CFLAGS }}
@@ -456,7 +457,7 @@ def build_web(c):
 
 
 @task(kind="python", platforms="web", pythons="3", always=True)
-def link_web(c):
+def link_web(c: Context):
 
     c.var("debug_asyncify", False, expand=False)
 

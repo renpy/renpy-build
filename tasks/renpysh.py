@@ -1,8 +1,9 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 
 @task(kind="python", always=True)
-def renpysh(c):
+def renpysh(c: Context):
     c.generate("{{ runtime }}/renpy.sh", "{{ dist }}/renpy{{ python }}.sh")
     c.run("chmod +x {{ dist }}/renpy{{ python }}.sh")
 

@@ -1,18 +1,19 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 import re
 
 version = "1.2.1"
 
 
 @task(kind="host-python")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
     c.run("tar xzf {{source}}/pyjnius-{{version}}.tar.gz")
 
 @task(kind="host-python")
-def patch(c):
+def patch(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/")
 
@@ -20,7 +21,7 @@ def patch(c):
     c.patch("pyjnius/no-win-jdk-home.diff")
 
 @task(kind="host-python")
-def build(c):
+def build(c: Context):
 
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")
@@ -75,7 +76,7 @@ jnius.jnius jnius.c
 
 
 @task(kind="host-python", platforms="android", always=True)
-def rapt(c):
+def rapt(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")
 

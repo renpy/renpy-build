@@ -7,7 +7,9 @@ from pathlib import Path
 
 sys.path.insert(1, Path(__file__).parent / 'deps')
 
-import renpybuild.model
+import renpybuild.task
+from renpybuild.context import Context
+
 import tasks as _
 
 known_platforms = [ ]
@@ -94,7 +96,7 @@ def build(args):
 
     # Actually build everything.
 
-    for task in renpybuild.model.tasks:
+    for task in renpybuild.task.tasks:
         for p in known_platforms:
 
             if platforms and (p.platform not in platforms):
@@ -110,7 +112,7 @@ def build(args):
             arch = p.arch
             python = p.python
 
-            context = renpybuild.model.Context(
+            context = Context(
                 p.platform,
                 p.arch,
                 p.python,

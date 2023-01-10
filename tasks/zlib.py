@@ -1,10 +1,11 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "1.2.11"
 
 
 @task()
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -12,7 +13,7 @@ def unpack(c):
 
 
 @task()
-def build(c):
+def build(c: Context):
     c.var("version", version)
     c.chdir("zlib-{{version}}")
     c.run("./configure {{ configure_cross }} --static --prefix={{install}}")
@@ -21,5 +22,5 @@ def build(c):
 
 
 @task(platforms="web", pythons="3")
-def build_web(c):
+def build_web(c: Context):
     c.run("embuilder build zlib")

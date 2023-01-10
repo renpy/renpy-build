@@ -1,8 +1,9 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 
 @task(kind="python", pythons="3", platforms="web", always=True)
-def build(c):
+def build(c: Context):
 
     c.run("cp {{runtime}}/emscripten.pyx emscripten.pyx")
     c.run("cython --3str emscripten.pyx")

@@ -1,4 +1,5 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 PACKAGES = [
     'build-essential',
@@ -32,7 +33,7 @@ PACKAGES = [
 
 
 @task(platforms="linux", archs="x86_64,i686,aarch64", always=True)
-def install(c):
+def install(c: Context):
 
     if c.arch == "i686":
         deb_arch = "i386"
@@ -97,7 +98,7 @@ RASPI_PACKAGES = [
 
 
 @task(platforms="linux", archs="armv7l")
-def install(c):
+def install(c: Context):
 
     if not c.path("{{ sysroot }}").exists():
 

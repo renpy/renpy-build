@@ -1,11 +1,12 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 
 version = "3.9.10"
 win_version = "3.9.10"
 web_version = "3.11.0"
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     if c.python == "3":
 
         if c.platform == "web":
@@ -19,7 +20,7 @@ def annotate(c):
 
 
 @task(kind="python", pythons="3", platforms="linux,mac,android,ios")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -27,7 +28,7 @@ def unpack(c):
 
 
 @task(kind="python", pythons="3", platforms="windows")
-def unpack_windows(c):
+def unpack_windows(c: Context):
     c.clean()
     c.var("version", win_version)
 
@@ -40,7 +41,7 @@ def unpack_windows(c):
     c.run("git checkout mingw-v{{ version }}")
 
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
-def patch_posix(c):
+def patch_posix(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -63,7 +64,7 @@ def patch_posix(c):
 #     c.run("cython _scproxy.pyx")
 
 @task(kind="python", pythons="3", platforms="windows")
-def patch_windows(c):
+def patch_windows(c: Context):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
@@ -89,7 +90,7 @@ def patch_windows(c):
 
 
 
-def common(c):
+def common(c: Context):
     if c.platform == "web":
         c.var("version", web_version)
         c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
@@ -113,7 +114,7 @@ def common(c):
 
 
 @task(kind="python", pythons="3", platforms="linux,mac")
-def build_posix(c):
+def build_posix(c: Context):
 
     common(c)
 
@@ -124,7 +125,7 @@ def build_posix(c):
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 @task(kind="python", pythons="3", platforms="ios")
-def patch_ios(c):
+def patch_ios(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
@@ -135,7 +136,7 @@ def patch_ios(c):
     c.run("cython _scproxy.pyx")
 
 @task(kind="python", pythons="3", platforms="ios")
-def build_ios(c):
+def build_ios(c: Context):
     common(c)
 
     with open(c.path("config.site"), "a") as f:
@@ -153,7 +154,7 @@ def build_ios(c):
 
 
 @task(kind="python", pythons="3", platforms="android")
-def build_android(c):
+def build_android(c: Context):
     common(c)
 
     with open(c.path("config.site"), "a") as f:
@@ -168,7 +169,7 @@ def build_android(c):
 
 
 @task(kind="python", pythons="3", platforms="windows")
-def build_windows(c):
+def build_windows(c: Context):
     common(c)
 
     c.env("MSYSTEM", "MINGW")
@@ -193,7 +194,7 @@ def build_windows(c):
 
 
 @task(kind="python", pythons="3", platforms="web")
-def build_web(c):
+def build_web(c: Context):
 
     c.var("version", web_version)
 
@@ -230,7 +231,7 @@ def build_web(c):
             "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 @task(kind="python", pythons="3", platforms="all")
-def pip(c):
+def pip(c: Context):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
     c.run("""{{ install }}/bin/hostpython3 -s -m pip install --upgrade
         future==0.18.2

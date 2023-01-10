@@ -1,4 +1,5 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 import shutil
 import os
@@ -228,7 +229,7 @@ def pyo_copy(src, dst):
 
 
 @task(kind="host-python", pythons="2", always=True)
-def python2(c):
+def python2(c: Context):
 
     search = [
         c.path("{{ install }}/lib/{{ pythonver }}"),
@@ -511,7 +512,7 @@ steamapi
 
 
 @task(kind="host-python", pythons="3", always=True)
-def python3(c):
+def python3(c: Context):
 
     # The list of rules.
     rules = set(PY3_MODULES.split())
@@ -592,7 +593,7 @@ def python3(c):
 
 
 @task(kind="python", platforms="web", pythons="3", always=True)
-def python3_web(c):
+def python3_web(c: Context):
     """
     This should do the same work as Python 3, but for the web version of Python.
     """

@@ -1,14 +1,15 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 
 
 @annotator
-def annotate(c):
+def annotate(c: Context):
     c.include("{{ install }}/cubism/Core/include")
     c.env("CUBISM", "{{ install }}/cubism")
 
 
 @task(platforms="all")
-def build(c):
+def build(c: Context):
     c.clean()
 
     c.var("cubism_zip", "CubismSdkForNative-4-r.1.zip")

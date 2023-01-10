@@ -1,10 +1,11 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "2.7.18"
 
 
 @task(kind="host", pythons="2")
-def unpack_hostpython(c):
+def unpack_hostpython(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -14,7 +15,7 @@ def unpack_hostpython(c):
 
 
 @task(kind="host", pythons="2")
-def build_host(c):
+def build_host(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")

@@ -1,11 +1,12 @@
-from renpybuild.model import task, Context
+from renpybuild.context import Context
+from renpybuild.task import task
 
 import os
 import requests
 
 
 @task(kind="cross", platforms="windows")
-def download(c : Context):
+def download(c: Context):
 
     url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20220906/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz"
     dest = c.path("{{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
@@ -27,7 +28,7 @@ def download(c : Context):
 
 
 @task(kind="cross", platforms="windows")
-def unpack(c):
+def unpack(c: Context):
 
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
@@ -37,7 +38,7 @@ def unpack(c):
 
 
 @task(kind="cross", platforms="android", always=True)
-def build(c):
+def build(c: Context):
 
     if c.path("{{cross}}/android-ndk-r25b").exists():
         return
@@ -49,7 +50,7 @@ def build(c):
 
 
 @task(kind="cross", platforms="mac", archs="x86_64")
-def build(c):
+def build(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
@@ -83,7 +84,7 @@ def build(c):
 
 
 @task(kind="cross", platforms="mac", archs="arm64")
-def build(c):
+def build(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
@@ -92,7 +93,7 @@ def build(c):
 
 
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")
-def build(c):
+def build(c: Context):
 
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
@@ -102,7 +103,7 @@ def build(c):
 
 
 @task(kind="cross", platforms="ios", archs="sim-arm64,sim-x86_64")
-def build(c):
+def build(c: Context):
 
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
@@ -112,7 +113,7 @@ def build(c):
 
 
 @task(platforms="ios")
-def mockrt(c):
+def mockrt(c: Context):
     c.clean()
     c.run("{{ CC }} {{ CFLAGS }} -c {{ source }}/mockrt.c")
     c.run("mkdir -p {{ install }}/lib")
@@ -121,7 +122,7 @@ def mockrt(c):
 
 
 @task(platforms="web")
-def emsdk(c):
+def emsdk(c: Context):
     c.var("emsdk_version", "3.1.24")
 
     c.clean("{{ cross }}")
@@ -132,7 +133,7 @@ def emsdk(c):
 
 
 @task(platforms="web")
-def embuilder(c):
+def embuilder(c: Context):
     c.run("embuilder build bzip2")
     c.run("embuilder build zlib")
     c.run("embuilder build libjpeg")

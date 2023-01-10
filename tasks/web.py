@@ -1,4 +1,5 @@
-from renpybuild.model import task, annotator
+from renpybuild.context import Context
+from renpybuild.task import task, annotator
 import subprocess
 import os
 import re
@@ -6,7 +7,7 @@ import re
 
 
 @task(kind="host-python", platforms="web", pythons="2")
-def clean(c):
+def clean(c: Context):
     c.rmtree("{{ renpyweb }}/build")
     c.rmtree("{{ renpyweb }}/install")
     c.rmtree("{{ renpyweb }}/toolchain")
@@ -17,7 +18,7 @@ def clean(c):
 
 
 @task(kind="host-python", platforms="web", pythons="2")
-def links(c):
+def links(c: Context):
     c.unlink("{{ renpyweb }}/renpy")
     c.unlink("{{ renpyweb }}/pygame_sdl2")
 
@@ -26,7 +27,7 @@ def links(c):
 
 
 @task(kind="host-python", platforms="web", pythons="2")
-def download_emsdk(c):
+def download_emsdk(c: Context):
     c.var("emsdk_version", "2.0.20")
 
     c.chdir("{{ renpyweb }}")
@@ -37,12 +38,12 @@ def download_emsdk(c):
 
 
 @task(kind="host-python", platforms="web", pythons="2")
-def patch_emsdk(c):
+def patch_emsdk(c: Context):
     c.chdir("{{ renpyweb }}/emsdk/upstream/emscripten/")
     c.patch("{{ renpyweb }}/patches/emscripten.patch")
 
 @task(kind="host-python", platforms="web", always=True, pythons="2")
-def clean_python_emscripten(c):
+def clean_python_emscripten(c: Context):
     newmakefile = c.path("{{ renpyweb }}/Makefile")
     oldmakefile = c.path("{{ build }}/Makefile")
 
@@ -64,7 +65,7 @@ def clean_python_emscripten(c):
         oldmakefile.write_text(new)
 
 
-def read_environment(c):
+def read_environment(c: Context):
     """
     Loads the emsdk environment into `c`.
     """
@@ -83,7 +84,7 @@ def read_environment(c):
 
 
 @task(kind="python", platforms="web", always=True, pythons="2")
-def inittab(c):
+def inittab(c: Context):
 
     modules = [ ]
 
@@ -111,7 +112,7 @@ def inittab(c):
 
 
 @task(kind="host-python", platforms="web", always=True, pythons="2")
-def build(c):
+def build(c: Context):
     environ = read_environment(c)
     subprocess.check_call("make cythonobjclean", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)
     subprocess.check_call("nice make EMCC='ccache emcc'", shell=True, cwd=str(c.path("{{ renpyweb }}")), env=environ)

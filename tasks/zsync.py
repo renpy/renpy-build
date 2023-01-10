@@ -1,10 +1,11 @@
-from renpybuild.model import task
+from renpybuild.context import Context
+from renpybuild.task import task
 
 version = "0.6.2"
 
 
 @task(kind="python")
-def unpack(c):
+def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
@@ -13,7 +14,7 @@ def unpack(c):
     c.run("""cp /usr/share/autoconf/build-aux/config.sub zsync-{{version}}/autotools""")
 
 @task(kind="python", platforms="linux")
-def build(c):
+def build(c: Context):
 
     c.var("version", version)
     c.chdir("zsync-{{ version }}")
@@ -29,7 +30,7 @@ def build(c):
 
 
 @task(kind="python", platforms="mac")
-def build(c):
+def build(c: Context):
 
     c.var("version", version)
     c.chdir("zsync-{{ version }}")
@@ -45,7 +46,7 @@ def build(c):
 
 
 @task(kind="host-python", platforms="mac")
-def lipo_mac(c):
+def lipo_mac(c: Context):
 
     c.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
 
@@ -71,6 +72,6 @@ def lipo_mac(c):
 
 
 @task(kind="python", platforms="windows")
-def install(c):
+def install(c: Context):
     c.run("install -d {{ dlpa }}")
     c.run("install {{ prebuilt }}/zsync.exe {{ prebuilt}}/zsyncmake.exe {{ dlpa }}")
