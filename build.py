@@ -150,6 +150,12 @@ def rebuild(args):
 def clean(args):
     shutil.rmtree(tmp / "build")
     shutil.rmtree(tmp / "complete")
+    shutil.rmtree(tmp / "host")
+
+    try:
+        shutil.rmtree(tmp / "source")
+    except:
+        pass
 
     for i in tmp.glob("install.*"):
         shutil.rmtree(i)
