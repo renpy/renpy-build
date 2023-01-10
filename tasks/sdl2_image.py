@@ -25,6 +25,7 @@ def build(c):
     c.run("autoreconf -f")
 
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
+    --with-gnu-ld
     --disable-shared
 
     --disable-imageio
@@ -41,6 +42,15 @@ def build(c):
     --disable-webp-shared
     --disable-qoi
     """)
+
+    libtool = c.path("libtool")
+    text = libtool.read_text()
+
+    text = text.replace("cygpath -w -p", "echo")
+    text = text.replace("cygpath -w", "echo")
+
+    libtool.write_text(text)
+
 
     c.run("""make""")
     c.run("""make install""")

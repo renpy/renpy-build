@@ -313,7 +313,7 @@ def link_windows(c):
     librenpython.o
     -lrenpy
 
-    -llibfribidi
+    -lfribidi
 
     {% if c.python == "2" %}
     {{install}}/lib/{{ pythonver }}/config/lib{{ pythonver }}.dll.a
@@ -327,13 +327,13 @@ def link_windows(c):
     -lswresample
     -lavutil
 
-    -llibSDL2_image
+    -lSDL2_image
     -lSDL2
     -lopengl32
-    -llibjpeg
-    -llibpng16
-    -llibwebp
-    -llibfreetype
+    -ljpeg
+    -lpng16
+    -lwebp
+    -lfreetype
     -lffi
     -lssl
     -lcrypto
