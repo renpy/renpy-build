@@ -20,6 +20,9 @@ def build(c : Context):
         -DENABLE_EXAMPLES=0
         -DENABLE_TOOLS=0
         -DENABLE_TESTS=0
+        {% if platform == "android" or platform == "ios" %}
+        -DCONFIG_RUNTIME_CPU_DETECT=0
+        {% endif %}
         {{ tmp }}/source/aom
         """)
 
