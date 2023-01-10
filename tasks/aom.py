@@ -3,6 +3,12 @@ from renpybuild.task import task
 
 @task(kind="host", platforms="all")
 def download(c : Context):
+
+    if c.path.exists("{{ tmp }}/source/aom"):
+        c.chdir("{{ tmp }}/source/aom")
+        c.run("git pull")
+        return
+
     c.clean("{{ tmp }}/source/aom")
     c.chdir("{{ tmp }}/source")
 
@@ -20,6 +26,7 @@ def build(c : Context):
         -DENABLE_EXAMPLES=0
         -DENABLE_TOOLS=0
         -DENABLE_TESTS=0
+        -DCONFIG_PIC=1
         {% if platform == "android" or platform == "ios" %}
         -DCONFIG_RUNTIME_CPU_DETECT=0
         {% endif %}
