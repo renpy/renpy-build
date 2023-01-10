@@ -27,6 +27,10 @@ def build(c: Context):
 
     c.env("LIBAVIF_LIBS", "-lavif -laom")
 
+    if c.platform == "web":
+        c.env("SDL_CFLAGS", "-sUSE_SDL=2")
+        c.env("SDL_LIBS", "-sUSE_SDL=2")
+
     c.run("""./configure {{ cross_config }} --prefix="{{ install }}"
     --with-gnu-ld
     --disable-shared

@@ -31,7 +31,7 @@ def build(c : Context):
         -DENABLE_TOOLS=0
         -DENABLE_TESTS=0
         -DCONFIG_PIC=1
-        {% if platform == "android" or platform == "ios" %}
+        {% if platform == "android" or platform == "ios" or platform == "emscripten" %}
         -DCONFIG_RUNTIME_CPU_DETECT=0
         {% endif %}
         {{ tmp }}/source/aom

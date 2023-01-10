@@ -93,7 +93,8 @@ def build_environment(c):
     """
 
     if c.platform == "web" and c.kind not in ( "host",  "host-python", "cross" ):
-        emsdk_env = emsdk_environment(c)
+        emsdk_environment(c)
+
 
     cpuccount = os.cpu_count()
 
@@ -360,7 +361,10 @@ def build_environment(c):
         c.env("EMSCRIPTEN_TOOLS", "{{emscriptenbin}}/tools")
         c.env("EMSCRIPTEN", "{{emscriptenbin}}")
 
-        c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/local/lib/pkgconfig:{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig")
+        c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig:{{cross}}/upstream/emscripten/system/lib/pkgconfig")
+
+        # Used to find sdl2-config.
+        c.env("PATH", "{{cross}}/upstream/emscripten/system/bin/:{{PATH}}")
 
         c.var("cmake_system_name", "Emscripten")
         c.var("cmake_system_processor", "generic")
