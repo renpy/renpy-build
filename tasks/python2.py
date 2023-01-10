@@ -171,14 +171,10 @@ def build_windows(c):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
-    with open(c.path("Lib/plat-generic/regen"), "w") as f:
-        f.write("""\
-#! /bin/sh
-set -v
-CCINSTALL=$($1 -print-search-dirs | head -1 | cut -d' ' -f2)
-REGENHEADER=${CCINSTALL}/include/stddef.h
-eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" $REGENHEADER
-""")
+    c.generate_text("""\
+#!/bin/sh
+eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" {{cross}}/llvm-mingw/generic-w64-mingw32/include/stddef.h
+""", "Lib/plat-generic/regen")
 
     c.run("""{{ make }}""")
     c.run("""make install""")
