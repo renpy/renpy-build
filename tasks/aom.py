@@ -1,4 +1,5 @@
-from renpybuild.model import task, Context
+from renpybuild.context import Context
+from renpybuild.task import task
 
 @task(kind="host", platforms="all")
 def download(c : Context):
