@@ -446,6 +446,6 @@ class Context:
         """
 
         srcpath = self.path(src)
-        dstpath = self.path(src)
+        dstpath = self.path(dst)
 
         dstpath.symlink_to(srcpath)

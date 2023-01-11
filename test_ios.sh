@@ -16,3 +16,4 @@ ln -s renios3 renpy/renios
 
 # rsync -a --delete --exclude \*.xcodeproj /tmp/ios-test tom@mary21.local:/Users/tom/ios
 rsync -a --delete /tmp/ios-test tom@mary21.local:/Users/tom/ios
+rsync -a --delete /tmp/ios-test tom@mary12.local:/Users/tom/ios
