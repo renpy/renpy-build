@@ -24,13 +24,13 @@ def check_sdk(name, paths):
     for d in paths:
         fn = d / name
 
-        p = subprocess.run([ "llvm-otool-13", "-l", f"{fn}"], capture_output=True)
+        p = subprocess.run([ "llvm-otool-15", "-l", f"{fn}"], capture_output=True)
 
         obj = None
 
         for l in p.stdout.decode("utf-8").split("\n"):
             if re.match(r'.*\.a\(.*\)', l):
-                if obj is not None:
+                if obj is not None and not ("asm" in obj):
                     raise Exception(f"{obj} does not have a minos defined, in {fn}")
 
                 obj = l
