@@ -5,144 +5,7 @@ import struct
 import zipfile
 import io
 
-class SubFile(object):
-    closed = False
-
-    def __init__(self, name, base, length):
-        self.f = None
-        self.base = base
-        self.offset = 0
-        self.length = length
-
-        self.name = name
-
-    def open(self):
-        if self.f is None:
-            self.f = open(self.name, "rb")
-            self.f.seek(self.base)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, _type, value, tb):
-        self.close()
-        return False
-
-    def read(self, length=None):
-
-        if self.f is None:
-            self.open()
-
-        maxlength = self.length - self.offset
-
-        if length is not None:
-            length = min(length, maxlength)
-        else:
-            length = maxlength
-
-        if length:
-            rv2 = self.f.read(length)
-            self.offset += len(rv2)
-        else:
-            rv2 = b""
-
-        return rv2
-
-    def readable(self):
-        return True
-
-    def readline(self, length=None):
-
-        if self.f is None:
-            self.open()
-
-        maxlength = self.length - self.offset
-        if length is not None:
-            length = min(length, maxlength)
-        else:
-            length = maxlength
-
-        # Otherwise, let the system read the line all at once.
-        rv = self.f.readline(length)
-        self.offset += len(rv)
-
-        return rv
-
-    def readlines(self, length=None):
-        rv = [ ]
-
-        while True:
-            l = self.readline(length)
-
-            if not l:
-                break
-
-            if length is not None:
-                length -= len(l)
-                if l < 0:
-                    break
-
-            rv.append(l)
-
-        return rv
-
-    def seekable(self):
-        return True
-
-    def writable(self):
-        return False
-
-    def xreadlines(self):
-        return self
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        rv = self.readline()
-
-        if not rv:
-            raise StopIteration()
-
-        return rv
-
-    next = __next__
-
-    def flush(self):
-        return
-
-    def seek(self, offset, whence=0):
-        if self.f is None:
-            self.open()
-
-        if whence == 0:
-            offset = offset
-        elif whence == 1:
-            offset = self.offset + offset
-        elif whence == 2:
-            offset = self.length + offset
-
-        if offset > self.length:
-            offset = self.length
-
-        self.offset = offset
-
-        if offset < 0:
-            offset = 0
-
-        self.f.seek(offset + self.base)
-
-    def tell(self):
-        return self.offset
-
-    def close(self):
-        if self.f is not None:
-            self.f.close()
-            self.f = None
-
-    def write(self, s):
-        raise Exception("Write not supported by SubFile")
-
+from pygame_sdl2.rwobject import RWops_from_file, RWops_create_subfile # type: ignore
 
 class APK(object):
 
@@ -210,8 +73,9 @@ class APK(object):
 
         if info.compress_type == zipfile.ZIP_STORED:
 
-            return SubFile(
-                self.apk,
+            rw = RWops_from_file(self.apk, "rb")
+            return RWops_create_subfile(
+                rw,
                 self.offset[fn],
                 info.file_size)
 
