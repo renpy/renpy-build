@@ -27,7 +27,7 @@ def build(c: Context):
 
     c.env("LIBAVIF_LIBS", "-lavif -laom")
 
-    if c.platform == "web":
+    if c.platform == "web" and c.platform != "2":
         c.env("SDL_CFLAGS", "-sUSE_SDL=2")
         c.env("SDL_LIBS", "-sUSE_SDL=2")
 
