@@ -108,6 +108,7 @@ def build(c: Context):
         --enable-swscale
         --enable-avfilter
         --enable-avresample
+        --enable-libaom
 
         --disable-bzlib
 
@@ -124,6 +125,7 @@ def build(c: Context):
         --enable-demuxer=mpegvideo
         --enable-demuxer=ogg
         --enable-demuxer=wav
+        --enable-demuxer=av1
 
         --enable-decoder=flac
         --enable-decoder=mp2
@@ -149,6 +151,7 @@ def build(c: Context):
         --enable-decoder=vp3
         --enable-decoder=vp8
         --enable-decoder=vp9
+        --enable-decoder=libaom_av1
 
         --enable-parser=mpegaudio
         --enable-parser=mpegvideo
@@ -156,6 +159,7 @@ def build(c: Context):
         --enable-parser=vp3
         --enable-parser=vp8
         --enable-parser=vp9
+        --enable-parser=av1
 
         --disable-iconv
         --disable-alsa
