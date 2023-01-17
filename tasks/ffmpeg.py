@@ -15,6 +15,7 @@ def unpack(c: Context):
     c.chdir("ffmpeg-{{version}}")
 
     c.patch("ffmpeg-4.3.1-sse.diff")
+    c.patch("ffmpeg-4.3.1-ff_seek_frame_binary.diff")
 
 
 @task()
