@@ -340,7 +340,7 @@ def build_environment(c):
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
 
-    elif (c.platform == "web") and (c.arch == "wasm") and (c.python == "3"):
+    elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
         c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
         c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
