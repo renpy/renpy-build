@@ -8,7 +8,7 @@ SCRIPTS=$(cd $(dirname $0); pwd)
 ROOT="$SCRIPTS/.."
 REFS=$ROOT
 
-eval set -- $(getopt -o '' --long upload,nosign,prune -- "$@")
+eval set -- $(getopt -o '' --long clean,upload,nosign,prune -- "$@")
 
 DISTRIBUTE_ARGS=
 
@@ -17,6 +17,11 @@ while true; do
         --)
             shift
             break
+            ;;
+
+        --clean)
+            CLEAN=1
+            shift
             ;;
 
         --upload)
@@ -54,5 +59,5 @@ mkdir -p "$BASE/tmp"
 # Python activates the venv, which is needed for the rest of it.
 . $SCRIPTS/python.sh
 . $SCRIPTS/rev.sh
-# . $SCRIPTS/build.sh
+. $SCRIPTS/build.sh
 . $SCRIPTS/web.sh

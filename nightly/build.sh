@@ -13,6 +13,11 @@ fi
 
 # Build the dependencies.
 pushd $BASE
+
+if [ "$CLEAN" = 1 ]; then
+    ./build.py clean
+fi
+
 ./build.py --python 2
 ./build.py --python 3
 popd
