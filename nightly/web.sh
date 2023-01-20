@@ -1,13 +1,15 @@
+pushd $BASE
+
 # Try to copy VCS data to distribution directories.
 if [ -e vcs.json -a -n "$RENPY_7_NIGHTLY" -a -n "$RENPY_8_NIGHTLY" ]; then
     mkdir -p renpy/dl/$RENPY_7_NIGHTLY/
-    cp vcs.json renpy/dl/$RENPY_7_NIGHTLY/
+    cp tmp/vcs.json renpy/dl/$RENPY_7_NIGHTLY/
 
     mkdir -p renpy/dl/$RENPY_8_NIGHTLY/
-    cp vcs.json renpy/dl/$RENPY_8_NIGHTLY/
-
-    rm vcs.json
+    cp tmp/vcs.json renpy/dl/$RENPY_8_NIGHTLY/
 fi
+
+popd
 
 # Copy the documentation to the website.
 rm -Rf $BASE/renpy/dl/doc || true

@@ -17,11 +17,13 @@ pushd $BASE/renpyweb
 RENPYWEB_REV=$(git log -n1 --pretty='"%H", "%h"' HEAD)
 popd
 
+pushd $BASE
+
 # Capture current renpy-build revision.
 RENPY_BUILD_REV=$(git log -n1 --pretty='"%H", "%h"' HEAD)
 
 # Write revisions to file, renpy-build should always be last.
-cat > vcs.json <<-EOF
+cat > tmp/vcs.json <<-EOF
 [
   ["renpy",       $RENPY_REV],
   ["pygame_sdl2", $PYGAME_SDL2_REV],
@@ -29,3 +31,5 @@ cat > vcs.json <<-EOF
   ["renpy-build", $RENPY_BUILD_REV]
 ]
 EOF
+
+popd
