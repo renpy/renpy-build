@@ -28,8 +28,8 @@ def main():
     link("8-nightly-*", "current-8")
     link("7-nightly-*", "current-7")
 
-    link("current/*-sdk.zip", "renpy-nightly-sdk.zip")
-    link("current/*-sdk.tar.bz2", "renpy-nightly-sdk.tar.bz2")
+    link("8-nightly-*/*-sdk.zip", "renpy-nightly-sdk.zip")
+    link("8-nightly-*/*-sdk.tar.bz2", "renpy-nightly-sdk.tar.bz2")
 
 
 
