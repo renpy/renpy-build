@@ -45,7 +45,7 @@ def directory(name, full):
 
         if i == "vcs.json":
             with open(os.path.join(full, i)) as f:
-                vcs = [ src(f'{repo}:{rev}', f'{gh}/{repo}/commits/{sha}')
+                vcs = [ src(f'{repo}@{rev}', f'{gh}/{repo}/commits/{sha}')
                         for repo, sha, rev in json.load(f) ]
             continue
 

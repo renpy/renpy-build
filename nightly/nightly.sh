@@ -54,5 +54,5 @@ mkdir -p "$BASE/tmp"
 # Python activates the venv, which is needed for the rest of it.
 . $SCRIPTS/python.sh
 . $SCRIPTS/rev.sh
-. $SCRIPTS/build.sh
+# . $SCRIPTS/build.sh
 . $SCRIPTS/web.sh
