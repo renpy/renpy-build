@@ -48,11 +48,15 @@ def build(c: Context):
         --disable-render-metal
         --disable-jack
 
-        --disable-video-wayland
         --disable-video-kmsdrm
 
-    {% if c.platform == "android" %}
+    {% if c.platform != "linux" %}
         --disable-video-x11
+        --disable-video-wayland
+    {% else %}
+        --enable-wayland-shared
+        --disable-libdecor
+    {% endif %}
 
         --disable-oss
         --disable-alsa
@@ -63,8 +67,6 @@ def build(c: Context):
         --disable-sndio
         --disable-fusionsound
         --disable-hidapi
-
-    {% endif %}
 
     """)
 

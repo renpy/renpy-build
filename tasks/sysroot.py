@@ -127,3 +127,23 @@ def install_linux_raspi(c: Context):
         c.run("""sudo chroot {{ sysroot }} /debootstrap/debootstrap --second-stage """)
 
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
+
+@task(platforms="linux")
+def permissions(c: Context):
+    import os
+
+    c.var("uid", str(os.getuid()))
+    c.var("gid", str(os.getgid()))
+
+    c.run("""sudo chown -R {{uid}}.{{gid}} {{sysroot}}""")
+
+@task(platforms="linux")
+def update_wayland_headers(c: Context):
+    """
+    This adds newer wayland headers to the systems we support. This
+    is safe because wayland is dynamically loaded, and we don't use
+    any of the newer features.
+    """
+
+    for i in c.path("{{source}}/wayland-headers/").glob("wayland*.h"):
+        c.copy(str(i), "{{ sysroot }}/usr/include/" + i.name)
