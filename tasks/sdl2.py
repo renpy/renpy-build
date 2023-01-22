@@ -58,6 +58,8 @@ def build(c: Context):
         --disable-libdecor
     {% endif %}
 
+    {% if c.platform == "android" %}
+
         --disable-oss
         --disable-alsa
         --disable-esd
@@ -67,7 +69,7 @@ def build(c: Context):
         --disable-sndio
         --disable-fusionsound
         --disable-hidapi
-
+    {% endif %}
     """)
 
     if c.platform == "ios":
