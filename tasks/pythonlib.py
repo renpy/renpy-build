@@ -173,6 +173,8 @@ xml/parsers/expat.pyo
 xml/parsers/__init__.pyo
 zipfile.pyo
 
+Crypto/
+
 rsa/
 pyasn1/
 
@@ -273,6 +275,8 @@ def python2(c: Context):
 
 
 PY3_MODULES = """
+Crypto/
+
 collections/
 concurrent/
 
