@@ -59,7 +59,8 @@ def build(c: Context):
                 modules.append(parts[0])
 
                 for i in parts[1:]:
-                    i = i.replace("gen/", gen)
+                    if "libhydrogen" not in i:
+                        i = i.replace("gen/", gen)
                     sources.append(dn / i)
 
     read_setup(c.root / "extensions")
