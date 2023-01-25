@@ -244,5 +244,4 @@ def pip(c: Context):
         idna==2.6
         requests==2.20.0
         pefile==2021.9.3
-        pycryptodome==3.16.0
         """)

@@ -14,7 +14,6 @@ MarkupSafe==2.1.1
 packaging==21.3
 pefile==2022.5.30
 pyasn1==0.4.8
-pycryptodome==3.16.0
 Pygments==2.13.0
 pyparsing==3.0.9
 python-dateutil==2.8.2

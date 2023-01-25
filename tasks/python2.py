@@ -197,5 +197,4 @@ def pip(c: Context):
         requests==2.20.0
         pefile==2019.4.18
         typing==3.10.0.0
-        pycryptodome==3.16.0
         """)
