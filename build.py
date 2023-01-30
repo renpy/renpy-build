@@ -127,6 +127,7 @@ def build(args):
 
 def remove_complete(args):
 
+    tmp = root / "tmp"
     complete = tmp / "complete"
 
     if not complete.is_dir():
@@ -152,6 +153,8 @@ def clean(args):
         if p.exists():
             shutil.rmtree(p)
 
+    tmp = root / "tmp"
+
     rmtree(tmp / "build")
     rmtree(tmp / "complete")
     rmtree(tmp / "host")
@@ -159,6 +162,15 @@ def clean(args):
 
     for i in tmp.glob("install.*"):
         rmtree(i)
+
+    def rmgen(d):
+        rmtree(d / "gen")
+        rmtree(d / "gen-static")
+        rmtree(d / "gen3")
+        rmtree(d / "gen3-static")
+
+    rmgen(root / "renpy" / "module")
+    rmgen(root / "pygame_sdl2")
 
 
 def main():
@@ -186,7 +198,6 @@ def main():
     sp = subparsers.add_parser("clean")
     sp.set_defaults(function=clean)
 
-    global tmp
     global root
 
     args = ap.parse_args()
@@ -195,7 +206,7 @@ def main():
         known_platforms[:] = [ i for i in known_platforms if not i.experimental ]
 
     root = Path(__file__).parent.resolve()
-    tmp = root / "tmp"
+
 
     args.function(args)
 
