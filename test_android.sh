@@ -34,11 +34,18 @@ if [ "$1" != "" ]; then
 fi
 
 
-# ## This tests app switching.
-#
-# sleep 5
+## This tests app switching.
+
+# sleep 6
 # adb shell input keyevent KEYCODE_HOME || true
+# sleep 6
+# adb shell input keyevent KEYCODE_APP_SWITCH || true
 # sleep 1
+# adb shell input tap 500 500 || true
+
+# sleep 6
+# adb shell input keyevent KEYCODE_HOME || true
+# sleep 6
 # adb shell input keyevent KEYCODE_APP_SWITCH || true
 # sleep 1
 # adb shell input tap 500 500 || true

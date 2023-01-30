@@ -1,0 +1,30 @@
+Do not use multi-window mode on Android.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+This disables the multi-window mode on Android, which Ren'Py doesn't use.
+The reason for this is that the Android lifecycle diagram at
+
+   https://developer.android.com/guide/components/activities/activity-lifecycle
+
+says that the app can be killed at any time after onPause, and it appears
+that Android might be starving the app of resources after onPause. In
+any case, when in multiWindow mode, there are a number of crashes on my
+Pixel 7 running android 12.
+---
+ .../src/main/java/org/libsdl/app/SDLActivity.java  |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+index 5057812..b9318cb 100644
+--- a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
++++ b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
+@@ -65,7 +65,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
+     private static final String TAG = "SDL";
+ 
+     public static boolean mIsResumedCalled, mHasFocus;
+-    public static final boolean mHasMultiWindow = (Build.VERSION.SDK_INT >= 24);
++    public static final boolean mHasMultiWindow = false;
+ 
+     // Cursor types
+     // private static final int SDL_SYSTEM_CURSOR_NONE = -1;

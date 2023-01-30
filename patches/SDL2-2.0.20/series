@@ -9,3 +9,4 @@ opensles-library.diff
 use-metalangle.diff
 fix-windows_gaming_input.diff
 declaration-after-statement.diff
+android-no-multi-window.diff
