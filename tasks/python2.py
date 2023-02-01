@@ -186,7 +186,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" {{cross}}/llv
 def pip(c: Context):
     c.run("{{ install }}/bin/hostpython2 -s -m ensurepip")
     c.run("""{{ install }}/bin/hostpython2 -s -m pip install --upgrade
-        future==0.18.2
+        future==0.18.3
         six==1.12.0
         rsa==3.4.2
         pyasn1==0.4.2
