@@ -321,6 +321,10 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         Log.v("python", "onCreate()");
         super.onCreate(savedInstanceState);
 
+        if (mLayout == null) {
+            return;
+        }
+
         // Initalize the store support.
         createStore();
 
