@@ -45,21 +45,24 @@ class Configuration(object):
         self.heap_size = None
         self.update_keystores = True
 
-        try:
-            with open(os.path.join(directory, ".android.json"), "r") as f:
-                d = json.load(f)
+        for fn in [ "android.json", ".android.json" ]:
 
-            self.__dict__.update(d)
-        except:
-            pass
+            try:
+                with open(os.path.join(directory, fn), "r") as f:
+                    d = json.load(f)
+
+                self.__dict__.update(d)
+                break
+            except:
+                pass
 
         if self.orientation == "landscape":
             self.orientation = "sensorLandscape"
 
-    def save(self, directory):
+    def save(self, base):
 
-        with open(os.path.join(directory, ".android.json"), "w") as f:
-            json.dump(self.__dict__, f)
+        with open(os.path.join(base, "android.json"), "w") as f:
+            json.dump(self.__dict__, f, indent=4)
 
 
     def set_heap_size(self, newSize, gradle_dir):
