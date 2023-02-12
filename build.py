@@ -149,9 +149,13 @@ def rebuild(args):
 
 def clean(args):
 
-    def rmtree(p):
+    def rmtree(p : Path):
         if p.exists():
             shutil.rmtree(p)
+
+    def unlink(p : Path):
+        if p.exists():
+            p.unlink()
 
     tmp = root / "tmp"
 
@@ -172,6 +176,18 @@ def clean(args):
     rmgen(root / "renpy" / "module")
     rmgen(root / "pygame_sdl2")
 
+    def rmtrio(name : str):
+        """
+        Deletes groups of directories and symlinks, like web, renios, and rapt.
+        """
+
+        unlink(root / "renpy" / name)
+        rmtree(root / "renpy" / (name + "2"))
+        rmtree(root / "renpy" / (name + "3"))
+
+    rmtrio("web")
+    rmtrio("renios")
+    rmtrio("rapt")
 
 def main():
     ap = argparse.ArgumentParser()
