@@ -43,6 +43,7 @@ class Configuration(object):
         self.update_icons = True
         self.update_always = True
         self.heap_size = None
+        self.update_keystores = True
 
         try:
             with open(os.path.join(directory, ".android.json"), "r") as f:

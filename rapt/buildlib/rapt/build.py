@@ -19,6 +19,8 @@ import collections
 
 from . import plat
 from . import iconmaker
+from .properties import set_property, local_properties, bundle_properties
+from .keys import update_project_keys, get_local_key_properties
 
 import rapt.plat as plat
 import rapt.iconmaker as iconmaker
@@ -516,7 +518,7 @@ def copy_libs():
         shutil.copytree(prototype, project)
 
 
-def build(iface, directory, install=False, bundle=False, launch=False, finished=None, permissions=[]):
+def build(iface, directory, base, install=False, bundle=False, launch=False, finished=None, permissions=[]):
 
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
@@ -563,6 +565,9 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     copy_project(config.update_always)
 
     copy_libs()
+
+    if config.update_keystores:
+        update_project_keys(base)
 
     iface.info(__("Creating assets directory."))
 
@@ -653,6 +658,10 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
     copy_presplash(directory, "android-presplash", default_presplash)
     copy_presplash(directory, "android-downloading", default_downloading)
 
+    # Update the sdk path in the properties files.
+    set_property(local_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
+    set_property(bundle_properties, "sdk.dir", plat.sdk.replace("\\", "/"), replace=True)
+
     # Find and clean the apkdirs.
 
     apkdirs = [ ]
@@ -726,7 +735,7 @@ def build(iface, directory, install=False, bundle=False, launch=False, finished=
                 "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
                 "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
                 "--local-testing",
-            ] + install_sdk.get_local_key_properties())
+            ] + get_local_key_properties())
 
             iface.call([
                 plat.java,
