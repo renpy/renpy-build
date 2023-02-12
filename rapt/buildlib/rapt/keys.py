@@ -89,7 +89,7 @@ def generate_android_keys(interface, base):
     if os.path.exists(old_keystore):
         if interface.yesno(__("I found an android.keystore file in the rapt directory. Do you want to use this file?")):
             shutil.copy(old_keystore, keystore)
-
+            return
 
     if not interface.yesno(__("I can create an application signing key for you. This key is required to create Universal APK for sideloading and stores other than Google Play.\n\nDo you want to create a key?")):
         return
@@ -124,7 +124,7 @@ def generate_bundle_keys(interface, base):
     if os.path.exists(old_keystore):
         if interface.yesno(__("I found a bundle.keystore file in the rapt directory. Do you want to use this file?")):
             shutil.copy(old_keystore, keystore)
-
+            return
 
     if not interface.yesno(__("I can create a bundle signing key for you. This key is required to build an Android App Bundle (AAB) for upload to Google Play.\n\nDo you want to create a key?")):
         return
@@ -180,8 +180,6 @@ def generate_keys(interface, base):
 
     if generated:
         interface.open_directory(base, __("I've opened the directory containing android.keystore and bundle.keystore. Please back them up, and keep them in a safe place."))
-
-    interface.final_success(__("It looks like you're ready to start packaging games."))
 
 
 def update_project_keys(base):
