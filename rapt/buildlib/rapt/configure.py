@@ -62,7 +62,7 @@ class Configuration(object):
     def save(self, base):
 
         with open(os.path.join(base, "android.json"), "w") as f:
-            json.dump(self.__dict__, f, indent=4)
+            json.dump(self.__dict__, f, indent=4, sort_keys=True)
 
 
     def set_heap_size(self, newSize, gradle_dir):
