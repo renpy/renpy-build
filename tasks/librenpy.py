@@ -63,9 +63,9 @@ def build(c: Context):
                         i = i.replace("gen/", gen)
                     sources.append(dn / i)
 
-    read_setup(c.root / "extensions")
     read_setup(c.pygame_sdl2)
     read_setup(c.renpy / "module")
+    read_setup(c.root / "extensions")
 
     if c.platform == "android":
         read_setup(c.path("{{ pytmp }}/pyjnius"))
@@ -81,22 +81,24 @@ def build(c: Context):
 
     objects = [ ]
 
-    for source in sources:
+    with c.run_group() as g:
 
-        object = str(source.name)[:-2] + ".o"
-        objects.append(object)
+        for source in sources:
 
-        c.var("src", source)
-        c.var("object", object)
-        c.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}", verbose=True)
+            object = str(source.name)[:-2] + ".o"
+            objects.append(object)
 
-    c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "inittab.c", modules=modules)
-    c.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o", verbose=True)
-    objects.append("inittab.o")
+            c.var("src", source)
+            c.var("object", object)
+            g.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}")
+
+        c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "inittab.c", modules=modules)
+        g.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")
+        objects.append("inittab.o")
 
     c.var("objects", " ".join(objects))
 
-    c.run("{{ AR }} r librenpy.a {{ objects }} inittab.o", verbose=True)
-    c.run("{{ RANLIB }} librenpy.a", verbose=True)
+    c.run("{{ AR }} r librenpy.a {{ objects }} inittab.o")
+    c.run("{{ RANLIB }} librenpy.a")
 
     c.copy("librenpy.a", "{{ install }}/lib/librenpy.a")

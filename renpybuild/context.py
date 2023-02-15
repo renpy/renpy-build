@@ -327,6 +327,14 @@ class Context:
         command = self.expand(command, **kwargs)
         renpybuild.run.run(command, self, verbose, quiet)
 
+    def run_group(self):
+        """
+        Creates a run_group. This is a context manager with a run method,
+        that allows multiple commands to be run in parallel.
+        """
+
+        return renpybuild.run.RunGroup(self)
+
     def clean(self, d : str="{{build}}"):
         """
         Empties the named directory.

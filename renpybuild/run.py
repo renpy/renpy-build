@@ -402,3 +402,68 @@ def run(command, context, verbose=False, quiet=False):
         import traceback
         traceback.print_stack()
         sys.exit(1)
+
+class RunCommand(object):
+
+    def __init__(self, command, context):
+        command = context.expand(command)
+        self.command = shlex.split(command)
+
+        self.cwd = context.cwd
+        self.environ = context.environ.copy()
+
+        self.p = subprocess.Popen(self.command, cwd=self.cwd, env=self.environ, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+
+    def wait(self):
+        self.code = self.p.wait()
+        self.output = self.p.stdout.read() # type: ignore
+
+    def report(self):
+        print ("-" * 78)
+
+        for i in self.command:
+            if " " in i:
+                print(repr(i), end=" ")
+            else:
+                print(i, end=" ")
+
+        print()
+        print()
+        print(self.output)
+
+        if self.code != 0:
+            print()
+            print(f"Process failed with {self.code}.")
+
+class RunGroup(object):
+
+    def __init__(self, context):
+        self.context = context
+        self.tasks = [ ]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            return
+
+        for i in self.tasks:
+            i.wait()
+
+        good = [ i for i in self.tasks if i.code == 0 ]
+        bad = [ i for i in self.tasks if i.code != 0 ]
+
+        for i in good:
+            i.report()
+
+        for i in bad:
+            i.report()
+
+        if bad:
+            print()
+            print("{} tasks failed.".format(len(bad)))
+            sys.exit(1)
+
+    def run(self, command):
+        self.tasks.append(RunCommand(command, self.context))
