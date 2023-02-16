@@ -210,7 +210,10 @@ def process_trace(trace):
 
         l = list(trace_set)
         l.sort()
-        print("Full sleep trace:", repr(l).replace(" ", ""))
+        print("Full sleep trace:")
+
+        for i in l:
+            print(repr(i) + ",")
 
 
 if TRACE:
@@ -218,16 +221,16 @@ if TRACE:
 
 def sleep(ms):
 
-
     if TRACE:
-        print("Before sleep.")
+        emscripten_run_script("""inSleep = true;""")
         trace = emscripten_run_script_string(r"""stackTrace()""".encode('UTF-8'))
         process_trace(trace)
 
     emscripten_sleep(ms)
 
     if TRACE:
-        print("After sleep.")
+        emscripten_run_script("""inSleep = false;""")
+        pass
 
 
 # async_wget
