@@ -131,15 +131,14 @@ def generate_bundle_keys(interface, base):
 
     get_dname(interface)
 
-    if not interface.yesno(__("I will create the key in the bundle.keystore file.\n\nYou need to back this file up. If you lose it, you will not be able to upgrade your application.\n\nYou also need to keep the key safe. If evil people get this file, they could make fake versions of your application, and potentially steal your users' data.\n\nWill you make a backup of bundle.keystore, and keep it in a safe place?")):
-        return
+    do_backup = interface.yesno(__("I will create the key in the bundle.keystore file.\n\nYou need to back this file up. If you lose it, you will not be able to upgrade your application.\n\nYou also need to keep the key safe. If evil people get this file, they could make fake versions of your application, and potentially steal your users' data.\n\nWill you make a backup of bundle.keystore, and keep it in a safe place?"))
 
     if not run(interface, plat.keytool, "-genkey", "-keystore", keystore, "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
         interface.fail(__("Could not create bundle.keystore. Is keytool in your path?"))
 
-    backup_keys(keystore)
-
-    return True
+    if do_backup:
+        backup_keys(keystore)
+        return True
 
 
 def keys_exist(base):
