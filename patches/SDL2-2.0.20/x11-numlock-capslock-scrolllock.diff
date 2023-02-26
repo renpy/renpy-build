@@ -1,0 +1,100 @@
+Use xkey.state to set modifiers.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ src/video/x11/SDL_x11events.c |   36 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/src/video/x11/SDL_x11events.c b/src/video/x11/SDL_x11events.c
+index c126021..f751d0e 100644
+--- a/src/video/x11/SDL_x11events.c
++++ b/src/video/x11/SDL_x11events.c
+@@ -605,7 +605,7 @@ X11_HandleClipboardEvent(_THIS, const XEvent *xevent)
+             int seln_format, mime_formats;
+             unsigned long nbytes;
+             unsigned long overflow;
+-            unsigned char *seln_data;            
++            unsigned char *seln_data;
+             Atom supportedFormats[SDL_X11_CLIPBOARD_MIME_TYPE_MAX+1];
+             Atom XA_TARGETS = X11_XInternAtom(display, "TARGETS", 0);
+ 
+@@ -625,11 +625,11 @@ X11_HandleClipboardEvent(_THIS, const XEvent *xevent)
+             /* !!! FIXME: We were probably storing this on the root window
+                because an SDL window might go away...? but we don't have to do
+                this now (or ever, really). */
+-            
++
+             if (req->target == XA_TARGETS) {
+                 supportedFormats[0] = XA_TARGETS;
+                 mime_formats = 1;
+-                for (i = 0; i < SDL_X11_CLIPBOARD_MIME_TYPE_MAX; ++i) 
++                for (i = 0; i < SDL_X11_CLIPBOARD_MIME_TYPE_MAX; ++i)
+                     supportedFormats[mime_formats++] = X11_GetSDLCutBufferClipboardExternalFormat(display, i);
+                 X11_XChangeProperty(display, req->requestor, req->property,
+                     XA_ATOM, 32, PropModeReplace,
+@@ -714,6 +714,23 @@ isReparentNotify(Display *display, XEvent *ev, XPointer arg)
+         ev->xreparent.serial == unmap->serial;
+ }
+ 
++static void X11TakeModState(_THIS, unsigned int state) {
++    static unsigned numlock_mask = 0;
++    static unsigned scrolllock_mask = 0;
++
++    if (!numlock_mask) {
++        numlock_mask = X11_GetNumLockModifierMask(_this);
++    }
++
++    if (!scrolllock_mask) {
++        scrolllock_mask = X11_GetScrollLockModifierMask(_this);
++    }
++
++    SDL_ToggleModState(KMOD_CAPS, (state & LockMask) != 0);
++    SDL_ToggleModState(KMOD_NUM, (state & numlock_mask) != 0);
++    SDL_ToggleModState(KMOD_SCROLL, (state & scrolllock_mask) != 0);
++}
++
+ static void
+ X11_DispatchEvent(_THIS, XEvent *xevent)
+ {
+@@ -729,12 +746,21 @@ X11_DispatchEvent(_THIS, XEvent *xevent)
+     SDL_assert(videodata != NULL);
+     display = videodata->display;
+ 
++    if (xevent->type == KeyPress || xevent->type == KeyRelease) {
++        X11TakeModState(_this, xevent->xkey.state);
++    } else if (xevent->type == ButtonPress || xevent->type == ButtonRelease) {
++        X11TakeModState(_this, xevent->xbutton.state);
++    } else if (xevent->type == MotionNotify) {
++        X11TakeModState(_this, xevent->xmotion.state);
++    }
++
+     /* Save the original keycode for dead keys, which are filtered out by
+        the XFilterEvent() call below.
+     */
+     orig_event_type = xevent->type;
+     if (orig_event_type == KeyPress || orig_event_type == KeyRelease) {
+         orig_keycode = xevent->xkey.keycode;
++
+     } else {
+         orig_keycode = 0;
+     }
+@@ -908,7 +934,7 @@ X11_DispatchEvent(_THIS, XEvent *xevent)
+             if (xevent->xcrossing.mode != NotifyGrab &&
+                 xevent->xcrossing.mode != NotifyUngrab &&
+                 xevent->xcrossing.detail != NotifyInferior) {
+-                
++
+                 /* In order for interaction with the window decorations and menu to work properly
+                    on Mutter, we need to ungrab the keyboard when the the mouse leaves. */
+                 if (!(data->window->flags & SDL_WINDOW_FULLSCREEN)) {
+@@ -1124,7 +1150,7 @@ X11_DispatchEvent(_THIS, XEvent *xevent)
+                                         &xevent->xconfigure.x, &xevent->xconfigure.y,
+                                         &ChildReturn);
+             }
+-                
++
+             if (xevent->xconfigure.x != data->last_xconfigure.x ||
+                 xevent->xconfigure.y != data->last_xconfigure.y) {
+                 SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_MOVED,
