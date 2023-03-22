@@ -36,6 +36,13 @@ _sha256 -DPy_BUILD_CORE_BUILTIN sha256module.c
 _sha512 -DPy_BUILD_CORE_BUILTIN sha512module.c
 _sha3 -DPy_BUILD_CORE_BUILTIN _sha3/sha3module.c
 
+_codecs_cn -DPy_BUILD_CORE_BUILTIN cjkcodecs/_codecs_cn.c
+_codecs_hk -DPy_BUILD_CORE_BUILTIN cjkcodecs/_codecs_hk.c
+_codecs_iso2022 -DPy_BUILD_CORE_BUILTIN cjkcodecs/_codecs_iso2022.c
+_codecs_jp -DPy_BUILD_CORE_BUILTIN cjkcodecs/_codecs_jp.c
+_codecs_kr -DPy_BUILD_CORE_BUILTIN cjkcodecs/_codecs_kr.c
+_codecs_tw -DPy_BUILD_CORE_BUILTIN cjkcodecs/_codecs_tw.c
+_multibytecodec -DPy_BUILD_CORE_BUILTIN cjkcodecs/multibytecodec.c
 
 ###############################################################################
 

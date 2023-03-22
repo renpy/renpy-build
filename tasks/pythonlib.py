@@ -273,58 +273,24 @@ def python2(c: Context):
 
 
 PY3_MODULES = """
+asyncio/
 collections/
 concurrent/
-
 ctypes/
 email/
-encodings/aliases
-encodings/ascii
-encodings/base64_codec
-encodings/charmap
-encodings/cp437
-encodings/cp1252
-encodings/hex_codec
-encodings/idna
-encodings/__init__
-encodings/latin_1
-encodings/mbcs
-encodings/punycode
-encodings/quopri_codec
-encodings/raw_unicode_escape
-encodings/rot_13
-encodings/undefined
-encodings/unicode_escape
-encodings/utf_16_be
-encodings/utf_16
-encodings/utf_16_le
-encodings/utf_32_be
-encodings/utf_32
-encodings/utf_32_le
-encodings/utf_7
-encodings/utf_8
-encodings/utf_8_sig
-encodings/zlib_codec
+encodings/
 html/
-http/client
-http/cookiejar
-http/cookies
-http/__init__
-http/server
+http/
 importlib/
-json/decoder
-json/encoder
-json/__init__
-json/scanner
-json/tool
-logging/config
-logging/handlers
-logging/__init__
+json/
+logging/
+multiprocessing/
+zoneinfo/
+xml/
 
 abc
 argparse
 ast
-asyncio/
 base64
 binhex
 bisect
@@ -360,6 +326,7 @@ enum
 filecmp
 fileinput
 fnmatch
+formatter
 fractions
 ftplib
 functools
@@ -387,6 +354,7 @@ lzma
 _markupbase
 mimetypes
 modulefinder
+netrc
 ntpath
 nturl2path
 numbers
@@ -396,6 +364,7 @@ optparse
 os
 _osx_support
 pathlib
+pdb
 pickle
 pickletools
 pipes
@@ -484,20 +453,12 @@ six
 
 pygame_sdl2/
 
-
 requests/
 rsa/
 pyasn1/
 urllib3/
 
 urllib/
-
-xml/etree/cElementTree
-xml/etree/ElementInclude
-xml/etree/ElementPath
-xml/etree/ElementTree
-xml/etree/__init__
-xml/parsers/expat
 
 zoneinfo/
 
