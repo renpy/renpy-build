@@ -3,6 +3,8 @@ from renpybuild.context import Context
 
 from . import cython
 
+from . import env_sh
+
 from . import sysroot
 from . import toolchain
 
