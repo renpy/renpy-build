@@ -374,6 +374,7 @@ def build_environment(c):
     c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
+    c.env("CXXFLAGS", "{{ CXXFLAGS }}")
 
     c.var("cmake", "cmake -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_BUILD_TYPE=Release")
 
