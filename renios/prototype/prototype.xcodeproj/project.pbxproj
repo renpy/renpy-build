@@ -353,6 +353,7 @@
 					"-lffi",
 					"-lssl",
 					"-lcrypto",
+					"-llzma",
 					"-lbz2",
 					"-lz",
 				);
@@ -397,6 +398,7 @@
 					"-lffi",
 					"-lssl",
 					"-lcrypto",
+					"-llzma",
 					"-lbz2",
 					"-lz",
 				);

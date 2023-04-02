@@ -25,6 +25,7 @@ mmap -DPy_BUILD_CORE_BUILTIN mmapmodule.c
 select -DPy_BUILD_CORE_BUILTIN selectmodule.c
 unicodedata -DPy_BUILD_CORE_BUILTIN unicodedata.c -DPy_BUILD_CORE_BUILTIN
 zlib -DPy_BUILD_CORE_BUILTIN zlibmodule.c -lz
+_lzma -DPy_BUILD_CORE_BUILTIN _lzmamodule.c -llzma
 
 _elementtree -DPy_BUILD_CORE_BUILTIN _elementtree.c
 pyexpat -DPy_BUILD_CORE_BUILTIN expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DXML_POOR_ENTROPY -DUSE_PYEXPAT_CAPI

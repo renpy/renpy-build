@@ -22,6 +22,7 @@ unicodedata -DPy_BUILD_CORE_BUILTIN unicodedata.c -DPy_BUILD_CORE_BUILTIN   # st
 zlib -DPy_BUILD_CORE_BUILTIN zlibmodule.c -lz
 _csv -DPy_BUILD_CORE_BUILTIN _csv.c
 binascii -DPy_BUILD_CORE_BUILTIN binascii.c
+_lzma -DPy_BUILD_CORE_BUILTIN _lzmamodule.c -llzma
 
 _md5 -DPy_BUILD_CORE_BUILTIN md5module.c
 _sha1 -DPy_BUILD_CORE_BUILTIN sha1module.c

@@ -14,6 +14,7 @@ from . import metalangle
 
 from . import zlib
 from . import bzip2
+from . import xz
 from . import openssl
 from . import libffi
 

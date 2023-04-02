@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+
+args = [ os.environ["WINDRES"] ]
+for i in sys.argv[1:]:
+    if i.startswith("-D") or i.startswith("-O"):
+        continue
+
+    args.append(i)
+
+os.execvp(args[0], args)

@@ -69,7 +69,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
     c.env("READELF", "ccache {{llvm_bin}}llvm-readelf{{llvm_suffix}}")
 
-    c.env("WINDRES", "ccache {{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
+    c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
 
 def android_llvm(c, arch):
 

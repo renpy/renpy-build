@@ -75,6 +75,7 @@ def link_linux(c: Context):
     -ldl
     -lssl
     -lcrypto
+    -llzma
     -lbz2
     -lutil
     -lz
@@ -150,6 +151,7 @@ def link_android(c: Context):
     -ldl
     -lssl
     -lcrypto
+    -llzma
     -lbz2
     -lz
     -lm
@@ -200,6 +202,7 @@ def link_mac(c: Context):
     -lffi
     -lssl
     -lcrypto
+    -llzma
     -lbz2
     -lz
     -lm
@@ -346,6 +349,7 @@ def link_windows(c: Context):
     -lffi
     -lssl
     -lcrypto
+    -llzma
     -lbz2
     -lbcrypt
     -lz
@@ -559,7 +563,7 @@ def link_web(c: Context):
     -lwebp
     -lfribidi
     -lfreetype
-
+    -llzma
     -lbz2
     -lz
     -lm
