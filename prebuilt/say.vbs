@@ -1,7 +1,10 @@
 Text = WScript.Arguments(0)
 Speaker = WScript.Arguments(1)
+Volume = WScript.Arguments(2)
 
 Set s = CreateObject("SAPI.SpVoice")
+
+s.Volume = Volume
 
 For Each Voice In s.GetVoices
     I = I + 1
