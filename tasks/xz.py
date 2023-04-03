@@ -19,5 +19,8 @@ def build(c: Context) :
 
     c.run("""./configure {{ cross_config }} --enable-static --disable-shared --disable-xz --disable-xzdec --disable-lzmainfo --disable-scripts  --prefix="{{ install }}" """)
 
+    c.run("""rm -f src/common/common_w32res.rc""")
+    c.run("""touch src/common/common_w32res.rc""")
+
     c.run("""{{ make }} RC="--tag=RC {{root}}/tools/cleanwindres" """)
     c.run("""make install """)
