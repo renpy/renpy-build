@@ -26,7 +26,7 @@ sudo apt-get install -y debootstrap qemu-user-static
 sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev
 
 # Needed by hostpython.
-sudo apt-get install -y libssl-dev libbz2-dev
+sudo apt-get install -y libssl-dev libbz2-dev liblzma-dev
 
 # Needed for mac
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
