@@ -40,10 +40,12 @@ sudo apt-get install -y \
     libswresample-dev libswscale-dev libfreetype6-dev libfribidi-dev libsdl2-dev \
     libsdl2-image-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-dev
 
+mkdir -p $ROOT/tmp
+
 # Clang is needed to compile for many platforms.
-wget https://apt.llvm.org/llvm.sh
-chmod +x llvm.sh
-sudo ./llvm.sh 15
+wget -O tmp/llvm.sh https://apt.llvm.org/llvm.sh
+chmod +x tmp/llvm.sh
+sudo tmp/llvm.sh 15
 
 # Install the programs and virtualenvs.
 

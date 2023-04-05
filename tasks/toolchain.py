@@ -27,7 +27,7 @@ def download(c: Context):
     dest.with_suffix(".tmp").rename(dest)
 
 
-@task(kind="cross", platforms="windows")
+@task(kind="cross", platforms="windows", always=True)
 def unpack(c: Context):
 
     c.clean("{{cross}}")
