@@ -199,7 +199,7 @@ def update_project_keys(base):
     set_property(properties, "key.alias.password", "android", replace=True)
 
     default_keystore = default_keystore_path(base)
-    set_property(properties, "key.store", default_keystore, replace=True)
+    set_property(properties, "key.store", default_keystore.replace("\\", "/"), replace=True)
 
     # Update the bundle properties.
 
@@ -210,7 +210,7 @@ def update_project_keys(base):
     set_property(properties, "key.alias.password", "android", replace=True)
 
     bundle_keystore = default_keystore_path(base)
-    set_property(properties, "key.store", bundle_keystore, replace=True)
+    set_property(properties, "key.store", bundle_keystore.replace("\\", "/"), replace=True)
 
 
 def get_local_key_properties():
