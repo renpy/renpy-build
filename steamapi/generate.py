@@ -53,6 +53,7 @@ MAPPINGS = {
     "SteamDatagramRelayAuthTicket *" : "c_void_p",
     "ISteamNetworkingConnectionSignaling *" : "c_void_p",
     "ISteamNetworkingSignalingRecvContext *" : "c_void_p",
+    "ScePadTriggerEffectParam *" : "c_void_p",
 }
 
 def unprefix(name):
