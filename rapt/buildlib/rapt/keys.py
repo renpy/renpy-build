@@ -209,7 +209,7 @@ def update_project_keys(base):
     set_property(properties, "key.store.password", "android", replace=True)
     set_property(properties, "key.alias.password", "android", replace=True)
 
-    bundle_keystore = default_keystore_path(base)
+    bundle_keystore = bundle_keystore_path(base)
     set_property(properties, "key.store", bundle_keystore.replace("\\", "/"), replace=True)
 
 
