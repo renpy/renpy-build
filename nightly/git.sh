@@ -4,6 +4,7 @@ update () {
     if [ -d "$BASE/$2/.git" ]; then
         pushd "$BASE/$2"
         git reset --hard
+        git checkout $BRANCH
         git pull
         popd
     else
@@ -14,8 +15,16 @@ update () {
             else
                 git clone $1 "$BASE/$2" --reference "$REFS/$2"
             fi
+
+            pushd "$BASE/$2"
+            git checkout $BRANCH
+            popd
+
         else
             git clone $1 "$BASE/$2"
+            pushd "$BASE/$2"
+            git checkout $BRANCH
+            popd
         fi
     fi
 }
@@ -34,4 +43,3 @@ rm -Rf "$BASE/pygame_sdl2/gen"
 rm -Rf "$BASE/pygame_sdl2/gen3"
 rm -Rf "$BASE/pygame_sdl2/gen-static"
 rm -Rf "$BASE/pygame_sdl2/gen3-static"
-

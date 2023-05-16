@@ -1,7 +1,3 @@
-# Figure out a reasonable version name.
-export RENPY_7_NIGHTLY="7-nightly-$(date +%Y-%m-%d)"
-export RENPY_8_NIGHTLY="8-nightly-$(date +%Y-%m-%d)"
-
 # Capture current renpy revision.
 pushd $BASE/renpy
 RENPY_REV=$(git log -n1 --pretty='"%H", "%h"' HEAD)

@@ -58,8 +58,19 @@ pushd $BASE/renpy/sphinx
 ./build.sh
 popd
 
+# Get the versions.
+PY3_VERSION=$(./lib/py3-linux-x86_64/python -O distribute.py --print-version --nightly)
+PY2_VERSION=$(./lib/py2-linux-x86_64/python -O distribute.py --print-version --nightly)
+
 # Build the distribution.
-./lib/py3-linux-x86_64/python -O distribute.py "$RENPY_8_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --append-version
-./lib/py2-linux-x86_64/python -O distribute.py "$RENPY_7_NIGHTLY" --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --append-version
+./lib/py3-linux-x86_64/python -O distribute.py --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --nightly
+./lib/py2-linux-x86_64/python -O distribute.py --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --nightly
+
+# Copy VCS data to distribution directories.
+pushd $BASE
+cp tmp/vcs7.json renpy/dl/$PY2_VERSION/vcs.json
+cp tmp/vcs8.json renpy/dl/$PY3_VERSION/vcs.json
+popd
+
 
 popd

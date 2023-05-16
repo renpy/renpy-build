@@ -14,7 +14,7 @@ def main():
 
     def link(glob, target):
 
-        source = max(path.glob(glob))
+        source = max(i for i in path.glob(glob) if "-nightly-" not in i.name)
         target = path / target
 
         try:
@@ -24,14 +24,11 @@ def main():
 
         target.symlink_to(source.relative_to(path))
 
-    link("8-nightly-*", "current")
-    link("8-nightly-*", "current-8")
-    link("7-nightly-*", "current-7")
-
-    link("8-nightly-*/*-sdk.zip", "renpy-nightly-sdk.zip")
-    link("8-nightly-*/*-sdk.tar.bz2", "renpy-nightly-sdk.tar.bz2")
-
-
+    link("8*", "current")
+    link("8*", "current-8")
+    link("7*", "current-7")
+    link("8*/*-sdk.zip", "renpy-nightly-sdk.zip")
+    link("8*/*-sdk.tar.bz2", "renpy-nightly-sdk.tar.bz2")
 
 if __name__ == "__main__":
     main()

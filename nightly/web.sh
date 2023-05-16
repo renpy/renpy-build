@@ -16,12 +16,6 @@ fi
 # Add symlinks.
 $SCRIPTS/link_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
-# Copy VCS data to distribution directories.
-pushd $BASE
-cp tmp/vcs7.json renpy/dl/current-7/vcs.json
-cp tmp/vcs8.json renpy/dl/current-8/vcs.json
-popd
-
 
 # Index the nightly.
 $SCRIPTS/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/

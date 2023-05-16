@@ -43,12 +43,13 @@ done
 
 
 if [ -z "$1" ]; then
-    echo "usage: $0 ./path/to/nightly-build"
+    echo "usage: $0 <./path/to/nightly-build> <branch>"
     exit
 fi
 
 BASE="$1"
 VENV="$1/tmp/virtualenv.py3"
+BRANCH="${2:-master}"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
