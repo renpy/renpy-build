@@ -21,11 +21,13 @@ def main():
         if not dn.is_dir():
             continue
 
-        m = re.search('nightly-(\d{4})-(\d{2})-(\d{2})', dn.name)
+        m = re.search('20(\d{2})-(\d{2})-(\d{2})', dn.name)
+
         if not m:
+            m = re.search('\d+\.(\d{2})(\d{2})(\d{2})', dn.name)
             continue
 
-        date = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        date = datetime.date(2000 + int(m.group(1)), int(m.group(2)), int(m.group(3)))
         age = datetime.date.today() - date
 
         if age.days < 30:

@@ -86,7 +86,10 @@ def directory(name, full):
 
     os.utime(os.path.join(full, "index.html"), (dirtime, dirtime))
 
-    return dirtime, date
+    version = re.search(r"(\d+\.\d+.\d+\.\d+)", name).group(1) # type: ignore
+    version = (int(i) for i in version.split("."))
+
+    return version, date
 
 
 def main():
@@ -99,17 +102,17 @@ def main():
     dirs_8 = [ ]
 
     for i in os.listdir(args.nightly):
-        if re.match(r"(\d+-)?nightly-", i):
+        if i[0] in "78":
             full = os.path.join(args.nightly, i)
-            dirtime, name = directory(i, full)
+            version, name = directory(i, full)
 
             if name is None:
                 continue
 
-            if i.startswith("8-"):
-                dirs_8.append((dirtime, i, name))
+            if i.startswith("8"):
+                dirs_8.append((version, i, name))
             else:
-                dirs_7.append((dirtime, i, name))
+                dirs_7.append((version, i, name))
 
     dirs_7.sort(key=lambda x: x[1], reverse=True)
     dirs_8.sort(key=lambda x: x[1], reverse=True)
