@@ -3,23 +3,30 @@ from renpybuild.task import task
 
 PACKAGES = [
     'build-essential',
+    'git',
+    'make',
+    'pkg-config',
+    'cmake',
+    'ninja-build',
+    'gnome-desktop-testing',
     'libasound2-dev',
     'libpulse-dev',
     'libaudio-dev',
+    'libjack-dev',
     'libx11-dev',
     'libxext-dev',
     'libxrandr-dev',
     'libxcursor-dev',
+    'libxfixes-dev',
     'libxi-dev',
     'libxinerama-dev',
     'libxxf86vm-dev',
     'libxss-dev',
-    'libgl1-mesa-dev',
-    'libesd0-dev',
     'libdbus-1-dev',
     'libudev-dev',
+    'libdrm-dev',
+    'libgbm-dev',
     'libgl1-mesa-dev',
-    'libgles1-mesa-dev',
     'libgles2-mesa-dev',
     'libglu1-mesa-dev',
     'libegl1-mesa-dev',
@@ -28,7 +35,10 @@ PACKAGES = [
     'libsamplerate0-dev',
     'libsndio-dev',
     'libxkbcommon-dev',
-    "libusb-1.0-0-dev",
+    'libusb-dev',
+    'libpipewire-0.3-dev',
+    'libdecor-0-dev',
+    'libsystemd-dev',
 ]
 
 
@@ -37,13 +47,13 @@ def install_linux(c: Context):
 
     if c.arch == "i686":
         deb_arch = "i386"
-        release = "xenial"
+        release = "jammy"
     elif c.arch == "x86_64":
         deb_arch = "amd64"
-        release = "xenial"
+        release = "jammy"
     elif c.arch == "aarch64":
         deb_arch = "arm64"
-        release = "focal"
+        release = "jammy"
     else:
         raise Exception("Unknown arch {}".format(c.arch))
 
@@ -67,7 +77,7 @@ def install_linux(c: Context):
         c.var("packages", ",".join(PACKAGES))
 
         c.run("""mkdir -p "{{ tmp }}/debs" """)
-        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
+        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} jammy "{{ sysroot }}" """)
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
 
 
