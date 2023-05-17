@@ -24,7 +24,7 @@ def check_sdk(name, paths):
     for d in paths:
         fn = d / name
 
-        p = subprocess.run([ "llvm-otool-15", "-l", f"{fn}"], capture_output=True)
+        p = subprocess.run([ "llvm-otool-16", "-l", f"{fn}"], capture_output=True)
 
         obj = None
 

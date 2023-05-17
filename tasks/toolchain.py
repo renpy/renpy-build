@@ -8,8 +8,8 @@ import requests
 @task(kind="cross", platforms="windows")
 def download(c: Context):
 
-    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20220906/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz"
-    dest = c.path("{{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
+    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20230504/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz"
+    dest = c.path("{{ tmp }}/tars/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz")
 
     if os.path.exists(dest):
         return
@@ -33,8 +33,8 @@ def unpack(c: Context):
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
 
-    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
-    c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
+    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64.tar.xz")
+    c.run("ln -s llvm-mingw-20230504-ucrt-ubuntu-20.04-x86_64 llvm-mingw")
 
 
 @task(kind="cross", platforms="android", always=True)
