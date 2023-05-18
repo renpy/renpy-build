@@ -36,8 +36,7 @@ PACKAGES = [
     'libsndio-dev',
     'libxkbcommon-dev',
     'libusb-dev',
-    'libpipewire-0.3-dev',
-    'libdecor-0-dev',
+    'libpipewire-0.2-dev',
     'libsystemd-dev',
 ]
 
@@ -47,13 +46,13 @@ def install_linux(c: Context):
 
     if c.arch == "i686":
         deb_arch = "i386"
-        release = "jammy"
+        release = "focal"
     elif c.arch == "x86_64":
         deb_arch = "amd64"
-        release = "jammy"
+        release = "focal"
     elif c.arch == "aarch64":
         deb_arch = "arm64"
-        release = "jammy"
+        release = "focal"
     else:
         raise Exception("Unknown arch {}".format(c.arch))
 
@@ -77,7 +76,7 @@ def install_linux(c: Context):
         c.var("packages", ",".join(PACKAGES))
 
         c.run("""mkdir -p "{{ tmp }}/debs" """)
-        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} jammy "{{ sysroot }}" """)
+        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} focal "{{ sysroot }}" """)
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
 
 
