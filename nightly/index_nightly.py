@@ -151,7 +151,7 @@ def main():
 
     for d in dates:
 
-        date = d.strftime("%A, %B %d %Y" )
+        date = d.strftime("%A, %B %d, %Y" )
 
         rows.append(
             (date, [
