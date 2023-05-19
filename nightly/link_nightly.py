@@ -24,9 +24,6 @@ def main():
 
         target.symlink_to(source.relative_to(path))
 
-    link("8*", "current")
-    link("8*", "current-8")
-    link("7*", "current-7")
     link("8*/*-sdk.zip", "renpy-nightly-sdk.zip")
     link("8*/*-sdk.tar.bz2", "renpy-nightly-sdk.tar.bz2")
 

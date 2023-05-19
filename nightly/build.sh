@@ -29,6 +29,11 @@ link () {
     fi
 }
 
+weblink() {
+    rm $2 || true
+    ln -s $1 $2
+}
+
 pushd $BASE/renpy
 
 rm -f rapt renios
@@ -72,5 +77,19 @@ cp tmp/vcs7.json renpy/dl/$PY2_VERSION/vcs.json
 cp tmp/vcs8.json renpy/dl/$PY3_VERSION/vcs.json
 popd
 
+popd
+
+
+# Make symlinks.
+pushd $BASE/renpy/dl
+
+weblink $PY2_VERSION current-7-$BRANCH
+weblink $PY3_VERSION current-8-$BRANCH
+
+if [ $BRANCH = main -o $BRANCH = master ]; then
+    weblink $PY2_VERSION current-7
+    weblink $PY3_VERSION current-8
+    weblink $PY3_VERSION current
+fi
 
 popd
