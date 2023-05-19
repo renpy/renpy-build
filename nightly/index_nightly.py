@@ -5,7 +5,7 @@ import os.path
 import argparse
 import re
 import json
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
@@ -49,6 +49,9 @@ def directory(name, full):
                         for repo, sha, rev in json.load(f) ]
             continue
 
+        if i == "branch.txt":
+            continue
+
         mtime = os.path.getmtime(os.path.join(full, i))
         dirtime = max(dirtime, mtime)
 
@@ -67,13 +70,12 @@ def directory(name, full):
             other.append(record)
 
     if not dirtime:
-        return 0, None
+        return None
 
     if not sdk:
-        return 0, None
+        return None
 
     dt = datetime.datetime.fromtimestamp(dirtime)
-    date = dt.strftime("%A, %B %d, %Y")
 
     sdk.sort()
     other.sort()
@@ -86,11 +88,18 @@ def directory(name, full):
 
     os.utime(os.path.join(full, "index.html"), (dirtime, dirtime))
 
-    version = re.search(r"(\d+\.\d+.\d+\.\d+)", name).group(1) # type: ignore
-    version = (int(i) for i in version.split("."))
+    return dt
 
-    return version, date
 
+def sort_key(name):
+    """
+    Given a version name, return a tuple that can be used to sort it.
+    """
+
+    name = name.partition("+")[0]
+    name = name.rstrip("n")
+
+    return tuple(int(i) for i in name.split("."))
 
 def main():
 
@@ -98,27 +107,62 @@ def main():
     ap.add_argument("nightly")
     args = ap.parse_args()
 
-    dirs_7 = [ ]
-    dirs_8 = [ ]
+    dirs = defaultdict(list)
+    dates = set()
 
     for i in os.listdir(args.nightly):
         if i[0] in "78":
             full = os.path.join(args.nightly, i)
-            version, name = directory(i, full)
 
-            if name is None:
+            dt = directory(i, full)
+
+            if dt is None:
                 continue
 
-            if i.startswith("8"):
-                dirs_8.append((version, i, name))
-            else:
-                dirs_7.append((version, i, name))
+            date = dt.date()
+            name = i.rpartition("-")[2]
 
-    dirs_7.sort(key=lambda x: x[1], reverse=True)
-    dirs_8.sort(key=lambda x: x[1], reverse=True)
+            branch = "main"
+
+            try:
+                with open(os.path.join(full, "branch.txt")) as f:
+                    branch = f.read().strip()
+            except FileNotFoundError:
+                pass
+
+            if branch == "master":
+                branch = "main"
+
+            python = int(i[0])
+
+            dates.add(date)
+            dirs[date, python, branch].append((name, i))
+
+
+    dates = list(dates)
+    dates.sort(reverse=True)
+
+    rows = [ ]
+
+    def col(date, python, branch):
+        l = dirs[date, python, branch]
+        l.sort(key=lambda x: sort_key(x[0]), reverse=True)
+        return l
+
+    for d in dates:
+
+        date = d.strftime("%A, %B %d %Y" )
+
+        rows.append(
+            (date, [
+                col(d, 8, "main"),
+                col(d, 8, "fix"),
+                col(d, 7, "main"),
+                col(d, 7, "fix"),
+            ]))
 
     tmpl = env.get_template("root.html")
-    html = tmpl.render(dirs_7=dirs_7, dirs_8=dirs_8)
+    html = tmpl.render(rows=rows)
 
     with open(os.path.join(args.nightly, "index.html"), "w") as f:
         f.write(html)

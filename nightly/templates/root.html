@@ -15,18 +15,13 @@
       <h2>Ren'Py Nightly Builds</h2>
 
       <p>
-      <a href="current/index.html">This link will always bring you to the current nightly build.</a>
-      </p>
-
-      <p>
         <a href="doc">The documentation for the latest nightly can be found here.</a>
       </p>
 
       <p>
       These are nightly builds of Ren'Py, primarily created to let you help
-      with testing and development of Ren'Py. DO NOT RELEASE GAMES WITH
-      THESE, as they may contain bugs and APIs that will not remain
-      supported.
+      with testing and development of Ren'Py. APIs introduced in nightly builds
+      may not be supported in a final release of Ren'Py.
       <p>
 
       <p>
@@ -44,38 +39,37 @@
       </p>
 
 
-      <h3>Ren'Py 8 Builds</h3>
-      <p>
-      <a href="current-8/index.html">This link will always bring you to the current nightly build of Ren'Py 8.</a>
-      </p>
-
       <table class="table">
-      {% for ts, d, name in dirs_8 %}
-
-      <tr>
-        <td><a href="{{ d }}/index.html">{{ name }}</a></td>
-        <td>{{ d }}</td>
-      </tr>
-
-      {% endfor %}
-      </table>
+        <tr>
+          <th>Date</th>
+          <th>Ren'Py 8 Development</th>
+          <th>Ren'Py 8 Fix</th>
+          <th>Ren'Py 7 Development</th>
+          <th>Ren'Py 7 Fix</th>
+        </tr>
 
 
-      <h3>Ren'Py 7 Builds</h3>
-      <p>
-      <a href="current-7/index.html">This link will always bring you to the current nightly build of Ren'Py 7.</a>
-      </p>
+        <tr>
+          <td>Permalinks</td>
+          <td><a href="current-8">current-8</a></td>
+          <td><a href="current-8-fix">current-8-fix</a></td>
+          <td><a href="current-7">current-7</a></td>
+          <td><a href="current-7-fix">current-7-fix</a></td>
+        </tr>
 
-      <table class="table">
-      {% for ts, d, name in dirs_7 %}
+        {% for date, cols in rows %}
+        <tr>
+          <td>{{ date }}</td>
+          {% for col in cols %}
+          <td>
+            {%for name, link in col %}
+            <a href="{{ link }}">{{ name }}</a><br>
+            {% endfor %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
 
-      <tr>
-        <td><a href="{{ d }}/index.html">{{ name }}</a></td>
-        <td>{{ d }}</td>
-      </tr>
-
-      {% endfor %}
-      </table>
 
     </div>
 
