@@ -75,10 +75,12 @@ PY2_VERSION=$(./lib/py2-linux-x86_64/python -O distribute.py --print-version --n
 pushd $BASE
 cp tmp/vcs7.json renpy/dl/$PY2_VERSION/vcs.json
 cp tmp/vcs8.json renpy/dl/$PY3_VERSION/vcs.json
+
+echo $BRANCH > renpy/dl/$PY2_VERSION/branch.txt
+echo $BRANCH > renpy/dl/$PY3_VERSION/branch.txt
 popd
 
 popd
-
 
 # Make symlinks.
 pushd $BASE/renpy/dl
