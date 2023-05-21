@@ -71,6 +71,9 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
 
     c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
 
+    if c.platform == "windows":
+        c.env("RC", "{{WINDRES}}")
+
 def android_llvm(c, arch):
 
     if arch == "armv7a":
@@ -109,8 +112,9 @@ def build_environment(c):
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
 
-    c.env("CPPFLAGS", "-O3 -I{{ install }}/include")
+    c.env("CPPFLAGS", "-I{{ install }}/include")
     c.env("CFLAGS", "-O3 -I{{ install }}/include")
+    c.env("CXXFLAGS", "-O3 -L{{install}}/lib")
     c.env("LDFLAGS", "-O3 -L{{install}}/lib")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")

@@ -22,5 +22,5 @@ def build(c: Context) :
     c.run("""rm -f src/common/common_w32res.rc""")
     c.run("""touch src/common/common_w32res.rc""")
 
-    c.run("""{{ make }} RC="--tag=RC {{root}}/tools/cleanwindres" """)
+    c.run("""{{ make }}""")
     c.run("""make install """)
