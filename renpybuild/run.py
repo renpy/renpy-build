@@ -111,6 +111,7 @@ def build_environment(c):
 
     c.env("CPPFLAGS", "-O3 -I{{ install }}/include")
     c.env("CFLAGS", "-O3 -I{{ install }}/include")
+    c.env("CXXFLAGS", "-O3 -L{{install}}/lib")
     c.env("LDFLAGS", "-O3 -L{{install}}/lib")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
