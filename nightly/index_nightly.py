@@ -26,6 +26,8 @@ def directory(name, full):
 
     dirtime = 0
 
+    branch = "master"
+
     for i in os.listdir(full):
 
         if i in [ ".build_cache", "updates.json", "updates.json.sig", "index.html" ]:
@@ -50,6 +52,8 @@ def directory(name, full):
             continue
 
         if i == "branch.txt":
+            with open(os.path.join(full, i)) as f:
+                branch = f.read().strip()
             continue
 
         mtime = os.path.getmtime(os.path.join(full, i))
@@ -81,7 +85,7 @@ def directory(name, full):
     other.sort()
 
     tmpl = env.get_template("nightly.html")
-    html = tmpl.render(date=date, name=name, sdk=sdk, other=other, vcs=vcs)
+    html = tmpl.render(date=date, name=name, sdk=sdk, other=other, vcs=vcs, branch=branch)
 
     with open(os.path.join(full, "index.html"), "w") as f:
         f.write(html)

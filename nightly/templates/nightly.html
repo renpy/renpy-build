@@ -18,12 +18,22 @@
       </p>
 
 
+{% if branch == "fix" %}
+      <p>
+        This is a nightly build of the next patch release of Ren'Py. It has
+        not received the same amount of testing as a full release, but may
+        contain fixes that haven't been released yet.
+      </p>
+
+{% else %}
       <p>
       This is a nightly build of Ren'Py, primarily created to let you help
       with testing and development of Ren'Py. DO NOT RELEASE GAMES WITH
       THIS, as it may contain bugs and APIs that will not remain
       supported.
       <p>
+{% endif %}
+
 
       <p>
       If, while testing this build, you find a bug in Ren'Py, please let
@@ -34,7 +44,7 @@
       This build is temporary, it will be removed from the web after a few
       days.
       {% if vcs|length > 2 %}
-      It was built from
+      It was built from the <code>{{ branch }}</code> branch, revisions
       {%- for src in vcs[:-2] %}
       <code><a href="{{ src.url }}">{{ src.text }}</a></code>,
       {%- endfor %} and
