@@ -3,11 +3,6 @@ from renpybuild.task import task
 
 PACKAGES = [
     'build-essential',
-    'git',
-    'make',
-    'pkg-config',
-    'cmake',
-    'ninja-build',
     'gnome-desktop-testing',
     'libasound2-dev',
     'libpulse-dev',
@@ -38,6 +33,7 @@ PACKAGES = [
     'libusb-dev',
     'libpipewire-0.2-dev',
     'libsystemd-dev',
+    'libwayland-dev',
 ]
 
 
