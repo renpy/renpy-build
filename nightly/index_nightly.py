@@ -30,7 +30,7 @@ def directory(name, full):
 
     for i in os.listdir(full):
 
-        if i in [ ".build_cache", "updates.json", "updates.json.sig", "index.html" ]:
+        if i in [ ".build_cache", "updates.json", "updates.json.sig", "index.html", "date.txt" ]:
             continue
 
         if i.endswith(".update.gz"):

@@ -81,8 +81,13 @@ else
 
     echo $BRANCH > renpy/dl/$PY3_VERSION/branch.txt
     echo $BRANCH > renpy/dl/$PY2_VERSION/branch.txt
+
+    date +%Y-%m-%d > renpy/dl/$PY3_VERSION/date.txt
+    date +%Y-%m-%d > renpy/dl/$PY2_VERSION/date.txt
+
     popd
 fi
+
 
 popd # $BASE/renpy
 
