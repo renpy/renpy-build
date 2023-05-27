@@ -74,10 +74,15 @@ else
     ./lib/py3-linux-x86_64/python -O distribute.py --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --nightly
     ./lib/py2-linux-x86_64/python -O distribute.py --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --nightly
 
+    cp -a renpy/
+
     # Copy VCS data to distribution directories.
     pushd $BASE
     cp tmp/vcs8.json renpy/dl/$PY3_VERSION/vcs.json
     cp tmp/vcs7.json renpy/dl/$PY2_VERSION/vcs.json
+
+    cp -a renpy/doc-web renpy/dl/$PY3_VERSION/doc
+    cp -a renpy/doc-web renpy/dl/$PY3_VERSION/doc
 
     echo $BRANCH > renpy/dl/$PY3_VERSION/branch.txt
     echo $BRANCH > renpy/dl/$PY2_VERSION/branch.txt
