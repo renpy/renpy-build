@@ -1,7 +1,9 @@
 
-# Copy the documentation to the website.
-rm -Rf $BASE/renpy/dl/doc || true
-cp -a $BASE/renpy/doc-web $BASE/renpy/dl/doc
+# Link the documentation to the website.
+pushd $BASE/renpy/dl
+rm -Rf doc || true
+ln -s current-8/doc doc
+popd
 
 # Upload the nightly build to the web.
 pushd $BASE/renpy/dl
