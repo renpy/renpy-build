@@ -91,9 +91,6 @@ def generate_android_keys(interface, base):
             shutil.copy(old_keystore, keystore)
             return
 
-    if not interface.yesno(__("I can create an application signing key for you. This key is required to create Universal APK for sideloading and stores other than Google Play.\n\nDo you want to create a key?")):
-        return
-
     get_dname(interface)
 
     if not interface.yesno(__("I will create the key in the android.keystore file.\n\nYou need to back this file up. If you lose it, you will not be able to upgrade your application.\n\nYou also need to keep the key safe. If evil people get this file, they could make fake versions of your application, and potentially steal your users' data.\n\nWill you make a backup of android.keystore, and keep it in a safe place?") +
@@ -127,19 +124,10 @@ def generate_bundle_keys(interface, base):
             shutil.copy(old_keystore, keystore)
             return
 
-    if not interface.yesno(__("I can create a bundle signing key for you. This key is required to build an Android App Bundle (AAB) for upload to Google Play.\n\nDo you want to create a key?")):
-        return
+    default_keystore = default_keystore_path(base)
 
-    get_dname(interface)
-
-    if not interface.yesno(__("I will create the key in the bundle.keystore file.\n\nYou need to back this file up. If you lose it, you will not be able to upgrade your application.\n\nYou also need to keep the key safe. If evil people get this file, they could make fake versions of your application, and potentially steal your users' data.\n\nWill you make a backup of bundle.keystore, and keep it in a safe place?") +
-                           __("\n\nSaying 'No' will prevent key creation.")):
-        return
-
-    if not run(interface, plat.keytool, "-genkey", "-keystore", keystore, "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
-        interface.fail(__("Could not create bundle.keystore. Is keytool in your path?"))
-
-    backup_keys(keystore)
+    if os.path.exists(default_keystore):
+        shutil.copy(default_keystore, keystore)
 
     return True
 
