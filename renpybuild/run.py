@@ -114,7 +114,6 @@ def build_environment(c):
 
     c.env("CPPFLAGS", "-I{{ install }}/include")
     c.env("CFLAGS", "-O3 -I{{ install }}/include")
-    c.env("CXXFLAGS", "-O3 -L{{install}}/lib")
     c.env("LDFLAGS", "-O3 -L{{install}}/lib")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
@@ -378,7 +377,7 @@ def build_environment(c):
     c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
-    c.env("CXXFLAGS", "{{ CXXFLAGS }}")
+    c.env("CXXFLAGS", "{{ CFLAGS }}")
 
     c.var("cmake", "cmake -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_BUILD_TYPE=Release")
 
