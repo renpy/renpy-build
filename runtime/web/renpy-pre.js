@@ -357,11 +357,8 @@ Module.preRun = Module.preRun || [ ];
                 reportError("Could not load game.zip: " + response.status + " " + response.statusText);
             }
 
-            try {
-                gameZipSize = parseInt(response.headers.get('Content-Length'), 10);
-            } catch (e) {
-                // Ignore.
-            }
+            gameZipSize = parseInt(response.headers.get('Content-Length'), 10);
+            if(Number.isNaN(gameZipSize)) gameZipSize = 0;
 
             let reader = await response.body.getReader();
 
