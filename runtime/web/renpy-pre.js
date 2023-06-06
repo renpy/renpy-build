@@ -188,9 +188,13 @@ Module.preRun = Module.preRun || [ ];
 
         cancelStatusTimeout();
         showStatus();
-        statusProgress.value = done;
-        statusProgress.max = total;
-        statusProgress.style.display = "block";
+
+        if (total) {
+            statusProgress.value = done;
+            statusProgress.max = total;
+            statusProgress.style.display = "block";
+        }
+
         startStatusTimeout();
 
     }
