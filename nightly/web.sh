@@ -12,7 +12,7 @@ SSH="ssh"
 
 # Upload the built distro to the server.
 if [ "$UPLOAD" = 1 ]; then
-    rsync -e "$SSH" --progress -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly
+    rsync -e "$SSH" --progress -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly || true
 fi
 
 # Add symlinks.
@@ -24,7 +24,7 @@ $SCRIPTS/index_nightly.py /home/tom/magnetic/ab/WWW.nightly/
 
 # Upload the index to the server.
 if [ "$UPLOAD" = 1 ]; then
-    rsync -e "$SSH" --progress -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly --delete
+    rsync -e "$SSH" --progress -av /home/tom/magnetic/ab/WWW.nightly/ tom@abagail.onegeek.org:/home/tom/WWW.nightly --delete || true
 fi
 
 # Delete old nightlies.
