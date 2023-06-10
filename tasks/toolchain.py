@@ -39,6 +39,8 @@ def unpack(c: Context):
 
 @task(kind="cross", platforms="windows", always=True)
 def usrinclude(c: Context):
+    c.chdir("{{cross}}")
+
     c.run("mkdir -p llvm-mingw/usr/include")
     c.run("mkdir -p llvm-mingw/aarch64-w64-mingw32/usr/include")
     c.run("mkdir -p llvm-mingw/armv7-w64-mingw32/usr/include")
