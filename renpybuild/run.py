@@ -230,7 +230,7 @@ def build_environment(c):
             bin="{{ cross }}/llvm-mingw/bin",
             prefix="x86_64-w64-mingw32-",
             suffix="",
-            clang_args="-fPIC -pthread",
+            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw -fPIC -pthread",
             use_ld=False)
 
         c.var("cmake_system_name", "Windows")
@@ -243,7 +243,7 @@ def build_environment(c):
             bin="{{ cross }}/llvm-mingw/bin",
             prefix="i686-w64-mingw32-",
             suffix="",
-            clang_args="-fPIC -pthread",
+            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw -fPIC -pthread",
             use_ld=False)
 
         c.var("cmake_system_name", "Windows")
