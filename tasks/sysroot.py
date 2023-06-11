@@ -135,7 +135,7 @@ def permissions(c: Context):
     c.var("uid", str(os.getuid()))
     c.var("gid", str(os.getgid()))
 
-    c.run("""sudo chown -R {{uid}}.{{gid}} {{sysroot}}""")
+    c.run("""sudo chown -R {{uid}}:{{gid}} {{sysroot}}""")
 
 @task(platforms="linux")
 def update_wayland_headers(c: Context):
