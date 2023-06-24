@@ -198,6 +198,8 @@ class Interface(object):
         Causes the program to terminate with a message, and a failure code.
         """
 
+        prompt = prompt.replace("[JDK_REQUIREMENT]", str(plat.jdk_requirement))
+
         print()
         self.write(prompt)
 

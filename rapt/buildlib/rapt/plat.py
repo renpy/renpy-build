@@ -34,91 +34,6 @@ def __(s):
     return translate(s)
 
 
-def set_win32_java_home():
-    """
-    When run on Win32, this is used to set the JAVA_HOME environment variable.
-    """
-
-    if "JAVA_HOME" in os.environ:
-        return
-
-    def scanreg(key, bitflag):
-
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-        p = subprocess.Popen([ "reg", "query", key, "/s", bitflag], startupinfo=startupinfo, stdout=subprocess.PIPE)
-        output = p.stdout.read()
-
-        rv = { }
-
-        prefix = ""
-
-        for l in output.split(b"\r\n"):
-            if not l:
-                continue
-
-            if not l.startswith(b"    "):
-                prefix = l
-                continue
-
-            a = l.split(b"    ")
-
-            key = prefix + b"\\" + a[1]
-            rv[key.decode("utf-8")] = a[3]
-
-        return rv
-
-    SCANS = [
-        ("HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit", "/reg:64"),
-        ("HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\JDK", "/reg:64"),
-    ]
-
-    for key, bitflag in SCANS:
-        keys = scanreg(key, bitflag)
-
-        jh = key + "\\1.8\\JavaHome"
-
-        if jh in keys:
-            if sys.version_info[0] == 2:
-                os.environ["JAVA_HOME"] = keys[jh]
-            else:
-                os.environ["JAVA_HOME"] = keys[jh].decode("mbcs")
-            return
-
-
-def set_mac_java_home():
-    """
-    When run on macOS, this is used to set the JAVA_HOME environment variable.
-    """
-
-    if "JAVA_HOME" in os.environ:
-        return
-
-    try:
-        import plistlib
-
-        raw_plist = subprocess.check_output("/usr/libexec/java_home -X -v 1.8", shell=True)
-        plist = plistlib.readPlistFromString(raw_plist)
-
-        java_home = None
-
-        for d in plist:
-            if not d.get("JVMEnabled", True):
-                continue
-
-            java_home = d["JVMHomePath"]
-
-            if os.path.exists(os.path.join(java_home, "bin", "javac")):
-                break
-        else:
-            return
-
-        os.environ["JAVA_HOME"] = java_home
-    except:
-        return
-
-
 def maybe_java_home(s):
     """
     If JAVA_HOME is in the environ, return $JAVA_HOME/bin/s. Otherwise, return
@@ -137,11 +52,6 @@ def maybe_java_home(s):
 if platform.win32_ver()[0]:
     windows = True
 
-    try:
-        set_win32_java_home()
-    except:
-        traceback.print_exc()
-
     adb = "platform-tools\\adb.exe"
     sdkmanager = "cmdline-tools\\latest\\bin\\sdkmanager.bat"
 
@@ -153,11 +63,6 @@ if platform.win32_ver()[0]:
 
 elif platform.mac_ver()[0]:
     macintosh = True
-
-    try:
-        set_mac_java_home()
-    except:
-        traceback.print_exc()
 
     adb = "platform-tools/adb"
     sdkmanager = "cmdline-tools/latest/bin/sdkmanager"
@@ -202,8 +107,8 @@ def path(path, relative=False):
 
     return path
 
-
-sdk_version = "7583922_latest"
+jdk_requirement = 17
+sdk_version = "9477386_latest"
 
 try:
     with open(path("sdk.txt")) as f:
