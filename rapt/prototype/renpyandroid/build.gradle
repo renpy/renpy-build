@@ -18,15 +18,19 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            packagingOptions {
-                doNotStrip '**/*.so'
+            packaging {
+                jniLibs {
+                    keepDebugSymbols = [ "**/*.so" ]
+                }
             }
         }
 
         release {
             minifyEnabled false
-            packagingOptions {
-                doNotStrip '**/*.so'
+            packaging {
+                jniLibs {
+                    keepDebugSymbols = [ "**/*.so" ]
+                }
             }
         }
     }
