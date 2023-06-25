@@ -1,8 +1,10 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
 }
 
 android {
+    namespace 'org.renpy.android'
+
     compileSdkVersion 33
     ndkVersion "21.3.6528147"
 
@@ -18,18 +20,17 @@ android {
         debug {
             minifyEnabled false
             packagingOptions {
-               doNotStrip '**/*.so'
-           }
+                doNotStrip '**/*.so'
+            }
         }
 
         release {
             minifyEnabled false
             packagingOptions {
-               doNotStrip '**/*.so'
-           }
+                doNotStrip '**/*.so'
+            }
         }
     }
-
 }
 
 

@@ -1,6 +1,6 @@
 // In the asset pack’s build.gradle file:
 plugins {
-    id 'com.android.application'
+    id 'com.android.asset-pack'
 }
 
 
