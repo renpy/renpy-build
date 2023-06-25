@@ -13,7 +13,6 @@ localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
     compileSdkVersion 33
-    ndkVersion "21.3.6528147"
 
     namespace "{{ config.package }}"
 

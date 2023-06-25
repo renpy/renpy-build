@@ -6,7 +6,6 @@ android {
     namespace 'org.renpy.android'
 
     compileSdkVersion 33
-    ndkVersion "21.3.6528147"
 
     defaultConfig {
         minSdkVersion 19
