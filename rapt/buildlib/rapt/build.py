@@ -691,7 +691,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
 
     try:
 
-        iface.call([ plat.gradlew, "-p", plat.path("project"), command ], cancel=True)
+        iface.call([ plat.gradlew, "-p", plat.path("project"), command, "--info" ], cancel=True)
 
     except subprocess.CalledProcessError:
 

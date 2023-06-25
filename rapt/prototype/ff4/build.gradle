@@ -1,5 +1,7 @@
 // In the asset pack’s build.gradle file:
-apply plugin: 'com.android.asset-pack'
+plugins {
+    id 'com.android.application'
+}
 
 assetPack {
     packName = "ff4" // Directory name for the asset pack
