@@ -907,6 +907,12 @@ Module.preRun = Module.preRun || [ ];
 
             if (!canPerformRequests) {
                 if (strategy.deferUntilInEventHandler) {
+                    if (target.requestFullscreen) {
+                        // Try requesting fullscreen mode now and only defer if the Promise fails
+                        JSEvents_requestFullscreen(target, strategy, true);
+                        return 1
+                    }
+
                     JSEvents.deferCall(JSEvents_requestFullscreen, 1, [target, strategy]);
                     return 1
                 }
@@ -915,13 +921,22 @@ Module.preRun = Module.preRun || [ ];
             return JSEvents_requestFullscreen(target, strategy)
         };
 
-        window.JSEvents_requestFullscreen = function(target, strategy) {
-            if (strategy.scaleMode != 0 || strategy.canvasResolutionScaleMode != 0) {
+        window.JSEvents_requestFullscreen = function(target, strategy, retry) {
+            if ((strategy.scaleMode != 0 || strategy.canvasResolutionScaleMode != 0) && retry !== 0) {
                 JSEvents_resizeCanvasForFullscreen(target, strategy)
             }
             if (target.requestFullscreen) {
                 target.requestFullscreen()
+                    .catch(() => {
+                        if (retry) {
+                            // Defer to next input event
+                            // (retry is set to 0 to prevent resizing the canvas again as this
+                            // erases the old canvas size with the fullscreen size)
+                            JSEvents.deferCall(JSEvents_requestFullscreen, 1, [target, strategy, 0]);
+                        }
+                    });
             } else if (target.webkitRequestFullscreen) {
+                // No result returned from webkitRequestFullscreen() (old and deprecated API)
                 target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
             } else {
                 return JSEvents.fullscreenEnabled() ? -3 : -1
