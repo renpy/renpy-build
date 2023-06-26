@@ -885,4 +885,50 @@ Module.preRun = Module.preRun || [ ];
 
     window.loseContext = loseContext;
 
+    Module.preRun.push(() => {
+        // Replace doRequestFullscreen() and JSEvents_requestFullscreen() with our own
+        // implementations to switch to fullscreen faster.
+
+        window.doRequestFullscreen = function(target, strategy) {
+            if (!JSEvents.fullscreenEnabled())
+                return -1;
+            target = findEventTarget(target);
+            if (!target)
+                return -4;
+            if (!target.requestFullscreen && !target.webkitRequestFullscreen) {
+                return -3
+            }
+            var canPerformRequests = JSEvents.canPerformEventHandlerRequests();
+            if (!canPerformRequests) {
+                if (strategy.deferUntilInEventHandler) {
+                    JSEvents.deferCall(JSEvents_requestFullscreen, 1, [target, strategy]);
+                    return 1
+                }
+                return -2
+            }
+            return JSEvents_requestFullscreen(target, strategy)
+        };
+
+        window.JSEvents_requestFullscreen = function(target, strategy) {
+            if (strategy.scaleMode != 0 || strategy.canvasResolutionScaleMode != 0) {
+                JSEvents_resizeCanvasForFullscreen(target, strategy)
+            }
+            if (target.requestFullscreen) {
+                target.requestFullscreen()
+            } else if (target.webkitRequestFullscreen) {
+                target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
+            } else {
+                return JSEvents.fullscreenEnabled() ? -3 : -1
+            }
+            currentFullscreenStrategy = strategy;
+            if (strategy.canvasResizedCallback) {
+                (function(a1, a2, a3) {
+                    return dynCall_iiii.apply(null, [strategy.canvasResizedCallback, a1, a2, a3])
+                }
+                )(37, 0, strategy.canvasResizedCallbackUserData)
+            }
+            return 0
+        };
+    });
+
 })();
