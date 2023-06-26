@@ -30,8 +30,7 @@ PACKAGES = [
     'libsamplerate0-dev',
     'libsndio-dev',
     'libxkbcommon-dev',
-    'libusb-dev',
-    'libpipewire-0.2-dev',
+    "libusb-1.0-0-dev",
     'libsystemd-dev',
     'libwayland-dev',
 ]
