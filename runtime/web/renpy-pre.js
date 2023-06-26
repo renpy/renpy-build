@@ -899,6 +899,12 @@ Module.preRun = Module.preRun || [ ];
                 return -3
             }
             var canPerformRequests = JSEvents.canPerformEventHandlerRequests();
+
+            if (navigator.userActivation && navigator.userActivation.isActive) {
+                // Use transient activation status for browsers that support it
+                canPerformRequests = true;
+            }
+
             if (!canPerformRequests) {
                 if (strategy.deferUntilInEventHandler) {
                     JSEvents.deferCall(JSEvents_requestFullscreen, 1, [target, strategy]);
