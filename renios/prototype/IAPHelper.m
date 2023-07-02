@@ -38,6 +38,7 @@
 - (BOOL) hasPurchasedConsumable: (NSString *) identifier;
 - (BOOL) isDeferred: (NSString *) identifier;
 - (NSString *) formatPrice: (NSString *) identifier;
+- (void) requestReview;
 @end;
 
 
@@ -267,6 +268,10 @@ UIAlertController *alert;
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     [numberFormatter setLocale:product.priceLocale];
     return [numberFormatter stringFromNumber:product.price];
+}
+
+- (void) requestReview {
+    [SKStoreReviewController requestReview];
 }
 
 @end
