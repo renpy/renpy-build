@@ -101,4 +101,8 @@ public class Store implements StoreInterface {
     public void beginPurchase(String sku) {
     }
 
+    public boolean requestReview() {
+        return false;
+    }
+
 }

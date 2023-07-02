@@ -11,6 +11,11 @@ import android.util.Log;
 
 import com.android.billingclient.api.*;
 
+import google.android.play.core.review.ReviewManager;
+import google.android.play.core.review.ReviewManagerFactory;
+import google.android.play.core.review.ReviewInfo;
+import google.android.play.core.tasks.Task;
+
 
 public class PlayStore extends Store {
 
@@ -194,5 +199,21 @@ public class PlayStore extends Store {
             finished = true;
             Log.e("iap", "beginPurchase failed.", e);
         }
+    }
+
+
+    @Override
+    public boolean requestReview() {
+        ReviewManager manager = ReviewManagerFactory.create(this);
+        Task<ReviewInfo> request = manager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                ReviewInfo reviewInfo = task.getResult();
+                manager.launchReviewFlow(activity, reviewInfo);
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 }
