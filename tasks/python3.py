@@ -239,9 +239,9 @@ def pip(c: Context):
         rsa==3.4.2
         pyasn1==0.4.2
         ecdsa==0.18.0
-        urllib3==1.22
+        urllib3==2.0.3
         certifi
         idna==2.6
-        requests==2.20.0
+        requests==2.31.0
         pefile==2021.9.3
         """)
