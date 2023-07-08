@@ -38,8 +38,11 @@ android {
 
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.google.android.play:core:1.10.0'
+    api 'com.google.android.play:asset-delivery:2.1.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10"
+    implementation "androidx.activity:activity:1.7.2"
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'uk.uuid.slf4j:slf4j-android:1.7.25-1'
 }

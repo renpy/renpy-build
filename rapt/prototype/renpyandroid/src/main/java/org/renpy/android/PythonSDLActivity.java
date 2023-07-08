@@ -41,7 +41,7 @@ import java.util.HashMap;
 
 import com.google.android.play.core.assetpacks.*;
 import com.google.android.play.core.assetpacks.model.*;
-import com.google.android.play.core.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.*;
 
 public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpdateListener {
 
