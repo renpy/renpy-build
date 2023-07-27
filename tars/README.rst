@@ -7,7 +7,6 @@ into github. Right now, it needs:
 Xcode
 -----
 
-* MacOSX10.10.sdk.tar.bz2
 * MacOSX12.3.sdk.tar.bz2
 
 Created as described at https://github.com/tpoechtrager/osxcross#packaging-the-sdk .

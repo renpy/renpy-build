@@ -51,15 +51,17 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     if use_ld:
         clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
-    if c.platform == "mac" or c.platform == "ios":
-        c.var("cpp_clang_args", "-stdlib=libc++")
+    if c.platform == "ios":
+        c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
+    elif c.platform == "mac" or c.platform == "ios":
+        c.var("cxx_clang_args", "-stdlib=libc++")
     else:
-        c.var("cpp_clang_args", "")
+        c.var("cxx_clang_args", "")
 
     c.var("clang_args", clang_args)
 
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
-    c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cpp_clang_args }}")
+    c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}")
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
 
     # c.env("LD", "ccache " + ld)

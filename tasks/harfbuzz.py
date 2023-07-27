@@ -18,27 +18,27 @@ def unpack(c: Context):
 
 
 
-# @task(platforms="all")
-# def build(c: Context):
-#     c.var("version", version)
-#     c.chdir("harfbuzz-{{version}}")
+@task(platforms="all")
+def build(c: Context):
+    c.var("version", version)
+    c.chdir("harfbuzz-{{version}}")
 
-#     c.run("""./configure {{ cross_config }}
-#           --disable-shared
-#           --prefix="{{ install }}"
-#           --with-libstdc++=no
-#           --with-glib=no
-#           --with-gobject=no
-#           --with-cairo=no
-#           --with-chafa=no
-#           --with-icu=no
-#           --with-graphite2=no
-#           --with-freetype=yes
-#           --with-uniscribe=no
-#           --with-gdi=no
-#           --with-directwrite=no
-#           --with-coretext=no
-#           """)
+    c.run("""./configure {{ cross_config }}
+          --disable-shared
+          --prefix="{{ install }}"
+          --with-libstdc++=no
+          --with-glib=no
+          --with-gobject=no
+          --with-cairo=no
+          --with-chafa=no
+          --with-icu=no
+          --with-graphite2=no
+          --with-freetype=yes
+          --with-uniscribe=no
+          --with-gdi=no
+          --with-directwrite=no
+          --with-coretext=no
+          """)
 
-#     c.run("{{make}}")
-#     c.run("{{make}} install")
+    c.run("{{make}} V=1")
+    c.run("{{make}} install")

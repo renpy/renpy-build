@@ -59,42 +59,7 @@ def build(c: Context):
 
     c.run("""unzip -q {{ tars }}/android-ndk-r25b-linux.zip""")
 
-
-@task(kind="cross", platforms="mac", archs="x86_64")
-def build(c: Context):
-    c.clean("{{ cross }}")
-    c.chdir("{{ cross }}")
-
-    c.run("tar xaf {{ tars }}/MacOSX10.10.sdk.tar.bz2")
-    c.run("ln -s MacOSX10.10.sdk sdk")
-
-    # This should go away when the SDK is updated.
-    with open(c.path("sdk/SDKSettings.json"), "w") as f:
-        f.write("""\
-{
-	"CanonicalName": "macosx10.10",
-	"CustomProperties":
-	{
-		"KERNEL_EXTENSION_HEADER_SEARCH_PATHS": "$(KERNEL_FRAMEWORK)/PrivateHeaders $(KERNEL_FRAMEWORK_HEADERS)"
-	},
-	"DefaultProperties":
-	{
-		"MACOSX_DEPLOYMENT_TARGET": "10.10",
-		"PLATFORM_NAME": "macosx",
-		"DEFAULT_KEXT_INSTALL_PATH": "$(LIBRARY_KEXT_INSTALL_PATH)"
-	},
-	"DisplayName": "OS X 10.10",
-	"MaximumDeploymentTarget": "10.10",
-	"MinimalDisplayName": "10.10",
-	"MinimumSupportedToolsVersion": "3.2",
-	"SupportedBuildToolComponents": ["com.apple.compilers.gcc.headers.4_2"],
-	"Version": "10.10",
-	"isBaseSDK": "YES"
-}
-""")
-
-
-@task(kind="cross", platforms="mac", archs="arm64")
+@task(kind="cross", platforms="mac")
 def build(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
