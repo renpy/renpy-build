@@ -15,6 +15,8 @@ from . import metalangle
 from . import zlib
 from . import bzip2
 from . import xz
+from . import brotli
+
 from . import openssl
 from . import libffi
 
@@ -42,8 +44,10 @@ from . import sdl2
 from . import sdl2_image
 
 from . import ffmpeg
+
 from . import fribidi
 from . import freetype
+from . import harfbuzz
 
 from . import zsync
 from . import sayvbs
