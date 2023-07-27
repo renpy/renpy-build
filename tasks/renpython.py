@@ -45,8 +45,9 @@ def build_android(c: Context):
 def link_linux(c: Context):
 
     c.run("""
-    {{ CC }} {{ LDFLAGS }}
+    {{ CXX }} {{ LDFLAGS }}
     -shared
+    -static-libstdc++
     -Wl,-Bsymbolic
 
     -o librenpython.so
@@ -115,8 +116,9 @@ def link_linux(c: Context):
 def link_android(c: Context):
 
     c.run("""
-    {{ CC }} {{ LDFLAGS }}
+    {{ CXX }} {{ LDFLAGS }}
     -shared
+    -static-libstdc++
     -Wl,-Bsymbolic
     -Wl,--no-undefined
 
@@ -174,8 +176,9 @@ def link_android(c: Context):
 def link_mac(c: Context):
 
     c.run("""
-    {{ CC }} {{ LDFLAGS }}
+    {{ CXX }} {{ LDFLAGS }}
     -shared
+    -static-libstdc++
     -o librenpython.dylib
     -install_name @executable_path/librenpython.dylib
     -v
@@ -317,8 +320,9 @@ pe.write(fn)
 def link_windows(c: Context):
 
     c.run("""
-    {{ CC }} {{ LDFLAGS }}
+    {{ CXX }} {{ LDFLAGS }}
     -shared
+    -static-libstdc++
     -o librenpython.dll
     librenpython.o
     -lrenpy
@@ -460,6 +464,18 @@ def build_web(c: Context):
     {{ runtime }}/librenpython{{ c.python }}.c
     """)
 
+    c.run("""
+    {{ CC }} {{ CFLAGS }}
+
+    -DPLATFORM=\\"{{ c.platform }}\\"
+    -DARCH=\\"{{ c.arch }}\\"
+    -DPYTHONVER=\\"{{ pythonver }}\\"
+    -DPYCVER=\\"{{ pycver }}\\"
+    -D{{ c.platform|upper }}
+
+    -c -o launcher.o
+    {{ runtime }}/launcher{{ c.python }}_posix.c
+    """)
 
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c: Context):
@@ -526,7 +542,7 @@ def link_web(c: Context):
     c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
 
     c.run("""
-    {{ CC }} {{ LDFLAGS }}
+    {{ CXX }} {{ LDFLAGS }}
 
     {% if debug_asyncify %}
     -g2 -gsource-map --source-map-base ./
@@ -536,7 +552,7 @@ def link_web(c: Context):
 
     -o renpy.html
     librenpython.o
-    {{ runtime }}/launcher{{ c.python }}_posix.c
+    launcher.o
 
     -l{{ pythonver }}
 
