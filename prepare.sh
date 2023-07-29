@@ -47,6 +47,10 @@ wget -O tmp/llvm.sh https://apt.llvm.org/llvm.sh
 chmod +x tmp/llvm.sh
 sudo tmp/llvm.sh 15
 
+# Darwin clang_rt is needed to prevent undefined symbol: __isPlatformVersionAtLeast
+sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/15/lib/
+
+
 # Install the programs and virtualenvs.
 
 VENV="$ROOT/tmp/virtualenv.py3"
