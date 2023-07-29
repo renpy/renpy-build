@@ -49,6 +49,7 @@ def build(c: Context):
         --disable-jack
 
         --disable-video-kmsdrm
+        --disable-joystick-mfi
 
     {% if c.platform != "linux" %}
         --disable-video-x11
