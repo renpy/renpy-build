@@ -21,7 +21,7 @@ Run ./ios_toolchains.sh /path/to/Xcode.app
 Android NDK
 -----------
 
-* android-ndk-r25b-linux.zip
+* android-ndk-r25c-linux.zip
 
 Downloaded from https://developer.android.com/ndk/downloads .
 
