@@ -138,6 +138,20 @@ def permissions(c: Context):
     c.run("""sudo chown -R {{uid}}:{{gid}} {{sysroot}}""")
 
 @task(platforms="linux")
+def fix_pkgconf_prefix(c: Context):
+    """
+    Replace prefix for .pc file in sysroot, so pkgconfig can pass right
+    SYSROOT prefix to cflags. Set env PKG_CONFIG_SYSROOT_DIR isn't safe
+    because it will prepend prefix to libraries outside of SYSROOT, see
+    https://github.com/pkgconf/pkgconf/issues/213 and https://github.co
+    m/pkgconf/pkgconf/pull/280.
+    """
+
+    c.run("""
+          bash -c "grep -rl {{sysroot}} {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig > /dev/null || sed -i 's#/usr#{{sysroot}}/usr#g' $(grep -rl /usr {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig) $(grep -rl /usr {{sysroot}}/usr/share/pkgconfig)"
+          """)
+
+@task(platforms="linux")
 def update_wayland_headers(c: Context):
     """
     This adds newer wayland headers to the systems we support. This
