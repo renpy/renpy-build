@@ -8,7 +8,7 @@ REFS=$ROOT
 BASE="$ROOT"
 
 # Needed to build things.
-sudo apt-get install -y git build-essential ccache unzip autoconf autoconf-archive gcc-9 g++-9
+sudo apt-get install -y git build-essential ccache unzip autoconf autoconf-archive automake libtool-bin
 
 # Needed to build python things.
 sudo apt-get install -y python2-dev python3-dev python3-venv
