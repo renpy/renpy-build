@@ -10,13 +10,15 @@ import renpybuild.run
 
 from typing import Any
 
+
 # Monkeypatch copytree to fix a problem with ignore_dangling_symlinks.
 old_copytree = shutil.copytree
 
-
-def copytree(*args, ignore_dangling_symlinks=True, **kwargs):
-    return old_copytree(*args, ignore_dangling_symlinks=ignore_dangling_symlinks, **kwargs)
-
+def copytree(*args, **kwargs):
+    if len(args) < 6:
+        # ignore_dangling_symlinks is not passed by pos
+        kwargs.setdefault("ignore_dangling_symlinks", True)
+    return old_copytree(*args, **kwargs)
 
 shutil.copytree = copytree
 
