@@ -51,13 +51,13 @@ def usrinclude(c: Context):
 @task(kind="cross", platforms="android", always=True)
 def build(c: Context):
 
-    if c.path("{{cross}}/android-ndk-r25b").exists():
+    if c.path("{{cross}}/{{ndk_version}}").exists():
         return
 
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
 
-    c.run("""unzip -q {{ tars }}/android-ndk-r25b-linux.zip""")
+    c.run("""unzip -q {{ tars }}/{{ndk_version}}-linux.zip""")
 
 @task(kind="cross", platforms="mac")
 def build(c: Context):

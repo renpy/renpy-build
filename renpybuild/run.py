@@ -85,7 +85,7 @@ def android_llvm(c, arch):
 
     llvm(
         c,
-        bin="{{cross}}/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin",
+        bin="{{cross}}/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin",
         prefix=f"{arch}-linux-android{ eabi }21-",
         suffix="",
         clang_args="",
@@ -100,6 +100,8 @@ def build_environment(c):
     if c.platform == "web" and c.kind not in ( "host",  "host-python", "cross" ):
         emsdk_environment(c)
 
+    if c.platform == "android":
+        c.var("ndk_version", "android-ndk-r25b")
 
     cpuccount = os.cpu_count()
 
