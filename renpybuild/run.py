@@ -153,6 +153,15 @@ def build_environment(c):
     elif (c.platform == "web") and (c.arch == "wasm"):
         c.var("host_platform", "wasm32-unknown-emscripten")
 
+    if (c.platform == "linux") and (c.arch == "x86_64"):
+        c.var("architecture_name", "x86_64-linux-gnu")
+    elif (c.platform == "linux") and (c.arch == "aarch64"):
+        c.var("architecture_name", "aarch64-linux-gnu")
+    elif (c.platform == "linux") and (c.arch == "i686"):
+        c.var("architecture_name", "i386-linux-gnu")
+    elif (c.platform == "linux") and (c.arch == "armv7l"):
+        c.var("architecture_name", "arm-linux-gnueabihf")
+
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
@@ -189,6 +198,7 @@ def build_environment(c):
 
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+        c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "x86_64")
@@ -197,33 +207,45 @@ def build_environment(c):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "aarch64"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "aarch64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "i386")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "armv7")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
@@ -237,6 +259,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -250,6 +273,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "i386")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
@@ -259,6 +283,8 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "x86_64")
+        c.var("android_abi", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21")
 
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
 
@@ -268,6 +294,8 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "aarch64")
+        c.var("android_abi", "arm64-v8a")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21")
 
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
 
@@ -277,6 +305,8 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "armv7")
+        c.var("android_abi", "armeabi-v7a")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
@@ -291,6 +321,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
@@ -305,6 +336,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
@@ -318,6 +350,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
@@ -331,6 +364,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
@@ -344,6 +378,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
@@ -375,13 +410,15 @@ def build_environment(c):
         c.var("cmake_system_processor", "generic")
 
 
-    c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+    if c.kind != "host" or c.kind != "host-python" or c.kind != "cross":
+        c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
+
     c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
-    c.var("cmake", "cmake -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_BUILD_TYPE=Release")
+    c.var("cmake", "cmake {{ cmake_args }} -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_BUILD_TYPE=Release")
 
     # Used by zlib.
     if c.kind != "host":
