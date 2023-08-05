@@ -1,0 +1,14 @@
+prefix=/usr
+libdir=${prefix}/lib/x86_64-linux-gnu
+includedir=${prefix}/include
+
+datarootdir=${prefix}/share
+pkgdatadir=${datarootdir}/wayland
+
+Name: Wayland Client
+Description: Wayland client side library
+Version: 1.20.0
+Requires.private: libffi
+Libs: -L${libdir} -lwayland-client
+Libs.private: -lm -pthread
+Cflags: -I${includedir}

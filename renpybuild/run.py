@@ -412,7 +412,7 @@ def build_environment(c):
         c.var("cmake_system_processor", "generic")
 
 
-    if c.kind != "host" or c.kind != "host-python" or c.kind != "cross":
+    if c.kind not in ( "host", "host-python", "cross" ):
         c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
 
     c.env("PKG_CONFIG", "pkg-config --static")
