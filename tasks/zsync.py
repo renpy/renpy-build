@@ -11,7 +11,7 @@ def unpack(c: Context):
     c.var("version", version)
     c.run("tar xjf {{source}}/zsync-{{version}}.tar.bz2")
 
-    c.run("""cp /usr/share/autoconf/build-aux/config.sub zsync-{{version}}/autotools""")
+    c.run("""cp /usr/share/misc/config.sub zsync-{{version}}/autotools""")
 
 @task(kind="python", platforms="linux")
 def build_linux(c: Context):
