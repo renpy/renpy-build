@@ -1,0 +1,14 @@
+prefix=/usr
+libdir=${prefix}/lib/x86_64-linux-gnu
+includedir=${prefix}/include
+
+datarootdir=${prefix}/share
+pkgdatadir=${datarootdir}/wayland
+
+Name: Wayland Server
+Description: Server side implementation of the Wayland protocol
+Version: 1.20.0
+Requires.private: libffi
+Libs: -L${libdir} -lwayland-server
+Libs.private: -lm -pthread
+Cflags: -I${includedir}
