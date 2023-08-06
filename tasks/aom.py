@@ -34,7 +34,6 @@ def build(c : Context):
         {% if platform == "android" or platform == "ios" or platform == "emscripten" %}
         -DCONFIG_RUNTIME_CPU_DETECT=0
         {% endif %}
-        -DPERL_EXECUTABLE=/usr/bin/perl
         {{ tmp }}/source/aom
         """)
 
