@@ -41,12 +41,14 @@ Preparing
 ---------
 
 To get ready to build, log in as the rb user, and then run the following
-command to clone renpy-build::
+commands to instal git and clone renpy-build::
 
+    sudo apt install git
     git clone https://github.com/renpy/renpy-build
 
-Change into the renpy-build directory, and run::
+Change into the renpy-build directory, and run prepare.sh::
 
+    cd ~/renpy-build
     ./prepare.sh
 
 **This will globally change your system.**  It will install packages from Ubuntu
@@ -63,6 +65,10 @@ are listed in `tars/README.rst <tars/README.rst>`_ .
 
 Building
 ---------
+
+You'll need to be in the renpy-build directory to build. If you're not, run::
+
+    cd ~/renpy-build
 
 From the renpy-build directory, activate the virtualenv with the command::
 
@@ -141,7 +147,8 @@ Updating
 It's possible to change renpy or pygame_sdl2 to be symlinks to your own
 clones of those projects after the prepare step is complete. Updating
 renpy-build itself may require deleting the tmp/ directory and a complete
-rebuild, though simple changes may not require that.
+rebuild, though simple changes may not require that. You may also need to
+run prepare.sh again.
 
 Note
 ----
