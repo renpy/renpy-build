@@ -162,5 +162,8 @@ def update_wayland_headers(c: Context):
     for i in c.path("{{source}}/wayland-headers/").glob("wayland*.h"):
         c.copy(str(i), "{{ sysroot }}/usr/include/" + i.name)
 
+@task(platforms="linux")
+def update_wayland_pkgconfig(c: Context):
+
     for i in c.path("{{source}}/wayland-pc-files/").glob("wayland*.pc"):
         c.copy(str(i), "{{ sysroot }}/usr/lib/{{architecture_name}}/pkgconfig/" + i.name)
