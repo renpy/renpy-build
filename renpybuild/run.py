@@ -214,7 +214,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "aarch64"):
 
@@ -225,7 +225,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
@@ -236,7 +236,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
@@ -247,7 +247,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "armv7")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
@@ -261,7 +261,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -275,7 +275,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
@@ -323,7 +323,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
@@ -338,7 +338,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
@@ -352,7 +352,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
@@ -366,7 +366,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
@@ -380,7 +380,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }}:{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
@@ -414,6 +414,7 @@ def build_environment(c):
 
     if c.kind not in ( "host", "host-python", "cross" ):
         c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
+        c.var("cmake_args", "{{cmake_args}} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY")
 
     c.env("PKG_CONFIG", "pkg-config --static")
 
