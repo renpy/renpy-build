@@ -25,8 +25,14 @@ sudo apt-get install -y debootstrap qemu-user-static
 # Needed by gcc.
 sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev
 
+# Needed by llvm.
+sudo apt-get install -y software-properties-common
+
 # Needed by hostpython.
 sudo apt-get install -y libssl-dev libbz2-dev liblzma-dev
+
+# Needed by brotli.
+sudo apt-get install -y bc
 
 # Needed for mac
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev llvm
