@@ -103,12 +103,18 @@ def inittab(c: Context):
                 if "live2d" in parts[0]:
                     continue
 
+                if "renpy.text.hbfont" in parts[0]:
+                    continue
+
                 modules.append(parts[0])
 
     read_setup(c.pygame_sdl2)
     read_setup(c.renpy / "module")
 
     c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "{{ renpyweb }}/inittab.c", modules=modules)
+
+    if c.path("{{ renpyweb }}/build/inittab.bc").exists():
+        c.unlink("{{ renpyweb }}/build/inittab.bc")
 
 
 @task(kind="host-python", platforms="web", always=True, pythons="2")
