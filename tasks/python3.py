@@ -239,9 +239,10 @@ def pip(c: Context):
         rsa==3.4.2
         pyasn1==0.4.2
         ecdsa==0.18.0
-        urllib3==2.0.3
+        urllib3==2.0.4
+        charset-normalizer==3.2.0
         certifi
-        idna==2.6
+        idna==3.4
         requests==2.31.0
         pefile==2021.9.3
         chardet==5.1.0

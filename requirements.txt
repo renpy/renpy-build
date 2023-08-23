@@ -1,7 +1,7 @@
 alabaster==0.7.12
 Babel==2.10.3
-certifi==2023.5.7
-charset-normalizer==2.1.1
+certifi
+charset-normalizer==3.2.0
 colorama==0.4.6
 Cython==0.29.32
 docutils==0.17.1
@@ -32,4 +32,4 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.5
 typing==3.7.4.3
-urllib3==2.0.3
+urllib3==2.0.4

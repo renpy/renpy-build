@@ -30,7 +30,7 @@ popd
 # adb shell input keyevent KEYCODE_HOME || true
 
 if [ "$1" != "" ]; then
-    $ROOT/renpy/renpy3.sh $ROOT/renpy/launcher android_build "$1" --bundle --launch
+    $ROOT/renpy/renpy3.sh $ROOT/renpy/launcher android_build "$1" --launch
 fi
 
 ## This tests app switching.
