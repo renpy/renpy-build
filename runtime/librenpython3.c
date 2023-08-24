@@ -401,6 +401,7 @@ int EXPORT renpython_main(int argc, char **argv) {
     search_python_home();
 
     config.user_site_directory = 0;
+    Py_InitializeFromConfig(&config);
 
     return Py_BytesMain(argc, argv);
 }
@@ -414,6 +415,7 @@ int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
     search_python_home();
 
     config.user_site_directory = 0;
+    Py_InitializeFromConfig(&config);
 
     return Py_Main(argc, argv);
 }
