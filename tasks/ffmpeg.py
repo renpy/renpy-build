@@ -225,9 +225,10 @@ def build_web(c: Context):
         --enable-cross-compile
         --enable-runtime-cpudetect
 
+{% if c.platform == "mac" or c.platform == "ios" %}
         --disable-mmx
         --disable-mmxext
-
+{% endif %}
         --enable-ffmpeg
         --enable-ffplay
         --disable-doc
