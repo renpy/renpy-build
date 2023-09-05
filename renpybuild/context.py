@@ -14,8 +14,12 @@ from typing import Any
 old_copytree = shutil.copytree
 
 
-def copytree(*args, ignore_dangling_symlinks=True, **kwargs):
-    return old_copytree(*args, ignore_dangling_symlinks=ignore_dangling_symlinks, **kwargs)
+def copytree(*args, **kwargs):
+    if len(args) < 6:
+        kwargs.setdefault("ignore_dangling_symlinks", True)
+    print(args, kwargs)
+
+    return old_copytree(*args, **kwargs)
 
 
 shutil.copytree = copytree
