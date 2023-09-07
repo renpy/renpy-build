@@ -96,7 +96,7 @@ def build(c: Context):
         --enable-w32threads
 {% endif %}
 
-{% if c.platform == "mac" or c.platform == "ios" %}
+{% if c.platform == "mac" or c.platform == "ios" or (c.platform == "linux" and c.arch == "i686" ) %}
         --disable-mmx
         --disable-mmxext
 {% endif %}
