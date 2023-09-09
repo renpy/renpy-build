@@ -17,7 +17,6 @@ old_copytree = shutil.copytree
 def copytree(*args, **kwargs):
     if len(args) < 6:
         kwargs.setdefault("ignore_dangling_symlinks", True)
-    print(args, kwargs)
 
     return old_copytree(*args, **kwargs)
 
