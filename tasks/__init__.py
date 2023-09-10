@@ -48,6 +48,7 @@ from . import ffmpeg
 from . import fribidi
 from . import freetype
 from . import harfbuzz
+from . import freetypehb
 
 from . import zsync
 from . import sayvbs

@@ -16,6 +16,8 @@ sync() {
     rsync -a /home/tom/ab/renpy-build/renpy/$1 $mac:$path/$2
 }
 
+rpy build --platform mac
+
 sync launcher/ launcher
 sync lib/ lib
 sync rapt3/ rapt
