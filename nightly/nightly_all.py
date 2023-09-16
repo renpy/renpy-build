@@ -11,7 +11,7 @@ def build_nightly():
 
     with open("/tmp/nightly-build-fix.txt", "w+") as f:
         try:
-            subprocess.call([ "./nightly.sh", '/home/tom/ab/nightly-build-fix/', "fix", "--clean" ], stdout=f, stderr=f)
+            subprocess.call([ "./nightly.sh", '/home/tom/ab/nightly-build-fix/', "fix", "--upload", "--clean" ], stdout=f, stderr=f)
         except Exception as e:
             traceback.print_exc(file=f)
 

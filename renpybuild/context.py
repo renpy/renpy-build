@@ -18,10 +18,6 @@ def copytree(*args, **kwargs):
     if len(args) < 6:
         # ignore_dangling_symlinks is not passed by pos
         kwargs.setdefault("ignore_dangling_symlinks", True)
-<<<<<<< HEAD
-=======
-
->>>>>>> adaf78d (Remove debug print.)
     return old_copytree(*args, **kwargs)
 
 shutil.copytree = copytree
