@@ -782,6 +782,7 @@ Module.preRun = Module.preRun || [ ];
     function endInput() {
         inputDiv.classList.remove("visible");
         inputDiv.classList.add("hidden");
+        inputText.blur();
     }
 
     window.endInput = endInput;
