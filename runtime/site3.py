@@ -66,29 +66,28 @@ for fn in RENPY_SEARCH:
 # Submodule importing ##########################################################
 
 # Allow Python to import submodules.
-import imp
+import importlib.machinery
+import importlib.util
 
 
-class BuiltinSubmoduleImporter(object):
+class BuiltinSubmoduleImporter:
 
-    def find_module(self, name, path=None):
+    @staticmethod
+    def find_spec(fullname, path=None, target=None):
         if path is None:
             return None
 
-        if "." not in name:
+        if "." not in fullname:
             return None
 
-        if name in sys.builtin_module_names:
-            return self
+        if fullname not in sys.builtin_module_names:
+            return None
 
-        return None
-
-    def load_module(self, name):
-        f, pathname, desc = imp.find_module(name, None)
-        return imp.load_module(name, f, pathname, desc)
+        i = importlib.machinery.BuiltinImporter
+        return importlib.util.spec_from_loader(fullname, i, origin=i._ORIGIN)
 
 
-sys.meta_path.append(BuiltinSubmoduleImporter())
+sys.meta_path.append(BuiltinSubmoduleImporter)
 
 # Windows Startup ##############################################################
 
