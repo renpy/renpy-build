@@ -26,6 +26,7 @@ class APK(object):
             print("Opening APK %r" % apk)
 
         self.apk = apk
+        self.prefix = prefix
 
         self.zf = zipfile.ZipFile(apk, "r")
 
@@ -60,6 +61,9 @@ class APK(object):
                 h[zipfile._FH_EXTRA_FIELD_LENGTH])
 
         f.close()
+
+    def __reduce__(self):
+        return (self.__class__, (self.apk, self.prefix))
 
     def list(self):
         return sorted(self.info)
