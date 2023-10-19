@@ -49,6 +49,7 @@ link /home/tom/ab/WWW.nightly dl
 link /home/tom/ab/renpy/atom atom
 link /home/tom/ab/renpy/jedit jedit
 link /home/tom/ab/renpy/editra editra
+link /home/tom/ab/keys/update.pem update.pem
 
 # Generate source.
 
