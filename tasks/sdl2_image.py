@@ -10,6 +10,9 @@ def unpack(c: Context):
 
     c.var("version", version)
     c.run("tar xzf {{source}}/SDL2_image-{{version}}.tar.gz")
+    c.chdir("SDL2_image-{{version}}")
+
+    c.patch("sdl2_image-avif-error.diff")
 
 
 @task(platforms="all")
