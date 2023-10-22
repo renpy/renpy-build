@@ -67,6 +67,7 @@ def link_linux(c: Context):
     -lGL
     -lavif
     -laom
+    -lyuv
     -ljpeg
     -lpng
     -lwebp
@@ -146,6 +147,7 @@ def link_android(c: Context):
 
     -lavif
     -laom
+    -lyuv
     -ljpeg
     -lpng
     -lwebp
@@ -201,6 +203,7 @@ def link_mac(c: Context):
     -lSDL2
     -lavif
     -laom
+    -lyuv
     -ljpeg
     -lpng
     -lwebp
@@ -350,6 +353,7 @@ def link_windows(c: Context):
     -lopengl32
     -lavif
     -laom
+    -lyuv
     -ljpeg
     -lpng16
     -lwebp
@@ -573,6 +577,7 @@ def link_web(c: Context):
     -lSDL2
     -lavif
     -laom
+    -lyuv
     -ljpeg
     -lpng
     -lwebp

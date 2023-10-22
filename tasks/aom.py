@@ -26,7 +26,6 @@ def build(c : Context):
         {{ cmake }}
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DCONFIG_AV1_ENCODER=0
-        -DCONFIG_LIBYUV=0
         -DENABLE_EXAMPLES=0
         -DENABLE_TOOLS=0
         -DENABLE_TESTS=0
