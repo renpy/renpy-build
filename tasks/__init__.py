@@ -21,6 +21,8 @@ from . import libffi
 from . import libpng
 from . import libjpeg_turbo
 from . import libwebp
+
+from . import libyuv
 from . import aom
 from . import libavif
 
