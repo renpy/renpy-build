@@ -801,10 +801,11 @@ Module.preRun = Module.preRun || [ ];
      * @param url The URL to fetch.
      * @param inFile The file to send to the server. A string giving the file name, or null for no file.
      * @param outFile The file to write the response to. A string giving the file name, or null for no file.
+     * @param inContentType The content type of the file to send to the server. A string giving the content type. Ignored if inFile is null.
      *
      * @return A string giving the result of the fetch. The first word is the status, which is one of "OK", "ERROR", or "PENDING", followed by the HTTP status code and status text.
      */
-    function fetchFile(method, url, inFile, outFile) {
+    function fetchFile(method, url, inFile, outFile, inContentType) {
 
         let id = fetchId++;
         fetchResult[id] = "PENDING Fetch in progress.";
@@ -818,6 +819,7 @@ Module.preRun = Module.preRun || [ ];
 
                 if (inFile) {
                     options.body = FS.readFile(inFile, { encoding: 'binary' });
+                    options.headers = { 'Content-Type': inContentType || 'application/octet-stream' };
                 }
 
                 let response = await fetch(url, options);
