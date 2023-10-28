@@ -21,10 +21,12 @@ def main():
         if not dn.is_dir():
             continue
 
-        m = re.search('20(\d{2})-(\d{2})-(\d{2})', dn.name)
+        m = re.search(r'20(\d{2})-(\d{2})-(\d{2})', dn.name)
 
         if not m:
-            m = re.search('\d+\.(\d{2})(\d{2})(\d{2})', dn.name)
+            m = re.search(r'\d+\.(\d\d)(\d\d)(\d\d)', dn.name)
+
+        if not m:
             continue
 
         date = datetime.date(2000 + int(m.group(1)), int(m.group(2)), int(m.group(3)))
@@ -34,6 +36,8 @@ def main():
             continue
         if age.days < 180 and date.weekday() == 0:
             continue
+
+        print("Removing", dn)
 
         shutil.rmtree(dn)
 
