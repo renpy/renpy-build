@@ -53,4 +53,4 @@ def build(c: Context):
     if c.python == "2":
         c.run("{{ hostpython }} -OO -m compileall {{pytmp}}/steam")
     else:
-        c.run("{{ hostpython }} -m compileall {{pytmp}}/steam")
+        c.run("{{ hostpython }} -m compileall {{ pycflags }} {{pytmp}}/steam")

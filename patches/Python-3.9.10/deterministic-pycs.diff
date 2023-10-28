@@ -1,0 +1,51 @@
+Avoid baking build-time timestamps into Python bytecode.
+
+From: Mal Graty <mal.graty@googlemail.com>
+
+We only ship pyc files from the stdlib, and to reduce churn during
+updates we don't want to include the timestamp in the bytecode.
+---
+ Makefile.pre.in | 12 ++++++------
+  1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index 42b1ec622a..059e033c3f 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -1551,30 +1551,30 @@ libinstall:	build_all $(srcdir)/Modules/xxmodule.c
+ 	fi
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi $(DESTDIR)$(LIBDEST)/compileall.py \
+-		-j0 -d $(LIBDEST) -f \
++		-j0 -d $(LIBDEST) -f --invalidation-mode unchecked-hash \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi -O $(DESTDIR)$(LIBDEST)/compileall.py \
+-		-j0 -d $(LIBDEST) -f \
++		-j0 -d $(LIBDEST) -f --invalidation-mode unchecked-hash \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi -OO $(DESTDIR)$(LIBDEST)/compileall.py \
+-		-j0 -d $(LIBDEST) -f \
++		-j0 -d $(LIBDEST) -f --invalidation-mode unchecked-hash \
+ 		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
+ 		$(DESTDIR)$(LIBDEST)
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi $(DESTDIR)$(LIBDEST)/compileall.py \
+-		-j0 -d $(LIBDEST)/site-packages -f \
++		-j0 -d $(LIBDEST)/site-packages -f --invalidation-mode unchecked-hash \
+ 		-x badsyntax $(DESTDIR)$(LIBDEST)/site-packages
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi -O $(DESTDIR)$(LIBDEST)/compileall.py \
+-		-j0 -d $(LIBDEST)/site-packages -f \
++		-j0 -d $(LIBDEST)/site-packages -f --invalidation-mode unchecked-hash \
+ 		-x badsyntax $(DESTDIR)$(LIBDEST)/site-packages
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -Wi -OO $(DESTDIR)$(LIBDEST)/compileall.py \
+-		-j0 -d $(LIBDEST)/site-packages -f \
++		-j0 -d $(LIBDEST)/site-packages -f --invalidation-mode unchecked-hash \
+ 		-x badsyntax $(DESTDIR)$(LIBDEST)/site-packages
+ 	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
+ 		$(PYTHON_FOR_BUILD) -m lib2to3.pgen2.driver $(DESTDIR)$(LIBDEST)/lib2to3/Grammar.txt
