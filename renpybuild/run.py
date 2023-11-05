@@ -49,7 +49,11 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
 
     if use_ld:
-        clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
+        if c.platform == "linux":
+            clang_args = "-fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args
+        else:
+            clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
+
 
     if c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
@@ -444,7 +448,7 @@ def run(command, context, verbose=False, quiet=False):
 
     if p.returncode != 0:
         print(f"{context.task_name}: process failed with {p.returncode}.")
-        print("args:", args)
+        print("args:", " ".join(repr(i) for i in args))
         import traceback
         traceback.print_stack()
         sys.exit(1)

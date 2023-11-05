@@ -8,10 +8,10 @@ the same manner that is used to make official Ren'Py releases.
 Requirements
 -------------
 
-Ren'Py Build requires a computer running Ubuntu 22.04. While it can run on
+Ren'Py Build requires a computer running Ubuntu 23.10. While it can run on
 a desktop computer, portions of the build process must run at root, and the
 whole process has security implications. My recommendation is to create a
-virtual machine, install Ubuntu 22.04 on it, and run this procedure on
+virtual machine, install Ubuntu 23.10 on it, and run this procedure on
 that machine.
 
 The virtual machine must be provisioned with at least 64 GB of disk space.

@@ -47,6 +47,7 @@ def build(c: Context):
         --disable-wasapi
         --disable-render-metal
         --disable-jack
+        --disable-pipewire
 
         --disable-video-kmsdrm
 
