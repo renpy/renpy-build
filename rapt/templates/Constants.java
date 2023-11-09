@@ -5,7 +5,7 @@ public class Constants {
     public static String store = "{{ config.store }}";
 
     // The names of the asset packs to check and download.
-{% if bundle %}
+{% if big_bundle %}
     public static String assetPacks[ ] = { "ff1", "ff2", "ff3", "ff4" };
 {% else %}
     public static String assetPacks[ ] = { };

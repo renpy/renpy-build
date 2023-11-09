@@ -517,6 +517,20 @@ def copy_libs():
 
         shutil.copytree(prototype, project)
 
+def size_tree(dn):
+    """
+    Returns the size of the tree `dn`, in bytes.
+    """
+
+    rv = 0
+
+    for dn, directories, filenames in os.walk(dn):
+        for fn in filenames:
+            fn = os.path.join(dn, fn)
+            rv += os.path.getsize(fn)
+
+    return rv
+
 
 def build(iface, directory, base, install=False, bundle=False, launch=False, finished=None, permissions=[]):
 
@@ -576,9 +590,11 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     if os.path.isdir(assets):
         shutil.rmtree(assets)
 
+    big_bundle = bundle and size_tree(assets_dir) > 50 * 1024 * 1024
+
     def make_assets():
 
-        if bundle:
+        if big_bundle:
 
             os.mkdir(assets)
             make_bundle_tree(assets_dir)
@@ -648,6 +664,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
             private_version=private_version,
             config=config,
             bundle=bundle,
+            big_bundle=bundle,
             sdkpath=plat.path("Sdk"),
             )
 
