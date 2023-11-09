@@ -448,9 +448,8 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
 
           case AssetPackStatus.FAILED:
             Log.e("python", "error = " + assetPackState.errorCode());
-            break;
-
           case AssetPackStatus.CANCELED:
+            mAssetPackManager.fetch(Collections.singletonList(assetPackState.name()));
             break;
 
           case AssetPackStatus.WAITING_FOR_WIFI:
