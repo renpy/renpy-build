@@ -393,7 +393,7 @@
 					"-lSDL2",
 					"-lavif",
 					"-laom",
-					"-lyuv',
+					"-lyuv",
 					"-lturbojpeg",
 					"-lpng16",
 					"-lwebp",
