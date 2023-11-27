@@ -44,7 +44,6 @@ def build(c: Context):
         --disable-shared
         --prefix="{{ install }}"
 
-        --disable-wasapi
         --disable-render-metal
         --disable-jack
         --disable-pipewire
