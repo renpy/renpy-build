@@ -347,7 +347,7 @@ class Context:
         if not d:
             raise Exception("Not deleting empty-string directory.")
 
-        p = Path(d)
+        p = self.path(d)
         if p.is_dir():
             shutil.rmtree(d)
 
