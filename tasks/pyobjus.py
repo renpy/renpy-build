@@ -88,5 +88,7 @@ def host_build(c: Context):
     c.run("""install -d {{ pytmp }}/pyobjus/pyobjus""")
     c.run("""install dylib_manager.py  __init__.py  objc_py_types.py  protocols.py {{ pytmp }}/pyobjus/pyobjus""")
 
-    c.run("{{ hostpython }} -OO -m compileall {{ pytmp }}/pyobjus/pyobjus")
-    c.run("{{ hostpython }} -m compileall {{ pytmp }}/pyobjus/pyobjus")
+    if c.python == "2":
+        c.run("{{ hostpython }} -OO -m compileall {{ pytmp }}/pyobjus/pyobjus")
+    else:
+        c.run("{{ hostpython }} -m compileall {{ pycflags }} {{ pytmp }}/pyobjus/pyobjus")

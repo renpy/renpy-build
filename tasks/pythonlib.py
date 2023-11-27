@@ -494,7 +494,7 @@ def python3(c: Context):
     dist = c.path("{{ distlib }}/{{ pythonver }}")
 
     c.clean("{{ distlib }}/{{ pythonver }}")
-    c.run("{{ hostpython }} -m compileall -q {{ install }}/lib/{{ pythonver }}/site-packages")
+    c.run("{{ hostpython }} -m compileall {{ pycflags }} {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for base in search:
 
@@ -539,11 +539,11 @@ def python3(c: Context):
             f.write("import site\n")
             f.write("site.renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -m compileall -q -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
+    c.run("{{ hostpython }} -m compileall {{ pycflags }} -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
     c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
-    c.run("{{ hostpython }} -m compileall -q -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
+    c.run("{{ hostpython }} -m compileall {{ pycflags }} -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
