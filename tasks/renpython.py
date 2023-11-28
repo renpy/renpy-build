@@ -71,6 +71,7 @@ def link_linux(c: Context):
     -ljpeg
     -lpng
     -lwebp
+    -lsharpyuv
     -lfribidi
     -lharfbuzz
     -lbrotlidec
@@ -151,6 +152,7 @@ def link_android(c: Context):
     -ljpeg
     -lpng
     -lwebp
+    -lsharpyuv
     -lharfbuzz
     -lbrotlidec
     -lfribidi
@@ -207,6 +209,7 @@ def link_mac(c: Context):
     -ljpeg
     -lpng
     -lwebp
+    -lsharpyuv
     -lharfbuzz
     -lbrotlidec
     -lfribidi
@@ -357,6 +360,7 @@ def link_windows(c: Context):
     -ljpeg
     -lpng16
     -lwebp
+    -lsharpyuv
     -lharfbuzz
     -lbrotlidec
     -lfreetype
@@ -581,6 +585,7 @@ def link_web(c: Context):
     -ljpeg
     -lpng
     -lwebp
+    -lsharpyuv
     -lharfbuzz
     -lbrotlidec
     -lfribidi
