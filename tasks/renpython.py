@@ -255,7 +255,7 @@ def link_mac(c: Context):
 
     # Striping breaks the code signatures on arm64 mac, so don't strip there.
     if not c.args.nostrip and not c.arch == "arm64":
-        c.run("""{{ STRIP }} -S -x librenpython.dylib python renpy""")
+        c.run("""{{ STRIP }} -S librenpython.dylib python renpy""")
 
     c.run("""install -d {{ install }}/mac{{python}}""")
     c.run("""install librenpython.dylib {{ install }}/mac{{python}}""")
@@ -390,6 +390,8 @@ def link_windows(c: Context):
     -lsetupapi
     -lversion
     -luuid
+
+    -Wl,--export-all-symbols
     """)
 
     c.run("""
@@ -427,8 +429,7 @@ def link_windows(c: Context):
 
     if not c.args.nostrip:
         c.run("""{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe""")
-
-    c.run("""{{ STRIP }} -R .reloc python.exe pythonw.exe renpy.exe""")
+        c.run("""{{ STRIP }} -R .reloc python.exe pythonw.exe renpy.exe""")
 
     fix_pe(c, "python.exe")
     fix_pe(c, "pythonw.exe")

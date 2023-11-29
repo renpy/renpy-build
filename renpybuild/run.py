@@ -54,7 +54,6 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
         else:
             clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
-
     if c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
     elif c.platform == "mac" or c.platform == "ios":

@@ -498,7 +498,7 @@ def python3(c: Context):
 
     for base in search:
 
-        for fn in list(base.glob("**/*cpython-*.pyc")) + list(base.glob("**/*.pem")):
+        for fn in base.glob("**/*cpython-*.pyc"):
             if fn.match("*.opt-?.pyc"):
                 continue
 
