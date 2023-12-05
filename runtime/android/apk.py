@@ -5,7 +5,7 @@ import struct
 import zipfile
 import io
 
-from pygame_sdl2.rwobject import RWops_from_file, RWops_create_subfile # type: ignore
+from pygame_sdl2.rwobject import RWopsIO
 
 class APK(object):
 
@@ -77,10 +77,6 @@ class APK(object):
 
         if info.compress_type == zipfile.ZIP_STORED:
 
-            rw = RWops_from_file(self.apk, "rb")
-            return RWops_create_subfile(
-                rw,
-                self.offset[fn],
-                info.file_size)
+            return io.BufferedReader(RWopsIO(self.apk, "rb", name=fn, base=self.offset[fn], length=info.file_size))
 
         return io.BytesIO(self.zf.read(info))
