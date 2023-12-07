@@ -236,7 +236,7 @@ def build_web(c: Context):
 @task(kind="python", pythons="3", platforms="all")
 def pip(c: Context):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
-    c.run("""{{ install }}/bin/hostpython3 -s -m pip install --upgrade
+    c.run("""{{ install }}/bin/hostpython3 -s -m pip install --no-compile --upgrade
         future==0.18.3
         six==1.12.0
         rsa==3.4.2
