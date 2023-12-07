@@ -9,7 +9,7 @@ def annotate(c: Context):
     c.include("{{ install }}/include/freetype2")
 
 
-@task(kind="host")
+@task(kind="host", platforms="all")
 def hostunpack(c: Context):
     c.clean()
 
@@ -33,7 +33,7 @@ def unpack(c: Context):
     c.patch("freetype-otvalid.diff")
 
 
-@task(kind="host")
+@task(kind="host", platforms="all")
 def hostbuild(c: Context):
     c.var("version", version)
     c.chdir("freetype-{{version}}")
