@@ -15,7 +15,6 @@ def annotate(c: Context):
         else:
             c.var("pythonver", "python3.9")
             c.var("pycver", "39")
-            c.var("pycflags", "-q --invalidation-mode unchecked-hash")
 
         c.include("{{ install }}/include/{{ pythonver }}")
 
