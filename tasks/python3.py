@@ -50,7 +50,6 @@ def patch_posix(c: Context):
     c.patch("Python-{{ version }}/cross-darwin.diff")
     c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
     c.patch("Python-{{ version }}/no-builtin-available.diff")
-    c.patch("Python-{{ version }}/deterministic-pycs.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -74,7 +73,6 @@ def patch_windows(c: Context):
     c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
     c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
-    c.patch("Python-{{ version }}/deterministic-pycs.diff")
 
     c.run(""" autoreconf -vfi """)
 
