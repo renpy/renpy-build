@@ -15,7 +15,6 @@ def annotate(c: Context):
         else:
             c.var("pythonver", "python3.9")
             c.var("pycver", "39")
-            c.var("pycflags", "-q --invalidation-mode unchecked-hash")
 
         c.include("{{ install }}/include/{{ pythonver }}")
 
@@ -50,7 +49,6 @@ def patch_posix(c: Context):
     c.patch("Python-{{ version }}/cross-darwin.diff")
     c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
     c.patch("Python-{{ version }}/no-builtin-available.diff")
-    c.patch("Python-{{ version }}/deterministic-pycs.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -74,7 +72,6 @@ def patch_windows(c: Context):
     c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
     c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
-    c.patch("Python-{{ version }}/deterministic-pycs.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -236,7 +233,7 @@ def build_web(c: Context):
 @task(kind="python", pythons="3", platforms="all")
 def pip(c: Context):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
-    c.run("""{{ install }}/bin/hostpython3 -s -m pip install --upgrade
+    c.run("""{{ install }}/bin/hostpython3 -s -m pip install --no-compile --upgrade
         future==0.18.3
         six==1.12.0
         rsa==3.4.2

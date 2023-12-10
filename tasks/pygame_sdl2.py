@@ -30,5 +30,5 @@ def install2(c: Context):
 
 @task(kind="python", platforms="all", pythons="3", always=True)
 def install3(c: Context):
-    c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install --single-version-externally-managed --record files.txt --no-extensions")
+    c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install --single-version-externally-managed --record files.txt --no-compile --no-extensions")
     c.run("{{ hostpython }} {{ pygame_sdl2 }}/setup.py install_headers")

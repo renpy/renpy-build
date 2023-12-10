@@ -460,3 +460,24 @@ class Context:
         dstpath = self.path(dst)
 
         dstpath.symlink_to(srcpath)
+
+    def compile(self, src : str|Path):
+        """
+        Compiles py files to pyc files, and elides the build path.
+        """
+
+        src = self.expand(str(src))
+        dst = self.expand("lib/{{ pythonver }}")
+
+        if self.python == "2":
+            command = "{{ hostpython }} -OO -m compileall {{ flags }} {{ src }}"
+            flags = f"-d {dst} -fq"
+
+        else:
+            command = "{{ hostpython }} -m compileall {{ flags }} {{ src }}"
+            flags = f"-d {dst} -fq --invalidation-mode unchecked-hash"
+
+            if src.endswith(".py"):
+                flags = f'-b {flags}'
+
+        self.run(command, flags=flags, src=src)

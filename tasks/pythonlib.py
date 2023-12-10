@@ -230,6 +230,9 @@ def pyo_copy(src, dst):
 
 @task(kind="host-python", pythons="2", always=True)
 def python2(c: Context):
+    # Remove stdlib packages which include non-compilable code.
+    c.rmtree("{{ install }}/lib/{{ pythonver }}/test")
+    c.rmtree("{{ install }}/lib/{{ pythonver }}/lib2to3")
 
     search = [
         c.path("{{ install }}/lib/{{ pythonver }}"),
@@ -240,9 +243,10 @@ def python2(c: Context):
         ]
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
-
     c.clean("{{ distlib }}/{{ pythonver }}")
-    c.run("{{ hostpython }} -OO -m compileall -q {{ install }}/lib/{{ pythonver }}/site-packages")
+
+    for base in search:
+        c.compile(base)
 
     for i in PYTHON27_MODULES.split():
 
@@ -264,7 +268,7 @@ def python2(c: Context):
             f.write("\n")
             f.write("renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -OO -m compileall -q {{ distlib }}/{{ pythonver }}/site.py")
+    c.compile("{{ distlib }}/{{ pythonver }}/site.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/site.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
@@ -474,6 +478,9 @@ steamapi
 
 @task(kind="host-python", pythons="3", always=True)
 def python3(c: Context):
+    # Remove stdlib packages which include non-compilable code.
+    c.rmtree("{{ install }}/lib/{{ pythonver }}/test")
+    c.rmtree("{{ install }}/lib/{{ pythonver }}/lib2to3")
 
     # The list of rules.
     rules = set(PY3_MODULES.split())
@@ -492,11 +499,10 @@ def python3(c: Context):
         ]
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
-
     c.clean("{{ distlib }}/{{ pythonver }}")
-    c.run("{{ hostpython }} -m compileall {{ pycflags }} {{ install }}/lib/{{ pythonver }}/site-packages")
 
     for base in search:
+        c.compile(base)
 
         for fn in base.glob("**/*cpython-*.pyc"):
             if fn.match("*.opt-?.pyc"):
@@ -539,11 +545,11 @@ def python3(c: Context):
             f.write("import site\n")
             f.write("site.renpy_build_official = True\n")
 
-    c.run("{{ hostpython }} -m compileall {{ pycflags }} -b {{ distlib }}/{{ pythonver }}/sitecustomize.py")
+    c.compile("{{ distlib }}/{{ pythonver }}/sitecustomize.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
     c.copy("{{ runtime }}/sysconfig.py", "{{ distlib }}/{{ pythonver }}/sysconfig.py")
-    c.run("{{ hostpython }} -m compileall {{ pycflags }} -b {{ distlib }}/{{ pythonver }}/sysconfig.py")
+    c.compile("{{ distlib }}/{{ pythonver }}/sysconfig.py")
     c.unlink("{{ distlib }}/{{ pythonver }}/sysconfig.py")
 
     c.run("mkdir -p {{ distlib }}/{{ pythonver }}/lib-dynload")
