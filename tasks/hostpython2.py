@@ -4,7 +4,7 @@ from renpybuild.task import task
 version = "2.7.18"
 
 
-@task(kind="host", pythons="2")
+@task(kind="host", platforms="all", pythons="2")
 def unpack_hostpython(c: Context):
     c.clean()
 
@@ -14,7 +14,7 @@ def unpack_hostpython(c: Context):
     c.chdir("Python-{{ version }}")
 
 
-@task(kind="host", pythons="2")
+@task(kind="host", platforms="all", pythons="2")
 def build_host(c: Context):
     c.var("version", version)
 

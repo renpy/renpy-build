@@ -31,7 +31,7 @@ def build_host(c: Context):
 
 
 
-@task(kind="host", pythons="3")
+@task(kind="host", platforms="web", pythons="3")
 def unpack_web(c: Context):
     c.clean()
 
@@ -39,7 +39,7 @@ def unpack_web(c: Context):
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 
-@task(kind="host", pythons="3")
+@task(kind="host", platforms="web", pythons="3")
 def build_web(c: Context):
     c.var("version", web_version)
 

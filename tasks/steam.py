@@ -3,7 +3,7 @@ from renpybuild.task import task
 import zipfile
 
 
-@task(kind="host")
+@task(kind="host", platforms="all")
 def unpack_sdk(c: Context):
 
     c.clean("{{ install }}/steam")
@@ -16,7 +16,7 @@ def unpack_sdk(c: Context):
     zf.close()
 
 
-@task(kind="host")
+@task(kind="host", platforms="all")
 def patch_sdk(c: Context):
 
     if not c.path("{{host}}/steam/sdk").exists():

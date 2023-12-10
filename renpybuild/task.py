@@ -59,19 +59,16 @@ class Task:
             else:
                 return have in wanted
 
-        if not self.kind == "host":
+        if not check(self.platforms, context.platform):
+            return
 
-            if not check(self.platforms, context.platform):
-                return
+        if not check(self.archs, context.arch):
+            return
 
-            if not check(self.archs, context.arch):
-                return
+        if not check(self.pythons, context.python):
+            return
 
-            if not check(self.pythons, context.python):
-                return
-
-        else:
-
+        if self.kind == "host":
             context.platform = "host"
             context.arch = "host"
 
