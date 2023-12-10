@@ -904,6 +904,9 @@ Module.preRun = Module.preRun || [ ];
             if (!target.requestFullscreen && !target.webkitRequestFullscreen) {
                 return -3
             }
+
+            JSEvents.removeAllHandlersOnTarget(document, "visibilitychange");
+
             var canPerformRequests = JSEvents.canPerformEventHandlerRequests();
 
             if (navigator.userActivation && navigator.userActivation.isActive) {
