@@ -228,4 +228,11 @@ def main():
 
 
 if __name__ == "__main__":
+    import os
+
+    if os.environ.get('PYTHONHASHSEED') is None:
+        os.environ['PYTHONHASHSEED'] = "0"
+        os.execv(sys.executable, sys.orig_argv)
+        # script will now re-execute with new hash seed
+
     main()
