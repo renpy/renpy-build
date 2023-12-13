@@ -504,9 +504,7 @@ def python3(c: Context):
     for base in search:
         c.compile(base)
 
-        for fn in base.glob("**/*cpython-*.pyc"):
-            if fn.match("*.opt-?.pyc"):
-                continue
+        for fn in base.glob(c.expand("**/*.cpython-{{ pycver }}.pyc")):
 
             short = str(fn.relative_to(base))
             short = short.replace("__pycache__/", "")
