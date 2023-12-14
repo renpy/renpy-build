@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.os.Vibrator;
+import android.os.VibrationEffect;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -531,8 +532,12 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     public void vibrate(double s) {
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (v != null) {
-            v.vibrate((int) (1000 * s));
-        }
+			if (Build.VERSION.SDK_INT >= 26) {
+				v.vibrate(VibrationEffect.createOneShot((int) (1000 * s), VibrationEffect.DEFAULT_AMPLITUDE));
+			} else {
+				v.vibrate((int) (1000 * s));
+			}
+		}
     }
 
     public int getDPI() {
