@@ -532,7 +532,7 @@ def size_tree(dn):
     return rv
 
 
-def build(iface, directory, base, install=False, bundle=False, launch=False, finished=None, permissions=[]):
+def build(iface, directory, base, install=False, bundle=False, launch=False, finished=None, permissions=[], version=None):
 
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
@@ -548,6 +548,15 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     if config.package is None:
         iface.fail(__("Run configure before attempting to build the app."))
 
+    if version is not None:
+
+        split_version = [ i for i in version.split(".") if i.isdigit() ]
+
+        if not split_version:
+            split_version = [ "1", "0" ]
+
+        config.version = ".".join(split_version)
+
     global blocklist
     global keeplist
 
@@ -560,10 +569,6 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     eliminate_pycache(directory)
 
     private_dir, assets_dir = split_renpy(directory)
-
-    versioned_name = config.name
-    versioned_name = re.sub(r'[^\w]', '', versioned_name)
-    versioned_name += "-" + config.version
 
     # Pick the numeric version.
     config.numeric_version = max(int(time.time()), int(config.numeric_version))
@@ -727,8 +732,10 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
 
             sfn = os.path.join(i, j)
 
-            dfn = "bin/{}-{}".format(
+            dfn = "bin/{}-{}-{}-{}".format(
                 config.package,
+                config.version,
+                config.numeric_version,
                 j[4:])
 
             dfn = plat.path(dfn)

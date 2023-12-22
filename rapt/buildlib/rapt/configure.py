@@ -28,7 +28,7 @@ class Configuration(object):
         self.package = None
         self.name = None
         self.icon_name = None
-        self.version = None
+        self.version = "1.0"
         self.numeric_version = 1
         self.orientation = "sensorLandscape"
         self.permissions = [ "VIBRATE" ]
@@ -126,16 +126,6 @@ def configure(interface, directory, default_name=None, default_version=None):
 
         if part in JAVA_KEYWORDS:
             interface.fail(__("{} is a Java keyword, and can't be used as part of a package name.").format(part))
-
-    if config.version is None:
-        config.version = default_version
-
-    version = interface.input(__("What is the application's version?\n\nThis should be the human-readable version that you would present to a person. It must contain only numbers and dots."), config.version)
-
-    if not re.match(r'^[\d\.]+$', version):
-        interface.fail(__("The version number must contain only numbers and dots."))
-
-    config.version = version
 
     config.get_heap_size()
 
