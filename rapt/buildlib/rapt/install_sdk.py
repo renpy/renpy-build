@@ -36,7 +36,6 @@ def run_slow(interface, *args, **kwargs):
     try:
         interface.call(args, cancel=True, **kwargs)
     except (subprocess.CalledProcessError, OSError):
-        raise
         return False
     return True
 
