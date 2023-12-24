@@ -43,7 +43,7 @@ def run_slow(interface, *args, **kwargs):
 ##############################################################################
 def check_java(interface):
     """
-    Checks for the presence of a minimally useful java on the user's system.
+    Checks for the presence of the correct Java version.
     """
 
     interface.info(__("I'm compiling a short test program, to see if you have a working JDK on your system."))
@@ -52,7 +52,7 @@ def check_java(interface):
         interface.fail(__("I was unable to use javac to compile a test file. If you haven't installed the Java Development Kit yet, please download it from:\n\n{a=https://adoptium.net}https://adoptium.net/{/a}\n\nThe JDK is different from the JRE, so it's possible you have Java without having the JDK. Please install JDK [JDK_REQUIREMENT], and add it to your PATH.\n\nWithout a working JDK, I can't continue."))
 
     if not run_slow(interface, plat.java, "-classpath", plat.path("buildlib"), "CheckJDK", str(plat.jdk_requirement), use_path=True):
-        interface.fail(__("The version of Java on your computer does not appear to be JDK [JDK_REQUIREMENT] or later, which is required to build Android apps. If you need to install a newer JDK, you can download it from:\n\n{a=https://adoptium.net/}https://adoptium.net/{/a}, and add it to your PATH.\n\nYou can also set the JAVA_HOME environment variable to use a different version of Java."))
+        interface.fail(__("The version of Java on your computer does not appear to be JDK [JDK_REQUIREMENT], which is required to build Android apps. If you need to install a newer JDK, you can download it from:\n\n{a=https://adoptium.net/}https://adoptium.net/{/a}, and add it to your PATH.\n\nYou can also set the JAVA_HOME environment variable to use a different version of Java."))
 
     interface.success(__("The JDK is present and working. Good!"))
 

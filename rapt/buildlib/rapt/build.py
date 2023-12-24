@@ -543,6 +543,8 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     if not os.path.isdir(os.path.join(directory, "game")):
         iface.fail(__("{} does not contain a Ren'Py game.").format(directory))
 
+    install_sdk.check_java(iface)
+        
     config = configure.Configuration(directory)
 
     if config.package is None:
