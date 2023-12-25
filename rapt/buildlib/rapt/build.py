@@ -247,6 +247,30 @@ def make_tree(src, dest):
     shutil.copytree(src, dest, ignore=ignore)
 
 
+def copy_into(src, dest):
+    """
+    Copies all files from `src` into `dest`, creating
+    directories that do not exist.
+    """
+
+    if not os.path.exists(src):
+        return
+
+    if os.path.isdir(src):
+        if not os.path.isdir(dest):
+            os.mkdir(dest, 0o777)
+        
+        for i in os.listdir(src):
+            copy_into(
+                os.path.join(src, i),
+                os.path.join(dest, i),
+            )
+
+        return
+
+    shutil.copy2(src, dest)
+
+
 MAX_SIZE = 500000000
 
 
@@ -643,6 +667,11 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
                     os.unlink(old)
 
     iface.background(make_assets)
+
+    # Copy assets out of the prototype, and into the project.
+    copy_into(
+        plat.path("prototype/app/src/main/assets"),
+        assets)
 
     if not os.path.exists(plat.path("bin")):
         os.mkdir(plat.path("bin"), 0o777)
