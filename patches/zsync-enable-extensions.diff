@@ -1,0 +1,44 @@
+diff --git a/config.h.in b/config.h.in
+index 95ca8dd..d641ea3 100644
+--- a/config.h.in
++++ b/config.h.in
+@@ -88,7 +88,7 @@
+ #undef WITH_DMALLOC
+ 
+ /* Enable BSD extensions if present */
+-#undef _BSD_SOURCE
++// #undef _BSD_SOURCE
+ 
+ /* Number of bits in a file offset, on hosts where this is settable. */
+ #undef _FILE_OFFSET_BITS
+@@ -116,3 +116,15 @@
+ 
+ /* Define to `int' if <sys/types.h> or <sys/socket.h> does not define. */
+ #undef socklen_t
++
++/* Enable GNU extensions on systems that have them.  */
++#ifndef _GNU_SOURCE
++#undef _GNU_SOURCE
++#endif
++
++/* Enable general extensions on macOS.  */
++#ifdef __APPLE__
++#ifndef _DARWIN_C_SOURCE
++#undef _DARWIN_C_SOURCE /* for strncasecmp() */
++#endif
++#endif
+diff --git a/configure b/configure
+index 1e95e0e..bc93045 100755
+--- a/configure
++++ b/configure
+@@ -5228,7 +5228,9 @@ case $host_os in
+ $as_echo "#define _XOPEN_SOURCE 600" >>confdefs.h
+ 
+ 
+-$as_echo "#define _BSD_SOURCE 1" >>confdefs.h
++$as_echo "#define _GNU_SOURCE 1" >>confdefs.h
++
++$as_echo "#define _DARWIN_C_SOURCE 1" >>confdefs.h
+ 
+        ;;
+ esac
