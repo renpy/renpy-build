@@ -205,7 +205,7 @@ def build_environment(c):
 
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-        # c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+        c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
         # c.var("cmake_system_name", "Linux")
         # c.var("cmake_system_processor", "x86_64")
