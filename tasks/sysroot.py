@@ -43,7 +43,7 @@ def install_linux(c: Context):
         release = "xenial"
     elif c.arch == "aarch64":
         deb_arch = "arm64"
-        release = "focal"
+        release = "xenial"
     else:
         raise Exception("Unknown arch {}".format(c.arch))
 
@@ -67,7 +67,10 @@ def install_linux(c: Context):
         c.var("packages", ",".join(PACKAGES))
 
         c.run("""mkdir -p "{{ tmp }}/debs" """)
-        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} xenial "{{ sysroot }}" """)
+        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{release}} "{{ sysroot }}" """)
+        c.run("""sudo sed -i '$a deb http://archive.ubuntu.com/ubuntu {{release}}-updates main restricted universe multiverse' {{sysroot}}/etc/apt/sources.list""")
+        c.run("""sudo sed -i '$a deb http://security.ubuntu.com/ubuntu {{release}}-security main restricted universe multiverse' {{sysroot}}/etc/apt/sources.list""")
+        c.run("""sudo chroot {{ sysroot }} /bin/bash -c 'apt-get update -y && apt-get dist-upgrade -y' """)
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
 
 
@@ -125,6 +128,7 @@ def install_linux_raspi(c: Context):
         c.run("""sudo cp /usr/bin/qemu-arm-static {{ sysroot }}/usr/bin """)
 
         c.run("""sudo chroot {{ sysroot }} /debootstrap/debootstrap --second-stage """)
+        c.run("""sudo chroot {{ sysroot }} /bin/bash -c 'apt-get update -y && apt-get dist-upgrade -y' """)
 
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
 
