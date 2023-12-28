@@ -209,6 +209,7 @@ def build_environment(c):
 
         # c.var("cmake_system_name", "Linux")
         # c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
