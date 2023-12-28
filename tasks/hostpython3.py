@@ -20,7 +20,7 @@ def build_host(c: Context):
 
     c.chdir("Python-{{ version }}")
 
-    c.run("""./configure --prefix="{{ host }}" """)
+    c.run("""{{configure}} --prefix="{{ host }}" """)
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }} install""")
@@ -47,5 +47,5 @@ def build_web(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
 
-    c.run("""./configure --prefix="{{ host }}/web" """)
+    c.run("""{{configure}} --prefix="{{ host }}/web" """)
     c.run("""{{ make }} install""")

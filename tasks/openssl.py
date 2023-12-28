@@ -27,6 +27,8 @@ def build(c: Context):
         c.run("""./Configure mingw no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif c.platform == "android":
         c.run("""./Configure cc no-shared no-asm no-engine threads --prefix="{{ install }}" """)
+    elif c.platform == "web":
+        c.run("""emconfigure ./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 

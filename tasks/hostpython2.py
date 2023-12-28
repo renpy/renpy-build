@@ -28,7 +28,7 @@ def build_host(c: Context):
 
     c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
 
-    c.run("""./configure --prefix="{{ host }}" --enable-ipv6""")
+    c.run("""{{configure}} --prefix="{{ host }}" --enable-ipv6""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 

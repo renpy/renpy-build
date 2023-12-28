@@ -17,6 +17,6 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("libffi-{{version}}")
 
-    c.run("""./configure {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """)
+    c.run("""{{configure}} {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
     c.run("""make install """)
