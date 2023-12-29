@@ -115,6 +115,8 @@ def build_environment(c):
         cpuccount -= 4
 
     c.var("make", "nice make -j " + str(cpuccount))
+    c.var("configure", "./configure")
+    c.var("cmake", "cmake")
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -203,10 +205,11 @@ def build_environment(c):
 
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-        # c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+        c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
         # c.var("cmake_system_name", "Linux")
         # c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
 
@@ -387,32 +390,43 @@ def build_environment(c):
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
+        # Use emscripten wrapper to configure and build
+        c.var("make", "emmake {{ make }}")
+        c.var("configure", "emconfigure ./configure")
+        c.var("cmake", "emcmake cmake")
+
         c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
         c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
 
         c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
-        c.var("crossbin", "{{ cross }}/upstream/emscripten")
+        c.var("crossbin", "{{ cross }}/upstream/bin")
 
-        c.env("CC", "ccache {{ emscriptenbin }}/emcc")
-        c.env("CXX", "ccache {{ emscriptenbin }}/em++")
-        c.env("CPP", "ccache {{ emscriptenbin }}/emcc -E")
-        c.env("LD", "ccache {{ emscriptenbin }}/emcc")
-        c.env("LDSHARED", "ccache {{ emscriptenbin }}/emcc")
-        c.env("AR", "ccache {{ emscriptenbin }}/emar")
-        c.env("RANLIB", "ccache {{ emscriptenbin }}/emranlib")
-        c.env("STRIP", "ccache  {{ emscriptenbin }}/emstrip")
-        c.env("NM", "{{ crossbin}}/llvm-nm")
+        c.env("CC", "{{ emscriptenbin }}/emcc")
+        c.env("CXX", "{{ emscriptenbin }}/em++")
+        c.env("CPP", "{{ emscriptenbin }}/emcc -E")
+        c.env("LD", "{{ emscriptenbin }}/emcc")
+        c.env("LDSHARED", "{{ emscriptenbin }}/emcc")
+        c.env("AR", "{{ emscriptenbin }}/emar")
+        c.env("RANLIB", "{{ emscriptenbin }}/emranlib")
+        c.env("STRIP", "{{ emscriptenbin }}/emstrip")
+        c.env("NM", "{{ emscriptenbin }}/emnm")
 
         c.env("EMSCRIPTEN_TOOLS", "{{emscriptenbin}}/tools")
         c.env("EMSCRIPTEN", "{{emscriptenbin}}")
 
         c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig:{{cross}}/upstream/emscripten/system/lib/pkgconfig")
+        # Add pkg-file search path for emscripten, since emscripten locked PKG_CONFIG_LIBDIR
+        c.env("EM_PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+
+        # Tell emcc and em++ to use ccache when building
+        c.env("EM_COMPILER_WRAPPER", "ccache")
 
         # Used to find sdl2-config.
         c.env("PATH", "{{cross}}/upstream/emscripten/system/bin/:{{PATH}}")
 
         c.var("cmake_system_name", "Emscripten")
         c.var("cmake_system_processor", "generic")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
 
     if c.kind not in ( "host", "host-python", "cross" ):
@@ -424,7 +438,7 @@ def build_environment(c):
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
-    c.var("cmake", "cmake {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
+    c.var("cmake", "{{cmake}} {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
 
     # Used by zlib.
     if c.kind != "host":

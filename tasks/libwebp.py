@@ -18,7 +18,7 @@ def build(c: Context):
     c.chdir("libwebp-{{version}}")
 
     c.run("""
-    ./configure {{ cross_config }}
+    {{configure}} {{ cross_config }}
     --disable-shared
     --prefix="{{ install }}"
 

@@ -40,7 +40,7 @@ def build(c: Context):
     if not c.args.sdl:
 
         c.run("""
-        ./configure {{ sdl_cross_config }}
+        {{configure}} {{ sdl_cross_config }}
         --disable-shared
         --prefix="{{ install }}"
 

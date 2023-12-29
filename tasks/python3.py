@@ -118,7 +118,7 @@ def build_posix(c: Context):
 
     common(c)
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
@@ -146,7 +146,7 @@ def build_ios(c: Context):
         f.write("ac_cv_have_long_long_format=yes\n")
         f.write("ac_cv_func_clock_settime=no")
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6""")
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
     c.run("""{{ make }} """)
     c.run("""{{ make }} install""")
@@ -161,7 +161,7 @@ def build_android(c: Context):
         f.write("ac_cv_little_endian_double=yes\n")
         f.write("ac_cv_header_langinfo_h=no\n")
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
@@ -184,7 +184,7 @@ def build_windows(c: Context):
 
     c.env("CFLAGS", "{{ CFLAGS }} -Wno-implicit-function-declaration")
 
-    c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-system-ffi""")
+    c.run("""{{configure}} {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-system-ffi""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
@@ -206,7 +206,7 @@ def build_web(c: Context):
     c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
 
     c.run("""
-        ./configure {{ cross_config }}
+        {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
         --with-emscripten-target=browser
         --with-build-python={{host}}/web/bin/python3

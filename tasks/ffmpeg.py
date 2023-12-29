@@ -63,7 +63,7 @@ def build(c: Context):
     c.chdir("ffmpeg-{{version}}")
 
     c.run("""
-    ./configure
+    {{configure}}
         --prefix="{{ install }}"
 
         --arch={{ arch }}
@@ -196,7 +196,7 @@ def build_web(c: Context):
     c.chdir("ffmpeg-{{version}}")
 
     c.run("""
-    ./configure
+    {{configure}}
         --prefix="{{ install }}"
 
         --arch=emscripten
