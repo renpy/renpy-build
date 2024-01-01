@@ -934,4 +934,30 @@ Module.preRun = Module.preRun || [ ];
 
     window.loseContext = loseContext;
 
+
+    /***************************************************************************
+     * Overlay div handling.
+     **************************************************************************/
+
+    let overlayDiv = document.getElementById("overlayDiv");
+
+    for (let eventName of ["mousedown", "mouseup", "mousemove", "touchstart", "touchend", "touchmove"]) {
+        overlayDiv.addEventListener(eventName, function (e) {
+            canvas.dispatchEvent(new MouseEvent(e.type, e));
+
+            if (e.type == "mouseup" || e.type == "touchup") {
+                overlayDiv.remove();
+            }
+
+        });
+
+    };
+
+
+
+
+
+
+
+
 })();

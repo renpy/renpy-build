@@ -37,7 +37,7 @@
       overscroll-behavior: none;
     }
 
-    #canvas {
+    #canvas, #overlayDiv {
       position: absolute;
       top: 0px;
       left: 0px;
@@ -45,8 +45,11 @@
       width: 100%;
       height: 100%;
 
-      background: #000;
       border: 0 none;
+    }
+
+    #canvas {
+      background: #000;
     }
 
     .visible {
@@ -181,6 +184,7 @@
 
 <body>
   <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  <div id="overlayDiv"></div>
 
   <img id="presplash" src="web-presplash.jpg">
 
