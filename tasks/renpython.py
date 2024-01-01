@@ -615,6 +615,8 @@ def link_web(c: Context):
 
     -sEXPORTED_FUNCTIONS=['_main']
 
+    -sMINIFY_HTML=0
+
     --shell-file {{ runtime }}/web/shell.html
     """, debug_asyncify=debug_asyncify)
 
