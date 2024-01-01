@@ -941,11 +941,11 @@ Module.preRun = Module.preRun || [ ];
 
     let overlayDiv = document.getElementById("overlayDiv");
 
-    for (let eventName of ["mousedown", "mouseup", "mousemove", "touchstart", "touchend", "touchmove"]) {
+    for (let eventName of ["mousedown", "mouseup", "mousemove" ]) {
         overlayDiv.addEventListener(eventName, function (e) {
             canvas.dispatchEvent(new MouseEvent(e.type, e));
 
-            if (e.type == "mouseup" || e.type == "touchup") {
+            if (e.type == "mouseup") {
                 overlayDiv.remove();
             }
 
