@@ -40,18 +40,16 @@ async function fetchAndCache(request) {
             return rv;
         }
 
-        let headers = { }
-
         if (cachedResponse) {
             if (cachedResponse.headers.get('Last-Modified')) {
-                headers['If-Modified-Since'] = cachedResponse.headers.get('Last-Modified');
+                request.headers.set('If-Modified-Since', cachedResponse.headers.get('Last-Modified'));
             }
             if (cachedResponse.headers.get('ETag')) {
-                headers['If-None-Match'] = cachedResponse.headers.get('ETag');
+                request.headers.set('If-None-Match', cachedResponse.headers.get('ETag'));
             }
         }
 
-        const response = await fetch(request, { headers: headers });
+        const response = await fetch(request);
 
         if (cachedResponse && response.status == 304) {
             return cachedResponse;
