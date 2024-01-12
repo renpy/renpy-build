@@ -464,6 +464,8 @@ urllib3/
 
 urllib/
 
+websockets/
+
 zoneinfo/
 
 jnius/
