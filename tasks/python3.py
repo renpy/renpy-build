@@ -246,4 +246,5 @@ def pip(c: Context):
         requests==2.31.0
         pefile==2021.9.3
         chardet==5.1.0
+        websockets==12.0
         """)
