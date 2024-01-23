@@ -424,6 +424,38 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     }
 
 
+    public boolean mPauseDone;
+
+    @Override
+    public void onPause() {
+        Log.v("python", "onPause() start.");
+
+        mPauseDone = false;
+
+        super.onPause();
+
+        if (mPresplash == null) {
+            synchronized (this) {
+                while (!mPauseDone) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) { /* pass */ }
+                }
+            }
+        }
+
+        Log.v("python", "onPause() done.");
+    }
+
+    public void finishOnPause() {
+        Log.v("python", "finishOnPause()");
+
+        synchronized (this) {
+            mPauseDone = true;
+            this.notifyAll();
+        }
+    }
+
     boolean waitForWifiConfirmationShown = false;
     HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
 
