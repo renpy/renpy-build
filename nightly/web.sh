@@ -34,3 +34,9 @@ if [ "$PRUNE" = 1 ]; then
 fi
 
 popd
+
+# Upload the fix documentation to the server, in the main location.
+
+if [ "$BRANCH" = "fix" ]; then
+    rsync -a $BASE/renpy/doc-web/ tom@abagail.onegeek.org:/home/tom/WWW.renpyorg/doc/html/
+fi
