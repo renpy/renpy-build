@@ -193,13 +193,17 @@ static void find_python_home(const char *p) {
         return;
     }
 
-
 #ifdef WINDOWS
     if (exists(p, "\\lib\\" PYTHONVER "\\site.pyc") ||
         exists(p, "\\lib\\python" PYCVER ".zip")) {
 
         found = 1;
         config.home = Py_DecodeLocale(join(p, NULL), NULL);
+        config.prefix = config.home;
+        config.exec_prefix = config.home;
+        PyWideStringList_Append(&config.module_search_paths, Py_DecodeLocale(join(p, "\\lib\\" PYTHONVER), NULL));
+        PyWideStringList_Append(&config.module_search_paths, Py_DecodeLocale(join(p, "\\lib\\python" PYCVER ".zip"), NULL));
+        config.module_search_paths_set = 1;
     }
 #else
     if (exists(p, "/lib/" PYTHONVER "/site.pyc") ||
@@ -207,6 +211,11 @@ static void find_python_home(const char *p) {
 
         found = 1;
         config.home = Py_DecodeLocale(join(p, NULL), NULL);
+        config.prefix = config.home;
+        config.exec_prefix = config.home;
+        PyWideStringList_Append(&config.module_search_paths, Py_DecodeLocale(join(p, "/lib/" PYTHONVER), NULL));
+        PyWideStringList_Append(&config.module_search_paths, Py_DecodeLocale(join(p, "/lib/python" PYCVER ".zip"), NULL));
+        config.module_search_paths_set = 1;
     }
 #endif
 }
