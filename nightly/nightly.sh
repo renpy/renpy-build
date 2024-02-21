@@ -57,6 +57,14 @@ export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
 mkdir -p "$BASE/tmp"
 
+# Clean, if required.
+
+if [ "$CLEAN" = 1 ]; then
+    pushd $BASE
+    ./build.py clean
+    popd
+fi
+
 # Python activates the venv, which is needed for the rest of it.
 . $SCRIPTS/python.sh
 . $SCRIPTS/rev.sh
