@@ -13,11 +13,6 @@ fi
 
 # Build the dependencies.
 pushd $BASE
-
-if [ "$CLEAN" = 1 ]; then
-    ./build.py clean
-fi
-
 ./build.py --python 2
 ./build.py --python 3
 popd
@@ -37,8 +32,8 @@ weblink() {
 pushd $BASE/renpy
 
 rm -f rapt renios
-ln -s rapt2 rapt
-ln -s renios2 renios
+ln -s rapt3 rapt
+ln -s renios3 renios
 
 # Update the README.
 cp /home/tom/ab/renpy-deps/scripts/README.nightly /home/tom/ab/WWW.nightly/README.txt
