@@ -456,6 +456,15 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         }
     }
 
+    @Override
+    public void onResume() {
+        Log.v("python", "onResume()");
+
+        super.onResume();
+
+        Log.v("python", "onResume() done.");
+    }
+
     boolean waitForWifiConfirmationShown = false;
     HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
 
