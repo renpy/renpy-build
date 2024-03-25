@@ -69,8 +69,8 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
 
     # add custom clang wrappers to solve some funky issues
     # credit to: https://mcilloni.ovh/2021/02/09/cxx-cross-clang/
-    if sys.platform.startswith("freebsd"):
-        c.env("PATH", "{./freebsd/bin:{ PATH }}")
+    #if sys.platform.startswith("freebsd"):
+    #    c.env("PATH", "{./freebsd/bin:{ PATH }}")
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
     c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}")
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
@@ -483,10 +483,6 @@ def build_environment(c):
 
     # Used by zlib.
     if c.kind != "host":
-        # check if FreeBSD to fix header paths and also grab the right 
-        if (c.platform == "freebsd"):
-            c.env("CFLAGS", "{{ CFLAGS }} -L/usr/lib -L/usr/local/lib -I/usr/include -I/usr/local/include")
-            c.env("LDFLAGS", "{{ LDFLAGS }} -L/usr/lib -L/usr/local/lib")
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
         c.var("sdl_cross_config", "--host={{ sdl_host_platform }} --build={{ build_platform }}")
         c.var("ffi_cross_config", "--host={{ ffi_host_platform }} --build={{ build_platform }}")
