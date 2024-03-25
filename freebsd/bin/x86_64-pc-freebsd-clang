@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec /usr/local/bin/clang -B ./freebsd --target=x86_64-prtbld-freebsd14.0 "$@"
