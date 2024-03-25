@@ -23,7 +23,7 @@ sudo pkg install -y py39-jinja2
 sudo pkg install -y debootstrap qemu-user-static
 
 # Needed by gcc.
-sudo pkg install -y gmp mpfr mpc
+sudo pkg install -y gmp mpfr mpc gmake
 
 # Needed by llvm.
 #sudo pkg install -y software-properties-common

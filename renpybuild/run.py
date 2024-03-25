@@ -42,6 +42,10 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     if bin and not bin.endswith("/"):
         bin += "/"
 
+    # fix for freebsd clang executables to work
+    if sys.platform.startswith('freebsd'):
+        suffix = "15"
+
     c.var("llvm_bin", bin)
     c.var("llvm_prefix", prefix)
     c.var("llvm_suffix", suffix)
@@ -63,11 +67,15 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
 
     c.var("clang_args", clang_args)
 
+    # add custom clang wrappers to solve some funky issues
+    # credit to: https://mcilloni.ovh/2021/02/09/cxx-cross-clang/
+    if sys.platform.startswith("freebsd"):
+        c.env("PATH", "{./freebsd/bin:{ PATH }}")
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
     c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}")
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
 
-    # c.env("LD", "ccache " + ld)
+    c.env("LD", "ccache " + ld)
     c.env("AR", "ccache {{llvm_bin}}llvm-ar{{llvm_suffix}}")
     c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
     c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
@@ -114,7 +122,13 @@ def build_environment(c):
     if cpuccount > 12:
         cpuccount -= 4
 
-    c.var("make", "nice make -j " + str(cpuccount))
+    # FreeBSD primarily uses gmake for make actions; this is to fix that
+    # FreeBSD wasn't initialized in the context yet; workaround with sys module
+    if sys.platform.startswith('freebsd'):
+        c.var("make_exec", "gmake")
+    else:
+        c.var("make_exec", "make")
+    c.var("make", "nice {{make_exec}} -j " + str(cpuccount))
     c.var("configure", "./configure")
     c.var("cmake", "cmake")
 
@@ -135,6 +149,8 @@ def build_environment(c):
         c.var("host_platform", "i686-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("host_platform", "arm-linux-gnueabihf")
+    elif (c.platform == "freebsd") and (c.arch == "x86_64"):
+        c.var("host_platform", "x86_64-pc-freebsd")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -169,6 +185,9 @@ def build_environment(c):
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("architecture_name", "arm-linux-gnueabihf")
 
+    if (c.platform == "freebsd") and (c.arch == "x86_64"):
+        c.var("architecture_name", "x86_64-pc-freebsd")
+
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
@@ -198,12 +217,23 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
-    c.var("lipo", "llvm-lipo-15")
+    # fix for FreeBSD
+    if c.platform == "freebsd":
+        c.var("lipo_fix", "15")
+    else:
+        c.var("lipo_fix", "-15")
+    c.var("lipo", "llvm-lipo{{lipo_fix}}")
 
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
 
         llvm(c)
+        # add FreeBSD specific library and include paths
+        if c.platform == "freebsd":
+            c.env("LDFLAGS", "{{ LDFLAGS }} -L/usr/local/lib")
+            c.env("CFLAGS", "{{ CFLAGS }} -I/usr/include -I/usr/local/include")
+            c.env("CXXFLAGS", "{{ CXXFLAGS }} -I/usr/include -I/usr/local/include")
+
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
         c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
@@ -253,6 +283,17 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "armv7")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+
+    elif (c.platform == "freebsd") and (c.arch == "x86_64"):
+
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
+
+        c.var("cmake_system_name", "FreeBSD")
+        c.var("cmake_system_processor", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
@@ -442,6 +483,10 @@ def build_environment(c):
 
     # Used by zlib.
     if c.kind != "host":
+        # check if FreeBSD to fix header paths and also grab the right 
+        if (c.platform == "freebsd"):
+            c.env("CFLAGS", "{{ CFLAGS }} -L/usr/lib -L/usr/local/lib -I/usr/include -I/usr/local/include")
+            c.env("LDFLAGS", "{{ LDFLAGS }} -L/usr/lib -L/usr/local/lib")
         c.var("cross_config", "--host={{ host_platform }} --build={{ build_platform }}")
         c.var("sdl_cross_config", "--host={{ sdl_host_platform }} --build={{ build_platform }}")
         c.var("ffi_cross_config", "--host={{ ffi_host_platform }} --build={{ build_platform }}")

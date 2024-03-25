@@ -23,4 +23,4 @@ def build(c: Context):
     c.run("""{{ make }} AR="{{ AR }}" RANLIB="{{ RANLIB }}" CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)
     c.run("""touch bzip2 bunzip2 bzip2recover bzgrep bzmore bzdiff""")
 
-    c.run("""make install PREFIX="{{ install }}" AR="{{ AR }}" RANLIB="{{ RANLIB }}" CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)
+    c.run("""{{ make }} install PREFIX="{{ install }}" AR="{{ AR }}" RANLIB="{{ RANLIB }}" CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)
