@@ -42,10 +42,6 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     if bin and not bin.endswith("/"):
         bin += "/"
 
-    # fix for freebsd clang executables to work
-    if sys.platform.startswith('freebsd'):
-        suffix = "15"
-
     c.var("llvm_bin", bin)
     c.var("llvm_prefix", prefix)
     c.var("llvm_suffix", suffix)
@@ -67,10 +63,6 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
 
     c.var("clang_args", clang_args)
 
-    # add custom clang wrappers to solve some funky issues
-    # credit to: https://mcilloni.ovh/2021/02/09/cxx-cross-clang/
-    #if sys.platform.startswith("freebsd"):
-    #    c.env("PATH", "{./freebsd/bin:{ PATH }}")
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
     c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}")
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
@@ -218,11 +210,7 @@ def build_environment(c):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
     # fix for FreeBSD
-    if c.platform == "freebsd":
-        c.var("lipo_fix", "15")
-    else:
-        c.var("lipo_fix", "-15")
-    c.var("lipo", "llvm-lipo{{lipo_fix}}")
+    c.var("lipo", "llvm-lipo-15")
 
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
