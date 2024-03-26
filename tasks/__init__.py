@@ -1,4 +1,5 @@
 from renpybuild.context import Context
+import sys
 # The tasks to run, in order.
 
 from . import cython
@@ -17,6 +18,9 @@ from . import bzip2
 from . import xz
 from . import brotli
 
+# build a native OpenSSL 1.1.1 due to FreeBSD deprecating a compatible version
+if sys.platform.startswith('freebsd'):
+    from . import openssl_freebsd
 from . import openssl
 from . import libffi
 
