@@ -17,6 +17,11 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("libffi-{{version}}")
 
+    if c.platform == "freebsd":
+        c.env("CC", "ccache gcc13 {{ CFLAGS }}")
+        c.env("CXX", "ccache g++13 {{ CXXFLAGS }}")
+        c.env("CPP", "ccache cpp13 {{ CPPFLAGS }}")
+
     c.run("""{{configure}} {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
-    c.run("""make install """)
+    c.run("""{{ make }} install """)

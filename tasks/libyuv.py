@@ -28,6 +28,19 @@ def download(c : Context):
 def build(c : Context):
     c.clean()
 
+    if c.platform == "freebsd":
+        c.env("CC", "ccache gcc13 {{ CFLAGS }}")
+        c.env("CXX", "ccache g++13 {{ CXXFLAGS }}")
+        c.env("CPP", "ccache cpp13 {{ CPPFLAGS }}")
+        c.env("C_INCLUDE_PATH", "/usr/include:/usr/local/include")
+        c.env("CFLAGS", "{{ CFLAGS }} -L/usr/lib -L/usr/local/lib/gcc13")
+        # fix a weird linking bug where these system files were hardcoded
+        c.run("cp -rf /usr/lib/crt1.o .")
+        c.run("cp -rf /usr/lib/crti.o .")
+        c.run("cp -rf /usr/lib/crtbegin.o .")
+        c.run("cp -rf /usr/lib/crtend.o .")
+        c.run("cp -rf /usr/lib/crtn.o .")
+
     c.run("""
         {{ cmake }}
         -DCMAKE_INSTALL_PREFIX={{install}}
@@ -41,6 +54,6 @@ def build(c : Context):
     try:
         c.run("{{ make }}")
     except:
-        c.run("make VERBOSE=1")
+        c.run("{{ make }} VERBOSE=1")
 
-    c.run("make install")
+    c.run("{{ make }} install")

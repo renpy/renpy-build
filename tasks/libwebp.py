@@ -17,6 +17,9 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("libwebp-{{version}}")
 
+    if c.platform == "freebsd":
+        c.env("CC", "ccache gcc13 {{ CFLAGS }}")
+
     c.run("""
     {{configure}} {{ cross_config }}
     --disable-shared
@@ -27,4 +30,4 @@ def build(c: Context):
 {% endif %}
     """)
     c.run("""{{ make }}""")
-    c.run("""make install """)
+    c.run("""{{ make }} install """)

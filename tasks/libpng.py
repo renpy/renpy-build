@@ -17,6 +17,11 @@ def build(c: Context) :
     c.var("version", version)
     c.chdir("libpng-{{version}}")
 
+    if c.platform == "freebsd":
+        c.env("CC", "ccache gcc13 {{ CFLAGS }}")
+        c.env("CXX", "ccache g++13 {{ CXXFLAGS }}")
+        c.env("CPP", "ccache cpp13")
+
     c.env("CPPFLAGS", "{{ CPPFLAGS }} -DPNG_NO_CONSOLE_IO")
 
     c.run("""{{configure}} {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
