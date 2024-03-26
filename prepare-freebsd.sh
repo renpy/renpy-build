@@ -57,7 +57,7 @@ VENV="$ROOT/tmp/virtualenv.py3"
 python3 -m virtualenv -p "/usr/local/bin/python3.10" $VENV
 
 # none of these should be directly installed to /usr with how FreeBSD handles software
-export TOOLCHAIN=/opt/toolchain/x86_64-pc-freebsd/
+export TOOLCHAIN=$ROOT/tmp/host/x86_64-pc-freebsd/
 export RENPY_DEPS_INSTALL=/usr/local::$TOOLCHAIN
 
 . $BASE/nightly/git.sh

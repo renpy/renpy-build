@@ -11,7 +11,11 @@ def clean(c: Context):
 def gen_static2(c: Context):
 
     c.chdir("{{ renpy }}/module")
-    c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
+    if c.platform == "freebsd":
+        c.env("TOOLCHAIN", "{{ host }}/x86_64-pc-freebsd")
+        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ TOOLCHAIN }}")
+    else:
+        c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
     c.run("{{ hostpython }} setup.py generate")
 
@@ -20,7 +24,10 @@ def gen_static2(c: Context):
 def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}/module")
-    c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
+    if c.platform == "freebsd":
+        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ TOOLCHAIN }}")
+    else:
+        c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
     c.run("{{ hostpython }} setup.py generate")
 
@@ -101,4 +108,4 @@ def build(c: Context):
     c.run("{{ AR }} r librenpy.a {{ objects }} inittab.o")
     c.run("{{ RANLIB }} librenpy.a")
 
-_exec    c.copy("librenpy.a", "{{ install }}/lib/librenpy.a")
+    c.copy("librenpy.a", "{{ install }}/lib/librenpy.a")
