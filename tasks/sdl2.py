@@ -98,7 +98,7 @@ def build(c: Context):
 """)
 
     c.run("""{{ make }}""")
-    c.run("""make install""")
+    c.run("""{{ make_exec }} install""")
 
 
 @task(kind="arch-python", platforms="android", archs="x86_64", always=True)

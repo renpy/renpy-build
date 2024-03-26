@@ -20,4 +20,4 @@ def build(c: Context):
     c.run("""cp /usr/share/misc/config.sub config.sub""")
     c.run("""{{configure}} {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install """)
+    c.run("""{{ make_exec }} install """)

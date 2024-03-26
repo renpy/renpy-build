@@ -28,6 +28,20 @@ def build_linux(c: Context):
     c.run("install -d {{ dlpa }}")
     c.run("install zsync zsyncmake {{ dlpa }}")
 
+@task(kind="python", platforms="freebsd")
+def build_freebsd(c: Context):
+
+    c.var("version", version)
+    c.chdir("zsync-{{ version }}")
+
+    c.patch("zsync-no-isastty.diff", p=1)
+    c.patch("zsync-compress-5.diff", p=0)
+
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" """)
+    c.run("""{{ make }}""")
+
+    c.run("install -d {{ dlpa }}")
+    c.run("install zsync zsyncmake {{ dlpa }}")
 
 @task(kind="python", platforms="mac")
 def build_mac(c: Context):

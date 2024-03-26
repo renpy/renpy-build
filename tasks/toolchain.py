@@ -47,6 +47,28 @@ def usrinclude(c: Context):
     c.run("mkdir -p llvm-mingw/i686-w64-mingw32/usr/include")
     c.run("mkdir -p llvm-mingw/x86_64-w64-mingw32/usr/include")
 
+# Download the full llvmorg source so it can be built with the custom tooling in next phase
+@task(kind="cross", platforms="freebsd")
+def download(c: Context):
+
+    url = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz"
+    dest = c.path("{{ tmp }}/tars/llvmorg-15.0.7.tar.gz")
+
+    if os.path.exists(dest):
+        return
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading freebsd toolchain.")
+
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
 
 @task(kind="cross", platforms="android", always=True)
 def build(c: Context):

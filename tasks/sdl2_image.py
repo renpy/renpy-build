@@ -64,4 +64,4 @@ def build(c: Context):
     libtool.write_text(text)
 
     c.run("""{{ make }}""")
-    c.run("""make install""")
+    c.run("""{{ make_exec }} install""")

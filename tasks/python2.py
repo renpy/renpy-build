@@ -178,7 +178,7 @@ eval $PYTHON_FOR_BUILD ../../Tools/scripts/h2py.py -i "'(u_long)'" {{cross}}/llv
 """, "Lib/plat-generic/regen")
 
     c.run("""{{ make }}""")
-    c.run("""make install""")
+    c.run("""{{ make_exec }} install""")
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
 

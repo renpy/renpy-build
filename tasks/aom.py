@@ -44,4 +44,4 @@ def build(c : Context):
     except:
         c.run("{{ make }} VERBOSE=1")
 
-    c.run("{{ make }} install")
+    c.run("{{ make_exec }} install")

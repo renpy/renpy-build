@@ -101,4 +101,4 @@ def build(c: Context):
     c.run("{{ AR }} r librenpy.a {{ objects }} inittab.o")
     c.run("{{ RANLIB }} librenpy.a")
 
-    c.copy("librenpy.a", "{{ install }}/lib/librenpy.a")
+_exec    c.copy("librenpy.a", "{{ install }}/lib/librenpy.a")

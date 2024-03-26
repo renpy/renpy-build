@@ -220,7 +220,7 @@ def build_web(c: Context):
     c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
     c.copy("{{ host }}/web/bin/python3", "{{ install }}/bin/hostpython3")
 
     for i in [ "ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:

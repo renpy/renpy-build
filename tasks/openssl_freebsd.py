@@ -18,7 +18,7 @@ def build(c: Context):
     c.chdir("openssl-{{version}}")
 
     c.env("CC", "ccache clang15")
-    c.run("""./Configure cc shared threads -lpthread --prefix="{{ install }}/opt" """)
+    c.run("""./Configure cc shared threads -lpthread --prefix="{{ host }}" """)
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install_sw""")
+    c.run("""{{ make_exec }} install_sw""")

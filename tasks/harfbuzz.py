@@ -42,5 +42,5 @@ def build(c: Context):
           --with-coretext=no
           """)
 
-    c.run("{{make}} V=1")
-    c.run("{{make}} install")
+    c.run("{{ make }} V=1")
+    c.run("{{ make_exec }} install")

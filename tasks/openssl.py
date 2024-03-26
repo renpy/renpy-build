@@ -17,17 +17,18 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("openssl-{{version}}")
 
+    # force openssl to use the built version of openssl for the last step
     if c.platform == "freebsd":
-        c.env("C_INCLUDE_PATH", "{{ install }}/opt/include:/usr/include:/usr/local/include")
-        c.env("CFLAGS", "{{ CFLAGS }} -L{{ install }}/opt/lib -L/usr/lib -L/usr/local/lib -L/usr/local/lib/gcc13")
-        c.env("LDFLAGS", "-L{{ install }}/opt/lib {{ LDFLAGS }}")
-        # fix a weird linking bug where these system files were hardcoded
-        c.run("cp -rf /usr/lib/crt1.o .")
-        c.run("cp -rf /usr/lib/crti.o .")
-        c.run("cp -rf /usr/lib/crtbegin.o .")
-        c.run("cp -rf /usr/lib/crtend.o .")
-        c.run("cp -rf /usr/lib/crtn.o .")
-
+        c.env("C_INCLUDE_PATH", "{{ host }}/include:/usr/include:/usr/local/include")
+#        c.env("CFLAGS", "{{ CFLAGS }} -L{{ install }}/opt/lib -L/usr/lib -L/usr/local/lib -L/usr/local/lib/gcc13")
+#        c.env("LDFLAGS", "-L{{ install }}/opt/lib {{ LDFLAGS }}")
+#        # fix a weird linking bug where these system files were hardcoded
+#        c.run("cp -rf /usr/lib/crt1.o .")
+#        c.run("cp -rf /usr/lib/crti.o .")
+#        c.run("cp -rf /usr/lib/crtbegin.o .")
+#        c.run("cp -rf /usr/lib/crtend.o .")
+#        c.run("cp -rf /usr/lib/crtn.o .")
+#
     if c.platform == "mac":
         c.env("KERNEL_BITS", "64")
 
@@ -46,4 +47,4 @@ def build(c: Context):
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install_sw""")
+    c.run("""{{ make_exec }} install_sw""")

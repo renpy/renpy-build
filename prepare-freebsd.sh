@@ -51,16 +51,14 @@ sudo pkg install -y \
 mkdir -p $ROOT/tmp
 
 # Install the programs and virtualenvs.
-pushd $ROOT/tmp
-fetch https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz
-popd
 
 VENV="$ROOT/tmp/virtualenv.py3"
 # required to get the proper virtualenvironment set correctly until FreeBSD moves fully to Py3.10
 python3 -m virtualenv -p "/usr/local/bin/python3.10" $VENV
 
 # none of these should be directly installed to /usr with how FreeBSD handles software
-export RENPY_DEPS_INSTALL=/usr/local::/opt/toolchain/x86_64-pc-freebsd/
+export TOOLCHAIN=/opt/toolchain/x86_64-pc-freebsd/
+export RENPY_DEPS_INSTALL=/usr/local::$TOOLCHAIN
 
 . $BASE/nightly/git.sh
 . $BASE/nightly/python.sh

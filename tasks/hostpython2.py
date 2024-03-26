@@ -32,4 +32,4 @@ def build_host(c: Context):
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")

@@ -9,6 +9,10 @@ from . import env_sh
 from . import sysroot
 from . import toolchain
 
+# build Freebsd toolchain prior to building everything else
+if sys.platform.startswith('freebsd'):
+    from . import toolchain_freebsd
+
 from . import nasm
 
 from . import metalangle
