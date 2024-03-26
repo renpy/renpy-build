@@ -60,4 +60,4 @@ def build(c: Context):
     c.run("""cp {{host}}/freetype-apinames objs/apinames.exe""")
     c.run("""touch objs/apinames objs/apinames.exe""")
     c.run("""{{ make }}""")
-    c.run("""make install""")
+    c.run("""{{ make }} install""")

@@ -24,6 +24,6 @@ def build(c : Context):
     try:
         c.run("{{ make }}")
     except:
-        c.run("make VERBOSE=1")
+        c.run("{{ make }} VERBOSE=1")
 
-    c.run("make install")
+    c.run("{{ make }} install")

@@ -46,6 +46,8 @@ def build(c: Context):
 
     if c.platform == "linux":
         c.var("os", "linux")
+    elif c.platform == "freebsd":
+        c.var("os", "freebsd")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("os", "mingw64")
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -186,7 +188,7 @@ def build(c: Context):
     """)
 
     c.run("""{{ make }} V=1""")
-    c.run("""make install""")
+    c.run("""{{ make }} install""")
 
 
 @task(platforms="web")
@@ -280,4 +282,4 @@ def build_web(c: Context):
     """)
 
     c.run("""{{ make }} V=1""")
-    c.run("""make install""")
+    c.run("""{{ make }} install""")
