@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec /usr/local/bin/gcc -B ./freebsd/bin --target=x86_64-pc-freebsd "$@"

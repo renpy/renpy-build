@@ -51,6 +51,9 @@ sudo pkg install -y \
 mkdir -p $ROOT/tmp
 
 # Install the programs and virtualenvs.
+pushd $ROOT/tmp
+fetch https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz
+popd
 
 VENV="$ROOT/tmp/virtualenv.py3"
 # required to get the proper virtualenvironment set correctly until FreeBSD moves fully to Py3.10
