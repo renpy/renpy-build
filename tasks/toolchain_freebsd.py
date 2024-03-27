@@ -49,12 +49,14 @@ def build_binutils(c: Context):
 def build_gcc(c: Context):
     c.var("gcc", gcc)
     c.chdir("gcc-{{gcc}}")
+    c.patch("gcc-tree-header-fix-freebsd.diff", p=0)
 
     c.env("CC", "ccache clang15")
     c.env("CXX", "ccache clang++15")
     c.env("CPP", "ccache clang15 -E")
-    c.env("CFLAGS", "-I/usr/include -I/usr/local/include -Wno-unused-result")
-    c.env("CXXFLAGS", "-I/usr/include -I/usr/local/include -Wno-unused-result")
+    c.env("CFLAGS", "-I/usr/include -I/usr/local/include")
+    c.env("CXXFLAGS", "-I/usr/include -I/usr/local/include")
+    c.env("LDFLAGS", "-L/usr/lib -L/usr/local/lib")
     c.run("""
         ./configure --prefix={{ TOOLCHAIN }}
             --target={{ host_platform }}
@@ -62,8 +64,12 @@ def build_gcc(c: Context):
             --disable-multilib
     """)
 
+#    c.run("{{ make }} all-gcc")
+#    c.run("{{ make_exec }} install-gcc")
+#    c.run("{{ make }} all-target-libgcc")
+#    c.run("{{ make_exec }} install-target-libgcc")
     c.run("{{ make }}")
-    c.run("{{ make_exec }}")
+    c.run("{{ make_exec }} install")
 
 @task(kind="cross", platforms="freebsd")
 def build_llvm(c: Context):
@@ -91,7 +97,7 @@ def build_llvm(c: Context):
 
     c.run("{{ make }}")
     c.run("{{ make_exec }} install")
-
+    
 @task(kind="cross", platforms="freebsd")
 def build_binutils(c: Context):
     c.var("binutils", binutils)
