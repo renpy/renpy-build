@@ -42,6 +42,10 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     if bin and not bin.endswith("/"):
         bin += "/"
 
+    # only use this for the initial building of required FreeBSD toolchain
+    if sys.platform.startswith('freebsd') and c.kind == "toolchain":
+        suffix = "15"
+
     c.var("llvm_bin", bin)
     c.var("llvm_prefix", prefix)
     c.var("llvm_suffix", suffix)
@@ -209,18 +213,17 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
-    # fix for FreeBSD
     c.var("lipo", "llvm-lipo-15")
 
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
-
-        llvm(c)
         # add FreeBSD specific library and include paths
         if c.platform == "freebsd":
             c.env("LDFLAGS", "{{ LDFLAGS }} -L/usr/local/lib")
             c.env("CFLAGS", "{{ CFLAGS }} -I/usr/include -I/usr/local/include")
             c.env("CXXFLAGS", "{{ CXXFLAGS }} -I/usr/include -I/usr/local/include")
+
+        llvm(c)
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
         c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
