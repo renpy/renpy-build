@@ -47,9 +47,8 @@ def usrinclude(c: Context):
     c.run("mkdir -p llvm-mingw/i686-w64-mingw32/usr/include")
     c.run("mkdir -p llvm-mingw/x86_64-w64-mingw32/usr/include")
 
-# Download the full llvmorg source so it can be built with the custom tooling in next phase
 @task(kind="cross", platforms="freebsd")
-def download(c: Context):
+def download_llvm(c: Context):
 
     url = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz"
     dest = c.path("{{ tmp }}/tars/llvmorg-15.0.7.tar.gz")
@@ -59,7 +58,44 @@ def download(c: Context):
 
     dest.parent.mkdir(parents=True, exist_ok=True)
 
-    print("Downloading freebsd toolchain.")
+    print("Downloading llvm source")
+
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
+@task(kind="cross", platforms="freebsd")
+def download_binutils(c: Context):
+
+    url = "https://ftp.gnu.org/gnu/binutils/binutils-2.40.tar.xz"
+    dest = c.path("{{ tmp }}/tars/binutils-2.40.tar.xz")
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading binutils source")
+
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
+
+@task(kind="toolchain", platforms="freebsd")
+def download_gcc(c: Context):
+
+    url = "https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.gz"
+    dest = c.path("{{ tmp }}/tars/gcc-13.2.0.tar.gz")
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading gcc source")
 
     with requests.get(url, stream=True) as r:
         r.raise_for_status()

@@ -8,7 +8,7 @@ REFS=$ROOT
 BASE="$ROOT"
 
 # Needed to build things.
-sudo pkg install git ccache autoconf autoconf-archive automake cmake gmake libtool gcc bison flex
+sudo pkg install git ccache autoconf autoconf-archive automake cmake gmake libtool gcc bison flex gmake libxml2 llvm
 
 # Needed to build python things.
 sudo pkg install -y python2 python3 python310 py39-virtualenv
@@ -19,23 +19,14 @@ sudo pkg install -y curl
 # Needed by renpy-build itself.
 sudo pkg install -y py39-jinja2
 
-# Needed by sysroot.
-sudo pkg install -y debootstrap qemu-user-static
-
 # Needed by gcc.
-sudo pkg install -y gmp mpfr mpc gmake
+sudo pkg install -y gmp mpfr mpc iconv
 
-# Needed by llvm.
-#sudo pkg install -y software-properties-common
+# Needed by binutils for toolchain.
+sudo pkg install -y texinfo
 
 # Needed by hostpython.
 sudo pkg install -y openssl bzip2 lzma
-
-# Needed by brotli.
-#sudo pkg install -y bc
-
-# Needed for mac
-sudo pkg install -y cmake libxml2 llvm
 
 # Needed for web
 sudo pkg install -y quilt

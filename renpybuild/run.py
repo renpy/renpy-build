@@ -146,7 +146,7 @@ def build_environment(c):
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "freebsd") and (c.arch == "x86_64"):
-        c.var("host_platform", "x86_64-pc-freebsd")
+        c.var("host_platform", "x86_64-pc-freebsd14.0")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -182,7 +182,7 @@ def build_environment(c):
         c.var("architecture_name", "arm-linux-gnueabihf")
 
     if (c.platform == "freebsd") and (c.arch == "x86_64"):
-        c.var("architecture_name", "x86_64-pc-freebsd")
+        c.var("architecture_name", "x86_64-pc-freebsd14.0")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
