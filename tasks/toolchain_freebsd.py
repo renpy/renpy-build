@@ -49,25 +49,30 @@ def build_binutils(c: Context):
 def build_gcc(c: Context):
     c.var("gcc", gcc)
     c.chdir("gcc-{{gcc}}")
+
+    # download extra libs per here: https://gcc.gnu.org/wiki/FAQ#configure
+    c.run("touch contrib/download_prerequisites")
+    c.run("sh contrib/download_prerequisites")
     c.patch("gcc-tree-header-fix-freebsd.diff", p=0)
 
+    # build in external build directory
+    c.run("mkdir -p ../gcc-build")
+    c.chdir("../gcc-build")
+
+    c.env("C_INCLUDE_DIR", "/usr/include:/usr/local/include")
     c.env("CC", "ccache clang15")
     c.env("CXX", "ccache clang++15")
     c.env("CPP", "ccache clang15 -E")
-    c.env("CFLAGS", "-I/usr/include -I/usr/local/include")
-    c.env("CXXFLAGS", "-I/usr/include -I/usr/local/include")
+    c.env("CFLAGS", "-Wall")
+    c.env("CXXFLAGS", "-Wall -stdlib=libc++")
     c.env("LDFLAGS", "-L/usr/lib -L/usr/local/lib")
     c.run("""
-        ./configure --prefix={{ TOOLCHAIN }}
+        ../gcc-{{gcc}}/configure --prefix={{ TOOLCHAIN }}
             --target={{ host_platform }}
             --enable-languages=c,c++
             --disable-multilib
     """)
 
-#    c.run("{{ make }} all-gcc")
-#    c.run("{{ make_exec }} install-gcc")
-#    c.run("{{ make }} all-target-libgcc")
-#    c.run("{{ make_exec }} install-target-libgcc")
     c.run("{{ make }}")
     c.run("{{ make_exec }} install")
 
