@@ -20,7 +20,7 @@ sudo pkg install -y curl
 sudo pkg install -y py39-jinja2
 
 # Needed by gcc.
-sudo pkg install -y gmp mpfr mpc iconv
+sudo pkg install -y gmp mpfr mpc iconv valgrind
 
 # Needed by binutils for toolchain.
 sudo pkg install -y texinfo
