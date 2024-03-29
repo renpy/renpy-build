@@ -31,10 +31,12 @@ class Platform:
 # Python 2
 
 Platform("freebsd", "x86_64", "2")
+Platform("freebsd", "i686", "2")
 
 # Python 3
 
 Platform("freebsd", "x86_64", "3")
+Platform("freebsd", "i686", "3")
 
 def build(args):
     platforms = set(i.strip() for i in args.platforms.split(",") if i)

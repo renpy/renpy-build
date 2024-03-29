@@ -62,7 +62,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
         c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
     elif c.platform == "mac" or c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++")
-    elif sys.platform.startswith('freebsd') and c.arch == "x86_64":
+    elif sys.platform.startswith('freebsd'):
         c.var("cxx_clang_args", "-stdlib=libstdc++")
     else:
         c.var("cxx_clang_args", "")
@@ -149,6 +149,8 @@ def build_environment(c):
         c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "freebsd") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-freebsd14.0")
+    elif (c.platform == "freebsd") and (c.arch == "i686"):
+        c.var("host_platform", "i686-pc-freebsd14.0")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -185,6 +187,8 @@ def build_environment(c):
 
     if (c.platform == "freebsd") and (c.arch == "x86_64"):
         c.var("architecture_name", "x86_64-pc-freebsd14.0")
+    elif (c.platform == "freebsd") and (c.arch == "i686"):
+        c.var("architecture_name", "i686-pc-freebsd14.0")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
@@ -281,12 +285,23 @@ def build_environment(c):
     elif (c.platform == "freebsd") and (c.arch == "x86_64"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib")
         c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
         # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "FreeBSD")
         c.var("cmake_system_processor", "x86_64")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+
+    elif (c.platform == "freebsd") and (c.arch == "i686"):
+
+        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
+
+        c.var("cmake_system_name", "FreeBSD")
+        c.var("cmake_system_processor", "i686")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
