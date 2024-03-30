@@ -47,19 +47,20 @@ def usrinclude(c: Context):
     c.run("mkdir -p llvm-mingw/i686-w64-mingw32/usr/include")
     c.run("mkdir -p llvm-mingw/x86_64-w64-mingw32/usr/include")
 
-@task(kind="cross", platforms="freebsd")
-def download_llvm(c: Context):
+# Need the generic source and the base systems for sysroot
+@task(kind="toolchain", platforms="freebsd")
+def download_freebsd_source(c: Context):
 
-    url = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.2.tar.gz"
-    dest = c.path("{{ tmp }}/tars/llvmorg-18.1.2.tar.gz")
+    url = "https://github.com/freebsd/freebsd-src/archive/refs/tags/release/14.0.0.tar.gz"
+    dest = c.path("{{ tmp }}/tars/freebsd-14.0.0.tar.gz")
 
     if os.path.exists(dest):
         return
 
     dest.parent.mkdir(parents=True, exist_ok=True)
 
-    print("Downloading llvm source")
-
+    print("Downloading freebsd source")
+   
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         with open(dest.with_suffix(".tmp"), "wb") as f:
@@ -68,42 +69,110 @@ def download_llvm(c: Context):
 
     dest.with_suffix(".tmp").rename(dest)
 
-#@task(kind="cross", platforms="freebsd")
-#def download_binutils(c: Context):
-#
-#    url = "https://ftp.gnu.org/gnu/binutils/binutils-2.40.tar.xz"
-#    dest = c.path("{{ tmp }}/tars/binutils-2.40.tar.xz")
-#
-#    dest.parent.mkdir(parents=True, exist_ok=True)
-#
-#    print("Downloading binutils source")
-#
-#    with requests.get(url, stream=True) as r:
-#        r.raise_for_status()
-#        with open(dest.with_suffix(".tmp"), "wb") as f:
-#            for chunk in r.iter_content(chunk_size=1024*1024):
-#                f.write(chunk)
-#
-#    dest.with_suffix(".tmp").rename(dest)
-#
-#@task(kind="toolchain", platforms="freebsd")
-#def download_gcc(c: Context):
-#
-#    url = "https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.gz"
-#    dest = c.path("{{ tmp }}/tars/gcc-13.2.0.tar.gz")
-#
-#    dest.parent.mkdir(parents=True, exist_ok=True)
-#
-#    print("Downloading gcc source")
-#
-#    with requests.get(url, stream=True) as r:
-#        r.raise_for_status()
-#        with open(dest.with_suffix(".tmp"), "wb") as f:
-#            for chunk in r.iter_content(chunk_size=1024*1024):
-#                f.write(chunk)
-#
-#    dest.with_suffix(".tmp").rename(dest)
+@task(kind="toolchain", platforms="freebsd")
+def download_gcc_source(c: Context):
 
+    url = "https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz"
+    dest = c.path("{{ tmp }}/tars/gcc-13.2.0.tar.xz")
+
+    if os.path.exists(dest):
+        return
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading gcc source")
+   
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
+@task(kind="toolchain", platforms="freebsd")
+def download_binutils_source(c: Context):
+
+    url = "https://ftp.gnu.org/gnu/binutils/binutils-2.41.tar.xz"
+    dest = c.path("{{ tmp }}/tars/binutils-2.41.tar.xz")
+
+    if os.path.exists(dest):
+        return
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading binutils source")
+   
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
+@task(kind="toolchain", platforms="freebsd")
+def download_llvm_source(c: Context):
+
+    url = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz"
+    dest = c.path("{{ tmp }}/tars/llvmorg-15.0.7.tar.gz")
+
+    if os.path.exists(dest):
+        return
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading llvm source")
+   
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
+@task(kind="toolchain", platforms="freebsd")
+def download_freebsd_amd64_base(c: Context):
+
+    url = "https://ftp.freebsd.org/pub/FreeBSD/releases/amd64/14.0-RELEASE/base.txz"
+    dest = c.path("{{ tmp }}/tars/freebsd-amd64-14.0.0-base.tar.xz")
+
+    if os.path.exists(dest) or c.arch != "x86_64": 
+        return
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading freebsd amd64 base")
+   
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
+
+@task(kind="toolchain", platforms="freebsd")
+def download_freebsd_i386_base(c: Context):
+
+    url = "https://ftp.freebsd.org/pub/FreeBSD/releases/i386/14.0-RELEASE/base.txz"
+    dest = c.path("{{ tmp }}/tars/freebsd-i386-14.0.0-base.tar.xz")
+
+    if os.path.exists(dest) or c.arch != "i686":
+        return
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    print("Downloading freebsd i386 base")
+   
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(dest.with_suffix(".tmp"), "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                f.write(chunk)
+
+    dest.with_suffix(".tmp").rename(dest)
 
 @task(kind="cross", platforms="android", always=True)
 def build(c: Context):

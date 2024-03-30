@@ -150,7 +150,7 @@ def build_environment(c):
     elif (c.platform == "freebsd") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-pc-freebsd14.0")
     elif (c.platform == "freebsd") and (c.arch == "i686"):
-        c.var("host_platform", "i686-pc-freebsd14.0")
+        c.var("host_platform", "i386-pc-freebsd14.0")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
     elif (c.platform == "windows") and (c.arch == "i686"):
@@ -188,7 +188,7 @@ def build_environment(c):
     if (c.platform == "freebsd") and (c.arch == "x86_64"):
         c.var("architecture_name", "x86_64-pc-freebsd14.0")
     elif (c.platform == "freebsd") and (c.arch == "i686"):
-        c.var("architecture_name", "i686-pc-freebsd14.0")
+        c.var("architecture_name", "i386-pc-freebsd14.0")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
         c.var("sdl_host_platform", "arm-ios-darwin21")
@@ -221,6 +221,9 @@ def build_environment(c):
 
     c.var("lipo", "llvm-lipo-15")
 
+    # set this here for the FreeBSD cross-compiler to build correctly
+    if c.kind == "toolchain" and c.platform == "freebsd":
+        c.env("TOOLCHAIN", "{{ tmp }}/host/{{host_platform}}")
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
         # add FreeBSD specific library and include paths
