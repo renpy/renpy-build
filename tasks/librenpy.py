@@ -12,7 +12,7 @@ def gen_static2(c: Context):
 
     c.chdir("{{ renpy }}/module")
     if c.platform == "freebsd":
-        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ install }}")
+        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ install }}/lib")
     else:
         c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
@@ -24,7 +24,7 @@ def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}/module")
     if c.platform == "freebsd":
-        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ install }}")
+        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ install }}/lib")
     else:
         c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
@@ -79,7 +79,7 @@ def build(c: Context):
     if c.platform == "ios" or c.platform == "mac":
         read_setup(c.path("{{ install }}/pyobjus"))
 
-    if c.platform == "windows" or c.platform == "mac" or c.platform == "linux":
+    if c.platform == "windows" or c.platform == "mac" or c.platform == "linux" or c.platform == "freebsd":
         read_setup(c.renpy / "module", ".tfd")
 
     if c.platform == "web" and c.python == "3":
