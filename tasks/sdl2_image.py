@@ -23,12 +23,9 @@ def build(c: Context):
     if c.platform == "windows":
         c.env("ac_cv_lib_jpeg_jpeg_CreateDecompress", "yes")
 
-    # fix for new releases of FreeBSD
-    if c.platform = "freebsd":
-        c.var("config_dir", str(c.path("/usr/local/share/libtool/build-aux")
-    else:
-        c.var("config_dir", str(c.path("/usr/share/misc")
-    c.run("""cp {{ config_dir }}/config.sub config.sub""")
+    # doesn't exist on new releases of FreeBSD
+    if c.platform != "freebsd":
+        c.run("""cp /usr/share/misc/config.sub config.sub""")
 
     # c.run("""./autogen.sh""")
     c.run("autoreconf -f")

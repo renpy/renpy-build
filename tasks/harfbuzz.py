@@ -23,12 +23,8 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("harfbuzz-{{version}}")
 
-    # fix for new releases of FreeBSD
-    if c.platform = "freebsd":
-        c.var("config_dir", str(c.path("/usr/local/share/libtool/build-aux")
-    else:
-        c.var("config_dir", str(c.path("/usr/share/misc")
-    c.run("""cp {{ config_dir }}/config.sub config.sub""")
+    if c.platform != "freebsd":
+        c.run("""cp /usr/share/misc/config.sub .""")
 
     c.run("""{{configure}} {{ cross_config }}
           --disable-shared
