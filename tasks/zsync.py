@@ -13,7 +13,7 @@ def unpack(c: Context):
 
     # fix for newer versions of FreeBSD
     if c.platform == "freebsd":
-        c.var("config_dir", "/usr/local/share/libtools/build-aux")
+        c.var("config_dir", "/usr/local/share/libtool/build-aux")
     else:
         c.var("config_dir", "/usr/share/misc")
     c.run("""cp {{ config_dir }}/config.sub zsync-{{version}}/autotools/config.sub""")
