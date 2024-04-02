@@ -1,6 +1,8 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
+import os
+
 freebsd = "14.0.0"
 
 @task(kind="toolchain", platforms="freebsd")
@@ -60,10 +62,15 @@ def prepare_sysroot(c: Context):
     # reset permissions back to $USER's so they can use the tools in the jail without sudo
     c.run("sudo chown -R {{ USER }} {{ sysroot }}")
     c.run("sudo umount {{ sysroot }}/dev")
+    c.run("sudo umount {{ sysroot }}/proc")
 
     # make sysroot one that the build system can use
     c.var("platform", c.platform)
     c.var("arch", c.arch)
     c.var("main_sysroot", "{{ tmp }}/sysroot.{{ platform }}-{{ arch }}")
+
+    # remove the old sysroot before replacing with new one
+    if os.path.exists(str(c.path("{{ main_sysroot }}"))):
+        c.run("rm -rf {{ main_sysroot }}")
     c.run("mv -v {{ sysroot }} {{ main_sysroot }}")
 

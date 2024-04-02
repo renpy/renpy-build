@@ -223,6 +223,11 @@ def build_environment(c):
     c.var("lipo", "llvm-lipo-15")
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
+        # set this for hostpython to work properly
+        if c.platform == "freebsd":
+            c.env("CFLAGS", "{{ CFLAGS }} -I{{ install }}/usr/include -I{{ install }}/usr/local/include -I/usr/include -I/usr/local/include")
+            c.env("CXXFLAGS", "{{ CXXFLAGS }} -I{{ install }}/usr/include -I{{ install }}/usr/local/include -I/usr/include -I/usr/local/include")
+
         llvm(c)
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
