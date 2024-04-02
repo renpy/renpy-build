@@ -11,8 +11,12 @@ def unpack(c: Context):
     c.var("version", version)
     c.run("tar xjf {{source}}/zsync-{{version}}.tar.bz2")
 
-    if c.platform != "freebsd":
-        c.run("""cp /usr/share/misc/config.sub zsync-{{version}}/autotools""")
+    # fix for new releases of FreeBSD
+    if c.platform = "freebsd":
+        c.var("config_dir", str(c.path("/usr/local/share/libtool/build-aux")
+    else:
+        c.var("config_dir", str(c.path("/usr/share/misc")
+    c.run("""cp {{ config_dir }}/config.sub zsync-{{version}}/autotools/config.sub""")
 
 @task(kind="python", platforms="linux")
 def build_linux(c: Context):
