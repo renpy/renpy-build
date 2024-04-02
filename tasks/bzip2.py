@@ -20,16 +20,6 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("bzip2-{{version}}")
 
-#    if c.platform == "freebsd":
-#        c.env("C_INCLUDE_PATH", "/usr/include:/usr/local/include")
-#        c.env("CFLAGS", "{{ CFLAGS }} -L/usr/lib -L/usr/local/lib/gcc13")
-#        # fix a weird linking bug where these system files were hardcoded
-#        c.run("cp -rf /usr/lib/crt1.o .")
-#        c.run("cp -rf /usr/lib/crti.o .")
-#        c.run("cp -rf /usr/lib/crtbegin.o .")
-#        c.run("cp -rf /usr/lib/crtend.o .")
-#        c.run("cp -rf /usr/lib/crtn.o .")
-
     c.run("""{{ make }} AR="{{ AR }}" RANLIB="{{ RANLIB }}" CC="{{ CC }}" CFLAGS="{{ CFLAGS }} -D_FILE_OFFSET_BITS=64" """)
     c.run("""touch bzip2 bunzip2 bzip2recover bzgrep bzmore bzdiff""")
 

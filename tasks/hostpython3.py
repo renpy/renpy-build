@@ -1,6 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 import sys
+import os
 
 version = "3.9.10"
 web_version = "3.11.0"

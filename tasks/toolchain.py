@@ -47,28 +47,6 @@ def usrinclude(c: Context):
     c.run("mkdir -p llvm-mingw/i686-w64-mingw32/usr/include")
     c.run("mkdir -p llvm-mingw/x86_64-w64-mingw32/usr/include")
 
-# Need the generic source and the base systems for sysroot
-@task(kind="toolchain", platforms="freebsd")
-def download_freebsd_source(c: Context):
-
-    url = "https://github.com/freebsd/freebsd-src/archive/refs/tags/release/14.0.0.tar.gz"
-    dest = c.path("{{ tmp }}/tars/freebsd-14.0.0.tar.gz")
-
-    if os.path.exists(dest):
-        return
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-
-    print("Downloading freebsd source")
-   
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(dest.with_suffix(".tmp"), "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024*1024):
-                f.write(chunk)
-
-    dest.with_suffix(".tmp").rename(dest)
-
 @task(kind="toolchain", platforms="freebsd")
 def download_freebsd_amd64_base(c: Context):
 

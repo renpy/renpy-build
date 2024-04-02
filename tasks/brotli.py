@@ -15,10 +15,6 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("brotli-{{version}}")
 
-#    if c.platform == "freebsd":
-#        c.env("C_INCLUDE_PATH", "/usr/include:/usr/local/include")
-#        c.env("CFLAGS", "{{ CFLAGS }} -L/usr/lib -L/usr/local/lib/gcc13")
-
     c.run("""bash ./bootstrap""")
 
     c.run("""{{configure}} {{ cross_config }}

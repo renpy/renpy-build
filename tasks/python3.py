@@ -66,7 +66,7 @@ def patch_posix(c: Context):
     c.run(""" autoreconf -vfi """)
 
 @task(kind="python", pythons="3", platforms="freebsd")
-def patch_posix(c: Context):
+def patch_posix_freebsd(c: Context):
     c.var("version", fbd_version)
 
     c.chdir("Python-{{ version }}")
@@ -182,7 +182,7 @@ def build_ios(c: Context):
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
     c.run("""{{ make }} """)
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 
@@ -197,7 +197,7 @@ def build_android(c: Context):
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 
@@ -222,7 +222,7 @@ def build_windows(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
 

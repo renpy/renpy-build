@@ -191,7 +191,7 @@ def build(c: Context):
     """)
 
     c.run("""{{ make }} V=1""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
 
 
 @task(platforms="web")
@@ -285,4 +285,4 @@ def build_web(c: Context):
     """)
 
     c.run("""{{ make }} V=1""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")

@@ -19,16 +19,8 @@ def build(c: Context):
 
     # force openssl to use the built version of openssl for the last step
     if c.platform == "freebsd":
-        c.env("C_INCLUDE_PATH", "{{ host }}/include:/usr/include:/usr/local/include")
-#        c.env("CFLAGS", "{{ CFLAGS }} -L{{ install }}/opt/lib -L/usr/lib -L/usr/local/lib -L/usr/local/lib/gcc13")
-#        c.env("LDFLAGS", "-L{{ install }}/opt/lib {{ LDFLAGS }}")
-#        # fix a weird linking bug where these system files were hardcoded
-#        c.run("cp -rf /usr/lib/crt1.o .")
-#        c.run("cp -rf /usr/lib/crti.o .")
-#        c.run("cp -rf /usr/lib/crtbegin.o .")
-#        c.run("cp -rf /usr/lib/crtend.o .")
-#        c.run("cp -rf /usr/lib/crtn.o .")
-#
+        c.env("C_INCLUDE_PATH", "{{ host }}/include")
+
     if c.platform == "mac":
         c.env("KERNEL_BITS", "64")
 
@@ -41,8 +33,6 @@ def build(c: Context):
          c.run("""./Configure cc no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif c.platform == "web":
         c.run("""emconfigure ./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
-    elif c.platform == "freebsd":
-        c.run("""./Configure cc no-shared no-asm no-engine threads no-async -lpthread --prefix="{{ install }}" """)
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 

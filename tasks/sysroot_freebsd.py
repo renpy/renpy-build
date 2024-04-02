@@ -1,12 +1,12 @@
 from renpybuild.context import Context
-from renpybuild.task import task, annotator
+from renpybuild.task import task
 
 import os
 
 freebsd = "14.0.0"
 
-@task(kind="toolchain", platforms="freebsd")
-def unpack_toolchain(c: Context):
+@task(platforms="freebsd", archs="x86_64,i686", always=True)
+def unpack_sysroot(c: Context):
     c.clean()
 
     c.var("freebsd", freebsd)
@@ -19,14 +19,14 @@ def unpack_toolchain(c: Context):
         c.run("tar xJf {{ tmp }}/tars/freebsd-i386-{{freebsd}}-base.tar.xz -C freebsd-{{freebsd}}-base")
 
 # this is here to make setting sysroot easier; most of this will rely on it until the sysroot is finalized
-@task(kind="toolchain", platforms="freebsd")
+@task(platforms="freebsd")
 def set_sysroot(c: Context):
     c.var("freebsd", freebsd)
     c.var("sysroot", str(c.path("freebsd-{{freebsd}}-base")))
     return c
 
 # we're building the sysroot jail here with the required libraries for cross-compiling
-@task(kind="toolchain", platforms="freebsd")
+@task(platforms="freebsd", archs="x86_64,i686", always=True)
 def prepare_sysroot(c: Context):
     set_sysroot(c)
 
@@ -52,17 +52,32 @@ def prepare_sysroot(c: Context):
     c.run("sudo mount -t devfs devfs {{ sysroot }}/dev")
     c.run("sudo mount -t procfs procfs {{ sysroot }}/proc")
 
-    # install required packages here
+@task(platforms="freebsd", archs="x86_64,i686", always=True)
+def install_sysroot_tools(c: Context):
+    set_sysroot(c)
+
     c.run("""
         sudo chroot {{ sysroot }} /bin/sh -c '
             pkg install -y binutils gcc llvm15 pkgconf
         '
     """)
 
-    # reset permissions back to $USER's so they can use the tools in the jail without sudo
-    c.run("sudo chown -R {{ USER }} {{ sysroot }}")
+@task(platforms="freebsd")
+def permissions(c: Context):
+    import os
+
+    set_sysroot(c)
+
+    c.var("uid", str(os.getuid()))
+    c.var("gid", str(os.getgid()))
+    c.run("""sudo chown -R {{uid}}:{{gid}} {{sysroot}}""")
+    
+
     c.run("sudo umount {{ sysroot }}/dev")
     c.run("sudo umount {{ sysroot }}/proc")
+
+def install_sysroot(c: Context):
+    set_sysroot(c)
 
     # make sysroot one that the build system can use
     c.var("platform", c.platform)
@@ -70,7 +85,7 @@ def prepare_sysroot(c: Context):
     c.var("main_sysroot", "{{ tmp }}/sysroot.{{ platform }}-{{ arch }}")
 
     # remove the old sysroot before replacing with new one
-    if os.path.exists(str(c.path("{{ main_sysroot }}"))):
+    if c.path("{{ main_sysroot }}").exists():
         c.run("rm -rf {{ main_sysroot }}")
     c.run("mv -v {{ sysroot }} {{ main_sysroot }}")
 

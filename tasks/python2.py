@@ -122,7 +122,7 @@ def build_ios(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }} """)
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
@@ -148,7 +148,7 @@ def build_android(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
