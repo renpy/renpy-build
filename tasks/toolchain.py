@@ -111,7 +111,7 @@ def download_binutils_source(c: Context):
 
     dest.with_suffix(".tmp").rename(dest)
 
-@task(kind="toolchain", platforms="freebsd")
+@task(kind="cross", platforms="freebsd")
 def download_llvm_source(c: Context):
 
     url = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz"

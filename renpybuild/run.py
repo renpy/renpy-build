@@ -42,8 +42,8 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     if bin and not bin.endswith("/"):
         bin += "/"
 
-    # only use this for the initial building of required FreeBSD toolchain
-    if sys.platform.startswith('freebsd') and c.kind == "toolchain":
+    # set this since FreeBSD uses clang15 instead of clang-15 like all other platforms
+    if sys.platform.startswith('freebsd'):
         suffix = "15"
 
     c.var("llvm_bin", bin)
@@ -126,6 +126,7 @@ def build_environment(c):
         c.var("make_exec", "gmake")
     else:
         c.var("make_exec", "make")
+    
     c.var("make", "nice {{make_exec}} -j " + str(cpuccount))
     c.var("configure", "./configure")
     c.var("cmake", "cmake")
@@ -221,17 +222,7 @@ def build_environment(c):
 
     c.var("lipo", "llvm-lipo-15")
 
-    # set this here for the FreeBSD cross-compiler to build correctly
-    if c.kind == "toolchain" and c.platform == "freebsd":
-        c.env("TOOLCHAIN", "{{ tmp }}/host/{{host_platform}}")
-
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
-        # add FreeBSD specific library and include paths
-        if c.platform == "freebsd":
-            c.env("LDFLAGS", "{{ LDFLAGS }} -L/usr/local/lib")
-            c.env("CFLAGS", "{{ CFLAGS }} -I/usr/include -I/usr/local/include")
-            c.env("CXXFLAGS", "{{ CXXFLAGS }} -I/usr/include -I/usr/local/include")
-
         llvm(c)
 
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
