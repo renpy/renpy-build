@@ -63,7 +63,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     elif c.platform == "mac" or c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++")
     elif sys.platform.startswith('freebsd'):
-        c.var("cxx_clang_args", "-stdlib=libstdc++")
+        c.var("cxx_clang_args", "-stdlib=libc++")
     else:
         c.var("cxx_clang_args", "")
 
