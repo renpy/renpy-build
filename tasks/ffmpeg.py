@@ -48,6 +48,9 @@ def build(c: Context):
         c.var("os", "linux")
     elif c.platform == "freebsd":
         c.var("os", "freebsd")
+        # /tmp folder has different permissions than on Linux, so just fix this by moving the tmp directory to a local tmp folder
+        c.env("TMPDIR", str(c.path("{{ tmp }}/ffmpeg")))
+        c.run("mkdir -p {{ TMPDIR }}")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("os", "mingw64")
     elif (c.platform == "windows") and (c.arch == "i686"):
