@@ -2,6 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
 version = "3.9.10"
+fbd_version = "3.10.13"
 win_version = "3.9.10"
 web_version = "3.11.0"
 
@@ -12,6 +13,9 @@ def annotate(c: Context):
         if c.platform == "web":
             c.var("pythonver", "python3.11")
             c.var("pycver", "311")
+        elif c.platform == "freebsd":
+            c.var("pythonver", "python3.10")
+            c.var("pycver", "310")
         else:
             c.var("pythonver", "python3.9")
             c.var("pycver", "39")
@@ -26,6 +30,12 @@ def unpack(c: Context):
     c.var("version", version)
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
+@task(kind="python", pythons="3", platforms="freebsd")
+def unpack_freebsd(c: Context):
+    c.clean()
+
+    c.var("version", fbd_version)
+    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 @task(kind="python", pythons="3", platforms="windows")
 def unpack_windows(c: Context):
@@ -43,6 +53,18 @@ def unpack_windows(c: Context):
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
 def patch_posix(c: Context):
     c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patch("Python-{{ version }}/no-multiarch.diff")
+    c.patch("Python-{{ version }}/cross-darwin.diff")
+    c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
+    c.patch("Python-{{ version }}/no-builtin-available.diff")
+
+    c.run(""" autoreconf -vfi """)
+
+@task(kind="python", pythons="3", platforms="freebsd")
+def patch_posix(c: Context):
+    c.var("version", fbd_version)
 
     c.chdir("Python-{{ version }}")
     c.patch("Python-{{ version }}/no-multiarch.diff")
@@ -113,10 +135,16 @@ def common(c: Context):
 
 
 
-@task(kind="python", pythons="3", platforms="linux,mac")
+@task(kind="python", pythons="3", platforms="linux,mac,freebsd")
 def build_posix(c: Context):
 
     common(c)
+
+    # fix configure for FreeBSD
+    if c.platform == "freebsd":
+        c.env("MACHDEP", "freebsd")
+        # Using separate sysroot jails instead of a full cross-compiler for this, so no cross_config needed here
+        c.var("cross_config", "")
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")

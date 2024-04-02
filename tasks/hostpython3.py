@@ -19,16 +19,20 @@ def build_host(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
-
+    
     c.run("""{{configure}} --prefix="{{ host }}" """)
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make_exec }} install""")
 
-    c.rmtree("{{ host }}/lib/python3.9/config-3.9-x86_64-linux-gnu/Tools/")
-    c.run("install -d {{ host }}/lib/python3.9/config-3.9-x86_64-linux-gnu/Tools/")
-    c.run("cp -a Tools/scripts {{ host }}/lib/python3.9/config-3.9-x86_64-linux-gnu/Tools/scripts")
+    if c.platform == "freebsd":
+        c.var("ending", "freebsd14.0")
+    else:
+        c.var("ending", "linux-gnu")
 
+    c.rmtree("{{ host }}/lib/python3.9/config-3.9-x86_64-{{ ending }}/Tools/")
+    c.run("install -d {{ host }}/lib/python3.9/config-3.9-x86_64-{{ ending }}/Tools/")
+    c.run("cp -a Tools/scripts {{ host }}/lib/python3.9/config-3.9-x86_64-{{ ending }}/Tools/scripts")
 
 
 @task(kind="host", platforms="web", pythons="3")
