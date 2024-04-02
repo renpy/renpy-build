@@ -286,7 +286,7 @@ def build_environment(c):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/local/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/local/share/pkgconfig")
         # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "FreeBSD")
@@ -297,7 +297,7 @@ def build_environment(c):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/local/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/local/share/pkgconfig")
         # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "FreeBSD")
