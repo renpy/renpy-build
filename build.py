@@ -51,6 +51,9 @@ Platform("ios", "sim-arm64", "2")
 
 Platform("web", "wasm", "2")
 
+Platform("freebsd", "x86_64", "2")
+Platform("freebsd", "i686", "2")
+
 # Python 3
 
 Platform("linux", "x86_64", "3")
@@ -71,6 +74,9 @@ Platform("ios", "sim-x86_64", "3")
 Platform("ios", "sim-arm64", "3")
 
 Platform("web", "wasm", "3")
+
+Platform("freebsd", "x86_64", "3")
+Platform("freebsd", "i686", "3")
 
 def build(args):
     platforms = set(i.strip() for i in args.platforms.split(",") if i)

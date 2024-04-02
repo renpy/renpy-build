@@ -19,6 +19,9 @@ sudo pkg install -y curl
 # Needed by renpy-build itself.
 sudo pkg install -y py39-jinja2
 
+# Needed by sysroot for Linux builds.
+sudo pkg install -y debootstrap qemu-user-static
+
 # Needed by gcc.
 sudo pkg install -y gmp mpfr mpc iconv valgrind
 
