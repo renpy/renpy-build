@@ -49,6 +49,9 @@ Platform("ios", "arm64", "2")
 Platform("ios", "sim-x86_64", "2")
 Platform("ios", "sim-arm64", "2")
 
+Platform("freebsd", "x86_64", "2")
+Platform("freebsd", "i686", "2")
+
 Platform("web", "wasm", "2")
 
 # Python 3
@@ -69,6 +72,9 @@ Platform("android", "armeabi_v7a", "3")
 Platform("ios", "arm64", "3")
 Platform("ios", "sim-x86_64", "3")
 Platform("ios", "sim-arm64", "3")
+
+Platform("freebsd", "x86_64", "3")
+Platform("freebsd", "i686", "3")
 
 Platform("web", "wasm", "3")
 
