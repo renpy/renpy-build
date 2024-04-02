@@ -36,6 +36,11 @@ Be sure to leave a blank line after it, then save the file with ctrl+X, and
 use ``exit`` to get back to the non-root user. Note that this will allow
 anyone who can log in as rb to become the superuser of this system.
 
+There's also now a build system for building from FreeBSD 14.0. Consider this 
+very experimental. It hasn't been fully tested with building for the other 
+platforms but at least Linux should build fine without too many issues. 
+Steam is not natively supported on that platform, so Steamworks support 
+probably will not work at this time.
 
 Preparing
 ---------
@@ -46,7 +51,8 @@ commands to instal git and clone renpy-build::
     sudo apt install git
     git clone https://github.com/renpy/renpy-build
 
-Change into the renpy-build directory, and run prepare.sh::
+Change into the renpy-build directory, and run prepare.sh (for Ubuntu) or 
+prepare-freebsd.sh (for FreeBSD)::
 
     cd ~/renpy-build
     ./prepare.sh
@@ -54,6 +60,14 @@ Change into the renpy-build directory, and run prepare.sh::
 **This will globally change your system.**  It will install packages from Ubuntu
 and LLVM repositories. Please make sure you're comfortable with
 this change before continuing.
+
+**For FreeBSD:** it will install comparible packages to those used in Ubuntu but 
+will also download and build sysroot jails for compiling FreeBSD native libraries 
+and binaries. Each of these will add around 2 GB to your hard drive space 
+requirements. These will be comparible to the sysroot jails used by Ubuntu to 
+build the engine. They also will be briefly owned by root during creation (this 
+is required for pkg to install the extra tools needed). When finished, permissions 
+will be reverted back. See `tasks/toolchain_freebsd.py` to see how it works.
 
 This will first install all the packages required to build Ren'Py, and
 then it will clone Ren'Py and pygame_sdl2. It will also create a python
@@ -84,7 +98,7 @@ The build command can take some options:
     The python version to build. Can be "3" or "2", defaults to 3.
 
 `--platform <name>`
-    The platform to build for. One of linux, windows, mac, android, ios, or web.
+    The platform to build for. One of linux, windows, mac, freebsd, android, ios, or web.
 
 `--arch <name>`
     The architecture to build for. The architectures vary by platform,
@@ -113,6 +127,10 @@ The build command can take some options:
 
         Platform("web", "wasm", "2")
 
+        Platform("freebsd", "x86_64", "2", experimental=True)
+        Platform("freebsd", "i686", "2", experimental=True)
+
+
         # Python 3
 
         Platform("linux", "x86_64", "3")
@@ -133,6 +151,9 @@ The build command can take some options:
         Platform("ios", "sim-arm64", "3")
 
         Platform("web", "wasm", "3", experimental=True)
+
+        Platform("freebsd", "x86_64", "3", experimental=True)
+        Platform("freebsd", "i686", "3", experimental=True)
 
     `--experimental`
         This builds platforms marked as experimental.
