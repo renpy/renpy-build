@@ -19,7 +19,7 @@ def unpack(c: Context):
     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
 
 
-@task(kind="python", pythons="2", platforms="linux,mac,ios")
+@task(kind="python", pythons="2", platforms="linux,mac,ios,freebsd")
 def patch_posix(c: Context):
     c.var("version", version)
 
@@ -69,7 +69,7 @@ def patch_android(c: Context):
     c.run(""" autoreconf -vfi """)
 
 
-@task(kind="python", pythons="2", platforms="linux,mac")
+@task(kind="python", pythons="2", platforms="linux,mac,freebsd")
 def build_posix(c: Context):
     c.var("version", version)
 
@@ -83,12 +83,18 @@ def build_posix(c: Context):
 
     c.env("CFLAGS", "{{ CFLAGS }} -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI -DHAVE_EXPAT_CONFIG_H ")
 
+    # Using separate sysroot jails instead of a full cross-compiler for this, so had to adjust these to get compilation to complete
+    if c.platform == "freebsd":
+        c.env("MACHDEP", "freebsd")
+        c.env("_PYTHON_SYSCONFIGDATA_NAME", "-freebsd14")
+        c.var("cross_config", "")
+
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
     c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
+    c.run("""{{ make_exec }} install""")
 
     c.copy("{{ host }}/bin/python2", "{{ install }}/bin/hostpython2")
 
