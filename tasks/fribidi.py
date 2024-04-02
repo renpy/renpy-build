@@ -17,7 +17,9 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("fribidi-{{version}}")
 
-    c.run("""cp /usr/share/misc/config.sub config.sub""")
+    if c.platform != "freebsd":
+        c.run("""cp /usr/share/misc/config.sub config.sub""")
+
     c.run("""{{configure}} {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
     c.run("""{{ make_exec }} install """)
