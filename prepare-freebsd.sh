@@ -8,7 +8,7 @@ REFS=$ROOT
 BASE="$ROOT"
 
 # Needed to build things.
-sudo pkg install git ccache autoconf autoconf-archive automake cmake gmake libtool gcc bison flex gmake libxml2 llvm
+sudo pkg install git ccache autoconf autoconf-archive automake cmake gmake libtool gcc13 bison flex gmake libxml2 llvm15
 
 # Needed to build python things.
 sudo pkg install -y python2 python3 python310 py39-virtualenv py310-setuptools py310-wheel
