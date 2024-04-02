@@ -70,69 +70,6 @@ def download_freebsd_source(c: Context):
     dest.with_suffix(".tmp").rename(dest)
 
 @task(kind="toolchain", platforms="freebsd")
-def download_gcc_source(c: Context):
-
-    url = "https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz"
-    dest = c.path("{{ tmp }}/tars/gcc-13.2.0.tar.xz")
-
-    if os.path.exists(dest):
-        return
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-
-    print("Downloading gcc source")
-   
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(dest.with_suffix(".tmp"), "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024*1024):
-                f.write(chunk)
-
-    dest.with_suffix(".tmp").rename(dest)
-
-@task(kind="toolchain", platforms="freebsd")
-def download_binutils_source(c: Context):
-
-    url = "https://ftp.gnu.org/gnu/binutils/binutils-2.41.tar.xz"
-    dest = c.path("{{ tmp }}/tars/binutils-2.41.tar.xz")
-
-    if os.path.exists(dest):
-        return
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-
-    print("Downloading binutils source")
-   
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(dest.with_suffix(".tmp"), "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024*1024):
-                f.write(chunk)
-
-    dest.with_suffix(".tmp").rename(dest)
-
-@task(kind="cross", platforms="freebsd")
-def download_llvm_source(c: Context):
-
-    url = "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-15.0.7.tar.gz"
-    dest = c.path("{{ tmp }}/tars/llvmorg-15.0.7.tar.gz")
-
-    if os.path.exists(dest):
-        return
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-
-    print("Downloading llvm source")
-   
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(dest.with_suffix(".tmp"), "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024*1024):
-                f.write(chunk)
-
-    dest.with_suffix(".tmp").rename(dest)
-
-@task(kind="toolchain", platforms="freebsd")
 def download_freebsd_amd64_base(c: Context):
 
     url = "https://ftp.freebsd.org/pub/FreeBSD/releases/amd64/14.0-RELEASE/base.txz"
