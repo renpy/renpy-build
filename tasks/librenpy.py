@@ -12,8 +12,7 @@ def gen_static2(c: Context):
 
     c.chdir("{{ renpy }}/module")
     if c.platform == "freebsd":
-        c.env("TOOLCHAIN", "{{ host }}/x86_64-pc-freebsd")
-        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ TOOLCHAIN }}")
+        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ install }}")
     else:
         c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
@@ -25,7 +24,7 @@ def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}/module")
     if c.platform == "freebsd":
-        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ TOOLCHAIN }}")
+        c.env("RENPY_DEPS_INSTALL", "/usr/local::{{ install }}")
     else:
         c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
