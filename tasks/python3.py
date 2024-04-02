@@ -2,9 +2,12 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
 version = "3.9.10"
-fbd_version = "3.10.13"
 win_version = "3.9.10"
 web_version = "3.11.0"
+
+# FreeBSD is currently locked on Python 3.9 for main release version; installing extra required modules like setuptools and wheel for this to build properly breaks around 50 packages at the time of writing this
+# This is the latest supported version of Python 3.10
+fbd_version = "3.10.13"
 
 @annotator
 def annotate(c: Context):
@@ -68,9 +71,7 @@ def patch_posix(c: Context):
 
     c.chdir("Python-{{ version }}")
     c.patch("Python-{{ version }}/no-multiarch.diff")
-    c.patch("Python-{{ version }}/cross-darwin.diff")
     c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
-    c.patch("Python-{{ version }}/no-builtin-available.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -117,6 +118,10 @@ def common(c: Context):
         c.var("version", web_version)
         c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
         c.env("PYTHON_FOR_BUILD", "{{ host }}/web/bin/python3")
+    elif c.platform == "freebsd":
+        c.var("version", fbd_version)
+        c.env("CONFIG_SITE", "config.site")
+        c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python3")
     else:
         c.var("version", version)
         c.env("CONFIG_SITE", "config.site")
@@ -140,10 +145,10 @@ def build_posix(c: Context):
 
     common(c)
 
-    # fix configure for FreeBSD
+    # Using separate sysroot jails instead of a full cross-compiler for this, so had to adjust these to get compilation to complete
     if c.platform == "freebsd":
         c.env("MACHDEP", "freebsd")
-        # Using separate sysroot jails instead of a full cross-compiler for this, so no cross_config needed here
+        c.env("_PYTHON_SYSCONFIGDATA_NAME", "-freebsd14")
         c.var("cross_config", "")
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
