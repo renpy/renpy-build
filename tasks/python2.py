@@ -86,7 +86,7 @@ def build_posix(c: Context):
     # Using separate sysroot jails instead of a full cross-compiler for this, so had to adjust these to get compilation to complete
     if c.platform == "freebsd":
         c.env("MACHDEP", "freebsd")
-        c.env("_PYTHON_SYSCONFIGDATA_NAME", "-freebsd14")
+        c.env("_PYTHON_SYSCONFIGDATA_NAME", "_sysconfigdata__freebsd14_")
         c.var("cross_config", "")
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
