@@ -5,7 +5,7 @@ import os
 
 freebsd = "14.0.0"
 
-@task(platforms="freebsd", archs="x86_64,i686", always=True)
+@task(platforms="freebsd", archs="x86_64,i686")
 def unpack_sysroot(c: Context):
     c.clean()
 
@@ -26,7 +26,7 @@ def set_sysroot(c: Context):
     return c
 
 # we're building the sysroot jail here with the required libraries for cross-compiling
-@task(platforms="freebsd", archs="x86_64,i686", always=True)
+@task(platforms="freebsd", archs="x86_64,i686")
 def prepare_sysroot(c: Context):
     set_sysroot(c)
 
@@ -52,7 +52,7 @@ def prepare_sysroot(c: Context):
     c.run("sudo mount -t devfs devfs {{ sysroot }}/dev")
     c.run("sudo mount -t procfs procfs {{ sysroot }}/proc")
 
-@task(platforms="freebsd", archs="x86_64,i686", always=True)
+@task(platforms="freebsd", archs="x86_64,i686")
 def install_sysroot_tools(c: Context):
     set_sysroot(c)
 
