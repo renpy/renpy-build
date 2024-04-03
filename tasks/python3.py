@@ -153,6 +153,10 @@ def build_posix(c: Context):
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+    # nuke nismodule.c to prevent build failure; this is deprecated and not needed for this build
+    c.run("cp /dev/null Modules/nismodule.c")
+
     c.run("""{{ make }}""")
     c.run("""{{ make_exec }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")

@@ -36,6 +36,12 @@ def build_host(c: Context):
     c.run("""{{configure}} --prefix="{{ host }}" """)
     c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
 
+    # nuke nismodule.c to prevent build failure; this is deprecated and not needed for this build
+    c.run("cp /dev/null Modules/nismodule.c")
+
+    # create the install folder to solve build error
+    c.run("mkdir -p {{ host }}/lib/python{{ pyver }}")
+
     c.run("""{{ make_exec }} install""")
 
     if sys.platform.startswith('freebsd'):
