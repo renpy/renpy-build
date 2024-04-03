@@ -532,8 +532,9 @@ def python3(c: Context):
 
     # used_rules.add("steamapi")
 
+    # added freebsd due to steamapi not being available for that platform
     if rules - used_rules:
-        if c.platform != "web":
+        if c.platform != "web" and c.platform != "freebsd":
             raise Exception(f"Unused rules: {rules - used_rules}")
 
     c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/sitecustomize.py")
