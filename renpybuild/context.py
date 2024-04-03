@@ -412,9 +412,6 @@ class Context:
         if self.kind == "cross":
             return
 
-        if self.kind == "toolchain":
-            return
-
         if self.path(path).exists():
             self.env("CFLAGS", "{{ CFLAGS }} -I" + path)
 
