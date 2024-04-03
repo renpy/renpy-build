@@ -174,8 +174,6 @@ class Context:
             self.dir_name = f"{self.name}.host"
         elif kind == "host-python":
             self.dir_name = f"{self.name}.py{self.python}"
-        elif kind == "toolchain":
-            self.dir_name = f"{self.name}.toolchain-{self.platform}-{self.arch}"
         elif kind =="cross":
             self.dir_name = f"{self.name}.cross-{self.platform}-{self.arch}"
         elif kind == "platform":
