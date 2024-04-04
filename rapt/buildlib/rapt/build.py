@@ -259,7 +259,7 @@ def copy_into(src, dest):
     if os.path.isdir(src):
         if not os.path.isdir(dest):
             os.mkdir(dest, 0o777)
-        
+
         for i in os.listdir(src):
             copy_into(
                 os.path.join(src, i),
@@ -568,7 +568,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
         iface.fail(__("{} does not contain a Ren'Py game.").format(directory))
 
     install_sdk.check_java(iface)
-        
+
     config = configure.Configuration(directory)
 
     if config.package is None:
@@ -700,7 +700,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
             private_version=private_version,
             config=config,
             bundle=bundle,
-            big_bundle=bundle,
+            big_bundle=big_bundle,
             sdkpath=plat.path("Sdk"),
             )
 
