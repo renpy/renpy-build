@@ -262,12 +262,12 @@ def build_environment(c):
             bin="{{ cross }}/llvm-mingw/bin",
             prefix="x86_64-w64-mingw32-",
             suffix="",
-            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw -fPIC -pthread",
+            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw/x86_64-w64-mingw32 -fPIC -pthread",
             use_ld=False)
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -276,12 +276,12 @@ def build_environment(c):
             bin="{{ cross }}/llvm-mingw/bin",
             prefix="i686-w64-mingw32-",
             suffix="",
-            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw -fPIC -pthread",
+            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw/i686-w64-mingw32 -fPIC -pthread",
             use_ld=False)
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/i686-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
