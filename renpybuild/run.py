@@ -267,7 +267,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/x86_64-w64-mingw32")
 
     elif (c.platform == "windows") and (c.arch == "i686"):
 
@@ -281,7 +281,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/i686-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/i686-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/i686-w64-mingw32")
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
