@@ -29,7 +29,7 @@ def build(c : Context):
     c.clean()
 
     c.run("""
-        {{ cmake }}
+        {{ cmake }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DBUILD_SHARED_LIBS=0
         {% if platform == "web" %}
@@ -39,8 +39,8 @@ def build(c : Context):
         """)
 
     try:
-        c.run("{{ make }}")
+        c.run("{{ cmake }} --build .")
     except:
-        c.run("make VERBOSE=1")
+        c.run("{{ cmake }} --build . -j 1 -v")
 
-    c.run("make install")
+    c.run("{{ cmake }} --install .")
