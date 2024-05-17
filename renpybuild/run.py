@@ -435,7 +435,7 @@ def build_environment(c):
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
-    c.var("cmake", "{{cmake}} {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
+    c.var("cmake_args", "{{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
 
     # Used by zlib.
     if c.kind != "host":
