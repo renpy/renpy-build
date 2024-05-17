@@ -39,8 +39,10 @@ def emsdk_environment(c):
 
 def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
 
-    if bin and not bin.endswith("/"):
-        bin += "/"
+    if bin:
+        c.env("PATH", bin + ":{{ PATH }}")
+        if not bin.endswith("/"):
+            bin += "/"
 
     c.var("llvm_bin", bin)
     c.var("llvm_prefix", prefix)
