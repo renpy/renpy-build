@@ -289,10 +289,10 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
-        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "x86_64")
         c.var("android_abi", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
 
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
 
@@ -300,10 +300,10 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
-        c.var("cmake_system_name", "Linux")
+        c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "aarch64")
         c.var("android_abi", "arm64-v8a")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
 
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
 
@@ -311,10 +311,10 @@ def build_environment(c):
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
 
-        c.var("cmake_system_name", "Linux")
-        c.var("cmake_system_processor", "armv7")
+        c.var("cmake_system_name", "Android")
+        c.var("cmake_system_processor", "armv7-a")
         c.var("android_abi", "armeabi-v7a")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
