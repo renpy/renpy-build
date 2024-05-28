@@ -50,13 +50,19 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_OBJC_EXTENSIONS ON)
 set(CMAKE_OBJCXX_EXTENSIONS ON)
 
-# Cmake has it own way to set linker since version 3.29, but currently Ubuntu's camke is outdated
+# Cmake added its own way to set up linker since version 3.29, see
+# https://cmake.org/cmake/help/latest/variable/CMAKE_LINKER_TYPE.html and
+# https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_USING_LINKER_TYPE.html, 
+# but Ubuntu's current version of camke is too low
 if(CMAKE_VERSION VERSION_GREATER "3.29")
     set_env_without_string(CC "-fuse-ld=lld -Wno-unused-command-line-argument ")
     set_env_without_string(CXX "-fuse-ld=lld -Wno-unused-command-line-argument ")
     set_env_without_string(CPP "-fuse-ld=lld -Wno-unused-command-line-argument ")
 
     set(CMAKE_LINKER_TYPE LLD)
+
+    # Specify CMAKE_<LANG>_USING_LINKER_<TYPE> manually because
+    # cmake's default preset does not set them for all platforms.
     set(CMAKE_C_USING_LINKER_LLD "-fuse-ld=lld")
     set(CMAKE_CXX_USING_LINKER_LLD "-fuse-ld=lld")
     set(CMAKE_OBJC_USING_LINKER_LLD "-fuse-ld=lld")
