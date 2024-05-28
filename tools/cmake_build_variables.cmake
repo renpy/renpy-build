@@ -28,18 +28,6 @@ set_variable_without_ccache(CMAKE_AR AR)
 set_variable_without_ccache(CMAKE_RANLIB RANLIB)
 set_variable_without_ccache(CMAKE_STRIP STRIP)
 
-if(DEFINED ENV{RC})
-    set_variable_without_ccache(CMAKE_RC_COMPILER RC)
-endif()
-
-if(DEFINED ENV{LD})
-    set_env_without_ccache(LD)
-endif()
-
-if(DEFINED ENV{LDSHARED})
-    set_env_without_ccache(LDSHARED)
-endif()
-
 # Set "CMAKE_<LANG>_COMPILER_LAUNCHER" to tell cmake to use ccache
 set(CMAKE_C_COMPILER_LAUNCHER "ccache")
 set(CMAKE_CXX_COMPILER_LAUNCHER "ccache")

@@ -65,11 +65,11 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
 
     # c.env("LD", "ccache " + ld)
-    c.env("AR", "ccache {{llvm_bin}}llvm-ar{{llvm_suffix}}")
-    c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
-    c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
-    c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
-    c.env("READELF", "ccache {{llvm_bin}}llvm-readelf{{llvm_suffix}}")
+    c.env("AR", "{{llvm_bin}}llvm-ar{{llvm_suffix}}")
+    c.env("RANLIB", "{{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
+    c.env("STRIP", "{{llvm_bin}}llvm-strip{{llvm_suffix}}")
+    c.env("NM", "{{llvm_bin}}llvm-nm{{llvm_suffix}}")
+    c.env("READELF", "{{llvm_bin}}llvm-readelf{{llvm_suffix}}")
 
     c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
 
