@@ -52,7 +52,7 @@ set(CMAKE_OBJCXX_EXTENSIONS ON)
 
 # Cmake added its own way to set up linker since version 3.29, see
 # https://cmake.org/cmake/help/latest/variable/CMAKE_LINKER_TYPE.html and
-# https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_USING_LINKER_TYPE.html, 
+# https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_USING_LINKER_TYPE.html,
 # but Ubuntu's current version of camke is too low
 if(CMAKE_VERSION VERSION_GREATER "3.29")
     set_env_without_string(CC "-fuse-ld=lld -Wno-unused-command-line-argument ")
