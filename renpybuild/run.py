@@ -119,8 +119,8 @@ def build_environment(c):
     c.var("make", "nice make -j " + str(cpuccount))
     c.var("configure", "./configure")
     c.var("cmake", "cmake")
-    c.var("meson", "meson")
-    c.var("meson_compile", "{{meson}} compile -j " + str(cpuccount))
+    c.var("meson_configure", "meson setup")
+    c.var("meson_compile", "meson compile -j " + str(cpuccount))
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
