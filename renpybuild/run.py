@@ -119,6 +119,7 @@ def build_environment(c):
     c.var("make", "nice make -j " + str(cpuccount))
     c.var("configure", "./configure")
     c.var("cmake", "cmake")
+
     c.var("meson_configure", "meson setup")
     c.var("meson_compile", "meson compile -j " + str(cpuccount))
 
