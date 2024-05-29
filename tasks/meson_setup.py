@@ -5,10 +5,17 @@ from renpybuild.task import task
 def patch_meson(c: Context):
 
     # See https://github.com/pyodide/pyodide/discussions/4762, will be fixed in
-    # meson 1.4.1
+    # meson 1.4.1, this is a temporary solution and shouldn't be used for a long time
     import mesonbuild.coredata
+    import os
+
     if mesonbuild.coredata.version <= '1.4.0':
         c.chdir(f"{mesonbuild.__path__[0]}/..")
+        backup_file = c.path("{{ tmp }}/mesonbuild_compilers_c.py.orig")
+        if not os.path.exists(backup_file):
+            c.run(f"cp mesonbuild/compilers/c.py {backup_file}")
+
+        c.run(f"cp {backup_file} mesonbuild/compilers/c.py")
         c.patch("meson-fix-emscripten-std.patch")
 
 @task(platforms="all")
@@ -34,7 +41,7 @@ def unpack(c: Context):
         c.env("OBJCXX_LD", "lld")
 
     c.run("""
-        {{ meson }} env2mfile --cross
+        meson env2mfile --cross
         -o "{{ install }}/meson_cross_file.txt"
         --system={{ meson_cross_system }}
         --subsystem={{ meson_cross_subsystem }}
@@ -68,4 +75,4 @@ def unpack(c: Context):
         c.env("OBJC_LD", "lld")
         c.env("OBJCXX_LD", "lld")
 
-    c.run(""" {{ meson }} env2mfile --native -o "{{ install }}/meson_native_file.txt" """)
+    c.run("""meson env2mfile --native -o "{{ install }}/meson_native_file.txt" """)
