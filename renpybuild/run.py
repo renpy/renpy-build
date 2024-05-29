@@ -113,7 +113,7 @@ def build_environment(c):
 
     c.var("make", "nice make -j " + str(cpuccount))
     c.var("configure", "./configure")
-    c.var("cmake", "cmake")
+    c.var("cmake_configure", "cmake")
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -390,7 +390,7 @@ def build_environment(c):
         # Use emscripten wrapper to configure and build
         c.var("make", "emmake {{ make }}")
         c.var("configure", "emconfigure ./configure")
-        c.var("cmake", "emcmake cmake")
+        c.var("cmake_configure", "emcmake cmake")
 
         c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
         c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")

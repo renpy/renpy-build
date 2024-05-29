@@ -13,7 +13,7 @@ def build(c : Context):
     c.clean()
 
     c.run("""
-        {{ cmake }} {{ cmake_args }}
+        {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DAVIF_CODEC_AOM=1
         -DAVIF_CODEC_AOM_ENCODE=0
@@ -22,8 +22,8 @@ def build(c : Context):
         """)
 
     try:
-        c.run("{{ cmake }} --build .")
+        c.run("cmake --build .")
     except:
-        c.run("{{ cmake }} --build . -j 1 -v")
+        c.run("cmake --build . -j 1 -v")
 
-    c.run("{{ cmake }} --install .")
+    c.run("cmake --install .")
