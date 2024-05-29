@@ -66,7 +66,7 @@ def link_linux(c: Context):
     -lSDL2
     -lGL
     -lavif
-    -laom
+    -ldav1d
     -lyuv
     -ljpeg
     -lpng
@@ -147,7 +147,7 @@ def link_android(c: Context):
     -lOpenSLES
 
     -lavif
-    -laom
+    -ldav1d
     -lyuv
     -ljpeg
     -lpng
@@ -204,7 +204,7 @@ def link_mac(c: Context):
     -lSDL2_image
     -lSDL2
     -lavif
-    -laom
+    -ldav1d
     -lyuv
     -ljpeg
     -lpng
@@ -355,7 +355,7 @@ def link_windows(c: Context):
     -lSDL2
     -lopengl32
     -lavif
-    -laom
+    -ldav1d
     -lyuv
     -ljpeg
     -lpng16
@@ -581,7 +581,7 @@ def link_web(c: Context):
     -lSDL2_image
     -lSDL2
     -lavif
-    -laom
+    -ldav1d
     -lyuv
     -ljpeg
     -lpng

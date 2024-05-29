@@ -110,7 +110,7 @@ def build(c: Context):
         --enable-swscale
         --enable-avfilter
         --enable-avresample
-        --enable-libaom
+        --enable-libdav1d
 
         --disable-bzlib
 
@@ -153,7 +153,7 @@ def build(c: Context):
         --enable-decoder=vp3
         --enable-decoder=vp8
         --enable-decoder=vp9
-        --enable-decoder=libaom_av1
+        --enable-decoder=libdav1d
 
         --enable-parser=mpegaudio
         --enable-parser=mpegvideo

@@ -26,7 +26,7 @@ from . import libjpeg_turbo
 from . import libwebp
 
 from . import libyuv
-from . import aom
+# from . import aom
 from . import dav1d
 from . import libavif
 
