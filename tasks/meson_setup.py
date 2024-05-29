@@ -1,6 +1,16 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
+@task(kind="host", platforms="all")
+def patch_meson(c: Context):
+
+    # See https://github.com/pyodide/pyodide/discussions/4762, will be fixed in
+    # meson 1.4.1
+    import mesonbuild.coredata
+    if mesonbuild.coredata.version <= '1.4.0':
+        c.chdir(f"{mesonbuild.__path__[0]}/..")
+        c.patch("meson-fix-emscripten-std.patch")
+
 @task(platforms="all")
 def unpack(c: Context):
 
