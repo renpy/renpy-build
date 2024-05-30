@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "4.3.1"
+version = "4.4.4"
 
 
 @task(platforms="all")
@@ -14,8 +14,10 @@ def unpack(c: Context):
     c.var("version", version)
     c.chdir("ffmpeg-{{version}}")
 
-    c.patch("ffmpeg-4.3.1-sse.diff")
+    # c.patch("ffmpeg-4.3.1-sse.diff")
     c.patch("ffmpeg-4.3.1-ff_seek_frame_binary.diff")
+    c.patch("ffmpeg-4.4.4-binutils-2.41.patch")
+    c.patch("ffmpeg-5.0-backport-ranlib-build-fix.patch")
 
 
 @task()
