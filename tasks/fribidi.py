@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
-version = "1.0.14"
+version = "1.0.15"
 
 
 @task(platforms="all")
