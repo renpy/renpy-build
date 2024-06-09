@@ -120,6 +120,9 @@ def build_environment(c):
     c.var("configure", "./configure")
     c.var("cmake", "cmake")
 
+    c.var("meson_configure", "meson setup")
+    c.var("meson_compile", "meson compile -j " + str(cpuccount))
+
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
 
@@ -224,6 +227,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
+        c.var("meson_cross_system", "linux")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "x86_64")
+        c.var("meson_cross_cpu", "x86_64")
+
     elif (c.platform == "linux") and (c.arch == "aarch64"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
@@ -234,6 +242,11 @@ def build_environment(c):
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "aarch64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+
+        c.var("meson_cross_system", "linux")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "aarch64")
+        c.var("meson_cross_cpu", "aarch64")
 
     elif (c.platform == "linux") and (c.arch == "i686"):
 
@@ -246,6 +259,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "i386")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
+        c.var("meson_cross_system", "linux")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "x86")
+        c.var("meson_cross_cpu", "i686")
+
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard")
@@ -256,6 +274,11 @@ def build_environment(c):
         c.var("cmake_system_name", "Linux")
         c.var("cmake_system_processor", "armv7")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
+
+        c.var("meson_cross_system", "linux")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "arm")
+        c.var("meson_cross_cpu", "armhf")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
@@ -271,6 +294,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/x86_64-w64-mingw32")
 
+        c.var("meson_cross_system", "windows")
+        c.var("meson_cross_kernel", "nt")
+        c.var("meson_cross_cpu_family", "x86_64")
+        c.var("meson_cross_cpu", "x86_64")
+
     elif (c.platform == "windows") and (c.arch == "i686"):
 
         llvm(
@@ -285,6 +313,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "i386")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/i686-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/i686-w64-mingw32")
 
+        c.var("meson_cross_system", "windows")
+        c.var("meson_cross_kernel", "nt")
+        c.var("meson_cross_cpu_family", "x86")
+        c.var("meson_cross_cpu", "i686")
+
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
         android_llvm(c, "x86_64")
@@ -295,6 +328,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "x86_64")
         c.var("android_abi", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
+
+        c.var("meson_cross_system", "android")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "x86_64")
+        c.var("meson_cross_cpu", "x86_64")
 
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
 
@@ -307,6 +345,11 @@ def build_environment(c):
         c.var("android_abi", "arm64-v8a")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
 
+        c.var("meson_cross_system", "android")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "aarch64")
+        c.var("meson_cross_cpu", "aarch64")
+
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
 
         android_llvm(c, "armv7a")
@@ -317,6 +360,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "armv7-a")
         c.var("android_abi", "armeabi-v7a")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
+
+        c.var("meson_cross_system", "android")
+        c.var("meson_cross_kernel", "linux")
+        c.var("meson_cross_cpu_family", "arm")
+        c.var("meson_cross_cpu", "armv7")
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
 
@@ -333,6 +381,12 @@ def build_environment(c):
         c.var("cmake_system_processor", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
+        c.var("meson_cross_system", "darwin")
+        c.var("meson_cross_subsystem", "macos")
+        c.var("meson_cross_kernel", "xnu")
+        c.var("meson_cross_cpu_family", "x86_64")
+        c.var("meson_cross_cpu", "x86_64")
+
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
         llvm(
@@ -348,6 +402,12 @@ def build_environment(c):
         c.var("cmake_system_processor", "aarch64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
+        c.var("meson_cross_system", "darwin")
+        c.var("meson_cross_subsystem", "macos")
+        c.var("meson_cross_kernel", "xnu")
+        c.var("meson_cross_cpu_family", "aarch64")
+        c.var("meson_cross_cpu", "arm64")
+
     elif (c.platform == "ios") and (c.arch == "arm64"):
 
         llvm(
@@ -361,6 +421,12 @@ def build_environment(c):
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+
+        c.var("meson_cross_system", "darwin")
+        c.var("meson_cross_subsystem", "ios")
+        c.var("meson_cross_kernel", "xnu")
+        c.var("meson_cross_cpu_family", "aarch64")
+        c.var("meson_cross_cpu", "aarch64")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
@@ -376,6 +442,12 @@ def build_environment(c):
         c.var("cmake_system_processor", "aarch64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
 
+        c.var("meson_cross_system", "darwin")
+        c.var("meson_cross_subsystem", "ios-simulator")
+        c.var("meson_cross_kernel", "xnu")
+        c.var("meson_cross_cpu_family", "aarch64")
+        c.var("meson_cross_cpu", "aarch64")
+
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
         llvm(
@@ -389,6 +461,12 @@ def build_environment(c):
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+
+        c.var("meson_cross_system", "darwin")
+        c.var("meson_cross_subsystem", "ios-simulator")
+        c.var("meson_cross_kernel", "xnu")
+        c.var("meson_cross_cpu_family", "x86_64")
+        c.var("meson_cross_cpu", "x86_64")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
@@ -430,6 +508,11 @@ def build_environment(c):
         c.var("cmake_system_processor", "generic")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
+        c.var("meson_cross_system", "emscripten")
+        c.var("meson_cross_kernel", "none")
+        c.var("meson_cross_cpu_family", "wasm32")
+        c.var("meson_cross_cpu", "wasm32")
+
 
     if c.kind not in ( "host", "host-python", "cross" ):
         c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
@@ -441,6 +524,17 @@ def build_environment(c):
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
     c.var("cmake", "{{cmake}} {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
+
+    if not "meson_cross_subsystem" in c.variables:
+        c.var("meson_cross_subsystem", "{{ meson_cross_system }} ")
+
+    if c.kind not in ( "host", "host-python", "cross" ):
+        c.var("meson_build_kind", "cross")
+    else:
+        c.var("meson_build_kind", "native")
+
+    c.var("meson_config_file", "{{ install }}/meson_{{meson_build_kind}}_file.txt")
+    c.var("meson_args", "--{{meson_build_kind}}-file={{meson_config_file}} --buildtype=release -Dc_std=gnu17 -Dcpp_std=gnu++17")
 
     # Used by zlib.
     if c.kind != "host":
