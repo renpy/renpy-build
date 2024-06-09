@@ -423,46 +423,48 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         setIntent(intent);
     }
 
-
-    public boolean mPauseDone;
+    public boolean mStopDone = true;
 
     @Override
-    public void onPause() {
-        Log.v("python", "onPause() start.");
+    public void onStop() {
+        Log.v("python", "onStop() start.");
 
-        mPauseDone = false;
+        super.onStop();
+        long startTime = System.currentTimeMillis();
 
-        super.onPause();
-
-        if (mPresplash == null) {
-            synchronized (this) {
-                while (!mPauseDone) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) { /* pass */ }
+        synchronized (this) {
+            while (true) {
+                if (mStopDone) {
+                    break;
                 }
+
+                // Backstop.
+                if (startTime + 8000 < System.currentTimeMillis()) {
+                    break;
+                }
+
+                try {
+                    this.wait(100);
+                } catch (InterruptedException e) { /* pass */ }
+
             }
         }
 
-        Log.v("python", "onPause() done.");
+        Log.v("python", "onStop() done.");
     }
 
-    public void finishOnPause() {
-        Log.v("python", "finishOnPause()");
+    public void armOnStop () {
+        Log.v("python", "armOnStop()");
+        mStopDone = false;
+    }
+
+    public void finishOnStop() {
+        Log.v("python", "finishOnStop()");
 
         synchronized (this) {
-            mPauseDone = true;
+            mStopDone = true;
             this.notifyAll();
         }
-    }
-
-    @Override
-    public void onResume() {
-        Log.v("python", "onResume()");
-
-        super.onResume();
-
-        Log.v("python", "onResume() done.");
     }
 
     boolean waitForWifiConfirmationShown = false;
