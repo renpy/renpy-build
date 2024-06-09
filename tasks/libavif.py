@@ -15,7 +15,8 @@ def build(c : Context):
     c.run("""
         {{ cmake }}
         -DCMAKE_INSTALL_PREFIX={{install}}
-        -DAVIF_CODEC_AOM=1
+        -DAVIF_CODEC_DAV1D=1
+        -DAVIF_CODEC_AOM=0
         -DAVIF_CODEC_AOM_ENCODE=0
         -DBUILD_SHARED_LIBS=0
         {{ tmp }}/source/libavif
