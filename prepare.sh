@@ -40,6 +40,9 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y cmake clang libxml2-dev l
 # Needed for web
 sudo apt-get install -y quilt
 
+# Needed for meson and cmake
+sudo apt-get install -y ninja-build
+
 # Install the standard set of packages needed to build Ren'Py.
 sudo apt-get install -y \
     libavcodec-dev libavformat-dev \
