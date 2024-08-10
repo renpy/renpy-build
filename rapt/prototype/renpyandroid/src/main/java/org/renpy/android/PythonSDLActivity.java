@@ -467,7 +467,6 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         }
     }
 
-    boolean waitForWifiConfirmationShown = false;
     HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
 
     long mOldProgress = 0;
@@ -491,26 +490,16 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
             break;
 
           case AssetPackStatus.FAILED:
+            Toast.makeText(this, "Download of " + assetPackState.name() + " failed. Error " + assetPackState.errorCode(), Toast.LENGTH_LONG).show();
             Log.e("python", "error = " + assetPackState.errorCode());
+
           case AssetPackStatus.CANCELED:
             mAssetPackManager.fetch(Collections.singletonList(assetPackState.name()));
             break;
 
           case AssetPackStatus.WAITING_FOR_WIFI:
-            if (!waitForWifiConfirmationShown) {
-              mAssetPackManager.showCellularDataConfirmation(mActivity)
-                .addOnSuccessListener(new OnSuccessListener<Integer> () {
-                  @Override
-                  public void onSuccess(Integer resultCode) {
-                    if (resultCode == RESULT_OK) {
-                      Log.d("python", "Confirmation dialog has been accepted.");
-                    } else if (resultCode == RESULT_CANCELED) {
-                      Log.d("python", "Confirmation dialog has been denied by the user.");
-                    }
-                  }
-                });
-              waitForWifiConfirmationShown = true;
-            }
+          case AssetPackStatus.REQUIRES_USER_CONFIRMATION:
+            mAssetPackManager.showConfirmationDialog(this);
             break;
 
           case AssetPackStatus.NOT_INSTALLED:
