@@ -8,7 +8,7 @@ PY=$(python -c 'import sys; print(sys.version[0])')
 ROOT="$(dirname $(readlink -f $0))"
 
 pushd "$ROOT"
-./build.py --python $PY --platform android rebuild rapt rapt-sdl2 sdl2
+./build.py --python $PY --platform android rebuild rapt rapt-sdl2
 popd
 
 rm "$ROOT/renpy/rapt"
@@ -30,7 +30,7 @@ popd
 # adb shell input keyevent KEYCODE_HOME || true
 
 if [ "$1" != "" ]; then
-    $ROOT/renpy/renpy3.sh $ROOT/renpy/launcher android_build "$1" --launch
+    $ROOT/renpy/renpy3.sh $ROOT/renpy/launcher android_build "$1" --bundle --launch
 fi
 
 ## This tests app switching.

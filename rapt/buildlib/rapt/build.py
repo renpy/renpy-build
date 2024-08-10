@@ -271,7 +271,7 @@ def copy_into(src, dest):
     shutil.copy2(src, dest)
 
 
-MAX_SIZE = 500000000
+MAX_SIZE = 1000000000
 
 
 def make_bundle_tree(src):
