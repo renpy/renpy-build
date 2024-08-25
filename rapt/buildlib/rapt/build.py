@@ -406,8 +406,6 @@ def eliminate_pycache(directory):
     renaming them to remove the cache tag.
     """
 
-    print("Eliminating __pycache__...")
-
     if PY2:
         return
 
@@ -418,7 +416,13 @@ def eliminate_pycache(directory):
 
     for p in paths:
         name = p.stem.partition(".")[0]
-        p.rename(p.parent.parent / (name + ".pyc"))
+
+        target = p.parent.parent / (name + ".pyc")
+
+        if target.exists():
+            target.unlink()
+
+        p.rename(target)
 
     paths = list(pathlib.Path(directory).glob("**/__pycache__"))
 
