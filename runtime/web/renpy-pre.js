@@ -47,7 +47,7 @@ Module.preRun = Module.preRun || [ ];
     // The status message.
     let statusText = "";
 
-    // How long before the status div starts hiding, in seconds.
+    // How long before the status div starts hiding, in ms.
     const STATUS_TIMEOUT = 5000;
 
     // The last time the progress was updated.
@@ -58,6 +58,9 @@ Module.preRun = Module.preRun || [ ];
 
     // Should output only go to the console?
     let printConsoleOnly = false;
+
+    // Time between persistent data change checks, in ms.
+    const PERSIST_PERIOD = 5000;
 
     /**
      * Hide the status div. Once it's hidden, clears the status text.
@@ -202,6 +205,20 @@ Module.preRun = Module.preRun || [ ];
 
     }
 
+    /** Check if the persistent data has changed, and store it if so.
+     */
+    async function updatePersistent() {
+        try {
+            await renpy_exec('renpy.persistent.update()');
+        } finally {
+            schedulePersistentUpdate();
+        }
+    }
+
+    function schedulePersistentUpdate() {
+        setTimeout(updatePersistent, PERSIST_PERIOD);
+    }
+
     window.progress = progress;
 
     Module.print = printMessage;
@@ -263,6 +280,7 @@ Module.preRun = Module.preRun || [ ];
         presplash.remove();
         cancelStatusTimeout();
         hideStatus();
+        schedulePersistentUpdate();
     };
 
     window.atExit = () => {
