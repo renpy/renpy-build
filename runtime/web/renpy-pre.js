@@ -354,10 +354,10 @@ Module.preRun = Module.preRun || [ ];
     async function loadGameZip() {
 
         try {
-            let response = await fetch('game.data');
+            let response = await fetch('game.zip');
 
             if (!response.ok) {
-                reportError("Could not load game.data: " + response.status + " " + response.statusText);
+                reportError("Could not load game.zip: " + response.status + " " + response.statusText);
             }
 
             gameZipSize = parseInt(response.headers.get('Content-Length'), 10);
@@ -384,7 +384,7 @@ Module.preRun = Module.preRun || [ ];
             FS.close(f);
 
         } catch (e) {
-            reportError("Could not download game.data", e);
+            reportError("Could not download game.zip", e);
         }
     }
 
