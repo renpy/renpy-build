@@ -354,7 +354,7 @@ Module.preRun = Module.preRun || [ ];
     async function loadGameZip() {
 
         try {
-            let response = await fetch('game.zip');
+            let response = await fetch(window.gameZipURL);
 
             if (!response.ok) {
                 reportError("Could not load game.zip: " + response.status + " " + response.statusText);
