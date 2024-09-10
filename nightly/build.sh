@@ -51,7 +51,7 @@ export RENPY_CYTHON=cython
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 export RENPY_SIMPLE_EXCEPTIONS=1
 
-./renpy.sh tutorial quit
+./renpy3.sh tutorial quit
 
 # Build the documentation.
 pushd $BASE/renpy/sphinx
