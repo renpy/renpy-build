@@ -37,8 +37,8 @@ int wmain(int argc, wchar_t *argv[], wchar_t *envp[]) {
     wchar_t *platform = L"" PLATFORM;
     wchar_t *arch = L"" ARCH;
 
-    if (!IsWindowsVistaOrGreater()) {
-        MessageBox(NULL, L"This program requires Windows Vista or greater to run.", L"Version Not Supported", MB_OK);
+    if (!IsWindows10OrGreater()) {
+        MessageBox(NULL, L"This program requires Windows 10 or greater to run.", L"Version Not Supported", MB_OK);
         return 0;
     }
 
