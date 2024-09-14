@@ -32,7 +32,6 @@ class Platform:
 
 Platform("linux", "x86_64", "3")
 Platform("linux", "aarch64", "3")
-Platform("linux", "armv7l", "3")
 
 Platform("windows", "x86_64", "3")
 
@@ -50,6 +49,7 @@ Platform("ios", "sim-arm64", "3")
 Platform("web", "wasm", "3")
 
 def build(args):
+
     platforms = set(i.strip() for i in args.platforms.split(",") if i)
     archs = set(i.strip() for i in args.archs.split(",") if i)
     pythons = set(i.strip() for i in args.pythons.split(",") if i)
