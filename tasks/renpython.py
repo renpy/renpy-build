@@ -395,7 +395,7 @@ def link_windows(c: Context):
     """)
 
     c.run("""
-    {{ WINDRES }} {{ runtime }}/renpy_icon.rc renpy_icon.o
+    {{ WINDRES }} {{ runtime }}/renpy_resources.rc renpy_resources.o
     """)
 
     c.run("""
@@ -403,7 +403,7 @@ def link_windows(c: Context):
     -mconsole {% if c.python != '2' %}-municode {% endif %}
     -o python.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     librenpython.dll
     """)
 
@@ -412,7 +412,7 @@ def link_windows(c: Context):
     -mwindows {% if c.python != '2' %}-municode {% endif %}
     -o pythonw.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     librenpython.dll
     """)
 
@@ -422,7 +422,7 @@ def link_windows(c: Context):
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     """)
 
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
