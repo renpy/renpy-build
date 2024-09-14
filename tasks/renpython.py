@@ -436,13 +436,7 @@ def link_windows(c: Context):
     c.run("""install lib{{ pythonver }}.dll  {{ dlpa }}""")
     c.run("""install renpy.exe {{ dlpa }}/renpy.exe""")
 
-    if c.arch == "i686":
-        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
-        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
-
-        c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
-
-    elif c.arch == "x86_64":
+    if c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
