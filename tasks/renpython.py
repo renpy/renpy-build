@@ -339,11 +339,7 @@ def link_windows(c: Context):
 
     -lfribidi
 
-    {% if c.python == "2" %}
-    {{install}}/lib/{{ pythonver }}/config/lib{{ pythonver }}.dll.a
-    {% else %}
     {{install}}/lib/lib{{ pythonver }}.dll.a
-    {% endif %}
 
     -lavformat
     -lavcodec

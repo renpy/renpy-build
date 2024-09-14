@@ -29,8 +29,6 @@ from . import aom
 from . import libavif
 
 from . import hostpython3
-from . import hostpython2
-from . import python2
 from . import python3
 
 from . import emscripten_pyx
@@ -68,5 +66,3 @@ from . import renios
 
 from . import nvdrs
 from . import sevenzip
-
-from . import web

@@ -28,29 +28,6 @@ class Platform:
         known_platforms.append(self)
 
 
-# Python 2
-
-Platform("linux", "x86_64", "2")
-Platform("linux", "i686", "2")
-Platform("linux", "aarch64", "2")
-Platform("linux", "armv7l", "2")
-
-Platform("windows", "x86_64", "2")
-Platform("windows", "i686", "2")
-
-Platform("mac", "x86_64", "2")
-Platform("mac", "arm64", "2")
-
-Platform("android", "x86_64", "2")
-Platform("android", "arm64_v8a", "2")
-Platform("android", "armeabi_v7a", "2")
-
-Platform("ios", "arm64", "2")
-Platform("ios", "sim-x86_64", "2")
-Platform("ios", "sim-arm64", "2")
-
-Platform("web", "wasm", "2")
-
 # Python 3
 
 Platform("linux", "x86_64", "3")
