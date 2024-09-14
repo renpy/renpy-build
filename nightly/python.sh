@@ -10,14 +10,6 @@ fi
 
 pip install -r $ROOT/requirements.txt
 
-pushd $BASE/pygame_sdl2
-python2 ./fix_virtualenv.py || true
-popd
-
-pushd $BASE/pygame_sdl2
-python setup.py install_headers
-popd
-
 pushd $BASE/renpy
 
 if [ ! -e pygame_sdl2 ]; then
