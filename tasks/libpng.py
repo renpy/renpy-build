@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "1.6.37"
+version = "1.6.43"
 
 
 @task()

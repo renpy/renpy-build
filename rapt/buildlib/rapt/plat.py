@@ -109,7 +109,7 @@ def path(path, relative=False):
     return path
 
 jdk_requirement = 21
-sdk_version = "9477386_latest"
+sdk_version = "11076708_latest"
 
 try:
     with open(path("sdk.txt")) as f:

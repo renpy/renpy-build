@@ -32,13 +32,10 @@ PACKAGES = [
 ]
 
 
-@task(platforms="linux", archs="x86_64,i686,aarch64", always=True)
+@task(platforms="linux", archs="x86_64,aarch64", always=True)
 def install_linux(c: Context):
 
-    if c.arch == "i686":
-        deb_arch = "i386"
-        release = "xenial"
-    elif c.arch == "x86_64":
+    if c.arch == "x86_64":
         deb_arch = "amd64"
         release = "xenial"
     elif c.arch == "aarch64":
@@ -52,17 +49,6 @@ def install_linux(c: Context):
     c.var("release", release)
 
     if not c.path("{{ sysroot }}").exists():
-
-    #     c.run("""sudo rm -f {{sysroot}}/etc/resolv.conf""")
-    #     c.run("""sudo cp /etc/resolv.conf {{sysroot}}/etc/resolv.conf""")
-    #
-    #     c.run("""sudo systemd-nspawn -D {{sysroot}} apt update""")
-    #
-    #     c.var("packages", " ".join(PACKAGES))
-    #
-    #     c.run("""sudo systemd-nspawn -D {{sysroot}} apt install -y {{ packages }} """)
-    #
-    # else:
 
         c.var("packages", ",".join(PACKAGES))
 

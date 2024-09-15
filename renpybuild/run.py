@@ -136,14 +136,10 @@ def build_environment(c):
         c.var("host_platform", "x86_64-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "aarch64"):
         c.var("host_platform", "aarch64-pc-linux-gnu")
-    elif (c.platform == "linux") and (c.arch == "i686"):
-        c.var("host_platform", "i686-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
-    elif (c.platform == "windows") and (c.arch == "i686"):
-        c.var("host_platform", "i686-w64-mingw32")
     elif (c.platform == "mac") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-apple-darwin14")
     elif (c.platform == "mac") and (c.arch == "arm64"):
@@ -169,8 +165,6 @@ def build_environment(c):
         c.var("architecture_name", "x86_64-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "aarch64"):
         c.var("architecture_name", "aarch64-linux-gnu")
-    elif (c.platform == "linux") and (c.arch == "i686"):
-        c.var("architecture_name", "i386-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("architecture_name", "arm-linux-gnueabihf")
 
@@ -248,22 +242,6 @@ def build_environment(c):
         c.var("meson_cross_cpu_family", "aarch64")
         c.var("meson_cross_cpu", "aarch64")
 
-    elif (c.platform == "linux") and (c.arch == "i686"):
-
-        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
-        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
-
-        c.var("cmake_system_name", "Linux")
-        c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
-
-        c.var("meson_cross_system", "linux")
-        c.var("meson_cross_kernel", "linux")
-        c.var("meson_cross_cpu_family", "x86")
-        c.var("meson_cross_cpu", "i686")
-
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard")
@@ -298,25 +276,6 @@ def build_environment(c):
         c.var("meson_cross_kernel", "nt")
         c.var("meson_cross_cpu_family", "x86_64")
         c.var("meson_cross_cpu", "x86_64")
-
-    elif (c.platform == "windows") and (c.arch == "i686"):
-
-        llvm(
-            c,
-            bin="{{ cross }}/llvm-mingw/bin",
-            prefix="i686-w64-mingw32-",
-            suffix="",
-            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw/i686-w64-mingw32 -fPIC -pthread",
-            use_ld=False)
-
-        c.var("cmake_system_name", "Windows")
-        c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/i686-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/i686-w64-mingw32")
-
-        c.var("meson_cross_system", "windows")
-        c.var("meson_cross_kernel", "nt")
-        c.var("meson_cross_cpu_family", "x86")
-        c.var("meson_cross_cpu", "i686")
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
 

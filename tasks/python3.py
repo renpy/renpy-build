@@ -52,16 +52,6 @@ def patch_posix(c: Context):
 
     c.run(""" autoreconf -vfi """)
 
-# @task(kind="python", pythons="2", platforms="ios")
-# def patch_ios(c):
-#     c.var("version", version)
-
-#     c.chdir("Python-{{ version }}")
-#     c.patch("ios-python2/posixmodule.patch")
-
-#     c.run("cp {{patches}}/ios-python2/_scproxy.pyx Modules")
-#     c.chdir("Modules")
-#     c.run("cython _scproxy.pyx")
 
 @task(kind="python", pythons="3", platforms="windows")
 def patch_windows(c: Context):
@@ -74,20 +64,6 @@ def patch_windows(c: Context):
     c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
 
     c.run(""" autoreconf -vfi """)
-
-
-# @task(kind="python", pythons="2", platforms="android")
-# def patch_android(c):
-#     c.var("version", version)
-
-#     c.chdir("Python-{{ version }}")
-#     c.patchdir("android-python2")
-#     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
-#     c.patch("python2-utf8.diff")
-#     c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
-
-#     c.run(""" autoreconf -vfi """)
-
 
 
 def common(c: Context):
@@ -131,9 +107,10 @@ def patch_ios(c: Context):
     c.chdir("Python-{{ version }}")
     c.patch("Python-{{ version }}/ios-posixmodule.diff")
 
-    c.run("cp {{patches}}/ios-python2/_scproxy.pyx Modules")
+    c.run("cp {{patches}}/_scproxy.pyx Modules")
     c.chdir("Modules")
     c.run("cython _scproxy.pyx")
+
 
 @task(kind="python", pythons="3", platforms="ios")
 def build_ios(c: Context):
