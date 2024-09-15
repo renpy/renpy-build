@@ -16,7 +16,7 @@ Pixel 7 running android 12.
  1 file changed, 1 insertion(+), 12 deletions(-)
 
 diff --git a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
-index 5057812..ab70ae2 100644
+index 5057812..bd811f0 100644
 --- a/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
 +++ b/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java
 @@ -65,7 +65,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
@@ -24,7 +24,7 @@ index 5057812..ab70ae2 100644
  
      public static boolean mIsResumedCalled, mHasFocus;
 -    public static final boolean mHasMultiWindow = (Build.VERSION.SDK_INT >= 24);
-+    public static final boolean mHasMultiWindow = false;
++    public static final boolean mHasMultiWindow = true;
  
      // Cursor types
      // private static final int SDL_SYSTEM_CURSOR_NONE = -1;

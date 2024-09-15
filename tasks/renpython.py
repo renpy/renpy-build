@@ -339,11 +339,7 @@ def link_windows(c: Context):
 
     -lfribidi
 
-    {% if c.python == "2" %}
-    {{install}}/lib/{{ pythonver }}/config/lib{{ pythonver }}.dll.a
-    {% else %}
     {{install}}/lib/lib{{ pythonver }}.dll.a
-    {% endif %}
 
     -lavformat
     -lavcodec
@@ -395,7 +391,7 @@ def link_windows(c: Context):
     """)
 
     c.run("""
-    {{ WINDRES }} {{ runtime }}/renpy_icon.rc renpy_icon.o
+    {{ WINDRES }} {{ runtime }}/renpy_resources.rc renpy_resources.o
     """)
 
     c.run("""
@@ -403,7 +399,7 @@ def link_windows(c: Context):
     -mconsole {% if c.python != '2' %}-municode {% endif %}
     -o python.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     librenpython.dll
     """)
 
@@ -412,7 +408,7 @@ def link_windows(c: Context):
     -mwindows {% if c.python != '2' %}-municode {% endif %}
     -o pythonw.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     librenpython.dll
     """)
 
@@ -422,7 +418,7 @@ def link_windows(c: Context):
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     """)
 
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
@@ -440,13 +436,7 @@ def link_windows(c: Context):
     c.run("""install lib{{ pythonver }}.dll  {{ dlpa }}""")
     c.run("""install renpy.exe {{ dlpa }}/renpy.exe""")
 
-    if c.arch == "i686":
-        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
-        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
-
-        c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
-
-    elif c.arch == "x86_64":
+    if c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
