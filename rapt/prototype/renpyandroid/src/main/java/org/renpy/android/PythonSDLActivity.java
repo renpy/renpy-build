@@ -423,49 +423,50 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         setIntent(intent);
     }
 
-
-    public boolean mPauseDone;
+    public boolean mStopDone = true;
 
     @Override
-    public void onPause() {
-        Log.v("python", "onPause() start.");
+    public void onStop() {
+        Log.v("python", "onStop() start.");
 
-        mPauseDone = false;
+        super.onStop();
+        long startTime = System.currentTimeMillis();
 
-        super.onPause();
-
-        if (mPresplash == null) {
-            synchronized (this) {
-                while (!mPauseDone) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) { /* pass */ }
+        synchronized (this) {
+            while (true) {
+                if (mStopDone) {
+                    break;
                 }
+
+                // Backstop.
+                if (startTime + 8000 < System.currentTimeMillis()) {
+                    break;
+                }
+
+                try {
+                    this.wait(100);
+                } catch (InterruptedException e) { /* pass */ }
+
             }
         }
 
-        Log.v("python", "onPause() done.");
+        Log.v("python", "onStop() done.");
     }
 
-    public void finishOnPause() {
-        Log.v("python", "finishOnPause()");
+    public void armOnStop () {
+        Log.v("python", "armOnStop()");
+        mStopDone = false;
+    }
+
+    public void finishOnStop() {
+        Log.v("python", "finishOnStop()");
 
         synchronized (this) {
-            mPauseDone = true;
+            mStopDone = true;
             this.notifyAll();
         }
     }
 
-    @Override
-    public void onResume() {
-        Log.v("python", "onResume()");
-
-        super.onResume();
-
-        Log.v("python", "onResume() done.");
-    }
-
-    boolean waitForWifiConfirmationShown = false;
     HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
 
     long mOldProgress = 0;
@@ -489,26 +490,16 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
             break;
 
           case AssetPackStatus.FAILED:
+            Toast.makeText(this, "Download of " + assetPackState.name() + " failed. Error " + assetPackState.errorCode(), Toast.LENGTH_LONG).show();
             Log.e("python", "error = " + assetPackState.errorCode());
+
           case AssetPackStatus.CANCELED:
             mAssetPackManager.fetch(Collections.singletonList(assetPackState.name()));
             break;
 
           case AssetPackStatus.WAITING_FOR_WIFI:
-            if (!waitForWifiConfirmationShown) {
-              mAssetPackManager.showCellularDataConfirmation(mActivity)
-                .addOnSuccessListener(new OnSuccessListener<Integer> () {
-                  @Override
-                  public void onSuccess(Integer resultCode) {
-                    if (resultCode == RESULT_OK) {
-                      Log.d("python", "Confirmation dialog has been accepted.");
-                    } else if (resultCode == RESULT_CANCELED) {
-                      Log.d("python", "Confirmation dialog has been denied by the user.");
-                    }
-                  }
-                });
-              waitForWifiConfirmationShown = true;
-            }
+          case AssetPackStatus.REQUIRES_USER_CONFIRMATION:
+            mAssetPackManager.showConfirmationDialog(this);
             break;
 
           case AssetPackStatus.NOT_INSTALLED:

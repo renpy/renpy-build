@@ -37,17 +37,6 @@ def unpack(c: Context):
     c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
 
 
-# @task(kind="cross", platforms="windows", always=True)
-# def usrinclude(c: Context):
-#     c.chdir("{{cross}}")
-
-#     c.run("mkdir -p llvm-mingw/usr/include")
-#     c.run("mkdir -p llvm-mingw/aarch64-w64-mingw32/usr/include")
-#     c.run("mkdir -p llvm-mingw/armv7-w64-mingw32/usr/include")
-#     c.run("mkdir -p llvm-mingw/i686-w64-mingw32/usr/include")
-#     c.run("mkdir -p llvm-mingw/x86_64-w64-mingw32/usr/include")
-
-
 @task(kind="cross", platforms="android", always=True)
 def build(c: Context):
 

@@ -22,16 +22,20 @@ else:
 k_uAppIdInvalid = c_uint(0)
 k_uDepotIdInvalid = c_uint(0)
 k_uAPICallInvalid = c_ulonglong(0)
+k_uAccountIdInvalid = c_uint(0)
 k_ulPartyBeaconIdInvalid = c_ulonglong(0)
 k_HAuthTicketInvalid = c_uint(0)
 k_unSteamAccountIDMask = c_uint(0xffffffff)
 k_unSteamAccountInstanceMask = c_uint(0xfffff)
 k_unSteamUserDefaultInstance = c_uint(0x1)
 k_cchGameExtraInfoMax = c_int(0x40)
+k_cchMaxSteamErrMsg = c_int(0x400)
 k_cchMaxFriendsGroupName = c_int(0x40)
 k_cFriendsGroupLimit = c_int(0x64)
 k_FriendsGroupID_Invalid = c_short(-1)
 k_cEnumerateFollowersMax = c_int(0x32)
+k_usFriendGameInfoQueryPort_NotInitialized = c_ushort(0xffff)
+k_usFriendGameInfoQueryPort_Error = c_ushort(0xfffe)
 k_cubChatMetadataMax = c_uint(0x2000)
 k_cbMaxGameServerGameDir = c_int(0x20)
 k_cbMaxGameServerMapName = c_int(0x20)
@@ -69,6 +73,8 @@ INVALID_HTMLBROWSER = c_uint(0)
 k_SteamItemInstanceIDInvalid = c_ulonglong(-1)
 k_SteamInventoryResultInvalid = c_int(-1)
 k_SteamInventoryUpdateHandleInvalid = c_ulonglong(0xffffffffffffffff)
+k_unMaxTimelinePriority = c_uint(0x3e8)
+k_flMaxTimelineEventDuration = c_float(600.0)
 k_HSteamNetConnection_Invalid = c_uint(0)
 k_HSteamListenSocket_Invalid = c_uint(0)
 k_HSteamNetPollGroup_Invalid = c_uint(0)
@@ -255,6 +261,12 @@ k_EResultSteamRealmMismatch = EResult(120)
 k_EResultInvalidSignature = EResult(121)
 k_EResultParseFailure = EResult(122)
 k_EResultNoVerifiedPhone = EResult(123)
+k_EResultInsufficientBattery = EResult(124)
+k_EResultChargerRequired = EResult(125)
+k_EResultCachedCredentialInvalid = EResult(126)
+K_EResultPhoneNumberIsVOIP = EResult(127)
+k_EResultNotSupported = EResult(128)
+k_EResultFamilySizeLimitExceeded = EResult(129)
 
 class EVoiceResult(c_int):
     pass
@@ -313,6 +325,7 @@ k_EAuthSessionResponseAuthTicketCanceled = EAuthSessionResponse(6)
 k_EAuthSessionResponseAuthTicketInvalidAlreadyUsed = EAuthSessionResponse(7)
 k_EAuthSessionResponseAuthTicketInvalid = EAuthSessionResponse(8)
 k_EAuthSessionResponsePublisherIssuedBan = EAuthSessionResponse(9)
+k_EAuthSessionResponseAuthTicketNetworkIdentityFailure = EAuthSessionResponse(10)
 
 class EUserHasLicenseForAppResult(c_int):
     pass
@@ -380,6 +393,7 @@ k_EChatInstanceFlagMMSLobby = EChatSteamIDInstanceFlags(131072)
 class ENotificationPosition(c_int):
     pass
 
+k_EPositionInvalid = ENotificationPosition(-1)
 k_EPositionTopLeft = ENotificationPosition(0)
 k_EPositionTopRight = ENotificationPosition(1)
 k_EPositionBottomLeft = ENotificationPosition(2)
@@ -463,6 +477,16 @@ k_EDurationControlOnlineState_Invalid = EDurationControlOnlineState(0)
 k_EDurationControlOnlineState_Offline = EDurationControlOnlineState(1)
 k_EDurationControlOnlineState_Online = EDurationControlOnlineState(2)
 k_EDurationControlOnlineState_OnlineHighPri = EDurationControlOnlineState(3)
+
+class EBetaBranchFlags(c_int):
+    pass
+
+k_EBetaBranch_None = EBetaBranchFlags(0)
+k_EBetaBranch_Default = EBetaBranchFlags(1)
+k_EBetaBranch_Available = EBetaBranchFlags(2)
+k_EBetaBranch_Private = EBetaBranchFlags(4)
+k_EBetaBranch_Selected = EBetaBranchFlags(8)
+k_EBetaBranch_Installed = EBetaBranchFlags(16)
 
 class EGameSearchErrorCode_t(c_int):
     pass
@@ -566,6 +590,31 @@ class EActivateGameOverlayToWebPageMode(c_int):
 
 k_EActivateGameOverlayToWebPageMode_Default = EActivateGameOverlayToWebPageMode(0)
 k_EActivateGameOverlayToWebPageMode_Modal = EActivateGameOverlayToWebPageMode(1)
+
+class ECommunityProfileItemType(c_int):
+    pass
+
+k_ECommunityProfileItemType_AnimatedAvatar = ECommunityProfileItemType(0)
+k_ECommunityProfileItemType_AvatarFrame = ECommunityProfileItemType(1)
+k_ECommunityProfileItemType_ProfileModifier = ECommunityProfileItemType(2)
+k_ECommunityProfileItemType_ProfileBackground = ECommunityProfileItemType(3)
+k_ECommunityProfileItemType_MiniProfileBackground = ECommunityProfileItemType(4)
+
+class ECommunityProfileItemProperty(c_int):
+    pass
+
+k_ECommunityProfileItemProperty_ImageSmall = ECommunityProfileItemProperty(0)
+k_ECommunityProfileItemProperty_ImageLarge = ECommunityProfileItemProperty(1)
+k_ECommunityProfileItemProperty_InternalName = ECommunityProfileItemProperty(2)
+k_ECommunityProfileItemProperty_Title = ECommunityProfileItemProperty(3)
+k_ECommunityProfileItemProperty_Description = ECommunityProfileItemProperty(4)
+k_ECommunityProfileItemProperty_AppID = ECommunityProfileItemProperty(5)
+k_ECommunityProfileItemProperty_TypeID = ECommunityProfileItemProperty(6)
+k_ECommunityProfileItemProperty_Class = ECommunityProfileItemProperty(7)
+k_ECommunityProfileItemProperty_MovieWebM = ECommunityProfileItemProperty(8)
+k_ECommunityProfileItemProperty_MovieMP4 = ECommunityProfileItemProperty(9)
+k_ECommunityProfileItemProperty_MovieWebMSmall = ECommunityProfileItemProperty(10)
+k_ECommunityProfileItemProperty_MovieMP4Small = ECommunityProfileItemProperty(11)
 
 class EPersonaChange(c_int):
     pass
@@ -732,7 +781,8 @@ k_EWorkshopFileTypeControllerBinding = EWorkshopFileType(12)
 k_EWorkshopFileTypeSteamworksAccessInvite = EWorkshopFileType(13)
 k_EWorkshopFileTypeSteamVideo = EWorkshopFileType(14)
 k_EWorkshopFileTypeGameManagedItem = EWorkshopFileType(15)
-k_EWorkshopFileTypeMax = EWorkshopFileType(16)
+k_EWorkshopFileTypeClip = EWorkshopFileType(16)
+k_EWorkshopFileTypeMax = EWorkshopFileType(17)
 
 class EWorkshopVote(c_int):
     pass
@@ -815,15 +865,6 @@ class ELeaderboardUploadScoreMethod(c_int):
 k_ELeaderboardUploadScoreMethodNone = ELeaderboardUploadScoreMethod(0)
 k_ELeaderboardUploadScoreMethodKeepBest = ELeaderboardUploadScoreMethod(1)
 k_ELeaderboardUploadScoreMethodForceUpdate = ELeaderboardUploadScoreMethod(2)
-
-class ERegisterActivationCodeResult(c_int):
-    pass
-
-k_ERegisterActivationCodeResultOK = ERegisterActivationCodeResult(0)
-k_ERegisterActivationCodeResultFail = ERegisterActivationCodeResult(1)
-k_ERegisterActivationCodeResultAlreadyRegistered = ERegisterActivationCodeResult(2)
-k_ERegisterActivationCodeResultTimeout = ERegisterActivationCodeResult(3)
-k_ERegisterActivationCodeAlreadyOwned = ERegisterActivationCodeResult(4)
 
 class EP2PSessionError(c_int):
     pass
@@ -915,6 +956,7 @@ k_EHTTPStatusCode303SeeOther = EHTTPStatusCode(303)
 k_EHTTPStatusCode304NotModified = EHTTPStatusCode(304)
 k_EHTTPStatusCode305UseProxy = EHTTPStatusCode(305)
 k_EHTTPStatusCode307TemporaryRedirect = EHTTPStatusCode(307)
+k_EHTTPStatusCode308PermanentRedirect = EHTTPStatusCode(308)
 k_EHTTPStatusCode400BadRequest = EHTTPStatusCode(400)
 k_EHTTPStatusCode401Unauthorized = EHTTPStatusCode(401)
 k_EHTTPStatusCode402PaymentRequired = EHTTPStatusCode(402)
@@ -1216,10 +1258,10 @@ k_EInputActionOrigin_Switch_LeftGrip_Lower = EInputActionOrigin(244)
 k_EInputActionOrigin_Switch_LeftGrip_Upper = EInputActionOrigin(245)
 k_EInputActionOrigin_Switch_RightGrip_Lower = EInputActionOrigin(246)
 k_EInputActionOrigin_Switch_RightGrip_Upper = EInputActionOrigin(247)
-k_EInputActionOrigin_Switch_Reserved11 = EInputActionOrigin(248)
-k_EInputActionOrigin_Switch_Reserved12 = EInputActionOrigin(249)
-k_EInputActionOrigin_Switch_Reserved13 = EInputActionOrigin(250)
-k_EInputActionOrigin_Switch_Reserved14 = EInputActionOrigin(251)
+k_EInputActionOrigin_Switch_JoyConButton_N = EInputActionOrigin(248)
+k_EInputActionOrigin_Switch_JoyConButton_E = EInputActionOrigin(249)
+k_EInputActionOrigin_Switch_JoyConButton_S = EInputActionOrigin(250)
+k_EInputActionOrigin_Switch_JoyConButton_W = EInputActionOrigin(251)
 k_EInputActionOrigin_Switch_Reserved15 = EInputActionOrigin(252)
 k_EInputActionOrigin_Switch_Reserved16 = EInputActionOrigin(253)
 k_EInputActionOrigin_Switch_Reserved17 = EInputActionOrigin(254)
@@ -1281,10 +1323,10 @@ k_EInputActionOrigin_PS5_Gyro_Pitch = EInputActionOrigin(309)
 k_EInputActionOrigin_PS5_Gyro_Yaw = EInputActionOrigin(310)
 k_EInputActionOrigin_PS5_Gyro_Roll = EInputActionOrigin(311)
 k_EInputActionOrigin_PS5_DPad_Move = EInputActionOrigin(312)
-k_EInputActionOrigin_PS5_Reserved1 = EInputActionOrigin(313)
-k_EInputActionOrigin_PS5_Reserved2 = EInputActionOrigin(314)
-k_EInputActionOrigin_PS5_Reserved3 = EInputActionOrigin(315)
-k_EInputActionOrigin_PS5_Reserved4 = EInputActionOrigin(316)
+k_EInputActionOrigin_PS5_LeftGrip = EInputActionOrigin(313)
+k_EInputActionOrigin_PS5_RightGrip = EInputActionOrigin(314)
+k_EInputActionOrigin_PS5_LeftFn = EInputActionOrigin(315)
+k_EInputActionOrigin_PS5_RightFn = EInputActionOrigin(316)
 k_EInputActionOrigin_PS5_Reserved5 = EInputActionOrigin(317)
 k_EInputActionOrigin_PS5_Reserved6 = EInputActionOrigin(318)
 k_EInputActionOrigin_PS5_Reserved7 = EInputActionOrigin(319)
@@ -1870,7 +1912,15 @@ k_EControllerActionOrigin_SteamDeck_Reserved17 = EControllerActionOrigin(374)
 k_EControllerActionOrigin_SteamDeck_Reserved18 = EControllerActionOrigin(375)
 k_EControllerActionOrigin_SteamDeck_Reserved19 = EControllerActionOrigin(376)
 k_EControllerActionOrigin_SteamDeck_Reserved20 = EControllerActionOrigin(377)
-k_EControllerActionOrigin_Count = EControllerActionOrigin(378)
+k_EControllerActionOrigin_Switch_JoyConButton_N = EControllerActionOrigin(378)
+k_EControllerActionOrigin_Switch_JoyConButton_E = EControllerActionOrigin(379)
+k_EControllerActionOrigin_Switch_JoyConButton_S = EControllerActionOrigin(380)
+k_EControllerActionOrigin_Switch_JoyConButton_W = EControllerActionOrigin(381)
+k_EControllerActionOrigin_PS5_LeftGrip = EControllerActionOrigin(382)
+k_EControllerActionOrigin_PS5_RightGrip = EControllerActionOrigin(383)
+k_EControllerActionOrigin_PS5_LeftFn = EControllerActionOrigin(384)
+k_EControllerActionOrigin_PS5_RightFn = EControllerActionOrigin(385)
+k_EControllerActionOrigin_Count = EControllerActionOrigin(386)
 k_EControllerActionOrigin_MaximumPossibleValue = EControllerActionOrigin(32767)
 
 class ESteamControllerLEDFlag(c_int):
@@ -1965,6 +2015,7 @@ k_EItemStateInstalled = EItemState(4)
 k_EItemStateNeedsUpdate = EItemState(8)
 k_EItemStateDownloading = EItemState(16)
 k_EItemStateDownloadPending = EItemState(32)
+k_EItemStateDisabledLocally = EItemState(64)
 
 class EItemStatistic(c_int):
     pass
@@ -1991,7 +2042,17 @@ k_EItemPreviewType_YouTubeVideo = EItemPreviewType(1)
 k_EItemPreviewType_Sketchfab = EItemPreviewType(2)
 k_EItemPreviewType_EnvironmentMap_HorizontalCross = EItemPreviewType(3)
 k_EItemPreviewType_EnvironmentMap_LatLong = EItemPreviewType(4)
+k_EItemPreviewType_Clip = EItemPreviewType(5)
 k_EItemPreviewType_ReservedMax = EItemPreviewType(255)
+
+class EUGCContentDescriptorID(c_int):
+    pass
+
+k_EUGCContentDescriptor_NudityOrSexualContent = EUGCContentDescriptorID(1)
+k_EUGCContentDescriptor_FrequentViolenceOrGore = EUGCContentDescriptorID(2)
+k_EUGCContentDescriptor_AdultOnlySexualContent = EUGCContentDescriptorID(3)
+k_EUGCContentDescriptor_GratuitousSexualContent = EUGCContentDescriptorID(4)
+k_EUGCContentDescriptor_AnyMatureContent = EUGCContentDescriptorID(5)
 
 class ESteamItemFlags(c_int):
     pass
@@ -1999,6 +2060,24 @@ class ESteamItemFlags(c_int):
 k_ESteamItemNoTrade = ESteamItemFlags(1)
 k_ESteamItemRemoved = ESteamItemFlags(256)
 k_ESteamItemConsumed = ESteamItemFlags(512)
+
+class ETimelineGameMode(c_int):
+    pass
+
+k_ETimelineGameMode_Invalid = ETimelineGameMode(0)
+k_ETimelineGameMode_Playing = ETimelineGameMode(1)
+k_ETimelineGameMode_Staging = ETimelineGameMode(2)
+k_ETimelineGameMode_Menus = ETimelineGameMode(3)
+k_ETimelineGameMode_LoadingScreen = ETimelineGameMode(4)
+k_ETimelineGameMode_Max = ETimelineGameMode(5)
+
+class ETimelineEventClipPriority(c_int):
+    pass
+
+k_ETimelineEventClipPriority_Invalid = ETimelineEventClipPriority(0)
+k_ETimelineEventClipPriority_None = ETimelineEventClipPriority(1)
+k_ETimelineEventClipPriority_Standard = ETimelineEventClipPriority(2)
+k_ETimelineEventClipPriority_Featured = ETimelineEventClipPriority(3)
 
 class EParentalFeature(c_int):
     pass
@@ -2017,7 +2096,9 @@ k_EFeatureParentalSetup = EParentalFeature(10)
 k_EFeatureLibrary = EParentalFeature(11)
 k_EFeatureTest = EParentalFeature(12)
 k_EFeatureSiteLicense = EParentalFeature(13)
-k_EFeatureMax = EParentalFeature(14)
+k_EFeatureKioskMode_Deprecated = EParentalFeature(14)
+k_EFeatureBlockAlways = EParentalFeature(15)
+k_EFeatureMax = EParentalFeature(16)
 
 class ESteamDeviceFormFactor(c_int):
     pass
@@ -2027,6 +2108,7 @@ k_ESteamDeviceFormFactorPhone = ESteamDeviceFormFactor(1)
 k_ESteamDeviceFormFactorTablet = ESteamDeviceFormFactor(2)
 k_ESteamDeviceFormFactorComputer = ESteamDeviceFormFactor(3)
 k_ESteamDeviceFormFactorTV = ESteamDeviceFormFactor(4)
+k_ESteamDeviceFormFactorVRHeadset = ESteamDeviceFormFactor(5)
 
 class ESteamNetworkingAvailability(c_int):
     pass
@@ -2142,11 +2224,16 @@ k_ESteamNetworkingConfig_Invalid = ESteamNetworkingConfigValue(0)
 k_ESteamNetworkingConfig_TimeoutInitial = ESteamNetworkingConfigValue(24)
 k_ESteamNetworkingConfig_TimeoutConnected = ESteamNetworkingConfigValue(25)
 k_ESteamNetworkingConfig_SendBufferSize = ESteamNetworkingConfigValue(9)
+k_ESteamNetworkingConfig_RecvBufferSize = ESteamNetworkingConfigValue(47)
+k_ESteamNetworkingConfig_RecvBufferMessages = ESteamNetworkingConfigValue(48)
+k_ESteamNetworkingConfig_RecvMaxMessageSize = ESteamNetworkingConfigValue(49)
+k_ESteamNetworkingConfig_RecvMaxSegmentsPerPacket = ESteamNetworkingConfigValue(50)
 k_ESteamNetworkingConfig_ConnectionUserData = ESteamNetworkingConfigValue(40)
 k_ESteamNetworkingConfig_SendRateMin = ESteamNetworkingConfigValue(10)
 k_ESteamNetworkingConfig_SendRateMax = ESteamNetworkingConfigValue(11)
 k_ESteamNetworkingConfig_NagleTime = ESteamNetworkingConfigValue(12)
 k_ESteamNetworkingConfig_IP_AllowWithoutAuth = ESteamNetworkingConfigValue(23)
+k_ESteamNetworkingConfig_IPLocalHost_AllowWithoutAuth = ESteamNetworkingConfigValue(52)
 k_ESteamNetworkingConfig_MTU_PacketSize = ESteamNetworkingConfigValue(32)
 k_ESteamNetworkingConfig_MTU_DataSize = ESteamNetworkingConfigValue(33)
 k_ESteamNetworkingConfig_Unencrypted = ESteamNetworkingConfigValue(34)
@@ -2169,6 +2256,7 @@ k_ESteamNetworkingConfig_FakeRateLimit_Send_Rate = ESteamNetworkingConfigValue(4
 k_ESteamNetworkingConfig_FakeRateLimit_Send_Burst = ESteamNetworkingConfigValue(43)
 k_ESteamNetworkingConfig_FakeRateLimit_Recv_Rate = ESteamNetworkingConfigValue(44)
 k_ESteamNetworkingConfig_FakeRateLimit_Recv_Burst = ESteamNetworkingConfigValue(45)
+k_ESteamNetworkingConfig_OutOfOrderCorrectionWindowMicroseconds = ESteamNetworkingConfigValue(51)
 k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged = ESteamNetworkingConfigValue(201)
 k_ESteamNetworkingConfig_Callback_AuthStatusChanged = ESteamNetworkingConfigValue(202)
 k_ESteamNetworkingConfig_Callback_RelayNetworkStatusChanged = ESteamNetworkingConfigValue(203)
@@ -2180,20 +2268,26 @@ k_ESteamNetworkingConfig_P2P_STUN_ServerList = ESteamNetworkingConfigValue(103)
 k_ESteamNetworkingConfig_P2P_Transport_ICE_Enable = ESteamNetworkingConfigValue(104)
 k_ESteamNetworkingConfig_P2P_Transport_ICE_Penalty = ESteamNetworkingConfigValue(105)
 k_ESteamNetworkingConfig_P2P_Transport_SDR_Penalty = ESteamNetworkingConfigValue(106)
+k_ESteamNetworkingConfig_P2P_TURN_ServerList = ESteamNetworkingConfigValue(107)
+k_ESteamNetworkingConfig_P2P_TURN_UserList = ESteamNetworkingConfigValue(108)
+k_ESteamNetworkingConfig_P2P_TURN_PassList = ESteamNetworkingConfigValue(109)
+k_ESteamNetworkingConfig_P2P_Transport_ICE_Implementation = ESteamNetworkingConfigValue(110)
 k_ESteamNetworkingConfig_SDRClient_ConsecutitivePingTimeoutsFailInitial = ESteamNetworkingConfigValue(19)
 k_ESteamNetworkingConfig_SDRClient_ConsecutitivePingTimeoutsFail = ESteamNetworkingConfigValue(20)
 k_ESteamNetworkingConfig_SDRClient_MinPingsBeforePingAccurate = ESteamNetworkingConfigValue(21)
 k_ESteamNetworkingConfig_SDRClient_SingleSocket = ESteamNetworkingConfigValue(22)
 k_ESteamNetworkingConfig_SDRClient_ForceRelayCluster = ESteamNetworkingConfigValue(29)
-k_ESteamNetworkingConfig_SDRClient_DebugTicketAddress = ESteamNetworkingConfigValue(30)
+k_ESteamNetworkingConfig_SDRClient_DevTicket = ESteamNetworkingConfigValue(30)
 k_ESteamNetworkingConfig_SDRClient_ForceProxyAddr = ESteamNetworkingConfigValue(31)
 k_ESteamNetworkingConfig_SDRClient_FakeClusterPing = ESteamNetworkingConfigValue(36)
+k_ESteamNetworkingConfig_SDRClient_LimitPingProbesToNearestN = ESteamNetworkingConfigValue(60)
 k_ESteamNetworkingConfig_LogLevel_AckRTT = ESteamNetworkingConfigValue(13)
 k_ESteamNetworkingConfig_LogLevel_PacketDecode = ESteamNetworkingConfigValue(14)
 k_ESteamNetworkingConfig_LogLevel_Message = ESteamNetworkingConfigValue(15)
 k_ESteamNetworkingConfig_LogLevel_PacketGaps = ESteamNetworkingConfigValue(16)
 k_ESteamNetworkingConfig_LogLevel_P2PRendezvous = ESteamNetworkingConfigValue(17)
 k_ESteamNetworkingConfig_LogLevel_SDRRelayPings = ESteamNetworkingConfigValue(18)
+k_ESteamNetworkingConfig_ECN = ESteamNetworkingConfigValue(999)
 k_ESteamNetworkingConfig_DELETED_EnumerateDevVars = ESteamNetworkingConfigValue(35)
 k_ESteamNetworkingConfigValue__Force32Bit = ESteamNetworkingConfigValue(2147483647)
 
@@ -2220,6 +2314,14 @@ k_ESteamNetworkingSocketsDebugOutputType_Verbose = ESteamNetworkingSocketsDebugO
 k_ESteamNetworkingSocketsDebugOutputType_Debug = ESteamNetworkingSocketsDebugOutputType(7)
 k_ESteamNetworkingSocketsDebugOutputType_Everything = ESteamNetworkingSocketsDebugOutputType(8)
 k_ESteamNetworkingSocketsDebugOutputType__Force32Bit = ESteamNetworkingSocketsDebugOutputType(2147483647)
+
+class ESteamAPIInitResult(c_int):
+    pass
+
+k_ESteamAPIInitResult_OK = ESteamAPIInitResult(0)
+k_ESteamAPIInitResult_FailedGeneric = ESteamAPIInitResult(1)
+k_ESteamAPIInitResult_NoSteamClient = ESteamAPIInitResult(2)
+k_ESteamAPIInitResult_VersionMismatch = ESteamAPIInitResult(3)
 
 class EServerMode(c_int):
     pass
@@ -2458,6 +2560,7 @@ class SteamUGCDetails_t(Structure):
         ('m_unVotesDown', c_uint),
         ('m_flScore', c_float),
         ('m_unNumChildren', c_uint),
+        ('m_ulTotalFilesSize', c_ulonglong),
     ]
 
 class SteamItemDetails_t(Structure):
@@ -2847,6 +2950,16 @@ class DurationControl_t(Structure):
     ]
     callback_id = 167
 
+class GetTicketForWebApiResponse_t(Structure):
+    _pack_ = PACK
+    _fields_ = [
+        ('m_hAuthTicket', c_uint),
+        ('m_eResult', EResult),
+        ('m_cubTicket', c_int),
+        ('m_rgubTicket', (c_ubyte * 2560)),
+    ]
+    callback_id = 168
+
 class PersonaStateChange_t(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -2859,6 +2972,9 @@ class GameOverlayActivated_t(Structure):
     _pack_ = PACK
     _fields_ = [
         ('m_bActive', c_ubyte),
+        ('m_bUserInitiated', c_bool),
+        ('m_nAppID', c_uint),
+        ('m_dwOverlayPID', c_uint),
     ]
     callback_id = 331
 
@@ -3013,6 +3129,26 @@ class OverlayBrowserProtocolNavigation_t(Structure):
     ]
     callback_id = 349
 
+class EquippedProfileItemsChanged_t(Structure):
+    _pack_ = PACK
+    _fields_ = [
+        ('m_steamID', c_ulonglong),
+    ]
+    callback_id = 350
+
+class EquippedProfileItems_t(Structure):
+    _pack_ = PACK
+    _fields_ = [
+        ('m_eResult', EResult),
+        ('m_steamID', c_ulonglong),
+        ('m_bHasAnimatedAvatar', c_bool),
+        ('m_bHasAvatarFrame', c_bool),
+        ('m_bHasProfileModifier', c_bool),
+        ('m_bHasProfileBackground', c_bool),
+        ('m_bHasMiniProfileBackground', c_bool),
+    ]
+    callback_id = 351
+
 class IPCountry_t(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -3053,6 +3189,7 @@ class GamepadTextInputDismissed_t(Structure):
     _fields_ = [
         ('m_bSubmitted', c_bool),
         ('m_unSubmittedText', c_uint),
+        ('m_unAppID', c_uint),
     ]
     callback_id = 714
 
@@ -3067,6 +3204,13 @@ class FloatingGamepadTextInputDismissed_t(Structure):
     _fields_ = [
     ]
     callback_id = 738
+
+class FilterTextDictionaryChanged_t(Structure):
+    _pack_ = PACK
+    _fields_ = [
+        ('m_eLanguage', c_int),
+    ]
+    callback_id = 739
 
 class FavoritesListChanged_t(Structure):
     _pack_ = PACK
@@ -3667,14 +3811,6 @@ class DlcInstalled_t(Structure):
     ]
     callback_id = 1005
 
-class RegisterActivationCodeResponse_t(Structure):
-    _pack_ = PACK
-    _fields_ = [
-        ('m_eResult', ERegisterActivationCodeResult),
-        ('m_unPackageRegistered', c_uint),
-    ]
-    callback_id = 1008
-
 class NewUrlLaunchParameters_t(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -3909,6 +4045,17 @@ class SteamInputConfigurationLoaded_t(Structure):
     ]
     callback_id = 2803
 
+class SteamInputGamepadSlotChange_t(Structure):
+    _pack_ = PACK
+    _fields_ = [
+        ('m_unAppID', c_uint),
+        ('m_ulDeviceHandle', c_ulonglong),
+        ('m_eDeviceType', ESteamInputType),
+        ('m_nOldGamepadSlot', c_int),
+        ('m_nNewGamepadSlot', c_int),
+    ]
+    callback_id = 2804
+
 class SteamUGCQueryCompleted_t(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -3952,6 +4099,8 @@ class ItemInstalled_t(Structure):
     _fields_ = [
         ('m_unAppID', c_uint),
         ('m_nPublishedFileId', c_ulonglong),
+        ('m_hLegacyContent', c_ulonglong),
+        ('m_unManifestID', c_ulonglong),
     ]
     callback_id = 3405
 
@@ -4080,22 +4229,6 @@ class WorkshopEULAStatus_t(Structure):
         ('m_bNeedsAction', c_bool),
     ]
     callback_id = 3420
-
-class SteamAppInstalled_t(Structure):
-    _pack_ = PACK
-    _fields_ = [
-        ('m_nAppID', c_uint),
-        ('m_iInstallFolderIndex', c_int),
-    ]
-    callback_id = 3901
-
-class SteamAppUninstalled_t(Structure):
-    _pack_ = PACK
-    _fields_ = [
-        ('m_nAppID', c_uint),
-        ('m_iInstallFolderIndex', c_int),
-    ]
-    callback_id = 3902
 
 class HTML_BrowserReady_t(Structure):
     _pack_ = PACK
@@ -4401,6 +4534,13 @@ class SteamRemotePlaySessionDisconnected_t(Structure):
     ]
     callback_id = 5702
 
+class SteamRemotePlayTogetherGuestInvite_t(Structure):
+    _pack_ = PACK
+    _fields_ = [
+        ('m_szConnectURL', (c_byte * 1024)),
+    ]
+    callback_id = 5703
+
 class SteamNetworkingMessagesSessionRequest_t(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -4583,6 +4723,7 @@ callback_by_id = {
 165 : StoreAuthURLResponse_t,
 166 : MarketEligibilityResponse_t,
 167 : DurationControl_t,
+168 : GetTicketForWebApiResponse_t,
 304 : PersonaStateChange_t,
 331 : GameOverlayActivated_t,
 332 : GameServerChangeRequested_t,
@@ -4603,6 +4744,8 @@ callback_by_id = {
 347 : SetPersonaNameResponse_t,
 348 : UnreadChatMessagesChanged_t,
 349 : OverlayBrowserProtocolNavigation_t,
+350 : EquippedProfileItemsChanged_t,
+351 : EquippedProfileItems_t,
 701 : IPCountry_t,
 702 : LowBatteryPower_t,
 703 : SteamAPICallCompleted_t,
@@ -4611,6 +4754,7 @@ callback_by_id = {
 714 : GamepadTextInputDismissed_t,
 736 : AppResumingFromSuspend_t,
 738 : FloatingGamepadTextInputDismissed_t,
+739 : FilterTextDictionaryChanged_t,
 502 : FavoritesListChanged_t,
 503 : LobbyInvite_t,
 504 : LobbyEnter_t,
@@ -4675,7 +4819,6 @@ callback_by_id = {
 1112 : PS3TrophiesInstalled_t,
 1112 : GlobalStatsReceived_t,
 1005 : DlcInstalled_t,
-1008 : RegisterActivationCodeResponse_t,
 1014 : NewUrlLaunchParameters_t,
 1021 : AppProofOfPurchaseKeyResponse_t,
 1023 : FileDetailsResult_t,
@@ -4707,6 +4850,7 @@ callback_by_id = {
 2801 : SteamInputDeviceConnected_t,
 2802 : SteamInputDeviceDisconnected_t,
 2803 : SteamInputConfigurationLoaded_t,
+2804 : SteamInputGamepadSlotChange_t,
 3401 : SteamUGCQueryCompleted_t,
 3402 : SteamUGCRequestUGCDetailsResult_t,
 3403 : CreateItemResult_t,
@@ -4726,8 +4870,6 @@ callback_by_id = {
 3417 : DeleteItemResult_t,
 3418 : UserSubscribedItemsListChanged_t,
 3420 : WorkshopEULAStatus_t,
-3901 : SteamAppInstalled_t,
-3902 : SteamAppUninstalled_t,
 4501 : HTML_BrowserReady_t,
 4502 : HTML_NeedsPaint_t,
 4503 : HTML_StartRequest_t,
@@ -4762,6 +4904,7 @@ callback_by_id = {
 5001 : SteamParentalSettingsChanged_t,
 5701 : SteamRemotePlaySessionConnected_t,
 5702 : SteamRemotePlaySessionDisconnected_t,
+5703 : SteamRemotePlayTogetherGuestInvite_t,
 1251 : SteamNetworkingMessagesSessionRequest_t,
 1252 : SteamNetworkingMessagesSessionFailed_t,
 1221 : SteamNetConnectionStatusChangedCallback_t,
@@ -4866,9 +5009,6 @@ class ISteamClient(Structure):
     def GetISteamUGC(self, hSteamUser, hSteamPipe, pchVersion):
         return ISteamClient_GetISteamUGC(byref(self), hSteamUser, hSteamPipe, pchVersion) # type: ignore
 
-    def GetISteamAppList(self, hSteamUser, hSteamPipe, pchVersion):
-        return ISteamClient_GetISteamAppList(byref(self), hSteamUser, hSteamPipe, pchVersion) # type: ignore
-
     def GetISteamMusic(self, hSteamuser, hSteamPipe, pchVersion):
         return ISteamClient_GetISteamMusic(byref(self), hSteamuser, hSteamPipe, pchVersion) # type: ignore
 
@@ -4940,8 +5080,11 @@ class ISteamUser(Structure):
     def GetVoiceOptimalSampleRate(self, ):
         return ISteamUser_GetVoiceOptimalSampleRate(byref(self), ) # type: ignore
 
-    def GetAuthSessionTicket(self, pTicket, cbMaxTicket, pcbTicket):
-        return ISteamUser_GetAuthSessionTicket(byref(self), pTicket, cbMaxTicket, pcbTicket) # type: ignore
+    def GetAuthSessionTicket(self, pTicket, cbMaxTicket, pcbTicket, pSteamNetworkingIdentity):
+        return ISteamUser_GetAuthSessionTicket(byref(self), pTicket, cbMaxTicket, pcbTicket, pSteamNetworkingIdentity) # type: ignore
+
+    def GetAuthTicketForWebApi(self, pchIdentity):
+        return ISteamUser_GetAuthTicketForWebApi(byref(self), pchIdentity) # type: ignore
 
     def BeginAuthSession(self, pAuthTicket, cbAuthTicket, steamID):
         return ISteamUser_BeginAuthSession(byref(self), pAuthTicket, cbAuthTicket, steamID) # type: ignore
@@ -5230,6 +5373,18 @@ class ISteamFriends(Structure):
     def ActivateGameOverlayInviteDialogConnectString(self, pchConnectString):
         return ISteamFriends_ActivateGameOverlayInviteDialogConnectString(byref(self), pchConnectString) # type: ignore
 
+    def RequestEquippedProfileItems(self, steamID):
+        return ISteamFriends_RequestEquippedProfileItems(byref(self), steamID) # type: ignore
+
+    def BHasEquippedProfileItem(self, steamID, itemType):
+        return ISteamFriends_BHasEquippedProfileItem(byref(self), steamID, itemType) # type: ignore
+
+    def GetProfileItemPropertyString(self, steamID, itemType, prop):
+        return ISteamFriends_GetProfileItemPropertyString(byref(self), steamID, itemType, prop) # type: ignore
+
+    def GetProfileItemPropertyUint(self, steamID, itemType, prop):
+        return ISteamFriends_GetProfileItemPropertyUint(byref(self), steamID, itemType, prop) # type: ignore
+
 class ISteamUtils(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -5342,6 +5497,9 @@ class ISteamUtils(Structure):
 
     def DismissFloatingGamepadTextInput(self, ):
         return ISteamUtils_DismissFloatingGamepadTextInput(byref(self), ) # type: ignore
+
+    def DismissGamepadTextInput(self, ):
+        return ISteamUtils_DismissGamepadTextInput(byref(self), ) # type: ignore
 
 class ISteamMatchmaking(Structure):
     _pack_ = PACK
@@ -6073,6 +6231,18 @@ class ISteamApps(Structure):
     def BIsTimedTrial(self, punSecondsAllowed, punSecondsPlayed):
         return ISteamApps_BIsTimedTrial(byref(self), punSecondsAllowed, punSecondsPlayed) # type: ignore
 
+    def SetDlcContext(self, nAppID):
+        return ISteamApps_SetDlcContext(byref(self), nAppID) # type: ignore
+
+    def GetNumBetas(self, unAppID, pnAvailable, pnPrivate):
+        return ISteamApps_GetNumBetas(byref(self), unAppID, pnAvailable, pnPrivate) # type: ignore
+
+    def GetBetaInfo(self, unAppID, iBetaIndex, punFlags, punBuildID, pchBetaName, cchBetaName, pchDescription, cchDescription):
+        return ISteamApps_GetBetaInfo(byref(self), unAppID, iBetaIndex, punFlags, punBuildID, pchBetaName, cchBetaName, pchDescription, cchDescription) # type: ignore
+
+    def SetActiveBeta(self, unAppID, pchBetaName):
+        return ISteamApps_SetActiveBeta(byref(self), unAppID, pchBetaName) # type: ignore
+
 class ISteamNetworking(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -6535,6 +6705,9 @@ class ISteamInput(Structure):
     def GetSessionInputConfigurationSettings(self, ):
         return ISteamInput_GetSessionInputConfigurationSettings(byref(self), ) # type: ignore
 
+    def SetDualSenseTriggerEffect(self, inputHandle, pParam):
+        return ISteamInput_SetDualSenseTriggerEffect(byref(self), inputHandle, pParam) # type: ignore
+
 class ISteamController(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -6701,6 +6874,15 @@ class ISteamUGC(Structure):
     def GetQueryFirstUGCKeyValueTag(self, handle, index, pchKey, pchValue, cchValueSize):
         return ISteamUGC_GetQueryFirstUGCKeyValueTag(byref(self), handle, index, pchKey, pchValue, cchValueSize) # type: ignore
 
+    def GetNumSupportedGameVersions(self, handle, index):
+        return ISteamUGC_GetNumSupportedGameVersions(byref(self), handle, index) # type: ignore
+
+    def GetSupportedGameVersionData(self, handle, index, versionIndex, pchGameBranchMin, pchGameBranchMax, cchGameBranchSize):
+        return ISteamUGC_GetSupportedGameVersionData(byref(self), handle, index, versionIndex, pchGameBranchMin, pchGameBranchMax, cchGameBranchSize) # type: ignore
+
+    def GetQueryUGCContentDescriptors(self, handle, index, pvecDescriptors, cMaxEntries):
+        return ISteamUGC_GetQueryUGCContentDescriptors(byref(self), handle, index, pvecDescriptors, cMaxEntries) # type: ignore
+
     def ReleaseQueryUGCRequest(self, handle):
         return ISteamUGC_ReleaseQueryUGCRequest(byref(self), handle) # type: ignore
 
@@ -6742,6 +6924,9 @@ class ISteamUGC(Structure):
 
     def SetAllowCachedResponse(self, handle, unMaxAgeSeconds):
         return ISteamUGC_SetAllowCachedResponse(byref(self), handle, unMaxAgeSeconds) # type: ignore
+
+    def SetAdminQuery(self, handle, bAdminQuery):
+        return ISteamUGC_SetAdminQuery(byref(self), handle, bAdminQuery) # type: ignore
 
     def SetCloudFileNameFilter(self, handle, pMatchCloudFileName):
         return ISteamUGC_SetCloudFileNameFilter(byref(self), handle, pMatchCloudFileName) # type: ignore
@@ -6788,8 +6973,8 @@ class ISteamUGC(Structure):
     def SetItemVisibility(self, handle, eVisibility):
         return ISteamUGC_SetItemVisibility(byref(self), handle, eVisibility) # type: ignore
 
-    def SetItemTags(self, updateHandle, pTags):
-        return ISteamUGC_SetItemTags(byref(self), updateHandle, pTags) # type: ignore
+    def SetItemTags(self, updateHandle, pTags, bAllowAdminTags):
+        return ISteamUGC_SetItemTags(byref(self), updateHandle, pTags, bAllowAdminTags) # type: ignore
 
     def SetItemContent(self, handle, pszContentFolder):
         return ISteamUGC_SetItemContent(byref(self), handle, pszContentFolder) # type: ignore
@@ -6823,6 +7008,15 @@ class ISteamUGC(Structure):
 
     def RemoveItemPreview(self, handle, index):
         return ISteamUGC_RemoveItemPreview(byref(self), handle, index) # type: ignore
+
+    def AddContentDescriptor(self, handle, descid):
+        return ISteamUGC_AddContentDescriptor(byref(self), handle, descid) # type: ignore
+
+    def RemoveContentDescriptor(self, handle, descid):
+        return ISteamUGC_RemoveContentDescriptor(byref(self), handle, descid) # type: ignore
+
+    def SetRequiredGameVersions(self, handle, pszGameBranchMin, pszGameBranchMax):
+        return ISteamUGC_SetRequiredGameVersions(byref(self), handle, pszGameBranchMin, pszGameBranchMax) # type: ignore
 
     def SubmitItemUpdate(self, handle, pchChangeNote):
         return ISteamUGC_SubmitItemUpdate(byref(self), handle, pchChangeNote) # type: ignore
@@ -6905,25 +7099,8 @@ class ISteamUGC(Structure):
     def GetWorkshopEULAStatus(self, ):
         return ISteamUGC_GetWorkshopEULAStatus(byref(self), ) # type: ignore
 
-class ISteamAppList(Structure):
-    _pack_ = PACK
-    _fields_ = [
-    ]
-
-    def GetNumInstalledApps(self, ):
-        return ISteamAppList_GetNumInstalledApps(byref(self), ) # type: ignore
-
-    def GetInstalledApps(self, pvecAppID, unMaxAppIDs):
-        return ISteamAppList_GetInstalledApps(byref(self), pvecAppID, unMaxAppIDs) # type: ignore
-
-    def GetAppName(self, nAppID, pchName, cchNameMax):
-        return ISteamAppList_GetAppName(byref(self), nAppID, pchName, cchNameMax) # type: ignore
-
-    def GetAppInstallDir(self, nAppID, pchDirectory, cchNameMax):
-        return ISteamAppList_GetAppInstallDir(byref(self), nAppID, pchDirectory, cchNameMax) # type: ignore
-
-    def GetAppBuildId(self, nAppID):
-        return ISteamAppList_GetAppBuildId(byref(self), nAppID) # type: ignore
+    def GetUserContentDescriptorPreferences(self, pvecDescriptors, cMaxEntries):
+        return ISteamUGC_GetUserContentDescriptorPreferences(byref(self), pvecDescriptors, cMaxEntries) # type: ignore
 
 class ISteamHTMLSurface(Structure):
     _pack_ = PACK
@@ -7160,6 +7337,23 @@ class ISteamInventory(Structure):
     def InspectItem(self, pResultHandle, pchItemToken):
         return ISteamInventory_InspectItem(byref(self), pResultHandle, pchItemToken) # type: ignore
 
+class ISteamTimeline(Structure):
+    _pack_ = PACK
+    _fields_ = [
+    ]
+
+    def SetTimelineStateDescription(self, pchDescription, flTimeDelta):
+        return ISteamTimeline_SetTimelineStateDescription(byref(self), pchDescription, flTimeDelta) # type: ignore
+
+    def ClearTimelineStateDescription(self, flTimeDelta):
+        return ISteamTimeline_ClearTimelineStateDescription(byref(self), flTimeDelta) # type: ignore
+
+    def AddTimelineEvent(self, pchIcon, pchTitle, pchDescription, unPriority, flStartOffsetSeconds, flDurationSeconds, ePossibleClip):
+        return ISteamTimeline_AddTimelineEvent(byref(self), pchIcon, pchTitle, pchDescription, unPriority, flStartOffsetSeconds, flDurationSeconds, ePossibleClip) # type: ignore
+
+    def SetTimelineGameMode(self, eMode):
+        return ISteamTimeline_SetTimelineGameMode(byref(self), eMode) # type: ignore
+
 class ISteamVideo(Structure):
     _pack_ = PACK
     _fields_ = [
@@ -7222,6 +7416,9 @@ class ISteamRemotePlay(Structure):
 
     def BGetSessionClientResolution(self, unSessionID, pnResolutionX, pnResolutionY):
         return ISteamRemotePlay_BGetSessionClientResolution(byref(self), unSessionID, pnResolutionX, pnResolutionY) # type: ignore
+
+    def BStartRemotePlayTogether(self, bShowOverlay):
+        return ISteamRemotePlay_BStartRemotePlayTogether(byref(self), bShowOverlay) # type: ignore
 
     def BSendRemotePlayTogetherInvite(self, steamIDFriend):
         return ISteamRemotePlay_BSendRemotePlayTogetherInvite(byref(self), steamIDFriend) # type: ignore
@@ -7600,8 +7797,8 @@ class ISteamGameServer(Structure):
     def SetAdvertiseServerActive(self, bActive):
         return ISteamGameServer_SetAdvertiseServerActive(byref(self), bActive) # type: ignore
 
-    def GetAuthSessionTicket(self, pTicket, cbMaxTicket, pcbTicket):
-        return ISteamGameServer_GetAuthSessionTicket(byref(self), pTicket, cbMaxTicket, pcbTicket) # type: ignore
+    def GetAuthSessionTicket(self, pTicket, cbMaxTicket, pcbTicket, pSnid):
+        return ISteamGameServer_GetAuthSessionTicket(byref(self), pTicket, cbMaxTicket, pcbTicket, pSnid) # type: ignore
 
     def BeginAuthSession(self, pAuthTicket, cbAuthTicket, steamID):
         return ISteamGameServer_BeginAuthSession(byref(self), pAuthTicket, cbAuthTicket, steamID) # type: ignore
@@ -8165,11 +8362,6 @@ def load(dll):
     ISteamClient_GetISteamUGC.argtypes = [ POINTER(ISteamClient), c_int, c_int, c_char_p ]
     ISteamClient_GetISteamUGC.restype = POINTER(ISteamUGC)
 
-    global ISteamClient_GetISteamAppList
-    ISteamClient_GetISteamAppList = dll.SteamAPI_ISteamClient_GetISteamAppList
-    ISteamClient_GetISteamAppList.argtypes = [ POINTER(ISteamClient), c_int, c_int, c_char_p ]
-    ISteamClient_GetISteamAppList.restype = POINTER(ISteamAppList)
-
     global ISteamClient_GetISteamMusic
     ISteamClient_GetISteamMusic = dll.SteamAPI_ISteamClient_GetISteamMusic
     ISteamClient_GetISteamMusic.argtypes = [ POINTER(ISteamClient), c_int, c_int, c_char_p ]
@@ -8282,8 +8474,13 @@ def load(dll):
 
     global ISteamUser_GetAuthSessionTicket
     ISteamUser_GetAuthSessionTicket = dll.SteamAPI_ISteamUser_GetAuthSessionTicket
-    ISteamUser_GetAuthSessionTicket.argtypes = [ POINTER(ISteamUser), c_void_p, c_int, POINTER(c_uint) ]
+    ISteamUser_GetAuthSessionTicket.argtypes = [ POINTER(ISteamUser), c_void_p, c_int, POINTER(c_uint), POINTER(SteamNetworkingIdentity) ]
     ISteamUser_GetAuthSessionTicket.restype = c_uint
+
+    global ISteamUser_GetAuthTicketForWebApi
+    ISteamUser_GetAuthTicketForWebApi = dll.SteamAPI_ISteamUser_GetAuthTicketForWebApi
+    ISteamUser_GetAuthTicketForWebApi.argtypes = [ POINTER(ISteamUser), c_char_p ]
+    ISteamUser_GetAuthTicketForWebApi.restype = c_uint
 
     global ISteamUser_BeginAuthSession
     ISteamUser_BeginAuthSession = dll.SteamAPI_ISteamUser_BeginAuthSession
@@ -8375,10 +8572,10 @@ def load(dll):
     ISteamUser_BSetDurationControlOnlineState.argtypes = [ POINTER(ISteamUser), EDurationControlOnlineState ]
     ISteamUser_BSetDurationControlOnlineState.restype = c_bool
 
-    global SteamUser_v021
-    SteamUser_v021 = dll.SteamAPI_SteamUser_v021
-    SteamUser_v021.argtypes = [ ]
-    SteamUser_v021.restype = POINTER(ISteamUser)
+    global SteamUser_v023
+    SteamUser_v023 = dll.SteamAPI_SteamUser_v023
+    SteamUser_v023.argtypes = [ ]
+    SteamUser_v023.restype = POINTER(ISteamUser)
 
     global ISteamFriends_GetPersonaName
     ISteamFriends_GetPersonaName = dll.SteamAPI_ISteamFriends_GetPersonaName
@@ -8760,6 +8957,26 @@ def load(dll):
     ISteamFriends_ActivateGameOverlayInviteDialogConnectString.argtypes = [ POINTER(ISteamFriends), c_char_p ]
     ISteamFriends_ActivateGameOverlayInviteDialogConnectString.restype = None
 
+    global ISteamFriends_RequestEquippedProfileItems
+    ISteamFriends_RequestEquippedProfileItems = dll.SteamAPI_ISteamFriends_RequestEquippedProfileItems
+    ISteamFriends_RequestEquippedProfileItems.argtypes = [ POINTER(ISteamFriends), c_ulonglong ]
+    ISteamFriends_RequestEquippedProfileItems.restype = c_ulonglong
+
+    global ISteamFriends_BHasEquippedProfileItem
+    ISteamFriends_BHasEquippedProfileItem = dll.SteamAPI_ISteamFriends_BHasEquippedProfileItem
+    ISteamFriends_BHasEquippedProfileItem.argtypes = [ POINTER(ISteamFriends), c_ulonglong, ECommunityProfileItemType ]
+    ISteamFriends_BHasEquippedProfileItem.restype = c_bool
+
+    global ISteamFriends_GetProfileItemPropertyString
+    ISteamFriends_GetProfileItemPropertyString = dll.SteamAPI_ISteamFriends_GetProfileItemPropertyString
+    ISteamFriends_GetProfileItemPropertyString.argtypes = [ POINTER(ISteamFriends), c_ulonglong, ECommunityProfileItemType, ECommunityProfileItemProperty ]
+    ISteamFriends_GetProfileItemPropertyString.restype = c_char_p
+
+    global ISteamFriends_GetProfileItemPropertyUint
+    ISteamFriends_GetProfileItemPropertyUint = dll.SteamAPI_ISteamFriends_GetProfileItemPropertyUint
+    ISteamFriends_GetProfileItemPropertyUint.argtypes = [ POINTER(ISteamFriends), c_ulonglong, ECommunityProfileItemType, ECommunityProfileItemProperty ]
+    ISteamFriends_GetProfileItemPropertyUint.restype = c_uint
+
     global SteamFriends_v017
     SteamFriends_v017 = dll.SteamAPI_SteamFriends_v017
     SteamFriends_v017.argtypes = [ ]
@@ -8944,6 +9161,11 @@ def load(dll):
     ISteamUtils_DismissFloatingGamepadTextInput = dll.SteamAPI_ISteamUtils_DismissFloatingGamepadTextInput
     ISteamUtils_DismissFloatingGamepadTextInput.argtypes = [ POINTER(ISteamUtils),  ]
     ISteamUtils_DismissFloatingGamepadTextInput.restype = c_bool
+
+    global ISteamUtils_DismissGamepadTextInput
+    ISteamUtils_DismissGamepadTextInput = dll.SteamAPI_ISteamUtils_DismissGamepadTextInput
+    ISteamUtils_DismissGamepadTextInput.argtypes = [ POINTER(ISteamUtils),  ]
+    ISteamUtils_DismissGamepadTextInput.restype = c_bool
 
     global SteamUtils_v010
     SteamUtils_v010 = dll.SteamAPI_SteamUtils_v010
@@ -10110,6 +10332,26 @@ def load(dll):
     ISteamApps_BIsTimedTrial.argtypes = [ POINTER(ISteamApps), POINTER(c_uint), POINTER(c_uint) ]
     ISteamApps_BIsTimedTrial.restype = c_bool
 
+    global ISteamApps_SetDlcContext
+    ISteamApps_SetDlcContext = dll.SteamAPI_ISteamApps_SetDlcContext
+    ISteamApps_SetDlcContext.argtypes = [ POINTER(ISteamApps), c_uint ]
+    ISteamApps_SetDlcContext.restype = c_bool
+
+    global ISteamApps_GetNumBetas
+    ISteamApps_GetNumBetas = dll.SteamAPI_ISteamApps_GetNumBetas
+    ISteamApps_GetNumBetas.argtypes = [ POINTER(ISteamApps), c_uint, POINTER(c_int), POINTER(c_int) ]
+    ISteamApps_GetNumBetas.restype = c_int
+
+    global ISteamApps_GetBetaInfo
+    ISteamApps_GetBetaInfo = dll.SteamAPI_ISteamApps_GetBetaInfo
+    ISteamApps_GetBetaInfo.argtypes = [ POINTER(ISteamApps), c_uint, c_int, POINTER(c_uint), POINTER(c_uint), c_char_p, c_int, c_char_p, c_int ]
+    ISteamApps_GetBetaInfo.restype = c_bool
+
+    global ISteamApps_SetActiveBeta
+    ISteamApps_SetActiveBeta = dll.SteamAPI_ISteamApps_SetActiveBeta
+    ISteamApps_SetActiveBeta.argtypes = [ POINTER(ISteamApps), c_uint, c_char_p ]
+    ISteamApps_SetActiveBeta.restype = c_bool
+
     global SteamApps_v008
     SteamApps_v008 = dll.SteamAPI_SteamApps_v008
     SteamApps_v008.argtypes = [ ]
@@ -10870,6 +11112,11 @@ def load(dll):
     ISteamInput_GetSessionInputConfigurationSettings.argtypes = [ POINTER(ISteamInput),  ]
     ISteamInput_GetSessionInputConfigurationSettings.restype = c_ushort
 
+    global ISteamInput_SetDualSenseTriggerEffect
+    ISteamInput_SetDualSenseTriggerEffect = dll.SteamAPI_ISteamInput_SetDualSenseTriggerEffect
+    ISteamInput_SetDualSenseTriggerEffect.argtypes = [ POINTER(ISteamInput), c_ulonglong, c_void_p ]
+    ISteamInput_SetDualSenseTriggerEffect.restype = None
+
     global SteamInput_v006
     SteamInput_v006 = dll.SteamAPI_SteamInput_v006
     SteamInput_v006.argtypes = [ ]
@@ -11140,6 +11387,21 @@ def load(dll):
     ISteamUGC_GetQueryFirstUGCKeyValueTag.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_uint, c_char_p, c_char_p, c_uint ]
     ISteamUGC_GetQueryFirstUGCKeyValueTag.restype = c_bool
 
+    global ISteamUGC_GetNumSupportedGameVersions
+    ISteamUGC_GetNumSupportedGameVersions = dll.SteamAPI_ISteamUGC_GetNumSupportedGameVersions
+    ISteamUGC_GetNumSupportedGameVersions.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_uint ]
+    ISteamUGC_GetNumSupportedGameVersions.restype = c_uint
+
+    global ISteamUGC_GetSupportedGameVersionData
+    ISteamUGC_GetSupportedGameVersionData = dll.SteamAPI_ISteamUGC_GetSupportedGameVersionData
+    ISteamUGC_GetSupportedGameVersionData.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_uint, c_uint, c_char_p, c_char_p, c_uint ]
+    ISteamUGC_GetSupportedGameVersionData.restype = c_bool
+
+    global ISteamUGC_GetQueryUGCContentDescriptors
+    ISteamUGC_GetQueryUGCContentDescriptors = dll.SteamAPI_ISteamUGC_GetQueryUGCContentDescriptors
+    ISteamUGC_GetQueryUGCContentDescriptors.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_uint, POINTER(EUGCContentDescriptorID), c_uint ]
+    ISteamUGC_GetQueryUGCContentDescriptors.restype = c_uint
+
     global ISteamUGC_ReleaseQueryUGCRequest
     ISteamUGC_ReleaseQueryUGCRequest = dll.SteamAPI_ISteamUGC_ReleaseQueryUGCRequest
     ISteamUGC_ReleaseQueryUGCRequest.argtypes = [ POINTER(ISteamUGC), c_ulonglong ]
@@ -11209,6 +11471,11 @@ def load(dll):
     ISteamUGC_SetAllowCachedResponse = dll.SteamAPI_ISteamUGC_SetAllowCachedResponse
     ISteamUGC_SetAllowCachedResponse.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_uint ]
     ISteamUGC_SetAllowCachedResponse.restype = c_bool
+
+    global ISteamUGC_SetAdminQuery
+    ISteamUGC_SetAdminQuery = dll.SteamAPI_ISteamUGC_SetAdminQuery
+    ISteamUGC_SetAdminQuery.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_bool ]
+    ISteamUGC_SetAdminQuery.restype = c_bool
 
     global ISteamUGC_SetCloudFileNameFilter
     ISteamUGC_SetCloudFileNameFilter = dll.SteamAPI_ISteamUGC_SetCloudFileNameFilter
@@ -11287,7 +11554,7 @@ def load(dll):
 
     global ISteamUGC_SetItemTags
     ISteamUGC_SetItemTags = dll.SteamAPI_ISteamUGC_SetItemTags
-    ISteamUGC_SetItemTags.argtypes = [ POINTER(ISteamUGC), c_ulonglong, POINTER(SteamParamStringArray_t) ]
+    ISteamUGC_SetItemTags.argtypes = [ POINTER(ISteamUGC), c_ulonglong, POINTER(SteamParamStringArray_t), c_bool ]
     ISteamUGC_SetItemTags.restype = c_bool
 
     global ISteamUGC_SetItemContent
@@ -11344,6 +11611,21 @@ def load(dll):
     ISteamUGC_RemoveItemPreview = dll.SteamAPI_ISteamUGC_RemoveItemPreview
     ISteamUGC_RemoveItemPreview.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_uint ]
     ISteamUGC_RemoveItemPreview.restype = c_bool
+
+    global ISteamUGC_AddContentDescriptor
+    ISteamUGC_AddContentDescriptor = dll.SteamAPI_ISteamUGC_AddContentDescriptor
+    ISteamUGC_AddContentDescriptor.argtypes = [ POINTER(ISteamUGC), c_ulonglong, EUGCContentDescriptorID ]
+    ISteamUGC_AddContentDescriptor.restype = c_bool
+
+    global ISteamUGC_RemoveContentDescriptor
+    ISteamUGC_RemoveContentDescriptor = dll.SteamAPI_ISteamUGC_RemoveContentDescriptor
+    ISteamUGC_RemoveContentDescriptor.argtypes = [ POINTER(ISteamUGC), c_ulonglong, EUGCContentDescriptorID ]
+    ISteamUGC_RemoveContentDescriptor.restype = c_bool
+
+    global ISteamUGC_SetRequiredGameVersions
+    ISteamUGC_SetRequiredGameVersions = dll.SteamAPI_ISteamUGC_SetRequiredGameVersions
+    ISteamUGC_SetRequiredGameVersions.argtypes = [ POINTER(ISteamUGC), c_ulonglong, c_char_p, c_char_p ]
+    ISteamUGC_SetRequiredGameVersions.restype = c_bool
 
     global ISteamUGC_SubmitItemUpdate
     ISteamUGC_SubmitItemUpdate = dll.SteamAPI_ISteamUGC_SubmitItemUpdate
@@ -11480,45 +11762,20 @@ def load(dll):
     ISteamUGC_GetWorkshopEULAStatus.argtypes = [ POINTER(ISteamUGC),  ]
     ISteamUGC_GetWorkshopEULAStatus.restype = c_ulonglong
 
-    global SteamUGC_v016
-    SteamUGC_v016 = dll.SteamAPI_SteamUGC_v016
-    SteamUGC_v016.argtypes = [ ]
-    SteamUGC_v016.restype = POINTER(ISteamUGC)
+    global ISteamUGC_GetUserContentDescriptorPreferences
+    ISteamUGC_GetUserContentDescriptorPreferences = dll.SteamAPI_ISteamUGC_GetUserContentDescriptorPreferences
+    ISteamUGC_GetUserContentDescriptorPreferences.argtypes = [ POINTER(ISteamUGC), POINTER(EUGCContentDescriptorID), c_uint ]
+    ISteamUGC_GetUserContentDescriptorPreferences.restype = c_uint
 
-    global SteamGameServerUGC_v016
-    SteamGameServerUGC_v016 = dll.SteamAPI_SteamGameServerUGC_v016
-    SteamGameServerUGC_v016.argtypes = [ ]
-    SteamGameServerUGC_v016.restype = POINTER(ISteamUGC)
+    global SteamUGC_v020
+    SteamUGC_v020 = dll.SteamAPI_SteamUGC_v020
+    SteamUGC_v020.argtypes = [ ]
+    SteamUGC_v020.restype = POINTER(ISteamUGC)
 
-    global ISteamAppList_GetNumInstalledApps
-    ISteamAppList_GetNumInstalledApps = dll.SteamAPI_ISteamAppList_GetNumInstalledApps
-    ISteamAppList_GetNumInstalledApps.argtypes = [ POINTER(ISteamAppList),  ]
-    ISteamAppList_GetNumInstalledApps.restype = c_uint
-
-    global ISteamAppList_GetInstalledApps
-    ISteamAppList_GetInstalledApps = dll.SteamAPI_ISteamAppList_GetInstalledApps
-    ISteamAppList_GetInstalledApps.argtypes = [ POINTER(ISteamAppList), POINTER(c_uint), c_uint ]
-    ISteamAppList_GetInstalledApps.restype = c_uint
-
-    global ISteamAppList_GetAppName
-    ISteamAppList_GetAppName = dll.SteamAPI_ISteamAppList_GetAppName
-    ISteamAppList_GetAppName.argtypes = [ POINTER(ISteamAppList), c_uint, c_char_p, c_int ]
-    ISteamAppList_GetAppName.restype = c_int
-
-    global ISteamAppList_GetAppInstallDir
-    ISteamAppList_GetAppInstallDir = dll.SteamAPI_ISteamAppList_GetAppInstallDir
-    ISteamAppList_GetAppInstallDir.argtypes = [ POINTER(ISteamAppList), c_uint, c_char_p, c_int ]
-    ISteamAppList_GetAppInstallDir.restype = c_int
-
-    global ISteamAppList_GetAppBuildId
-    ISteamAppList_GetAppBuildId = dll.SteamAPI_ISteamAppList_GetAppBuildId
-    ISteamAppList_GetAppBuildId.argtypes = [ POINTER(ISteamAppList), c_uint ]
-    ISteamAppList_GetAppBuildId.restype = c_int
-
-    global SteamAppList_v001
-    SteamAppList_v001 = dll.SteamAPI_SteamAppList_v001
-    SteamAppList_v001.argtypes = [ ]
-    SteamAppList_v001.restype = POINTER(ISteamAppList)
+    global SteamGameServerUGC_v020
+    SteamGameServerUGC_v020 = dll.SteamAPI_SteamGameServerUGC_v020
+    SteamGameServerUGC_v020.argtypes = [ ]
+    SteamGameServerUGC_v020.restype = POINTER(ISteamUGC)
 
     global ISteamHTMLSurface_Init
     ISteamHTMLSurface_Init = dll.SteamAPI_ISteamHTMLSurface_Init
@@ -11910,6 +12167,31 @@ def load(dll):
     SteamGameServerInventory_v003.argtypes = [ ]
     SteamGameServerInventory_v003.restype = POINTER(ISteamInventory)
 
+    global ISteamTimeline_SetTimelineStateDescription
+    ISteamTimeline_SetTimelineStateDescription = dll.SteamAPI_ISteamTimeline_SetTimelineStateDescription
+    ISteamTimeline_SetTimelineStateDescription.argtypes = [ POINTER(ISteamTimeline), c_char_p, c_float ]
+    ISteamTimeline_SetTimelineStateDescription.restype = None
+
+    global ISteamTimeline_ClearTimelineStateDescription
+    ISteamTimeline_ClearTimelineStateDescription = dll.SteamAPI_ISteamTimeline_ClearTimelineStateDescription
+    ISteamTimeline_ClearTimelineStateDescription.argtypes = [ POINTER(ISteamTimeline), c_float ]
+    ISteamTimeline_ClearTimelineStateDescription.restype = None
+
+    global ISteamTimeline_AddTimelineEvent
+    ISteamTimeline_AddTimelineEvent = dll.SteamAPI_ISteamTimeline_AddTimelineEvent
+    ISteamTimeline_AddTimelineEvent.argtypes = [ POINTER(ISteamTimeline), c_char_p, c_char_p, c_char_p, c_uint, c_float, c_float, ETimelineEventClipPriority ]
+    ISteamTimeline_AddTimelineEvent.restype = None
+
+    global ISteamTimeline_SetTimelineGameMode
+    ISteamTimeline_SetTimelineGameMode = dll.SteamAPI_ISteamTimeline_SetTimelineGameMode
+    ISteamTimeline_SetTimelineGameMode.argtypes = [ POINTER(ISteamTimeline), ETimelineGameMode ]
+    ISteamTimeline_SetTimelineGameMode.restype = None
+
+    global SteamTimeline_v001
+    SteamTimeline_v001 = dll.SteamAPI_SteamTimeline_v001
+    SteamTimeline_v001.argtypes = [ ]
+    SteamTimeline_v001.restype = POINTER(ISteamTimeline)
+
     global ISteamVideo_GetVideoURL
     ISteamVideo_GetVideoURL = dll.SteamAPI_ISteamVideo_GetVideoURL
     ISteamVideo_GetVideoURL.argtypes = [ POINTER(ISteamVideo), c_uint ]
@@ -11930,10 +12212,10 @@ def load(dll):
     ISteamVideo_GetOPFStringForApp.argtypes = [ POINTER(ISteamVideo), c_uint, c_char_p, POINTER(c_int) ]
     ISteamVideo_GetOPFStringForApp.restype = c_bool
 
-    global SteamVideo_v002
-    SteamVideo_v002 = dll.SteamAPI_SteamVideo_v002
-    SteamVideo_v002.argtypes = [ ]
-    SteamVideo_v002.restype = POINTER(ISteamVideo)
+    global SteamVideo_v007
+    SteamVideo_v007 = dll.SteamAPI_SteamVideo_v007
+    SteamVideo_v007.argtypes = [ ]
+    SteamVideo_v007.restype = POINTER(ISteamVideo)
 
     global ISteamParentalSettings_BIsParentalLockEnabled
     ISteamParentalSettings_BIsParentalLockEnabled = dll.SteamAPI_ISteamParentalSettings_BIsParentalLockEnabled
@@ -12000,15 +12282,20 @@ def load(dll):
     ISteamRemotePlay_BGetSessionClientResolution.argtypes = [ POINTER(ISteamRemotePlay), c_uint, POINTER(c_int), POINTER(c_int) ]
     ISteamRemotePlay_BGetSessionClientResolution.restype = c_bool
 
+    global ISteamRemotePlay_BStartRemotePlayTogether
+    ISteamRemotePlay_BStartRemotePlayTogether = dll.SteamAPI_ISteamRemotePlay_BStartRemotePlayTogether
+    ISteamRemotePlay_BStartRemotePlayTogether.argtypes = [ POINTER(ISteamRemotePlay), c_bool ]
+    ISteamRemotePlay_BStartRemotePlayTogether.restype = c_bool
+
     global ISteamRemotePlay_BSendRemotePlayTogetherInvite
     ISteamRemotePlay_BSendRemotePlayTogetherInvite = dll.SteamAPI_ISteamRemotePlay_BSendRemotePlayTogetherInvite
     ISteamRemotePlay_BSendRemotePlayTogetherInvite.argtypes = [ POINTER(ISteamRemotePlay), c_ulonglong ]
     ISteamRemotePlay_BSendRemotePlayTogetherInvite.restype = c_bool
 
-    global SteamRemotePlay_v001
-    SteamRemotePlay_v001 = dll.SteamAPI_SteamRemotePlay_v001
-    SteamRemotePlay_v001.argtypes = [ ]
-    SteamRemotePlay_v001.restype = POINTER(ISteamRemotePlay)
+    global SteamRemotePlay_v002
+    SteamRemotePlay_v002 = dll.SteamAPI_SteamRemotePlay_v002
+    SteamRemotePlay_v002.argtypes = [ ]
+    SteamRemotePlay_v002.restype = POINTER(ISteamRemotePlay)
 
     global ISteamNetworkingMessages_SendMessageToUser
     ISteamNetworkingMessages_SendMessageToUser = dll.SteamAPI_ISteamNetworkingMessages_SendMessageToUser
@@ -12627,7 +12914,7 @@ def load(dll):
 
     global ISteamGameServer_GetAuthSessionTicket
     ISteamGameServer_GetAuthSessionTicket = dll.SteamAPI_ISteamGameServer_GetAuthSessionTicket
-    ISteamGameServer_GetAuthSessionTicket.argtypes = [ POINTER(ISteamGameServer), c_void_p, c_int, POINTER(c_uint) ]
+    ISteamGameServer_GetAuthSessionTicket.argtypes = [ POINTER(ISteamGameServer), c_void_p, c_int, POINTER(c_uint), POINTER(SteamNetworkingIdentity) ]
     ISteamGameServer_GetAuthSessionTicket.restype = c_uint
 
     global ISteamGameServer_BeginAuthSession
@@ -12710,10 +12997,10 @@ def load(dll):
     ISteamGameServer_BUpdateUserData.argtypes = [ POINTER(ISteamGameServer), c_ulonglong, c_char_p, c_uint ]
     ISteamGameServer_BUpdateUserData.restype = c_bool
 
-    global SteamGameServer_v014
-    SteamGameServer_v014 = dll.SteamAPI_SteamGameServer_v014
-    SteamGameServer_v014.argtypes = [ ]
-    SteamGameServer_v014.restype = POINTER(ISteamGameServer)
+    global SteamGameServer_v015
+    SteamGameServer_v015 = dll.SteamAPI_SteamGameServer_v015
+    SteamGameServer_v015.argtypes = [ ]
+    SteamGameServer_v015.restype = POINTER(ISteamGameServer)
 
     global ISteamGameServerStats_RequestUserStats
     ISteamGameServerStats_RequestUserStats = dll.SteamAPI_ISteamGameServerStats_RequestUserStats
@@ -12790,10 +13077,10 @@ def load(dll):
     ISteamNetworkingFakeUDPPort_ScheduleCleanup.argtypes = [ POINTER(ISteamNetworkingFakeUDPPort), POINTER(SteamNetworkingIPAddr) ]
     ISteamNetworkingFakeUDPPort_ScheduleCleanup.restype = None
 
-    global Init
-    Init = dll.SteamAPI_Init
-    Init.argtypes = [  ]
-    Init.restype = c_bool
+    global InitFlat
+    InitFlat = dll.SteamAPI_InitFlat
+    InitFlat.argtypes = [ ESteamAPIInitResult ]
+    InitFlat.restype = c_char_p
 
     global Shutdown
     Shutdown = dll.SteamAPI_Shutdown
@@ -13044,8 +13331,6 @@ ISteamClient_GetISteamController = not_ready
 
 ISteamClient_GetISteamUGC = not_ready
 
-ISteamClient_GetISteamAppList = not_ready
-
 ISteamClient_GetISteamMusic = not_ready
 
 ISteamClient_GetISteamMusicRemote = not_ready
@@ -13092,6 +13377,8 @@ ISteamUser_GetVoiceOptimalSampleRate = not_ready
 
 ISteamUser_GetAuthSessionTicket = not_ready
 
+ISteamUser_GetAuthTicketForWebApi = not_ready
+
 ISteamUser_BeginAuthSession = not_ready
 
 ISteamUser_EndAuthSession = not_ready
@@ -13128,10 +13415,10 @@ ISteamUser_GetDurationControl = not_ready
 
 ISteamUser_BSetDurationControlOnlineState = not_ready
 
-SteamUser_v021 = not_ready
+SteamUser_v023 = not_ready
 
 def SteamUser(): # type: () -> ISteamUser
-    return SteamUser_v021().contents
+    return SteamUser_v023().contents
 
 ISteamFriends_GetPersonaName = not_ready
 
@@ -13285,6 +13572,14 @@ ISteamFriends_RegisterProtocolInOverlayBrowser = not_ready
 
 ISteamFriends_ActivateGameOverlayInviteDialogConnectString = not_ready
 
+ISteamFriends_RequestEquippedProfileItems = not_ready
+
+ISteamFriends_BHasEquippedProfileItem = not_ready
+
+ISteamFriends_GetProfileItemPropertyString = not_ready
+
+ISteamFriends_GetProfileItemPropertyUint = not_ready
+
 SteamFriends_v017 = not_ready
 
 def SteamFriends(): # type: () -> ISteamFriends
@@ -13361,6 +13656,8 @@ ISteamUtils_ShowFloatingGamepadTextInput = not_ready
 ISteamUtils_SetGameLauncherMode = not_ready
 
 ISteamUtils_DismissFloatingGamepadTextInput = not_ready
+
+ISteamUtils_DismissGamepadTextInput = not_ready
 
 SteamUtils_v010 = not_ready
 
@@ -13852,6 +14149,14 @@ ISteamApps_BIsSubscribedFromFamilySharing = not_ready
 
 ISteamApps_BIsTimedTrial = not_ready
 
+ISteamApps_SetDlcContext = not_ready
+
+ISteamApps_GetNumBetas = not_ready
+
+ISteamApps_GetBetaInfo = not_ready
+
+ISteamApps_SetActiveBeta = not_ready
+
 SteamApps_v008 = not_ready
 
 def SteamApps(): # type: () -> ISteamApps
@@ -14180,6 +14485,8 @@ ISteamInput_GetRemotePlaySessionID = not_ready
 
 ISteamInput_GetSessionInputConfigurationSettings = not_ready
 
+ISteamInput_SetDualSenseTriggerEffect = not_ready
+
 SteamInput_v006 = not_ready
 
 def SteamInput(): # type: () -> ISteamInput
@@ -14294,6 +14601,12 @@ ISteamUGC_GetQueryUGCKeyValueTag = not_ready
 
 ISteamUGC_GetQueryFirstUGCKeyValueTag = not_ready
 
+ISteamUGC_GetNumSupportedGameVersions = not_ready
+
+ISteamUGC_GetSupportedGameVersionData = not_ready
+
+ISteamUGC_GetQueryUGCContentDescriptors = not_ready
+
 ISteamUGC_ReleaseQueryUGCRequest = not_ready
 
 ISteamUGC_AddRequiredTag = not_ready
@@ -14321,6 +14634,8 @@ ISteamUGC_SetReturnPlaytimeStats = not_ready
 ISteamUGC_SetLanguage = not_ready
 
 ISteamUGC_SetAllowCachedResponse = not_ready
+
+ISteamUGC_SetAdminQuery = not_ready
 
 ISteamUGC_SetCloudFileNameFilter = not_ready
 
@@ -14376,6 +14691,12 @@ ISteamUGC_UpdateItemPreviewVideo = not_ready
 
 ISteamUGC_RemoveItemPreview = not_ready
 
+ISteamUGC_AddContentDescriptor = not_ready
+
+ISteamUGC_RemoveContentDescriptor = not_ready
+
+ISteamUGC_SetRequiredGameVersions = not_ready
+
 ISteamUGC_SubmitItemUpdate = not_ready
 
 ISteamUGC_GetItemUpdateProgress = not_ready
@@ -14430,30 +14751,17 @@ ISteamUGC_ShowWorkshopEULA = not_ready
 
 ISteamUGC_GetWorkshopEULAStatus = not_ready
 
-SteamUGC_v016 = not_ready
+ISteamUGC_GetUserContentDescriptorPreferences = not_ready
+
+SteamUGC_v020 = not_ready
 
 def SteamUGC(): # type: () -> ISteamUGC
-    return SteamUGC_v016().contents
+    return SteamUGC_v020().contents
 
-SteamGameServerUGC_v016 = not_ready
+SteamGameServerUGC_v020 = not_ready
 
 def SteamGameServerUGC(): # type: () -> ISteamUGC
-    return SteamGameServerUGC_v016().contents
-
-ISteamAppList_GetNumInstalledApps = not_ready
-
-ISteamAppList_GetInstalledApps = not_ready
-
-ISteamAppList_GetAppName = not_ready
-
-ISteamAppList_GetAppInstallDir = not_ready
-
-ISteamAppList_GetAppBuildId = not_ready
-
-SteamAppList_v001 = not_ready
-
-def SteamAppList(): # type: () -> ISteamAppList
-    return SteamAppList_v001().contents
+    return SteamGameServerUGC_v020().contents
 
 ISteamHTMLSurface_Init = not_ready
 
@@ -14620,6 +14928,19 @@ SteamGameServerInventory_v003 = not_ready
 def SteamGameServerInventory(): # type: () -> ISteamInventory
     return SteamGameServerInventory_v003().contents
 
+ISteamTimeline_SetTimelineStateDescription = not_ready
+
+ISteamTimeline_ClearTimelineStateDescription = not_ready
+
+ISteamTimeline_AddTimelineEvent = not_ready
+
+ISteamTimeline_SetTimelineGameMode = not_ready
+
+SteamTimeline_v001 = not_ready
+
+def SteamTimeline(): # type: () -> ISteamTimeline
+    return SteamTimeline_v001().contents
+
 ISteamVideo_GetVideoURL = not_ready
 
 ISteamVideo_IsBroadcasting = not_ready
@@ -14628,10 +14949,10 @@ ISteamVideo_GetOPFSettings = not_ready
 
 ISteamVideo_GetOPFStringForApp = not_ready
 
-SteamVideo_v002 = not_ready
+SteamVideo_v007 = not_ready
 
 def SteamVideo(): # type: () -> ISteamVideo
-    return SteamVideo_v002().contents
+    return SteamVideo_v007().contents
 
 ISteamParentalSettings_BIsParentalLockEnabled = not_ready
 
@@ -14662,12 +14983,14 @@ ISteamRemotePlay_GetSessionClientFormFactor = not_ready
 
 ISteamRemotePlay_BGetSessionClientResolution = not_ready
 
+ISteamRemotePlay_BStartRemotePlayTogether = not_ready
+
 ISteamRemotePlay_BSendRemotePlayTogetherInvite = not_ready
 
-SteamRemotePlay_v001 = not_ready
+SteamRemotePlay_v002 = not_ready
 
 def SteamRemotePlay(): # type: () -> ISteamRemotePlay
-    return SteamRemotePlay_v001().contents
+    return SteamRemotePlay_v002().contents
 
 ISteamNetworkingMessages_SendMessageToUser = not_ready
 
@@ -14964,10 +15287,10 @@ ISteamGameServer_SendUserDisconnect_DEPRECATED = not_ready
 
 ISteamGameServer_BUpdateUserData = not_ready
 
-SteamGameServer_v014 = not_ready
+SteamGameServer_v015 = not_ready
 
 def SteamGameServer(): # type: () -> ISteamGameServer
-    return SteamGameServer_v014().contents
+    return SteamGameServer_v015().contents
 
 ISteamGameServerStats_RequestUserStats = not_ready
 
@@ -15002,7 +15325,7 @@ ISteamNetworkingFakeUDPPort_ReceiveMessages = not_ready
 
 ISteamNetworkingFakeUDPPort_ScheduleCleanup = not_ready
 
-Init = not_ready
+InitFlat = not_ready
 
 Shutdown = not_ready
 

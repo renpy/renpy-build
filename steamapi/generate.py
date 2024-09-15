@@ -143,6 +143,8 @@ def consts(consts):
             constval = "-1"
         elif constval == "( ( uint32 ) 'd' << 16U ) | ( ( uint32 ) 'e' << 8U ) | ( uint32 ) 'v'":
             constval = "6579574"
+        elif constval == "600.f":
+            constval = "600.0"
         else:
             constval = re.sub(r"(0x[0-9a-fA-F]*)ull", r"\1", constval)
 
@@ -153,7 +155,9 @@ def consts(consts):
         # Generate.
         mapped = map_type(consttype)
 
-        if value > 0:
+        if isinstance(value, float):
+            p(f"{constname} = {mapped}({value})")
+        elif value > 0:
             p(f"{constname} = {mapped}(0x{value:x})")
         else:
             p(f"{constname} = {mapped}({value})")
@@ -315,7 +319,7 @@ def stubfixedmethod(name, argtypes, restype):
 
 
 FIXED_METHODS = [
-    ("SteamAPI_Init", "", "c_bool"),
+    ("SteamAPI_InitFlat", "c_char_p", "ESteamAPIInitResult"),
     ("SteamAPI_Shutdown", "", "None"),
     ("SteamAPI_RestartAppIfNecessary", "c_uint", "c_bool"),
     ("SteamAPI_ReleaseCurrentThreadMemory", "", "None"),

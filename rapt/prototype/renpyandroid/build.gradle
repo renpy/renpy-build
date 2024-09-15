@@ -5,11 +5,11 @@ plugins {
 android {
     namespace 'org.renpy.android'
 
-    compileSdkVersion 33
+    compileSdkVersion 35
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 33
+        minSdkVersion 21
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
 
@@ -38,7 +38,7 @@ android {
 
 
 dependencies {
-    api 'com.google.android.play:asset-delivery:2.1.0'
+    api 'com.google.android.play:asset-delivery:2.2.2'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10"
