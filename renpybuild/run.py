@@ -390,7 +390,7 @@ def build_environment(c):
         c.env("EM_PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
         # Tell emcc and em++ to use ccache when building
-        c.env("EM_COMPILER_WRAPPER", "ccache")
+        c.env("EM_COMPILER_WRAPPER", "/usr/bin/ccache")
 
         # Used to find sdl2-config.
         c.env("PATH", "{{cross}}/upstream/emscripten/system/bin/:{{PATH}}")

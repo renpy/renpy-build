@@ -88,7 +88,7 @@ def mockrt(c: Context):
 
 @task(platforms="web")
 def emsdk(c: Context):
-    c.var("emsdk_version", "3.1.24")
+    c.var("emsdk_version", "3.1.67")
 
     c.clean("{{ cross }}")
     c.run("git clone https://github.com/emscripten-core/emsdk/ {{cross}}")

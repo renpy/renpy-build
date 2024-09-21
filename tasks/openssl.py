@@ -26,7 +26,7 @@ def build(c: Context):
     elif c.platform == "android":
         c.run("""./Configure cc no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif c.platform == "web":
-        c.run("""emconfigure ./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
+        raise Exception("OpenSSL should be built by embuilder")
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 
