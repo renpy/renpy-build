@@ -73,6 +73,13 @@ def build(args):
 
     # Actually build everything.
 
+    last_task = None
+
+    if args.stop:
+        for task in renpybuild.task.tasks:
+            if task.name == args.stop:
+                last_task = task
+
     for task in renpybuild.task.tasks:
         for p in known_platforms:
 
@@ -97,6 +104,9 @@ def build(args):
                 args)
 
             task.run(context)
+
+        if task is last_task:
+            break
 
     print("")
     print("Build finished successfully.")
@@ -176,6 +186,8 @@ def main():
     ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")
 
     ap.add_argument("--experimental", action="store_true", default=False)
+
+    ap.add_argument("--stop", default=None, help="Stop after this task.")
 
     ap.set_defaults(function=build)
 
