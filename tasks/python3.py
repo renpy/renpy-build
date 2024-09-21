@@ -24,7 +24,7 @@ def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
-    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+    c.run("tar xaf {{source}}/Python-{{version}}.tgz")
 
 
 @task(kind="python", pythons="3", platforms="windows")
