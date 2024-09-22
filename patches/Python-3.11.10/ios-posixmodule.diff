@@ -1,22 +1,18 @@
-Prevents posixmodule.c from calling system on iOS.
+commit 60889d78308534222071d73dc38f2a43878b3d9b
+Author: Tom Rothamel <tom@rothamel.us>
+Date:   Sun Sep 22 04:11:08 2024 -0400
 
-From: Tom Rothamel <tom@rothamel.us>
-
-
----
- Modules/posixmodule.c |    2 ++
- 1 file changed, 2 insertions(+)
+    Disable the system call on iOS.
 
 diff --git a/Modules/posixmodule.c b/Modules/posixmodule.c
-index 29d6126..9ad3f19 100644
+index 6fb2fc8..7dcb402 100644
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -333,6 +333,8 @@ corresponding Unix manual entries for more information on calls.");
- #  endif  /* _MSC_VER */
- #endif  /* ! __WATCOMC__ || __QNX__ */
+@@ -4978,6 +4978,7 @@ os_rmdir_impl(PyObject *module, path_t *path, int dir_fd)
+     Py_RETURN_NONE;
+ }
  
 +#undef HAVE_SYSTEM
-+
- _Py_IDENTIFIER(__fspath__);
  
- /*[clinic input]
+ #ifdef HAVE_SYSTEM
+ #ifdef MS_WINDOWS

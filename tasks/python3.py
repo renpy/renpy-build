@@ -82,6 +82,20 @@ def common(c: Context):
             f.write("ac_cv_file__dev_ptmx=no\n")
             f.write("ac_cv_file__dev_ptc=no\n")
 
+def common_post(c: Context):
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
+    c.run("""{{ make }}""")
+    c.run("""{{ make }} install""")
+
+    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+
+    for i in [ "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+        c.var("i", i)
+
+        c.copy(
+            "{{ host }}/lib/{{pythonver}}/{{ i }}",
+            "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 
 @task(kind="python", pythons="3", platforms="linux,mac")
@@ -89,12 +103,10 @@ def build_posix(c: Context):
 
     common(c)
 
-    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
-    c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6 --with-build-python={{host}}/bin/python3""")
+
+    common_post(c)
+
 
 @task(kind="python", pythons="3", platforms="ios")
 def patch_ios(c: Context):
@@ -119,11 +131,9 @@ def build_ios(c: Context):
         f.write("ac_cv_have_long_long_format=yes\n")
         f.write("ac_cv_func_clock_settime=no")
 
-    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-    c.run("""{{ make }} """)
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6 --with-build-python={{host}}/bin/python3""")
+
+    common_post(c)
 
 
 @task(kind="python", pythons="3", platforms="android")
