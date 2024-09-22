@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
-version = "3.9.10"
+version = "3.11.10"
 win_version = "3.9.10"
 web_version = "3.11.0"
 
@@ -9,12 +9,8 @@ web_version = "3.11.0"
 def annotate(c: Context):
     if c.python == "3":
 
-        if c.platform == "web":
-            c.var("pythonver", "python3.11")
-            c.var("pycver", "311")
-        else:
-            c.var("pythonver", "python3.9")
-            c.var("pycver", "39")
+        c.var("pythonver", "python3.11")
+        c.var("pycver", "311")
 
         c.include("{{ install }}/include/{{ pythonver }}")
 
@@ -24,7 +20,7 @@ def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
-    c.run("tar xaf {{source}}/Python-{{version}}.tgz")
+    c.run("tar xaf {{source}}/Python-{{version}}.tar.xz")
 
 
 @task(kind="python", pythons="3", platforms="windows")
@@ -47,8 +43,8 @@ def patch_posix(c: Context):
     c.chdir("Python-{{ version }}")
     c.patch("Python-{{ version }}/no-multiarch.diff")
     c.patch("Python-{{ version }}/cross-darwin.diff")
-    c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
-    c.patch("Python-{{ version }}/no-builtin-available.diff")
+    # c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
+    # c.patch("Python-{{ version }}/no-builtin-available.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -58,7 +54,6 @@ def patch_windows(c: Context):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
-    # c.patch("Python-{{ version }}/no-multiarch.diff")
     c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
     c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
@@ -95,7 +90,8 @@ def build_posix(c: Context):
     common(c)
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
@@ -186,7 +182,7 @@ def build_web(c: Context):
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
         --with-emscripten-target=browser
-        --with-build-python={{host}}/web/bin/python3
+        --with-build-python={{host}}/bin/python3
         """)
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
@@ -198,30 +194,31 @@ def build_web(c: Context):
 
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
-    c.copy("{{ host }}/web/bin/python3", "{{ install }}/bin/hostpython3")
+    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
     for i in [ "ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
         c.var("i", i)
 
         c.copy(
-            "{{ host }}/web/lib/{{pythonver}}/{{ i }}",
+            "{{ host }}/lib/{{pythonver}}/{{ i }}",
             "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 @task(kind="python", pythons="3", platforms="all")
 def pip(c: Context):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
     c.run("""{{ install }}/bin/hostpython3 -s -m pip install --no-compile --upgrade
-        future==0.18.3
-        six==1.12.0
-        rsa==3.4.2
-        pyasn1==0.4.2
-        ecdsa==0.18.0
-        urllib3==2.0.4
-        charset-normalizer==3.2.0
+        future==1.0.0
+        six==1.16.0
+        rsa==4.9
+        pyasn1==0.6.1
+        ecdsa==0.19.0
+        urllib3==2.2.2
+        charset-normalizer==3.3.2
+        chardet==5.2.0
         certifi
-        idna==3.4
-        requests==2.31.0
-        pefile==2021.9.3
-        chardet==5.1.0
+        idna==3.8
+        requests==2.32.3
+        pefile==2022.5.30
         websockets==12.0
+        setuptools==74.1.2
         """)

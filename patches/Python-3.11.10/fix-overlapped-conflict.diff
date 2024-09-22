@@ -1,0 +1,22 @@
+Fix an issue where overlapped.c and _winapi.c define the same type.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ Modules/overlapped.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Modules/overlapped.c b/Modules/overlapped.c
+index cd7869f..319ea0a 100644
+--- a/Modules/overlapped.c
++++ b/Modules/overlapped.c
+@@ -1756,7 +1756,7 @@ static PyGetSetDef Overlapped_getsets[] = {
+     {NULL},
+ };
+ 
+-PyTypeObject OverlappedType = {
++static PyTypeObject OverlappedType = {
+     PyVarObject_HEAD_INIT(NULL, 0)
+     /* tp_name           */ "_overlapped.Overlapped",
+     /* tp_basicsize      */ sizeof(OverlappedObject),

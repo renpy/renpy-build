@@ -1,8 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "3.12.6"
-
+version = "3.11.10"
 
 @task(kind="host", pythons="3", platforms="all")
 def unpack_hostpython(c: Context):
@@ -24,9 +23,9 @@ def build_host(c: Context):
 
     c.run("""{{ make }} install""")
 
-    c.rmtree("{{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/")
-    c.run("install -d {{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/")
-    c.run("cp -a Tools/scripts {{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/scripts")
+    c.rmtree("{{ host }}/lib/python3.11/config-3.11-x86_64-linux-gnu/Tools/")
+    c.run("install -d {{ host }}/lib/python3.11/config-3.11-x86_64-linux-gnu/Tools/")
+    c.run("cp -a Tools/scripts {{ host }}/lib/python3.11/config-3.11-x86_64-linux-gnu/Tools/scripts")
 
 
 

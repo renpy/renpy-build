@@ -27,9 +27,7 @@ abc
 argparse
 ast
 base64
-binhex
 bisect
-_bootlocale
 _bootsubprocess
 bz2
 calendar
@@ -61,7 +59,6 @@ enum
 filecmp
 fileinput
 fnmatch
-formatter
 fractions
 ftplib
 functools
@@ -121,7 +118,7 @@ _pyio
 queue
 quopri
 random
-re
+re/
 reprlib
 rlcompleter
 runpy
