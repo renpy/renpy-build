@@ -4,6 +4,7 @@ import shlex
 import subprocess
 import sys
 import sysconfig
+import threading
 
 import jinja2
 
@@ -437,20 +438,27 @@ def run(command, context, verbose=False, quiet=False):
         traceback.print_stack()
         sys.exit(1)
 
-class RunCommand(object):
+class RunCommand(threading.Thread):
 
     def __init__(self, command, context):
+        super().__init__()
+
         command = context.expand(command)
         self.command = shlex.split(command)
 
         self.cwd = context.cwd
         self.environ = context.environ.copy()
 
-        self.p = subprocess.Popen(self.command, cwd=self.cwd, env=self.environ, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+        self.start()
+
+
+    def run(self):
+        result = subprocess.run(self.command, cwd=self.cwd, env=self.environ, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+        self.output = result.stdout
+        self.code = result.returncode
 
     def wait(self):
-        self.code = self.p.wait()
-        self.output = self.p.stdout.read() # type: ignore
+        self.join()
 
     def report(self):
         print ("-" * 78)
