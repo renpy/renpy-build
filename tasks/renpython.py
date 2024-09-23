@@ -452,6 +452,9 @@ def link_ios(c: Context):
     c.run("""install -d {{install}}/lib""")
     c.run("""install librenpython.a {{ install }}/lib""")
 
+@task(kind="python", platforms="web", pythons="3", always=True)
+def clean_web(c: Context):
+    c.clean()
 
 @task(kind="python", platforms="web", pythons="3", always=True)
 def build_web(c: Context):
@@ -591,6 +594,7 @@ def link_web(c: Context):
     --preload-file {{ dist }}@/
 
     -sFULL_ES2=1
+    -sFULL_ES3=1
     -sMAX_WEBGL_VERSION=2
     --emit-symbol-map
 
