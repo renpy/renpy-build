@@ -2,7 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
 version = "3.11.10"
-win_version = "3.9.10"
+win_version = "3.11.10"
 web_version = "3.11.0"
 
 @annotator
@@ -56,7 +56,7 @@ def patch_windows(c: Context):
     c.chdir("cpython-mingw")
     c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
-    c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
+    # c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -85,6 +85,7 @@ def common(c: Context):
 def common_post(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
+
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
 
@@ -144,11 +145,9 @@ def build_android(c: Context):
         f.write("ac_cv_little_endian_double=yes\n")
         f.write("ac_cv_header_langinfo_h=no\n")
 
-    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-    c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6  --with-build-python={{host}}/bin/python3""")
+
+    common_post(c)
 
 
 @task(kind="python", pythons="3", platforms="windows")
@@ -167,14 +166,16 @@ def build_windows(c: Context):
 
     c.env("CFLAGS", "{{ CFLAGS }} -Wno-implicit-function-declaration")
 
-    c.run("""{{configure}} {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-system-ffi""")
+    c.run("""
+          {{configure}} {{ cross_config }}
+          --enable-shared
+          --prefix="{{ install }}"
+          --with-system-ffi
+          --with-build-python={{host}}/bin/python3
+          --with-ensurepip=no
+    """)
 
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-
-    c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
-
+    common_post(c)
 
 @task(kind="python", pythons="3", platforms="web")
 def build_web(c: Context):

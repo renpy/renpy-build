@@ -216,10 +216,6 @@ def python3(c: Context):
     rules = set(PY3_MODULES.split())
     used_rules = set()
 
-    if c.platform == "web":
-        rules.remove("re")
-        rules.add("re/")
-
     search = [
         c.path("{{ install }}/lib/{{ pythonver }}"),
         c.path("{{ install }}/lib/{{ pythonver }}/site-packages"),

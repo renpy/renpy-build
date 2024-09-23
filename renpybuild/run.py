@@ -243,6 +243,8 @@ def build_environment(c):
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
         llvm(
             c,
             bin="{{ cross }}/llvm-mingw/bin",

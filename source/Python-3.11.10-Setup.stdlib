@@ -1,3 +1,25 @@
+# Directories where library files get installed.
+# DESTLIB is for Python modules; MACHDESTLIB for shared libraries.
+DESTLIB=$(LIBDEST)
+MACHDESTLIB=$(BINLIBDEST)
+
+# NOTE: all the paths are now relative to the prefix that is computed
+# at run time!
+
+# Standard path -- don't edit.
+# No leading colon since this is the first entry.
+# Empty since this is now just the runtime prefix.
+DESTPATH=
+
+# Site specific path components -- should begin with : if non-empty
+SITEPATH=
+
+# Standard path components for test modules
+TESTPATH=
+
+COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)
+PYTHONPATH=$(COREPYTHONPATH)
+
 
 _asyncio -DPy_BUILD_CORE_BUILTIN _asynciomodule.c
 _bisect -DPy_BUILD_CORE_BUILTIN _bisectmodule.c
