@@ -82,6 +82,7 @@ def common(c: Context):
             f.write("ac_cv_file__dev_ptmx=no\n")
             f.write("ac_cv_file__dev_ptc=no\n")
 
+
 def common_post(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
@@ -104,7 +105,14 @@ def build_posix(c: Context):
 
     common(c)
 
-    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6 --with-build-python={{host}}/bin/python3""")
+    c.run("""
+        {{configure}} {{ cross_config }}
+        --prefix="{{ install }}"
+        --with-system-ffi
+        --enable-ipv6
+        --with-build-python={{host}}/bin/python3
+        --with-ensurepip=no
+        """)
 
     common_post(c)
 
@@ -132,7 +140,15 @@ def build_ios(c: Context):
         f.write("ac_cv_have_long_long_format=yes\n")
         f.write("ac_cv_func_clock_settime=no")
 
-    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6 --with-build-python={{host}}/bin/python3""")
+    c.run("""
+        {{configure}} {{ cross_config }}
+        --prefix="{{ install }}"
+        --with-system-ffi
+        --disable-toolbox-glue
+        --enable-ipv6
+        --with-build-python={{host}}/bin/python3
+        --with-ensurepip=no
+    """)
 
     common_post(c)
 
@@ -145,7 +161,14 @@ def build_android(c: Context):
         f.write("ac_cv_little_endian_double=yes\n")
         f.write("ac_cv_header_langinfo_h=no\n")
 
-    c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6  --with-build-python={{host}}/bin/python3""")
+    c.run("""
+        {{configure}} {{ cross_config }}
+        --prefix="{{ install }}"
+        --with-system-ffi
+        --enable-ipv6
+        --with-build-python={{host}}/bin/python3
+        --with-ensurepip=no
+        """)
 
     common_post(c)
 
