@@ -1,9 +1,0 @@
-# This series applies on GIT commit 99a8fadeffd280caac0be200e117860df5546120
-allow-old-mingw.diff
-cross-darwin.diff
-fix-overlapped-conflict.diff
-fix-ssl-dont-use-enum_certificates.diff
-single-dllmain.diff
-no-multiarch.diff
-ios-posixmodule.diff
-no-builtin-available.diff
