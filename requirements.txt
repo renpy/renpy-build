@@ -14,7 +14,6 @@ Jinja2==3.1.4
 MarkupSafe==2.1.5
 packaging==24.1
 pyasn1==0.6.1
-pygame_sdl2==2.1.0
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
 pytz==2024.2
