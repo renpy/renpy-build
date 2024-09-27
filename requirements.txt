@@ -20,6 +20,7 @@ python-dateutil==2.8.2
 pytz==2022.5
 requests==2.31.0
 rsa==4.9
+setuptools==74.1.2
 six==1.16.0
 snowballstemmer==2.2.0
 Sphinx==5.3.0
