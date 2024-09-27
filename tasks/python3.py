@@ -206,7 +206,7 @@ def build_web(c: Context):
     c.var("version", web_version)
 
     c.clean()
-    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+    c.run("tar xaf {{source}}/Python-{{version}}.tgz")
 
     common(c)
 
