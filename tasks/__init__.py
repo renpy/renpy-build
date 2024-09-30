@@ -4,6 +4,7 @@ from renpybuild.context import Context
 from . import cython
 
 from . import env_sh
+from . import meson_setup
 
 from . import sysroot
 from . import toolchain
