@@ -52,10 +52,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
 
     if use_ld:
-        if c.platform == "linux":
-            clang_args = "-fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args
-        else:
-            clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
+        clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
     if c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
@@ -71,11 +68,11 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
 
     # c.env("LD", "ccache " + ld)
-    c.env("AR", "ccache {{llvm_bin}}llvm-ar{{llvm_suffix}}")
-    c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
-    c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
-    c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
-    c.env("READELF", "ccache {{llvm_bin}}llvm-readelf{{llvm_suffix}}")
+    c.env("AR", "{{llvm_bin}}llvm-ar{{llvm_suffix}}")
+    c.env("RANLIB", "{{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
+    c.env("STRIP", "{{llvm_bin}}llvm-strip{{llvm_suffix}}")
+    c.env("NM", "{{llvm_bin}}llvm-nm{{llvm_suffix}}")
+    c.env("READELF", "{{llvm_bin}}llvm-readelf{{llvm_suffix}}")
 
     c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
 
@@ -119,7 +116,7 @@ def build_environment(c):
 
     c.var("make", "nice make -j " + str(cpuccount))
     c.var("configure", "./configure")
-    c.var("cmake", "cmake")
+    c.var("cmake_configure", "cmake")
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -367,7 +364,7 @@ def build_environment(c):
         # Use emscripten wrapper to configure and build
         c.var("make", "emmake {{ make }}")
         c.var("configure", "emconfigure ./configure")
-        c.var("cmake", "emcmake cmake")
+        c.var("cmake_configure", "emcmake cmake")
 
         c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
         c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
@@ -412,7 +409,7 @@ def build_environment(c):
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
-    c.var("cmake", "{{cmake}} {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
+    c.var("cmake_args", "-G Ninja {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_PARALLEL_LEVEL=" + str(cpuccount))
 
     # Used by zlib.
     if c.kind != "host":
