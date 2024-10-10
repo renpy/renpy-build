@@ -45,3 +45,5 @@ def build(c: Context):
 
     c.run("install -d {{pytmp}}/steam")
     c.run("{{ root }}/steamapi/generate.py {{ host }}/steam/sdk/public/steam/steam_api.json {{ pytmp }}/steam/steamapi.py")
+
+    c.run("cp {{ pytmp }}/steam/steamapi.py {{renpy}}/steamapi.py")
