@@ -55,7 +55,7 @@ mkdir -p $ROOT/tmp
 # Clang is needed to compile for many platforms.
 wget -O tmp/llvm.sh https://apt.llvm.org/llvm.sh
 chmod +x tmp/llvm.sh
-sudo tmp/llvm.sh 15
+sudo tmp/llvm.sh 16
 
 # Darwin clang_rt is needed to prevent undefined symbol: __isPlatformVersionAtLeast
 sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/15/lib/
