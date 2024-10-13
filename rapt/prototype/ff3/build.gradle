@@ -6,6 +6,6 @@ plugins {
 assetPack {
     packName = "ff3" // Directory name for the asset pack
     dynamicDelivery {
-        deliveryType = "fast-follow"
+        deliveryType = "install-time"
     }
 }
