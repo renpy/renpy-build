@@ -310,7 +310,14 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     boolean checkPack(String name) {
         AssetPackLocation location = mAssetPackManager.getPackLocation(name);
         if (location != null) {
-            nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), location.assetsPath());
+            if (location.assetsPath() != null) {
+                nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), location.assetsPath());
+            } else {
+                AssetLocation loc = mAssetPackManager.getAssetLocation(name, "00_pack.txt");
+                if (loc != null) {
+                    nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), loc.path());
+                }
+            }
             return true;
         } else {
             return false;
