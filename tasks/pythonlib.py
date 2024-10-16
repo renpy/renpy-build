@@ -173,6 +173,8 @@ zipapp
 zipfile
 zipimport
 
+socks
+
 android/
 certifi/
 chardet/

@@ -257,4 +257,5 @@ def pip(c: Context):
         pefile==2022.5.30
         websockets==12.0
         setuptools==74.1.2
+        pysocks==1.7.1
         """)
