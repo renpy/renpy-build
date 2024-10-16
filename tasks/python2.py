@@ -197,4 +197,6 @@ def pip(c: Context):
         requests==2.20.0
         pefile==2019.4.18
         typing==3.10.0.0
+        pysocks==1.7.1
+        win_inet_pton==1.1.0
         """)

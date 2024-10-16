@@ -187,6 +187,9 @@ reprlib/
 socketserver/
 winreg/
 
+win_inet_pton.pyo
+socks.pyo
+
 android
 jnius/
 pyobjus/
@@ -444,6 +447,8 @@ webbrowser
 zipapp
 zipfile
 zipimport
+
+socks
 
 android/
 certifi/
