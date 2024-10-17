@@ -4,6 +4,7 @@ from renpybuild.context import Context
 from . import cython
 
 from . import env_sh
+from . import meson_setup
 
 from . import sysroot
 from . import toolchain
@@ -25,7 +26,8 @@ from . import libjpeg_turbo
 from . import libwebp
 
 from . import libyuv
-from . import aom
+# from . import aom
+from . import dav1d
 from . import libavif
 
 from . import hostpython3
