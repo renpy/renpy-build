@@ -606,7 +606,7 @@ def link_web(c: Context):
     -sASYNCIFY_ONLY="{{ asyncify_only }}"
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
-    -sTOTAL_STACK=1048576
+    -sSTACK_SIZE=1024KB
 
     -sEXPORTED_FUNCTIONS=['_main']
 
