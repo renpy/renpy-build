@@ -383,7 +383,7 @@
 				OTHER_LDFLAGS = (
 					"-lrenpython",
 					"-lrenpy",
-					"-lpython3.9",
+					"-lpython3.11",
 					"-lavformat",
 					"-lavcodec",
 					"-lswscale",
