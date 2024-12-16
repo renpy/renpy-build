@@ -7,19 +7,11 @@ def clean(c: Context):
     c.clean()
 
 
-@task(kind="host-python", pythons="2", always=True)
-def gen_static2(c: Context):
-
-    c.chdir("{{ renpy }}/module")
-    c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
-    c.env("RENPY_STATIC", "1")
-    c.run("{{ hostpython }} setup.py generate")
-
 
 @task(kind="host-python", platforms="all", pythons="3", always=True)
 def gen_static3(c: Context):
 
-    c.chdir("{{ renpy }}/module")
+    c.chdir("{{ renpy }}")
     c.env("RENPY_DEPS_INSTALL", "/usr::/usr/lib/x86_64-linux-gnu/")
     c.env("RENPY_STATIC", "1")
     c.run("{{ hostpython }} setup.py generate")
@@ -31,12 +23,9 @@ def build(c: Context):
     if c.platform == "web" and c.python == "2":
         return
 
-    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/module" """)
+    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/src" """)
 
-    if c.python == "3":
-        gen = "gen3-static/"
-    else:
-        gen = "gen-static/"
+    gen = "gen3-static/"
 
     modules = [ ]
     sources = [ ]
@@ -64,7 +53,7 @@ def build(c: Context):
                     sources.append(dn / i)
 
     read_setup(c.pygame_sdl2)
-    read_setup(c.renpy / "module")
+    read_setup(c.renpy / "src" )
     read_setup(c.root / "extensions")
 
     if c.platform == "android":
@@ -74,7 +63,7 @@ def build(c: Context):
         read_setup(c.path("{{ install }}/pyobjus"))
 
     if c.platform == "windows" or c.platform == "mac" or c.platform == "linux":
-        read_setup(c.renpy / "module", ".tfd")
+        read_setup(c.renpy / "src", ".tfd")
 
     if c.platform == "web" and c.python == "3":
         read_setup(c.path("{{ install }}/emscripten_pyx"))
