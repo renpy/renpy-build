@@ -16,9 +16,9 @@
 from __future__ import print_function
 
 cdef extern from "emscripten.h":
-    ctypedef void (*em_callback_func)()
-    ctypedef void (*em_arg_callback_func)(void*)
-    ctypedef void (*em_async_wget_onload_func)(void*, void*, int)
+    ctypedef void (*em_callback_func)() noexcept
+    ctypedef void (*em_arg_callback_func)(void*) noexcept
+    ctypedef void (*em_async_wget_onload_func)(void*, void*, int) noexcept
 
     void emscripten_set_main_loop(em_callback_func func, int fps, int simulate_infinite_loop)
     void emscripten_set_main_loop_arg(em_arg_callback_func func, void *arg, int fps, int simulate_infinite_loop)
@@ -112,13 +112,13 @@ cdef void pycaller_free(pycaller *c):
 
 # Take a Python object and calls it ONCE on passed argument
 # C callback for e.g. emscripten_async_call
-cdef void pycaller_callback_once(void* p):
+cdef void pycaller_callback_once(void* p) noexcept:
     pycaller_callback_recurring(p)
     pycaller_free(<pycaller*>p)
 
 # Take a Python object and calls it on passed argument
 # C callback for e.g. emscripten_set_main_loop_arg
-cdef void pycaller_callback_recurring(void* p):
+cdef void pycaller_callback_recurring(void* p) noexcept:
     cdef pycaller* c = <pycaller*>p
     py_function = <object>(c.py_function)
     if c.py_arg != NULL:
@@ -255,7 +255,7 @@ cdef class pycaller_async_wget:
     #def __dealloc__(self):
     #    print("dealloc")
 
-cdef void pycaller_callback_async_wget_onload(void* p, void* buf, int size):
+cdef void pycaller_callback_async_wget_onload(void* p, void* buf, int size) noexcept:
     c = <pycaller_async_wget>p
     # https://cython.readthedocs.io/en/latest/src/tutorial/strings.html#passing-byte-strings
     py_buf = (<char*>buf)[:size]  # copy
@@ -263,7 +263,7 @@ cdef void pycaller_callback_async_wget_onload(void* p, void* buf, int size):
     Py_XDECREF(<PyObject*>p)
     # 'buf' freed right after by emscripten
 
-cdef void pycaller_callback_async_wget_onerror(void* p):
+cdef void pycaller_callback_async_wget_onerror(void* p) noexcept:
     c = <pycaller_async_wget>p
     if c.onerror is not None:
         c.onerror(c.arg)
