@@ -128,6 +128,7 @@ def patch_ios(c: Context):
 
     c.run("cp {{patches}}/_scproxy.pyx Modules")
     c.chdir("Modules")
+    c.run("rm -f _scproxy.c")
     c.run("cython _scproxy.pyx")
 
 
