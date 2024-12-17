@@ -73,9 +73,9 @@ _multibytecodec -DPy_BUILD_CORE_BUILTIN cjkcodecs/multibytecodec.c
 {% if (c.kind == "host") or (c.platform != "windows") %}
 
 {% if c.platform in ['mac', 'ios'] %}
-_ctypes -DPy_BUILD_CORE_BUILTIN -DUSING_MALLOC_CLOSURE_DOT_C _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/malloc_closure.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+_ctypes -DPy_BUILD_CORE_BUILTIN -DUSING_MALLOC_CLOSURE_DOT_C _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/malloc_closure.c _ctypes/stgdict.c _ctypes/cfield.c -ldl -lffi -DHAVE_FFI_PREP_CIF_VAR -DHAVE_FFI_PREP_CLOSURE_LOC -DHAVE_FFI_CLOSURE_ALLOC
 {% elif c.platform != "web" %}
-_ctypes -DPy_BUILD_CORE_BUILTIN _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -lffi
+_ctypes -DPy_BUILD_CORE_BUILTIN _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c -ldl -lffi -DHAVE_FFI_PREP_CIF_VAR -DHAVE_FFI_PREP_CLOSURE_LOC -DHAVE_FFI_CLOSURE_ALLOC
 {% endif %}
 
 _socket -DPy_BUILD_CORE_BUILTIN socketmodule.c -lm
