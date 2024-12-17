@@ -110,7 +110,6 @@ def build_posix(c: Context):
     c.run("""
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
-        --with-system-ffi
         --enable-ipv6
         --with-build-python={{host}}/bin/python3
         --with-ensurepip=no
@@ -146,7 +145,6 @@ def build_ios(c: Context):
     c.run("""
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
-        --with-system-ffi
         --disable-toolbox-glue
         --enable-ipv6
         --with-build-python={{host}}/bin/python3
@@ -167,7 +165,6 @@ def build_android(c: Context):
     c.run("""
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
-        --with-system-ffi
         --enable-ipv6
         --with-build-python={{host}}/bin/python3
         --with-ensurepip=no
@@ -196,7 +193,6 @@ def build_windows(c: Context):
           {{configure}} {{ cross_config }}
           --enable-shared
           --prefix="{{ install }}"
-          --with-system-ffi
           --with-build-python={{host}}/bin/python3
           --with-ensurepip=no
     """)
