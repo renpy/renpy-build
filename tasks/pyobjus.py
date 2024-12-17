@@ -19,12 +19,8 @@ def unpack(c: Context):
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
     c.chdir("pyobjus")
 
-
-    if c.platform == "mac" and c.arch == "arm64":
-        c.run("git checkout 9c0ca61c0cd67efd5371dba8deb36b6dbccddb64")
-    else:
-        c.run("git checkout ea4ef7c96dcc83d5f1f18d4b15f3709f32c47a24")
-
+    c.run("git checkout 573bd69b857ca4a64c7154a27f0bff6850851797")
+    c.patch("pyobjus/ffi-h.diff")
 
 
 @task(kind="host-python")
@@ -33,7 +29,9 @@ def host_unpack(c: Context):
 
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
     c.chdir("pyobjus")
-    c.run("git checkout ea4ef7c96dcc83d5f1f18d4b15f3709f32c47a24")
+
+    c.run("git checkout 573bd69b857ca4a64c7154a27f0bff6850851797")
+    c.patch("pyobjus/ffi-h.diff")
 
 
 @task(kind="python", platforms="mac,ios")
@@ -47,6 +45,7 @@ def build(c: Context):
         f.write(c.expand("""\
 DEF PLATFORM = "{{ 'ios' if c.platform == 'ios' else 'darwin' }}"
 DEF ARCH = "{{ c.arch.replace('sim-', '') }}"
+DEF PYOBJUS_CYTHON_3 = True
 """))
 
     c.run("""cython --3str pyobjus.pyx""")
@@ -58,8 +57,6 @@ DEF ARCH = "{{ c.arch.replace('sim-', '') }}"
 
     with open(c_fn, 'r') as f:
         ccode = f.read()
-
-    ccode = ccode.replace("ffi/ffi.h", "ffi.h")
 
     ccode = re.sub(r'Py_InitModule4\("([^"]+)"', 'Py_InitModule4("' + parent_module + '.\\1"', ccode)
     ccode = re.sub(r'^__Pyx_PyMODINIT_FUNC init', '__Pyx_PyMODINIT_FUNC init' + parent_module_identifier + '_', ccode, 0, re.MULTILINE) # Cython 0.28.2
