@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "3.11.10"
+version = "3.12.8"
 
 @task(kind="host", pythons="3", platforms="all")
 def unpack_hostpython(c: Context):

@@ -28,7 +28,6 @@ argparse
 ast
 base64
 bisect
-_bootsubprocess
 bz2
 calendar
 cgi
@@ -75,7 +74,6 @@ heapq
 hmac
 imaplib
 imghdr
-imp
 inspect
 io
 ipaddress
@@ -170,7 +168,7 @@ weakref
 _weakrefset
 webbrowser
 zipapp
-zipfile
+zipfile/
 zipimport
 
 socks

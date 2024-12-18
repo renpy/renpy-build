@@ -1,16 +1,16 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
-version = "3.11.10"
-win_version = "3.11.10"
-web_version = "3.11.10"
+version = "3.12.8"
+win_version = "3.12.6"
+web_version = "3.12.8"
 
 @annotator
 def annotate(c: Context):
     if c.python == "3":
 
-        c.var("pythonver", "python3.11")
-        c.var("pycver", "311")
+        c.var("pythonver", "python3.12")
+        c.var("pycver", "312")
 
         c.include("{{ install }}/include/{{ pythonver }}")
 
@@ -41,8 +41,8 @@ def patch_posix(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
-    c.patch("Python-{{ version }}/no-multiarch.diff")
-    c.patch("Python-{{ version }}/cross-darwin.diff")
+    # c.patch("Python-{{ version }}/no-multiarch.diff")
+    # c.patch("Python-{{ version }}/cross-darwin.diff")
 
     # Needs to be here because we use the Linux version of ssl.py on windows,
     # during a full build, not the patched Windows version.
