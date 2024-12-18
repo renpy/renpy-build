@@ -4,12 +4,16 @@ from renpybuild.task import task
 import os
 import requests
 
+mingw_version = "20241203-ucrt-ubuntu-20.04-x86_64"
+
 
 @task(kind="cross", platforms="windows")
 def download(c: Context):
 
-    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20220906/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz"
-    dest = c.path("{{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
+    c.var("mingw_version", mingw_version)
+
+    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20241203/llvm-mingw-20241203-ucrt-ubuntu-20.04-x86_64.tar.xz"
+    dest = c.path("{{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
 
     if os.path.exists(dest):
         return
@@ -29,12 +33,13 @@ def download(c: Context):
 
 @task(kind="cross", platforms="windows")
 def unpack(c: Context):
+    c.var("mingw_version", mingw_version)
 
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
 
-    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
-    c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
+    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
+    c.run("ln -s llvm-mingw-{{mingw_version}} llvm-mingw")
 
 
 @task(kind="cross", platforms="android", always=True)

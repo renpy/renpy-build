@@ -2,7 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
 version = "3.12.8"
-win_version = "3.12.6"
+win_version = "3.12.7"
 web_version = "3.12.8"
 
 @annotator
@@ -56,9 +56,9 @@ def patch_windows(c: Context):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
-    c.patch("Python-{{ version }}/allow-old-mingw.diff")
+    # c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
-    # c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
+    c.patch("Python-{{ version }}/no-af-hyperv.diff")
 
     c.run(""" autoreconf -vfi """)
 
@@ -89,7 +89,7 @@ def common_post(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
 
-    c.run("""{{ make }}""")
+    c.run("""make""")
     c.run("""{{ make }} install""")
 
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")

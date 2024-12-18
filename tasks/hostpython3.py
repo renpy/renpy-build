@@ -23,9 +23,9 @@ def build_host(c: Context):
 
     c.run("""{{ make }} install""")
 
-    c.rmtree("{{ host }}/lib/python3.11/config-3.11-x86_64-linux-gnu/Tools/")
-    c.run("install -d {{ host }}/lib/python3.11/config-3.11-x86_64-linux-gnu/Tools/")
-    c.run("cp -a Tools/scripts {{ host }}/lib/python3.11/config-3.11-x86_64-linux-gnu/Tools/scripts")
+    c.rmtree("{{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/")
+    c.run("install -d {{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/")
+    c.run("cp -a Tools/scripts {{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/scripts")
 
 
 
