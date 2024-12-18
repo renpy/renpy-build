@@ -42,7 +42,7 @@ def patch_posix(c: Context):
 
     c.chdir("Python-{{ version }}")
     # c.patch("Python-{{ version }}/no-multiarch.diff")
-    # c.patch("Python-{{ version }}/cross-darwin.diff")
+    c.patch("Python-{{ version }}/cross-darwin.diff")
 
     # Needs to be here because we use the Linux version of ssl.py on windows,
     # during a full build, not the patched Windows version.
