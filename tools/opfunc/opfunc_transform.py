@@ -234,11 +234,6 @@ def handle_eval_frame(lb, opfuncs):
     lb.replace("#define is_method((ctx->stack_pointer), args)", "#define is_method(stack_pointer, args)")
 
     lb.replace(
-        "_Py_atomic_int * const (ctx->eval_breaker) = &tstate->interp->ceval.eval_breaker;",
-        "ctx->eval_breaker = &tstate->interp->ceval.eval_breaker;"
-    )
-
-    lb.replace(
         "_PyInterpreterFrame *(ctx->frame)",
         "_PyInterpreterFrame *frame",
     )
@@ -310,7 +305,6 @@ typedef struct {
     _Py_CODEUNIT *first_instr;
     _Py_CODEUNIT *next_instr;
     PyObject **stack_pointer;
-    _Py_atomic_int *eval_breaker;
 
     PyObject *kwnames;
 
@@ -349,13 +343,6 @@ extern opfunc opfuncs[];
 
 #undef PREDICTED
 #define PREDICTED(op)
-
-#undef CHECK_EVAL_BREAKER
-#define CHECK_EVAL_BREAKER() \\
-    _Py_CHECK_EMSCRIPTEN_SIGNALS_PERIODICALLY(); \\
-    if (_Py_atomic_load_relaxed_int32(ctx->eval_breaker)) { \\
-        return opfunc_goto_handle_eval_breaker; \\
-    }
 
 #undef GO_TO_INSTRUCTION
 #define GO_TO_INSTRUCTION(op) { ctx->opcode = op; return opfunc_go_to_instruction; }
@@ -477,8 +464,6 @@ dispatch_goto:
 
     lines.insert_at_end("};\n\n")
 
-    print(lines.text())
-
     return lines
 
 def opcode_funcs(ceval):
@@ -534,6 +519,7 @@ def main():
 
     mt = mt.replace("goto error;", "return opfunc_goto_error;")
     mt = mt.replace("goto start_frame;", "return opfunc_goto_start_frame;")
+    mt = mt.replace("goto handle_eval_breaker;", "return opfunc_goto_handle_eval_breaker;")
 
     macros.write_text(mt)
 
