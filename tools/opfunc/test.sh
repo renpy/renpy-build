@@ -33,16 +33,16 @@ done
 
 cd $(dirname $0)
 
-rm -Rf Python-3.11.0
-tar xaf ../../source/Python-3.11.0.tgz
+rm -Rf Python-3.12.8
+tar xaf ../../source/Python-3.12.8.tar.xz
 
-./opfunc_transform.py Python-3.11.0/Python/ceval.c
+./opfunc_transform.py Python-3.12.8/Python/ceval.c
 
-export CC="ccache gcc"
-export LD="ccache gcc"
+export CC="ccache clang"
+export LD="ccache clang"
 
 if [ $BUILD = yes ]; then
-    pushd Python-3.11.0
+    pushd Python-3.12.8
     ./configure --with-pydebug --cache-file=../config.cache > python.log
     nice make -j$(nproc) >> python.log
     echo "Python build complete."
