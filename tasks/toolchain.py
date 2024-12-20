@@ -4,7 +4,7 @@ from renpybuild.task import task
 import os
 import requests
 
-mingw_version = "20241203-ucrt-ubuntu-20.04-x86_64"
+mingw_version = "20241217-ucrt-ubuntu-20.04-x86_64"
 
 
 @task(kind="cross", platforms="windows")
@@ -12,7 +12,7 @@ def download(c: Context):
 
     c.var("mingw_version", mingw_version)
 
-    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20241203/llvm-mingw-20241203-ucrt-ubuntu-20.04-x86_64.tar.xz"
+    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20241217/llvm-mingw-20241217-ucrt-ubuntu-20.04-x86_64.tar.xz"
     dest = c.path("{{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
 
     if os.path.exists(dest):

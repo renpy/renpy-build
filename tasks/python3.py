@@ -41,7 +41,6 @@ def patch_posix(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
-    # c.patch("Python-{{ version }}/no-multiarch.diff")
     c.patch("Python-{{ version }}/cross-darwin.diff")
 
     # Needs to be here because we use the Linux version of ssl.py on windows,
@@ -51,12 +50,24 @@ def patch_posix(c: Context):
     c.run(""" autoreconf -vfi """)
 
 
+@task(kind="python", pythons="3", platforms="ios")
+def patch_ios(c: Context):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+    c.patch("Python-{{ version }}/ios-posixmodule.diff")
+
+    c.run("cp {{patches}}/_scproxy.pyx Modules")
+    c.chdir("Modules")
+    c.run("rm -f _scproxy.c")
+    c.run("cython _scproxy.pyx")
+
+
 @task(kind="python", pythons="3", platforms="windows")
 def patch_windows(c: Context):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
-    # c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
     c.patch("Python-{{ version }}/no-af-hyperv.diff")
 
@@ -116,19 +127,6 @@ def build_posix(c: Context):
         """)
 
     common_post(c)
-
-
-@task(kind="python", pythons="3", platforms="ios")
-def patch_ios(c: Context):
-    c.var("version", version)
-
-    c.chdir("Python-{{ version }}")
-    c.patch("Python-{{ version }}/ios-posixmodule.diff")
-
-    c.run("cp {{patches}}/_scproxy.pyx Modules")
-    c.chdir("Modules")
-    c.run("rm -f _scproxy.c")
-    c.run("cython _scproxy.pyx")
 
 
 @task(kind="python", pythons="3", platforms="ios")
