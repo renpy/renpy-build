@@ -182,7 +182,6 @@ def handle_target(lb):
     lb.sub(r"\bDISPATCH\(\)", "return opfunc_goto_dispatch")
     lb.sub(r"\bDISPATCH_GOTO\(\)", "return opfunc_goto_dispatch_goto")
     lb.sub(r"\bDISPATCH_SAME_OPARG\(\)", "return opfunc_goto_dispatch_same_oparg")
-    lb.sub(r"\bTRACE_FUNCTION_EXIT\(\)", "if ((ctx->cframe).use_tracing && trace_function_exit(tstate, (ctx->frame), retval)) { Py_DECREF(retval); return opfunc_goto_exit_unwind; }")
 
     lb.replace("call_function:", "")
 
@@ -396,7 +395,6 @@ dispatch_same_oparg:
 dispatch_goto:
 
     {
-
         opfunc_return opcode_result = opfuncs[ctx->opcode](ctx, tstate);
 
         switch (opcode_result) {
@@ -423,10 +421,10 @@ dispatch_goto:
             goto pop_3_error;
 
         case opfunc_goto_pop_2_error:
-            goto pop_3_error;
+            goto pop_2_error;
 
         case opfunc_goto_pop_1_error:
-            goto pop_3_error;
+            goto pop_1_error;
 
         case opfunc_goto_error:
             goto error;
