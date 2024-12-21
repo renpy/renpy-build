@@ -100,7 +100,8 @@ def common_post(c: Context):
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
 
-    c.run("""make""")
+    c.run("""{{ make }}""")
+
     c.run("""{{ make }} install""")
 
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
