@@ -38,7 +38,7 @@ def emsdk_environment(c):
         c.env(k, v)
 
 
-def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
+def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
 
     if bin:
         c.env("PATH", bin + ":{{ PATH }}")
@@ -436,6 +436,7 @@ def run(command, context, verbose=False, quiet=False):
 
     if p.returncode != 0:
         print(f"{context.task_name}: process failed with {p.returncode}.")
+        print("path:", context.cwd)
         print("args:", " ".join(repr(i) for i in args))
         import traceback
         traceback.print_stack()

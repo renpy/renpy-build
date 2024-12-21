@@ -64,7 +64,6 @@ def link_linux(c: Context):
 
     -lSDL2_image
     -lSDL2
-    -lGL
     -lavif
     -laom
     -lyuv
