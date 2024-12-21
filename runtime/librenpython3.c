@@ -78,7 +78,7 @@ static wchar_t *decode_utf8(const char *s) {
     unsigned char *p = (unsigned char *) s;
     unsigned int ch;
 
-    rv = (wchar_t *) malloc(strlen(s) * 2 + 2);
+    rv = (wchar_t *) malloc(strlen(s) * sizeof(wchar_t) + sizeof(wchar_t));
     wchar_t *q = rv;
 
     while (*p) {
@@ -193,7 +193,7 @@ static void take_argv0(char *argv0) {
         exedir = strdup(argv0);
     }
 
-    free(argv0);
+    // free(argv0);
 }
 
 /**
