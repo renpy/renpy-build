@@ -40,9 +40,6 @@ static char *encode_utf8(wchar_t *s) {
     unsigned char *p;
     unsigned int ch;
 
-    return "";
-
-
     rv = (char *) malloc(wcslen(s) * 4 + 1);
     p = (unsigned char *) rv;
 
@@ -193,7 +190,7 @@ static void take_argv0(char *argv0) {
         exedir = strdup(argv0);
     }
 
-    // free(argv0);
+    free(argv0);
 }
 
 /**
