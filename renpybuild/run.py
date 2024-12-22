@@ -52,11 +52,7 @@ def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
     ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
 
     if use_ld:
-        if c.platform == "linux":
-            # Needed until we upgrade the linux sysroot to a version compatible with newer clangs.
-            clang_args = "-fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args
-        else:
-            clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
+        clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
     if c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
