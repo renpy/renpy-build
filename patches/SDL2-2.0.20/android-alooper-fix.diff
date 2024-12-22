@@ -1,0 +1,44 @@
+Backport ALooper_poolAll fix.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+From https://github.com/libsdl-org/SDL/pull/9807
+---
+ src/sensor/android/SDL_androidsensor.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/src/sensor/android/SDL_androidsensor.c b/src/sensor/android/SDL_androidsensor.c
+index e6cfc23..d4179bf 100644
+--- a/src/sensor/android/SDL_androidsensor.c
++++ b/src/sensor/android/SDL_androidsensor.c
+@@ -163,7 +163,7 @@ SDL_ANDROID_SensorOpen(SDL_Sensor *sensor, int device_index)
+     sensor->hwdata = hwdata;
+     return 0;
+ }
+-    
++
+ static void
+ SDL_ANDROID_SensorUpdate(SDL_Sensor *sensor)
+ {
+@@ -171,10 +171,17 @@ SDL_ANDROID_SensorUpdate(SDL_Sensor *sensor)
+     ASensorEvent event;
+     struct android_poll_source* source;
+ 
+-    if (ALooper_pollAll(0, NULL, &events, (void**)&source) == LOOPER_ID_USER) {
+-        SDL_zero(event);
+-        while (ASensorEventQueue_getEvents(sensor->hwdata->eventqueue, &event, 1) > 0) {
+-            SDL_PrivateSensorUpdate(sensor, event.data, SDL_arraysize(event.data));
++    while (1) {
++        int result = ALooper_pollOnce(0, NULL, &events, (void**)&source);
++        if (result == LOOPER_ID_USER) {
++            SDL_zero(event);
++            while (ASensorEventQueue_getEvents(sensor->hwdata->eventqueue, &event, 1) > 0) {
++                SDL_PrivateSensorUpdate(sensor, event.data, SDL_arraysize(event.data));
++            }
++        }
++
++        if (result <0) {
++            break;
+         }
+     }
+ }

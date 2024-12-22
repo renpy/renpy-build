@@ -104,7 +104,7 @@ def build_environment(c):
         emsdk_environment(c)
 
     if c.platform == "android":
-        c.var("ndk_version", "android-ndk-r25c")
+        c.var("ndk_version", "android-ndk-r27c")
 
     cpuccount = os.cpu_count()
 
@@ -259,6 +259,7 @@ def build_environment(c):
         android_llvm(c, "x86_64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "x86_64")
@@ -270,6 +271,7 @@ def build_environment(c):
         android_llvm(c, "aarch64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "aarch64")
