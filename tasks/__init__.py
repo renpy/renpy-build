@@ -45,6 +45,8 @@ from . import sdl2_image
 
 from . import ffmpeg
 
+from . import assimp
+
 from . import fribidi
 from . import freetype
 from . import harfbuzz

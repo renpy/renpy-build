@@ -1,0 +1,72 @@
+diff --git a/contrib/poly2tri/poly2tri/common/dll_symbol.h b/contrib/poly2tri/poly2tri/common/dll_symbol.h
+index c18c2baec..72c900459 100644
+--- a/contrib/poly2tri/poly2tri/common/dll_symbol.h
++++ b/contrib/poly2tri/poly2tri/common/dll_symbol.h
+@@ -32,7 +32,7 @@
+ #pragma once
+ 
+ #if defined(_WIN32)
+-#  pragma warning( disable: 4273)
++// #  pragma warning( disable: 4273)
+ #  define P2T_COMPILER_DLLEXPORT __declspec(dllexport)
+ #  define P2T_COMPILER_DLLIMPORT __declspec(dllimport)
+ #elif defined(__GNUC__)
+diff --git a/contrib/poly2tri/poly2tri/common/shapes.h b/contrib/poly2tri/poly2tri/common/shapes.h
+index 3f4d1c02f..ac41a9f27 100644
+--- a/contrib/poly2tri/poly2tri/common/shapes.h
++++ b/contrib/poly2tri/poly2tri/common/shapes.h
+@@ -39,9 +39,9 @@
+ #include <vector>
+ 
+ 
+-#if defined(_WIN32)
+-#  pragma warning( disable: 4251)
+-#endif
++// #if defined(_WIN32)
++// #  pragma warning( disable: 4251)
++// #endif
+ namespace p2t {
+ 
+ struct Edge;
+diff --git a/contrib/unzip/ioapi.c b/contrib/unzip/ioapi.c
+index 782d32469..fecf588de 100644
+--- a/contrib/unzip/ioapi.c
++++ b/contrib/unzip/ioapi.c
+@@ -10,22 +10,28 @@
+ 
+ */
+ 
++
+ #if defined(_WIN32) && (!(defined(_CRT_SECURE_NO_WARNINGS)))
+         #define _CRT_SECURE_NO_WARNINGS
+ #endif
+ 
+-#if defined(__APPLE__) || defined(IOAPI_NO_64) || defined(__HAIKU__) || defined(MINIZIP_FOPEN_NO_64)
+-// In darwin and perhaps other BSD variants off_t is a 64 bit value, hence no need for specific 64 bit functions
+-#define FOPEN_FUNC(filename, mode) fopen(filename, mode)
+-#define FTELLO_FUNC(stream) ftello(stream)
+-#define FSEEKO_FUNC(stream, offset, origin) fseeko(stream, offset, origin)
++#if defined(ANDROID)
++    #define FOPEN_FUNC(filename, mode) fopen(filename, mode)
++    #define FTELLO_FUNC(stream) ftell(stream)
++    #define FSEEKO_FUNC(stream, offset, origin) fseek(stream, (long) offset, origin)
+ #else
+-#define FOPEN_FUNC(filename, mode) fopen64(filename, mode)
+-#define FTELLO_FUNC(stream) ftello64(stream)
+-#define FSEEKO_FUNC(stream, offset, origin) fseeko64(stream, offset, origin)
++    #if defined(__APPLE__) || defined(IOAPI_NO_64) || defined(__HAIKU__) || defined(MINIZIP_FOPEN_NO_64)
++    // In darwin and perhaps other BSD variants off_t is a 64 bit value, hence no need for specific 64 bit functions
++    #define FOPEN_FUNC(filename, mode) fopen(filename, mode)
++    #define FTELLO_FUNC(stream) ftello(stream)
++    #define FSEEKO_FUNC(stream, offset, origin) fseeko(stream, offset, origin)
++    #else
++    #define FOPEN_FUNC(filename, mode) fopen64(filename, mode)
++    #define FTELLO_FUNC(stream) ftello64(stream)
++    #define FSEEKO_FUNC(stream, offset, origin) fseeko64(stream, offset, origin)
++    #endif
+ #endif
+ 
+-
+ #include "ioapi.h"
+ 
+ voidpf call_zopen64 (const zlib_filefunc64_32_def* pfilefunc, const void*filename, int mode) {

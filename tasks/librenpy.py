@@ -74,12 +74,18 @@ def build(c: Context):
 
         for source in sources:
 
-            object = str(source.name)[:-2] + ".o"
+            name, _, ext = str(source.name).rpartition(".")
+
+            object = name + ".o"
             objects.append(object)
 
             c.var("src", source)
             c.var("object", object)
-            g.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}")
+
+            if ext == "c":
+                g.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}")
+            else:
+                g.run("{{ CXX }} {{ CXXFLAGS }} -c {{ src }} -o {{ object }}")
 
         c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "inittab.c", modules=modules)
         g.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")

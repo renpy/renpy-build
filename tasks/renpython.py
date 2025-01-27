@@ -56,6 +56,8 @@ def link_linux(c: Context):
     -lrenpy
     -l{{ pythonver }}
 
+    -lassimp
+
     -lavformat
     -lavcodec
     -lswscale
@@ -131,6 +133,8 @@ def link_android(c: Context):
     -lrenpy
     -l{{ pythonver }}
 
+    -lassimp
+
     -lavformat
     -lavcodec
     -lswscale
@@ -193,6 +197,8 @@ def link_mac(c: Context):
 
     -lrenpy
     -l{{ pythonver }}
+
+    -lassimp
 
     -lavformat
     -lavcodec
@@ -339,6 +345,8 @@ def link_windows(c: Context):
     -lfribidi
 
     {{install}}/lib/lib{{ pythonver }}.dll.a
+
+    -lassimp
 
     -lavformat
     -lavcodec
@@ -564,6 +572,8 @@ def link_web(c: Context):
     -l{{ pythonver }}
 
     -lrenpy
+
+    -lassimp
 
     -lavformat
     -lavcodec
