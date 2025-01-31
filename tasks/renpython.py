@@ -331,6 +331,8 @@ pe.write(fn)
 
     c.run("""{{ hostpython }} fix_pe.py """ + fn)
 
+
+
 @task(kind="python", always=True, platforms="windows")
 def link_windows(c: Context):
 
@@ -347,6 +349,7 @@ def link_windows(c: Context):
     {{install}}/lib/lib{{ pythonver }}.dll.a
 
     -lassimp
+    {{cross}}/llvm-mingw/{{host_platform}}/lib/libunwind.a
 
     -lavformat
     -lavcodec
