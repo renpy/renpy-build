@@ -24,6 +24,7 @@ def build(c: Context):
         return
 
     c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/src" """)
+    c.env("CXXFLAGS", """{{ CXXFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/src" """)
 
     gen = "gen3-static/"
 
