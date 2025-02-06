@@ -155,12 +155,10 @@ def clean(args):
         rmtree(i)
 
     def rmgen(d):
-        rmtree(d / "gen")
-        rmtree(d / "gen-static")
         rmtree(d / "gen3")
         rmtree(d / "gen3-static")
 
-    rmgen(root / "renpy" / "module")
+    rmgen(root / "tmp")
     rmgen(root / "pygame_sdl2")
 
     def rmtrio(name : str):
