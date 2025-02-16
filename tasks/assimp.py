@@ -25,6 +25,9 @@ def build(c : Context):
         -DASSIMP_NO_EXPORT=ON
         -DASSIMP_BUILD_TESTS=OFF
         -DASSIMP_BUILD_ZLIB=OFF
+        -DASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF
+        -DASSIMP_BUILD_GLTF_IMPORTER=ON
+        -DASSIMP_BUILD_STL_IMPORTER=ON
         {{ tmp }}/source/assimp
         """)
 
