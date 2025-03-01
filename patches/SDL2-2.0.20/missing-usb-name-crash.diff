@@ -1,0 +1,48 @@
+Fix a crash if a usb device is missing a name.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+Taken from: https://discourse.libsdl.org/t/sdl-fixed-crash-if-a-device-doesnt-have-a-usb-product-or-manufacturer-string/55793
+---
+ src/joystick/windows/SDL_rawinputjoystick.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/joystick/windows/SDL_rawinputjoystick.c b/src/joystick/windows/SDL_rawinputjoystick.c
+index 8178ee6..421140b 100644
+--- a/src/joystick/windows/SDL_rawinputjoystick.c
++++ b/src/joystick/windows/SDL_rawinputjoystick.c
+@@ -743,10 +743,14 @@ RAWINPUT_AddDevice(HANDLE hDevice)
+         WCHAR string[128];
+ 
+         if (SDL_HidD_GetManufacturerString(hFile, string, sizeof(string))) {
+-            manufacturer_string = WIN_StringToUTF8W(string);
++            if (string) {
++                manufacturer_string = WIN_StringToUTF8W(string);
++            }
+         }
+         if (SDL_HidD_GetProductString(hFile, string, sizeof(string))) {
+-            product_string = WIN_StringToUTF8W(string);
++            if (string) {
++                product_string = WIN_StringToUTF8W(string);
++            }
+         }
+ 
+         device->name = SDL_CreateJoystickName(device->vendor_id, device->product_id, manufacturer_string, product_string);
+@@ -1269,7 +1273,7 @@ RAWINPUT_JoystickRumbleTriggers(SDL_Joystick *joystick, Uint16 left_rumble, Uint
+ {
+ #if defined(SDL_JOYSTICK_RAWINPUT_WGI)
+     RAWINPUT_DeviceContext *ctx = joystick->hwdata;
+-    
++
+     if (ctx->wgi_correlated) {
+         WindowsGamingInputGamepadState *gamepad_state = ctx->wgi_slot;
+         HRESULT hr;
+@@ -1851,7 +1855,7 @@ RAWINPUT_UnregisterNotifications()
+         return;
+     }
+ }
+-    
++
+ LRESULT CALLBACK
+ RAWINPUT_WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+ {
