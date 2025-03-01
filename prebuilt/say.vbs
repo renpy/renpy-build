@@ -15,4 +15,9 @@ For Each Voice In s.GetVoices
     End If
 Next
 
+On Error Resume Next
 s.Speak Text
+If Err.Number <> 0 Then
+    Err.Clear
+End If
+On Error GoTo 0
