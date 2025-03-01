@@ -1,18 +1,15 @@
 #!/usr/bin/env python2.7
 
-import sys
-sys.path.insert(0, 'buildlib')
-
 import os
+import sys
+if 'rapt' in sys.modules:
+    del sys.modules['rapt']
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'buildlib'))
+
 import argparse
-import subprocess
-import pygame_sdl2
 
 import rapt.interface as interface
 import rapt.install_sdk as install_sdk
-import rapt.configure as configure
-import rapt.build as build
-import rapt.plat as plat
 
 def main():
 
