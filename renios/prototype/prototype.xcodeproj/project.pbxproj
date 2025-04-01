@@ -360,6 +360,7 @@
 					"-llzma",
 					"-lbz2",
 					"-lz",
+					"-lstdc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
 				PRODUCT_NAME = prototype;
@@ -409,6 +410,7 @@
 					"-llzma",
 					"-lbz2",
 					"-lz",
+					"-lstdc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
 				PRODUCT_NAME = prototype;
