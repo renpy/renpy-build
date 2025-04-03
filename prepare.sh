@@ -11,7 +11,7 @@ BASE="$ROOT"
 sudo apt-get install -y git build-essential ccache unzip autoconf autoconf-archive automake libtool-bin
 
 # Needed to build python things.
-sudo apt-get install -y python3-dev python3-venv
+sudo apt-get install -y python3-dev python3-pip python3-venv
 
 # Needed to install python2 pip
 sudo apt-get install -y curl
@@ -48,7 +48,7 @@ sudo apt-get install -y \
     libavcodec-dev libavformat-dev \
     libswresample-dev libswscale-dev libfreetype6-dev libfribidi-dev libsdl2-dev \
     libsdl2-image-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-dev \
-    libharfbuzz-dev
+    libharfbuzz-dev libassimp-dev
 
 mkdir -p $ROOT/tmp
 
