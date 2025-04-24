@@ -326,6 +326,7 @@ fn = sys.argv[1]
 pe = pefile.PE(fn)
 pe.FILE_HEADER.Characteristics = pe.FILE_HEADER.Characteristics | pefile.IMAGE_CHARACTERISTICS["IMAGE_FILE_RELOCS_STRIPPED"]
 pe.OPTIONAL_HEADER.CheckSum = pe.generate_checksum()
+pe.OPTIONAL_HEADER.SizeOfStackReserve=0x800000
 pe.write(fn)
 """)
 
