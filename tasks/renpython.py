@@ -560,6 +560,10 @@ def link_web(c: Context):
         'byn$fpcast-emu$__Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS',
         'partial_vectorcall',
         'byn$fpcast-emu$partial_vectorcall',
+        'slot_tp_init',
+        'byn$fpcast-emu$slot_tp_init',
+        'type_call',
+        'byn$fpcast-emu$type_call',
         ]
 
     c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
