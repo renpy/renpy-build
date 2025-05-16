@@ -4,9 +4,36 @@ From: Tom Rothamel <tom@rothamel.us>
 
 Taken from: https://discourse.libsdl.org/t/sdl-fixed-crash-if-a-device-doesnt-have-a-usb-product-or-manufacturer-string/55793
 ---
+ src/joystick/hidapi/SDL_hidapijoystick.c    |    8 ++++++--
  src/joystick/windows/SDL_rawinputjoystick.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
+diff --git a/src/joystick/hidapi/SDL_hidapijoystick.c b/src/joystick/hidapi/SDL_hidapijoystick.c
+index 959b724..c028b36 100644
+--- a/src/joystick/hidapi/SDL_hidapijoystick.c
++++ b/src/joystick/hidapi/SDL_hidapijoystick.c
+@@ -390,6 +390,10 @@ HIDAPI_ConvertString(const wchar_t *wide_string)
+ {
+     char *string = NULL;
+ 
++    if (!wide_string) {
++        return strdup("");
++    }
++
+     if (wide_string) {
+         string = SDL_iconv_string("UTF-8", "WCHAR_T", (char*)wide_string, (SDL_wcslen(wide_string)+1)*sizeof(wchar_t));
+         if (!string) {
+@@ -690,8 +694,8 @@ HIDAPI_IsDevicePresent(Uint16 vendor_id, Uint16 product_id, Uint16 version, cons
+     }
+ 
+     /* Only update the device list for devices we know might be supported.
+-       If we did this for every device, it would hit the USB driver too hard and potentially 
+-       lock up the system. This won't catch devices that we support but can only detect using 
++       If we did this for every device, it would hit the USB driver too hard and potentially
++       lock up the system. This won't catch devices that we support but can only detect using
+        USB interface details, like Xbox controllers, but hopefully the device list update is
+        responsive enough to catch those.
+      */
 diff --git a/src/joystick/windows/SDL_rawinputjoystick.c b/src/joystick/windows/SDL_rawinputjoystick.c
 index 8178ee6..421140b 100644
 --- a/src/joystick/windows/SDL_rawinputjoystick.c
