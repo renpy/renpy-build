@@ -28,34 +28,10 @@ class Platform:
         known_platforms.append(self)
 
 
-# Python 2
-
-Platform("linux", "x86_64", "2")
-Platform("linux", "i686", "2")
-Platform("linux", "aarch64", "2")
-Platform("linux", "armv7l", "2")
-
-Platform("windows", "x86_64", "2")
-Platform("windows", "i686", "2")
-
-Platform("mac", "x86_64", "2")
-Platform("mac", "arm64", "2")
-
-Platform("android", "x86_64", "2")
-Platform("android", "arm64_v8a", "2")
-Platform("android", "armeabi_v7a", "2")
-
-Platform("ios", "arm64", "2")
-Platform("ios", "sim-x86_64", "2")
-Platform("ios", "sim-arm64", "2")
-
-Platform("web", "wasm", "2")
-
 # Python 3
 
 Platform("linux", "x86_64", "3")
 Platform("linux", "aarch64", "3")
-Platform("linux", "armv7l", "3")
 
 Platform("windows", "x86_64", "3")
 
@@ -73,6 +49,7 @@ Platform("ios", "sim-arm64", "3")
 Platform("web", "wasm", "3")
 
 def build(args):
+
     platforms = set(i.strip() for i in args.platforms.split(",") if i)
     archs = set(i.strip() for i in args.archs.split(",") if i)
     pythons = set(i.strip() for i in args.pythons.split(",") if i)
@@ -95,6 +72,13 @@ def build(args):
             sys.exit(1)
 
     # Actually build everything.
+
+    last_task = None
+
+    if args.stop:
+        for task in renpybuild.task.tasks:
+            if task.name == args.stop:
+                last_task = task
 
     for task in renpybuild.task.tasks:
         for p in known_platforms:
@@ -120,6 +104,9 @@ def build(args):
                 args)
 
             task.run(context)
+
+        if task is last_task:
+            break
 
     print("")
     print("Build finished successfully.")
@@ -168,12 +155,10 @@ def clean(args):
         rmtree(i)
 
     def rmgen(d):
-        rmtree(d / "gen")
-        rmtree(d / "gen-static")
         rmtree(d / "gen3")
         rmtree(d / "gen3-static")
 
-    rmgen(root / "renpy" / "module")
+    rmgen(root / "tmp")
     rmgen(root / "pygame_sdl2")
 
     def rmtrio(name : str):
@@ -199,6 +184,8 @@ def main():
     ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")
 
     ap.add_argument("--experimental", action="store_true", default=False)
+
+    ap.add_argument("--stop", default=None, help="Stop after this task.")
 
     ap.set_defaults(function=build)
 

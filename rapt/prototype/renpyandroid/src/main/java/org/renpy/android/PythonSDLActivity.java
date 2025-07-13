@@ -568,6 +568,22 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         openURL(url);
     }
 
+    public void openEditor(String file) {
+		File f = new File(file);
+
+		Uri uri = null;
+		if (Build.VERSION.SDK_INT >= 24) {
+			uri = RenPyFileProvider.getUriForFile(this, getPackageName() + ".fileprovider", f);
+		} else {
+			uri = Uri.fromFile(f);
+		}
+
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setDataAndType(uri, "text/plain");
+		i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
     public void vibrate(double s) {
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (v != null) {

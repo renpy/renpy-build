@@ -28,6 +28,16 @@
 
     </activity>
 
+    <provider
+        android:name="org.renpy.android.RenPyFileProvider"
+        android:authorities="{{ config.package }}.fileprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
+
 {% if (config.store in ("amazon", "all" )) %}
     <receiver android:name="com.amazon.device.iap.ResponseReceiver"
       android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY"

@@ -4,6 +4,7 @@ import shlex
 import subprocess
 import sys
 import sysconfig
+import threading
 
 import jinja2
 
@@ -37,7 +38,7 @@ def emsdk_environment(c):
         c.env(k, v)
 
 
-def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
+def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
 
     if bin:
         c.env("PATH", bin + ":{{ PATH }}")
@@ -51,10 +52,7 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
 
     if use_ld:
-        if c.platform == "linux":
-            clang_args = "-fuse-ld=" + ld + " -Wno-unused-command-line-argument " + clang_args
-        else:
-            clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
+        clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args
 
     if c.platform == "ios":
         c.var("cxx_clang_args", "-stdlib=libc++ -I{{cross}}/sdk/usr/include/c++")
@@ -70,11 +68,11 @@ def llvm(c, bin="", prefix="", suffix="-15", clang_args="", use_ld=True):
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
 
     # c.env("LD", "ccache " + ld)
-    c.env("AR", "ccache {{llvm_bin}}llvm-ar{{llvm_suffix}}")
-    c.env("RANLIB", "ccache {{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
-    c.env("STRIP", "ccache {{llvm_bin}}llvm-strip{{llvm_suffix}}")
-    c.env("NM", "ccache {{llvm_bin}}llvm-nm{{llvm_suffix}}")
-    c.env("READELF", "ccache {{llvm_bin}}llvm-readelf{{llvm_suffix}}")
+    c.env("AR", "{{llvm_bin}}llvm-ar{{llvm_suffix}}")
+    c.env("RANLIB", "{{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
+    c.env("STRIP", "{{llvm_bin}}llvm-strip{{llvm_suffix}}")
+    c.env("NM", "{{llvm_bin}}llvm-nm{{llvm_suffix}}")
+    c.env("READELF", "{{llvm_bin}}llvm-readelf{{llvm_suffix}}")
 
     c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
 
@@ -106,7 +104,7 @@ def build_environment(c):
         emsdk_environment(c)
 
     if c.platform == "android":
-        c.var("ndk_version", "android-ndk-r25c")
+        c.var("ndk_version", "android-ndk-r27c")
 
     cpuccount = os.cpu_count()
 
@@ -118,7 +116,7 @@ def build_environment(c):
 
     c.var("make", "nice make -j " + str(cpuccount))
     c.var("configure", "./configure")
-    c.var("cmake", "cmake")
+    c.var("cmake_configure", "cmake")
 
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
@@ -133,14 +131,10 @@ def build_environment(c):
         c.var("host_platform", "x86_64-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "aarch64"):
         c.var("host_platform", "aarch64-pc-linux-gnu")
-    elif (c.platform == "linux") and (c.arch == "i686"):
-        c.var("host_platform", "i686-pc-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-w64-mingw32")
-    elif (c.platform == "windows") and (c.arch == "i686"):
-        c.var("host_platform", "i686-w64-mingw32")
     elif (c.platform == "mac") and (c.arch == "x86_64"):
         c.var("host_platform", "x86_64-apple-darwin14")
     elif (c.platform == "mac") and (c.arch == "arm64"):
@@ -166,8 +160,6 @@ def build_environment(c):
         c.var("architecture_name", "x86_64-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "aarch64"):
         c.var("architecture_name", "aarch64-linux-gnu")
-    elif (c.platform == "linux") and (c.arch == "i686"):
-        c.var("architecture_name", "i386-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("architecture_name", "arm-linux-gnueabihf")
 
@@ -235,17 +227,6 @@ def build_environment(c):
         c.var("cmake_system_processor", "aarch64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
-    elif (c.platform == "linux") and (c.arch == "i686"):
-
-        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
-        # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
-
-        c.var("cmake_system_name", "Linux")
-        c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
-
     elif (c.platform == "linux") and (c.arch == "armv7l"):
 
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard")
@@ -259,6 +240,8 @@ def build_environment(c):
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
+        c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
+
         llvm(
             c,
             bin="{{ cross }}/llvm-mingw/bin",
@@ -271,25 +254,12 @@ def build_environment(c):
         c.var("cmake_system_processor", "x86_64")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/x86_64-w64-mingw32")
 
-    elif (c.platform == "windows") and (c.arch == "i686"):
-
-        llvm(
-            c,
-            bin="{{ cross }}/llvm-mingw/bin",
-            prefix="i686-w64-mingw32-",
-            suffix="",
-            clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw/i686-w64-mingw32 -fPIC -pthread",
-            use_ld=False)
-
-        c.var("cmake_system_name", "Windows")
-        c.var("cmake_system_processor", "i386")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/i686-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/i686-w64-mingw32")
-
     elif (c.platform == "android") and (c.arch == "x86_64"):
 
         android_llvm(c, "x86_64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "x86_64")
@@ -301,6 +271,7 @@ def build_environment(c):
         android_llvm(c, "aarch64")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "aarch64")
@@ -395,7 +366,7 @@ def build_environment(c):
         # Use emscripten wrapper to configure and build
         c.var("make", "emmake {{ make }}")
         c.var("configure", "emconfigure ./configure")
-        c.var("cmake", "emcmake cmake")
+        c.var("cmake_configure", "emcmake cmake")
 
         c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
         c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
@@ -421,7 +392,7 @@ def build_environment(c):
         c.env("EM_PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
         # Tell emcc and em++ to use ccache when building
-        c.env("EM_COMPILER_WRAPPER", "ccache")
+        c.env("EM_COMPILER_WRAPPER", "/usr/bin/ccache")
 
         # Used to find sdl2-config.
         c.env("PATH", "{{cross}}/upstream/emscripten/system/bin/:{{PATH}}")
@@ -440,7 +411,7 @@ def build_environment(c):
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
-    c.var("cmake", "{{cmake}} {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release")
+    c.var("cmake_args", "-G Ninja {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_PARALLEL_LEVEL=" + str(cpuccount))
 
     # Used by zlib.
     if c.kind != "host":
@@ -463,25 +434,33 @@ def run(command, context, verbose=False, quiet=False):
 
     if p.returncode != 0:
         print(f"{context.task_name}: process failed with {p.returncode}.")
+        print("path:", context.cwd)
         print("args:", " ".join(repr(i) for i in args))
         import traceback
         traceback.print_stack()
         sys.exit(1)
 
-class RunCommand(object):
+class RunCommand(threading.Thread):
 
     def __init__(self, command, context):
+        super().__init__()
+
         command = context.expand(command)
         self.command = shlex.split(command)
 
         self.cwd = context.cwd
         self.environ = context.environ.copy()
 
-        self.p = subprocess.Popen(self.command, cwd=self.cwd, env=self.environ, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+        self.start()
+
+
+    def run(self):
+        result = subprocess.run(self.command, cwd=self.cwd, env=self.environ, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+        self.output = result.stdout
+        self.code = result.returncode
 
     def wait(self):
-        self.code = self.p.wait()
-        self.output = self.p.stdout.read() # type: ignore
+        self.join()
 
     def report(self):
         print ("-" * 78)

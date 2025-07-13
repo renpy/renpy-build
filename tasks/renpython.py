@@ -56,6 +56,8 @@ def link_linux(c: Context):
     -lrenpy
     -l{{ pythonver }}
 
+    -lassimp
+
     -lavformat
     -lavcodec
     -lswscale
@@ -64,7 +66,6 @@ def link_linux(c: Context):
 
     -lSDL2_image
     -lSDL2
-    -lGL
     -lavif
     -laom
     -lyuv
@@ -132,6 +133,8 @@ def link_android(c: Context):
     -lrenpy
     -l{{ pythonver }}
 
+    -lassimp
+
     -lavformat
     -lavcodec
     -lswscale
@@ -194,6 +197,8 @@ def link_mac(c: Context):
 
     -lrenpy
     -l{{ pythonver }}
+
+    -lassimp
 
     -lavformat
     -lavcodec
@@ -321,10 +326,13 @@ fn = sys.argv[1]
 pe = pefile.PE(fn)
 pe.FILE_HEADER.Characteristics = pe.FILE_HEADER.Characteristics | pefile.IMAGE_CHARACTERISTICS["IMAGE_FILE_RELOCS_STRIPPED"]
 pe.OPTIONAL_HEADER.CheckSum = pe.generate_checksum()
+pe.OPTIONAL_HEADER.SizeOfStackReserve=0x800000
 pe.write(fn)
 """)
 
     c.run("""{{ hostpython }} fix_pe.py """ + fn)
+
+
 
 @task(kind="python", always=True, platforms="windows")
 def link_windows(c: Context):
@@ -339,11 +347,10 @@ def link_windows(c: Context):
 
     -lfribidi
 
-    {% if c.python == "2" %}
-    {{install}}/lib/{{ pythonver }}/config/lib{{ pythonver }}.dll.a
-    {% else %}
     {{install}}/lib/lib{{ pythonver }}.dll.a
-    {% endif %}
+
+    -lassimp
+    {{cross}}/llvm-mingw/{{host_platform}}/lib/libunwind.a
 
     -lavformat
     -lavcodec
@@ -395,7 +402,7 @@ def link_windows(c: Context):
     """)
 
     c.run("""
-    {{ WINDRES }} {{ runtime }}/renpy_icon.rc renpy_icon.o
+    {{ WINDRES }} {{ runtime }}/renpy_resources.rc renpy_resources.o
     """)
 
     c.run("""
@@ -403,7 +410,7 @@ def link_windows(c: Context):
     -mconsole {% if c.python != '2' %}-municode {% endif %}
     -o python.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     librenpython.dll
     """)
 
@@ -412,7 +419,7 @@ def link_windows(c: Context):
     -mwindows {% if c.python != '2' %}-municode {% endif %}
     -o pythonw.exe
     {{ runtime }}/renpython{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     librenpython.dll
     """)
 
@@ -422,7 +429,7 @@ def link_windows(c: Context):
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
     {{ runtime }}/launcher{{ c.python }}_win.c
-    renpy_icon.o
+    renpy_resources.o
     """)
 
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
@@ -440,13 +447,7 @@ def link_windows(c: Context):
     c.run("""install lib{{ pythonver }}.dll  {{ dlpa }}""")
     c.run("""install renpy.exe {{ dlpa }}/renpy.exe""")
 
-    if c.arch == "i686":
-        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
-        c.copy("{{cross}}/llvm-mingw/i686-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
-
-        c.run("""install renpy.exe {{ renpy }}/renpy-32.exe""")
-
-    elif c.arch == "x86_64":
+    if c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
@@ -462,6 +463,9 @@ def link_ios(c: Context):
     c.run("""install -d {{install}}/lib""")
     c.run("""install librenpython.a {{ install }}/lib""")
 
+@task(kind="python", platforms="web", pythons="3", always=True)
+def clean_web(c: Context):
+    c.clean()
 
 @task(kind="python", platforms="web", pythons="3", always=True)
 def build_web(c: Context):
@@ -552,6 +556,14 @@ def link_web(c: Context):
         'byn$fpcast-emu$method_vectorcall',
         'byn$fpcast-emu$slot_tp_call',
         'byn$fpcast-emu$opfunc_*',
+        '__Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS',
+        'byn$fpcast-emu$__Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS',
+        'partial_vectorcall',
+        'byn$fpcast-emu$partial_vectorcall',
+        'slot_tp_init',
+        'byn$fpcast-emu$slot_tp_init',
+        'type_call',
+        'byn$fpcast-emu$type_call',
         ]
 
     c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
@@ -572,6 +584,8 @@ def link_web(c: Context):
     -l{{ pythonver }}
 
     -lrenpy
+
+    -lassimp
 
     -lavformat
     -lavcodec
@@ -601,6 +615,7 @@ def link_web(c: Context):
     --preload-file {{ dist }}@/
 
     -sFULL_ES2=1
+    -sFULL_ES3=1
     -sMAX_WEBGL_VERSION=2
     --emit-symbol-map
 
@@ -612,7 +627,7 @@ def link_web(c: Context):
     -sASYNCIFY_ONLY="{{ asyncify_only }}"
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
-    -sTOTAL_STACK=1048576
+    -sSTACK_SIZE=1024KB
 
     -sEXPORTED_FUNCTIONS=['_main']
 

@@ -466,6 +466,10 @@ def split_renpy(directory):
             plat.rename(full_fn, os.path.join(private, fn))
             continue
 
+        if fn == "public_key.pem":
+            plat.rename(full_fn, os.path.join(private, fn))
+            continue
+
         plat.rename(full_fn, os.path.join(assets, fn))
 
     return private, assets

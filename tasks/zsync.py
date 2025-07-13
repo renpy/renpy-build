@@ -21,6 +21,7 @@ def build_linux(c: Context):
 
     c.patch("zsync-no-isastty.diff", p=1)
     c.patch("zsync-compress-5.diff", p=0)
+    c.patch("zsync-includes-strings-h.diff")
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
@@ -37,6 +38,7 @@ def build_mac(c: Context):
 
     c.patch("zsync-no-isastty.diff", p=1)
     c.patch("zsync-compress-5.diff", p=0)
+    c.patch("zsync-includes-strings-h.diff")
 
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" """)
     c.run("""{{ make }}""")

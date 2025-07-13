@@ -23,7 +23,7 @@ def build(c : Context):
     c.clean()
 
     c.run("""
-        {{ cmake }}
+        {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DCONFIG_AV1_ENCODER=0
         -DENABLE_EXAMPLES=0
@@ -40,8 +40,8 @@ def build(c : Context):
         """)
 
     try:
-        c.run("{{ make }}")
+        c.run("cmake --build .")
     except:
-        c.run("make VERBOSE=1")
+        c.run("cmake --build . -j 1 -v")
 
-    c.run("make install")
+    c.run("cmake --install .")

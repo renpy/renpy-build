@@ -8,10 +8,10 @@ the same manner that is used to make official Ren'Py releases.
 Requirements
 -------------
 
-Ren'Py Build requires a computer running Ubuntu 22.04. While it can run on
+Ren'Py Build requires a computer running Ubuntu 24.04. While it can run on
 a desktop computer, portions of the build process must run at root, and the
 whole process has security implications. My recommendation is to create a
-virtual machine, install Ubuntu 22.04 on it, and run this procedure on
+virtual machine, install Ubuntu 24.04 on it, and run this procedure on
 that machine.
 
 The virtual machine must be provisioned with at least 64 GB of disk space.
@@ -81,7 +81,7 @@ It should then be possible to build using the command::
 The build command can take some options:
 
 `--python <version>`
-    The python version to build. Can be "3" or "2", defaults to 3.
+    The python version to build. Only 3 is currently valid.
 
 `--platform <name>`
     The platform to build for. One of linux, windows, mac, android, ios, or web.
@@ -90,34 +90,9 @@ The build command can take some options:
     The architecture to build for. The architectures vary by platform,
     here is a copy of the table from build.py. ::
 
-        # Python 2
-
-        Platform("linux", "x86_64", "2")
-        Platform("linux", "i686", "2")
-        Platform("linux", "aarch64", "2")
-        Platform("linux", "armv7l", "2")
-
-        Platform("windows", "x86_64", "2")
-        Platform("windows", "i686", "2")
-
-        Platform("mac", "x86_64", "2")
-        Platform("mac", "arm64", "2")
-
-        Platform("android", "x86_64", "2")
-        Platform("android", "arm64_v8a", "2")
-        Platform("android", "armeabi_v7a", "2")
-
-        Platform("ios", "arm64", "2")
-        Platform("ios", "sim-x86_64", "2")
-        Platform("ios", "sim-arm64", "2")
-
-        Platform("web", "wasm", "2")
-
-        # Python 3
 
         Platform("linux", "x86_64", "3")
         Platform("linux", "aarch64", "3")
-        Platform("linux", "armv7l", "3")
 
         Platform("windows", "x86_64", "3")
 
@@ -132,10 +107,8 @@ The build command can take some options:
         Platform("ios", "sim-x86_64", "3")
         Platform("ios", "sim-arm64", "3")
 
-        Platform("web", "wasm", "3", experimental=True)
+        Platform("web", "wasm", "3")
 
-    `--experimental`
-        This builds platforms marked as experimental.
 
 A second build should be faster than the first, as it will only rebuild
 Ren'Py, pygame_sdl2, and other components that are likely to frequently
