@@ -167,6 +167,7 @@ def unpack_web():
 
     import zipfile
     import emscripten
+    import calendar
 
     print("")
     print("Unpacking...")
@@ -177,6 +178,10 @@ def unpack_web():
 
     for i, zi in enumerate(infolist):
         zf.extract(zi, "/")
+
+        # Restore file modification time as zipfile does not
+        mtime = calendar.timegm(zi.date_time + (0, 0, -1))
+        os.utime("/" + zi.filename, (mtime, mtime))
 
         if i % 25 == 0 or i == len(infolist) - 1:
             emscripten.run_script("""progress(%d, %d);""" % (i+1, len(infolist)))
