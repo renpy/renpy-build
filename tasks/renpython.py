@@ -533,6 +533,7 @@ def link_web(c: Context):
         '_PyObject_MakeTpCall',
         '_PyRun_AnyFileObject',
         '_PyRun_SimpleFileObject',
+        'PyRun_StringFlags',
         '_PyVectorcall_Call',
         '__pyx_pw_10emscripten_19sleep',
         'builtin___import__',
