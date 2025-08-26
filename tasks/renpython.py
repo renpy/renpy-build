@@ -459,6 +459,7 @@ def link_windows(c: Context):
 @task(kind="python", always=True, platforms="ios")
 def link_ios(c: Context):
 
+    c.unlink("librenpython.a")
     c.run("""{{ AR }} -r librenpython.a librenpython.o""")
     c.run("""install -d {{install}}/lib""")
     c.run("""install librenpython.a {{ install }}/lib""")
