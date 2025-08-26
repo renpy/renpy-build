@@ -95,6 +95,7 @@ def build(c: Context):
 
     c.var("objects", " ".join(objects))
 
+    c.unlink("librenpy.a")
     c.run("{{ AR }} r librenpy.a {{ objects }} inittab.o")
     c.run("{{ RANLIB }} librenpy.a")
 
