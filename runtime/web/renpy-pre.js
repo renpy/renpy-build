@@ -134,6 +134,13 @@ Module.preRun = Module.preRun || [ ];
         s = s.replace('\n', '<br />', 'g');
 
         statusText += s;
+
+        let lines = statusText.split("<br />");
+        if (lines.length > 200) {
+            lines = lines.slice(lines.length - 200);
+            statusText = lines.join("<br />");
+        }
+
         statusTextDiv.innerHTML = statusText;
 
         showStatus();
