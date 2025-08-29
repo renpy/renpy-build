@@ -8,10 +8,10 @@ def unpack_sdk(c: Context):
 
     c.clean("{{ install }}/steam")
 
-    if not c.path("{{ tars }}/steamworks_sdk_160.zip").exists():
+    if not c.path("{{ tars }}/steamworks_sdk_162.zip").exists():
         return
 
-    zf = zipfile.ZipFile(c.path("{{ tars }}/steamworks_sdk_160.zip"))
+    zf = zipfile.ZipFile(c.path("{{ tars }}/steamworks_sdk_162.zip"))
     zf.extractall(c.path("{{ install }}/steam"))
     zf.close()
 
