@@ -4,12 +4,16 @@ from renpybuild.task import task
 import os
 import requests
 
+mingw_version = "20241217-ucrt-ubuntu-20.04-x86_64"
+
 
 @task(kind="cross", platforms="windows")
 def download(c: Context):
 
-    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20220906/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz"
-    dest = c.path("{{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
+    c.var("mingw_version", mingw_version)
+
+    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20241217/llvm-mingw-20241217-ucrt-ubuntu-20.04-x86_64.tar.xz"
+    dest = c.path("{{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
 
     if os.path.exists(dest):
         return
@@ -29,23 +33,13 @@ def download(c: Context):
 
 @task(kind="cross", platforms="windows")
 def unpack(c: Context):
+    c.var("mingw_version", mingw_version)
 
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
 
-    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64.tar.xz")
-    c.run("ln -s llvm-mingw-20220906-ucrt-ubuntu-18.04-x86_64 llvm-mingw")
-
-
-@task(kind="cross", platforms="windows", always=True)
-def usrinclude(c: Context):
-    c.chdir("{{cross}}")
-
-    c.run("mkdir -p llvm-mingw/usr/include")
-    c.run("mkdir -p llvm-mingw/aarch64-w64-mingw32/usr/include")
-    c.run("mkdir -p llvm-mingw/armv7-w64-mingw32/usr/include")
-    c.run("mkdir -p llvm-mingw/i686-w64-mingw32/usr/include")
-    c.run("mkdir -p llvm-mingw/x86_64-w64-mingw32/usr/include")
+    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
+    c.run("ln -s llvm-mingw-{{mingw_version}} llvm-mingw")
 
 
 @task(kind="cross", platforms="android", always=True)
@@ -99,7 +93,7 @@ def mockrt(c: Context):
 
 @task(platforms="web")
 def emsdk(c: Context):
-    c.var("emsdk_version", "3.1.24")
+    c.var("emsdk_version", "3.1.67")
 
     c.clean("{{ cross }}")
     c.run("git clone https://github.com/emscripten-core/emsdk/ {{cross}}")

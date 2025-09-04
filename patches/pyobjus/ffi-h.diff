@@ -1,0 +1,25 @@
+diff --git a/pyobjus/_runtime.h b/pyobjus/_runtime.h
+index c31b7ba..00ede0e 100644
+--- a/pyobjus/_runtime.h
++++ b/pyobjus/_runtime.h
+@@ -1,6 +1,6 @@
+ #include <objc/runtime.h>
+ #include <objc/message.h>
+-#include <ffi/ffi.h>
++#include <ffi.h>
+ #include <stdio.h>
+ #include <dlfcn.h>
+ #include <string.h>
+diff --git a/pyobjus/common.pxi b/pyobjus/common.pxi
+index 61a835d..5daa50b 100644
+--- a/pyobjus/common.pxi
++++ b/pyobjus/common.pxi
+@@ -110,7 +110,7 @@ cdef extern from "objc/runtime.h":
+     objc_method_description* protocol_copyMethodDescriptionList(Protocol *p, BOOL isRequiredMethod, BOOL isInstanceMethod, unsigned int *outCount)
+ 
+ 
+-cdef extern from "ffi/ffi.h":
++cdef extern from "ffi.h":
+     ctypedef unsigned long  ffi_arg
+     ctypedef signed long    ffi_sarg
+     ctypedef enum: FFI_TYPE_STRUCT

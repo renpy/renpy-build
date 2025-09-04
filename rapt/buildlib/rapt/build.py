@@ -259,7 +259,7 @@ def copy_into(src, dest):
     if os.path.isdir(src):
         if not os.path.isdir(dest):
             os.mkdir(dest, 0o777)
-        
+
         for i in os.listdir(src):
             copy_into(
                 os.path.join(src, i),
@@ -271,7 +271,7 @@ def copy_into(src, dest):
     shutil.copy2(src, dest)
 
 
-MAX_SIZE = 500000000
+MAX_SIZE = 1000000000
 
 
 def make_bundle_tree(src):
@@ -406,8 +406,6 @@ def eliminate_pycache(directory):
     renaming them to remove the cache tag.
     """
 
-    print("Eliminating __pycache__...")
-
     if PY2:
         return
 
@@ -418,7 +416,13 @@ def eliminate_pycache(directory):
 
     for p in paths:
         name = p.stem.partition(".")[0]
-        p.rename(p.parent.parent / (name + ".pyc"))
+
+        target = p.parent.parent / (name + ".pyc")
+
+        if target.exists():
+            target.unlink()
+
+        p.rename(target)
 
     paths = list(pathlib.Path(directory).glob("**/__pycache__"))
 
@@ -459,6 +463,10 @@ def split_renpy(directory):
             continue
 
         if fn == "lib":
+            plat.rename(full_fn, os.path.join(private, fn))
+            continue
+
+        if fn == "public_key.pem":
             plat.rename(full_fn, os.path.join(private, fn))
             continue
 
@@ -568,7 +576,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
         iface.fail(__("{} does not contain a Ren'Py game.").format(directory))
 
     install_sdk.check_java(iface)
-        
+
     config = configure.Configuration(directory)
 
     if config.package is None:
@@ -700,7 +708,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
             private_version=private_version,
             config=config,
             bundle=bundle,
-            big_bundle=bundle,
+            big_bundle=big_bundle,
             sdkpath=plat.path("Sdk"),
             )
 

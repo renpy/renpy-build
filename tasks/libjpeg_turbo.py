@@ -18,12 +18,10 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("libjpeg-turbo-{{version}}")
 
-    if c.platform == "linux" and c.arch == "i686":
-        c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" --without-simd""")
-    elif c.platform == "ios" and "sim-x86_64" in c.arch:
-        c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" --without-simd""")
+    if c.platform == "ios" and "sim-x86_64" in c.arch:
+        c.run("""{{configure}} {{ cross_config }} --disable-shared --prefix="{{ install }}" --without-simd""")
     else:
-        c.run("""./configure {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
+        c.run("""{{configure}} {{ cross_config }} --disable-shared --prefix="{{ install }}" """)
 
     c.run("""{{ make }}""")
     c.run("""make install """)

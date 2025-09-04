@@ -25,7 +25,7 @@ def build(c: Context):
 
     c.run("""cp /usr/share/misc/config.sub .""")
 
-    c.run("""./configure {{ cross_config }}
+    c.run("""{{configure}} {{ cross_config }}
           --disable-shared
           --prefix="{{ install }}"
           --with-libstdc++=no

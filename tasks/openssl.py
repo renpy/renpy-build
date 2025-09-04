@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "1.1.1s"
+version = "3.3.2"
 
 
 @task()
@@ -23,10 +23,10 @@ def build(c: Context):
     if (c.platform == "windows") and (c.arch == "x86_64"):
         # c.env("CFLAGS", "{{ CFLAGS }} -DNOCRYPT")
         c.run("""./Configure mingw64 no-shared no-asm no-engine threads --prefix="{{ install }}" """)
-    elif (c.platform == "windows") and (c.arch == "i686"):
-        c.run("""./Configure mingw no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif c.platform == "android":
         c.run("""./Configure cc no-shared no-asm no-engine threads --prefix="{{ install }}" """)
+    elif c.platform == "web":
+        raise Exception("OpenSSL should be built by embuilder")
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 

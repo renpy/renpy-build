@@ -310,7 +310,14 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
     boolean checkPack(String name) {
         AssetPackLocation location = mAssetPackManager.getPackLocation(name);
         if (location != null) {
-            nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), location.assetsPath());
+            if (location.assetsPath() != null) {
+                nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), location.assetsPath());
+            } else {
+                AssetLocation loc = mAssetPackManager.getAssetLocation(name, "00_pack.txt");
+                if (loc != null) {
+                    nativeSetEnv("ANDROID_PACK_" + name.toUpperCase(), loc.path());
+                }
+            }
             return true;
         } else {
             return false;
@@ -423,8 +430,50 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         setIntent(intent);
     }
 
+    public boolean mStopDone = true;
 
-    boolean waitForWifiConfirmationShown = false;
+    @Override
+    public void onStop() {
+        Log.v("python", "onStop() start.");
+
+        super.onStop();
+        long startTime = System.currentTimeMillis();
+
+        synchronized (this) {
+            while (true) {
+                if (mStopDone) {
+                    break;
+                }
+
+                // Backstop.
+                if (startTime + 8000 < System.currentTimeMillis()) {
+                    break;
+                }
+
+                try {
+                    this.wait(100);
+                } catch (InterruptedException e) { /* pass */ }
+
+            }
+        }
+
+        Log.v("python", "onStop() done.");
+    }
+
+    public void armOnStop () {
+        Log.v("python", "armOnStop()");
+        mStopDone = false;
+    }
+
+    public void finishOnStop() {
+        Log.v("python", "finishOnStop()");
+
+        synchronized (this) {
+            mStopDone = true;
+            this.notifyAll();
+        }
+    }
+
     HashMap<String, AssetPackState> assetPackStates = new HashMap<String, AssetPackState>();
 
     long mOldProgress = 0;
@@ -448,26 +497,16 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
             break;
 
           case AssetPackStatus.FAILED:
+            Toast.makeText(this, "Download of " + assetPackState.name() + " failed. Error " + assetPackState.errorCode(), Toast.LENGTH_LONG).show();
             Log.e("python", "error = " + assetPackState.errorCode());
+
           case AssetPackStatus.CANCELED:
             mAssetPackManager.fetch(Collections.singletonList(assetPackState.name()));
             break;
 
           case AssetPackStatus.WAITING_FOR_WIFI:
-            if (!waitForWifiConfirmationShown) {
-              mAssetPackManager.showCellularDataConfirmation(mActivity)
-                .addOnSuccessListener(new OnSuccessListener<Integer> () {
-                  @Override
-                  public void onSuccess(Integer resultCode) {
-                    if (resultCode == RESULT_OK) {
-                      Log.d("python", "Confirmation dialog has been accepted.");
-                    } else if (resultCode == RESULT_CANCELED) {
-                      Log.d("python", "Confirmation dialog has been denied by the user.");
-                    }
-                  }
-                });
-              waitForWifiConfirmationShown = true;
-            }
+          case AssetPackStatus.REQUIRES_USER_CONFIRMATION:
+            mAssetPackManager.showConfirmationDialog(this);
             break;
 
           case AssetPackStatus.NOT_INSTALLED:
@@ -527,6 +566,22 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
 
     public void openUrl(String url) {
         openURL(url);
+    }
+
+    public void openEditor(String file) {
+		File f = new File(file);
+
+		Uri uri = null;
+		if (Build.VERSION.SDK_INT >= 24) {
+			uri = RenPyFileProvider.getUriForFile(this, getPackageName() + ".fileprovider", f);
+		} else {
+			uri = Uri.fromFile(f);
+		}
+
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setDataAndType(uri, "text/plain");
+		i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 
     public void vibrate(double s) {

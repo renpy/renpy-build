@@ -414,6 +414,7 @@ class Context:
 
         if self.path(path).exists():
             self.env("CFLAGS", "{{ CFLAGS }} -I" + path)
+            self.env("CXXFLAGS", "{{ CXXFLAGS }} -I" + path)
 
     def copytree(self, src : str, dst : str):
         """

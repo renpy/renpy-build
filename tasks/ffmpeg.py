@@ -21,9 +21,7 @@ def unpack(c: Context):
 @task()
 def build(c: Context):
 
-    if c.arch == "i686":
-        c.var("arch", "x86")
-    elif c.arch == "x86_64":
+    if c.arch == "x86_64":
         c.var("arch", "x86_64")
     elif c.arch == "aarch64":
         c.var("arch", "aarch64")
@@ -48,8 +46,6 @@ def build(c: Context):
         c.var("os", "linux")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
         c.var("os", "mingw64")
-    elif (c.platform == "windows") and (c.arch == "i686"):
-        c.var("os", "mingw32")
     elif c.platform == "mac":
         c.var("os", "darwin")
     elif c.platform == "ios":
@@ -63,7 +59,7 @@ def build(c: Context):
     c.chdir("ffmpeg-{{version}}")
 
     c.run("""
-    ./configure
+    {{configure}}
         --prefix="{{ install }}"
 
         --arch={{ arch }}
@@ -96,7 +92,7 @@ def build(c: Context):
         --enable-w32threads
 {% endif %}
 
-{% if c.platform == "mac" or c.platform == "ios" or (c.platform == "linux" and c.arch == "i686" ) %}
+{% if c.platform == "mac" or c.platform == "ios" %}
         --disable-mmx
         --disable-mmxext
 {% endif %}
@@ -196,7 +192,7 @@ def build_web(c: Context):
     c.chdir("ffmpeg-{{version}}")
 
     c.run("""
-    ./configure
+    {{configure}}
         --prefix="{{ install }}"
 
         --arch=emscripten

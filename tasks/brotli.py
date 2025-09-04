@@ -17,7 +17,7 @@ def build(c: Context):
 
     c.run("""bash ./bootstrap""")
 
-    c.run("""./configure {{ cross_config }}
+    c.run("""{{configure}} {{ cross_config }}
           --disable-shared
           --prefix="{{ install }}"
           """)

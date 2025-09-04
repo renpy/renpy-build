@@ -17,6 +17,6 @@ def build(c: Context):
     c.var("version", version)
 
     c.chdir("nasm-{{version}}")
-    c.run("""./configure --prefix="{{install}}" """)
+    c.run("""{{configure}} --prefix="{{install}}" """)
     c.run("""{{ make }}""")
     c.run("""make install""")

@@ -134,6 +134,13 @@ Module.preRun = Module.preRun || [ ];
         s = s.replace('\n', '<br />', 'g');
 
         statusText += s;
+
+        let lines = statusText.split("<br />");
+        if (lines.length > 200) {
+            lines = lines.slice(lines.length - 200);
+            statusText = lines.join("<br />");
+        }
+
         statusTextDiv.innerHTML = statusText;
 
         showStatus();
@@ -354,7 +361,7 @@ Module.preRun = Module.preRun || [ ];
     async function loadGameZip() {
 
         try {
-            let response = await fetch('game.zip');
+            let response = await fetch(window.gameZipURL);
 
             if (!response.ok) {
                 reportError("Could not load game.zip: " + response.status + " " + response.statusText);
@@ -805,24 +812,37 @@ Module.preRun = Module.preRun || [ ];
      * @param inFile The file to send to the server. A string giving the file name, or null for no file.
      * @param outFile The file to write the response to. A string giving the file name, or null for no file.
      * @param inContentType The content type of the file to send to the server. A string giving the content type. Ignored if inFile is null.
+     * @param headers A string containing a JSON object that contains the headers to send to the server.
      *
      * @return A string giving the result of the fetch. The first word is the status, which is one of "OK", "ERROR", or "PENDING", followed by the HTTP status code and status text.
      */
-    function fetchFile(method, url, inFile, outFile, inContentType) {
+    function fetchFile(method, url, inFile, outFile, inContentType, headers) {
 
         let id = fetchId++;
         fetchResult[id] = "PENDING Fetch in progress.";
+
+        // Ensure headers exists and is not a copy.
+        if (headers) {
+            headers = JSON.parse(headers)
+        } else {
+            headers = { };
+        }
+
+        headers = { ...headers };
 
         async function fetchFileWork() {
             try {
 
                 let content = ''
 
-                let options = { method: method };
+                if (inFile) {
+                    headers["Content-Type"] = inContentType || 'application/octet-stream';
+                }
+
+                let options = { method: method, headers: headers};
 
                 if (inFile) {
                     options.body = FS.readFile(inFile, { encoding: 'binary' });
-                    options.headers = { 'Content-Type': inContentType || 'application/octet-stream' };
                 }
 
                 let response = await fetch(url, options);
@@ -863,6 +883,49 @@ Module.preRun = Module.preRun || [ ];
     window.fetchFile = fetchFile;
     window.fetchFileResult = fetchFileResult;
 
+    /**
+     * Fullscreen support.
+     */
+
+    let lastFullscreenTime = 0;
+
+    function isFullscreen() {
+        let now = +new Date();
+        return document.fullscreenElement ? 1 : 0;
+    }
+
+    window.isFullscreen = isFullscreen;
+
+    function setFullscreen(enable) {
+
+        let current = document.fullscreenElement !== null;
+
+        if (enable == current) {
+            return;
+        }
+
+        let now = +new Date();
+
+        if (lastFullscreenTime + 250 > +new Date()) {
+            return;
+        }
+
+        lastFullscreenTime = now;
+
+        setTimeout(function () {
+            if (enable) {
+                let e = document.getElementsByTagName("html")[0];
+                e.requestFullscreen().catch(function (error) {
+                    lastFullscreenTime = now + 15000;
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }, 0);
+    }
+
+    window.setFullscreen = setFullscreen;
+
     /***************************************************************************
      * "Hidden" developer functions.
      **************************************************************************/
@@ -891,74 +954,30 @@ Module.preRun = Module.preRun || [ ];
 
     window.loseContext = loseContext;
 
-    Module.preRun.push(() => {
-        // Replace doRequestFullscreen() and JSEvents_requestFullscreen() with our own
-        // implementations to switch to fullscreen faster.
 
-        window.doRequestFullscreen = function(target, strategy) {
-            if (!JSEvents.fullscreenEnabled())
-                return -1;
-            target = findEventTarget(target);
-            if (!target)
-                return -4;
-            if (!target.requestFullscreen && !target.webkitRequestFullscreen) {
-                return -3
+    /***************************************************************************
+     * Overlay div handling.
+     **************************************************************************/
+
+    let overlayDiv = document.getElementById("overlayDiv");
+
+    for (let eventName of ["mousedown", "mouseup", "mousemove" ]) {
+        overlayDiv.addEventListener(eventName, function (e) {
+            canvas.dispatchEvent(new MouseEvent(e.type, e));
+
+            if (e.type == "mouseup") {
+                overlayDiv.remove();
             }
 
-            JSEvents.removeAllHandlersOnTarget(document, "visibilitychange");
+        });
 
-            var canPerformRequests = JSEvents.canPerformEventHandlerRequests();
+    };
 
-            if (navigator.userActivation && navigator.userActivation.isActive) {
-                // Use transient activation status for browsers that support it
-                canPerformRequests = true;
-            }
 
-            if (!canPerformRequests) {
-                if (strategy.deferUntilInEventHandler) {
-                    if (target.requestFullscreen) {
-                        // Try requesting fullscreen mode now and only defer if the Promise fails
-                        JSEvents_requestFullscreen(target, strategy, true);
-                        return 1
-                    }
 
-                    JSEvents.deferCall(JSEvents_requestFullscreen, 1, [target, strategy]);
-                    return 1
-                }
-                return -2
-            }
-            return JSEvents_requestFullscreen(target, strategy)
-        };
 
-        window.JSEvents_requestFullscreen = function(target, strategy, retry) {
-            if ((strategy.scaleMode != 0 || strategy.canvasResolutionScaleMode != 0) && retry !== 0) {
-                JSEvents_resizeCanvasForFullscreen(target, strategy)
-            }
-            if (target.requestFullscreen) {
-                target.requestFullscreen()
-                    .catch(() => {
-                        if (retry) {
-                            // Defer to next input event
-                            // (retry is set to 0 to prevent resizing the canvas again as this
-                            // erases the old canvas size with the fullscreen size)
-                            JSEvents.deferCall(JSEvents_requestFullscreen, 1, [target, strategy, 0]);
-                        }
-                    });
-            } else if (target.webkitRequestFullscreen) {
-                // No result returned from webkitRequestFullscreen() (old and deprecated API)
-                target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
-            } else {
-                return JSEvents.fullscreenEnabled() ? -3 : -1
-            }
-            currentFullscreenStrategy = strategy;
-            if (strategy.canvasResizedCallback) {
-                (function(a1, a2, a3) {
-                    return dynCall_iiii.apply(null, [strategy.canvasResizedCallback, a1, a2, a3])
-                }
-                )(37, 0, strategy.canvasResizedCallbackUserData)
-            }
-            return 0
-        };
-    });
+
+
+
 
 })();

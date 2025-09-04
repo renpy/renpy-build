@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "1.2.11"
+version = "1.3.1"
 
 
 @task()
@@ -16,7 +16,7 @@ def unpack(c: Context):
 def build(c: Context):
     c.var("version", version)
     c.chdir("zlib-{{version}}")
-    c.run("./configure {{ configure_cross }} --static --prefix={{install}}")
+    c.run("{{configure}} {{ configure_cross }} --static --prefix={{install}}")
     c.run("{{ make }}")
     c.run("make install")
 

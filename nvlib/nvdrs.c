@@ -28,10 +28,10 @@ static DRS_SetSettingType DRS_SetSetting;
 static DRS_SaveSettingsType DRS_SaveSettings;
 
 /**
- * This queries for the named interface. If found, it will load 
+ * This queries for the named interface. If found, it will load
  * it, otherwise it sets the error message.
  */
-static void *load_interface(char *name, unsigned int id) { 
+static void *load_interface(char *name, unsigned int id) {
     void *rv = QueryInterface(id);
 
     if (!rv) {
@@ -92,9 +92,10 @@ static void check(const char *func, NvAPI_Status ret) {
 
 static unsigned int original = OGL_THREAD_CONTROL_ENABLE;
 static unsigned int got_original = 0;
+static unsigned int should_set = 0;
 
 void set_thread_optimization(unsigned value) {
-    int ret; 
+    int ret;
     NvDRSSessionHandle hSession;
     NvDRSProfileHandle hProfile;
     NVDRS_SETTING setting;
@@ -132,6 +133,14 @@ void set_thread_optimization(unsigned value) {
     if (!got_original) {
         original = setting.u32CurrentValue;
         got_original = 1;
+
+        if (original != value) {
+            should_set = 1;
+        }
+    }
+
+    if (!should_set) {
+        return;
     }
 
     if (original < 1 || original > 16) {
@@ -162,7 +171,9 @@ void disable_thread_optimization() {
 }
 
 void restore_thread_optimization() {
-    set_thread_optimization(original);
+    if (should_set) {
+        set_thread_optimization(original);
+    }
 }
 
 char *get_nvdrs_error() {

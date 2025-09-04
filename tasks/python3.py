@@ -1,20 +1,16 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
-version = "3.9.10"
-win_version = "3.9.10"
-web_version = "3.11.0"
+version = "3.12.8"
+win_version = "3.12.7"
+web_version = "3.12.8"
 
 @annotator
 def annotate(c: Context):
     if c.python == "3":
 
-        if c.platform == "web":
-            c.var("pythonver", "python3.11")
-            c.var("pycver", "311")
-        else:
-            c.var("pythonver", "python3.9")
-            c.var("pycver", "39")
+        c.var("pythonver", "python3.12")
+        c.var("pycver", "312")
 
         c.include("{{ install }}/include/{{ pythonver }}")
 
@@ -24,7 +20,7 @@ def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
-    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+    c.run("tar xaf {{source}}/Python-{{version}}.tar.xz")
 
 
 @task(kind="python", pythons="3", platforms="windows")
@@ -45,49 +41,37 @@ def patch_posix(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
-    c.patch("Python-{{ version }}/no-multiarch.diff")
     c.patch("Python-{{ version }}/cross-darwin.diff")
+
+    # Needs to be here because we use the Linux version of ssl.py on windows,
+    # during a full build, not the patched Windows version.
     c.patch("Python-{{ version }}/fix-ssl-dont-use-enum_certificates.diff")
-    c.patch("Python-{{ version }}/no-builtin-available.diff")
 
     c.run(""" autoreconf -vfi """)
 
-# @task(kind="python", pythons="2", platforms="ios")
-# def patch_ios(c):
-#     c.var("version", version)
 
-#     c.chdir("Python-{{ version }}")
-#     c.patch("ios-python2/posixmodule.patch")
+@task(kind="python", pythons="3", platforms="ios")
+def patch_ios(c: Context):
+    c.var("version", version)
 
-#     c.run("cp {{patches}}/ios-python2/_scproxy.pyx Modules")
-#     c.chdir("Modules")
-#     c.run("cython _scproxy.pyx")
+    c.chdir("Python-{{ version }}")
+    c.patch("Python-{{ version }}/ios-posixmodule.diff")
+
+    c.run("cp {{patches}}/_scproxy.pyx Modules")
+    c.chdir("Modules")
+    c.run("rm -f _scproxy.c")
+    c.run("cython _scproxy.pyx")
+
 
 @task(kind="python", pythons="3", platforms="windows")
 def patch_windows(c: Context):
     c.var("version", win_version)
 
     c.chdir("cpython-mingw")
-    # c.patch("Python-{{ version }}/no-multiarch.diff")
-    c.patch("Python-{{ version }}/allow-old-mingw.diff")
     c.patch("Python-{{ version }}/single-dllmain.diff")
-    c.patch("Python-{{ version }}/fix-overlapped-conflict.diff")
+    c.patch("Python-{{ version }}/no-af-hyperv.diff")
 
     c.run(""" autoreconf -vfi """)
-
-
-# @task(kind="python", pythons="2", platforms="android")
-# def patch_android(c):
-#     c.var("version", version)
-
-#     c.chdir("Python-{{ version }}")
-#     c.patchdir("android-python2")
-#     c.patch("mingw-w64-python2/0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch")
-#     c.patch("python2-utf8.diff")
-#     c.patch("mingw-w64-python2/0855-mingw-fix-ssl-dont-use-enum_certificates.patch")
-
-#     c.run(""" autoreconf -vfi """)
-
 
 
 def common(c: Context):
@@ -112,28 +96,39 @@ def common(c: Context):
             f.write("ac_cv_file__dev_ptc=no\n")
 
 
+def common_post(c: Context):
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
+    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
+
+    c.run("""{{ make }}""")
+
+    c.run("""{{ make }} install""")
+
+    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+
+    for i in [ "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+        c.var("i", i)
+
+        c.copy(
+            "{{ host }}/lib/{{pythonver}}/{{ i }}",
+            "{{ install }}/lib/{{pythonver}}/{{ i }}")
+
 
 @task(kind="python", pythons="3", platforms="linux,mac")
 def build_posix(c: Context):
 
     common(c)
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-    c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+    c.run("""
+        {{configure}} {{ cross_config }}
+        --prefix="{{ install }}"
+        --enable-ipv6
+        --with-build-python={{host}}/bin/python3
+        --with-ensurepip=no
+        """)
 
-@task(kind="python", pythons="3", platforms="ios")
-def patch_ios(c: Context):
-    c.var("version", version)
+    common_post(c)
 
-    c.chdir("Python-{{ version }}")
-    c.patch("Python-{{ version }}/ios-posixmodule.diff")
-
-    c.run("cp {{patches}}/ios-python2/_scproxy.pyx Modules")
-    c.chdir("Modules")
-    c.run("cython _scproxy.pyx")
 
 @task(kind="python", pythons="3", platforms="ios")
 def build_ios(c: Context):
@@ -146,11 +141,16 @@ def build_ios(c: Context):
         f.write("ac_cv_have_long_long_format=yes\n")
         f.write("ac_cv_func_clock_settime=no")
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --disable-toolbox-glue --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-    c.run("""{{ make }} """)
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+    c.run("""
+        {{configure}} {{ cross_config }}
+        --prefix="{{ install }}"
+        --disable-toolbox-glue
+        --enable-ipv6
+        --with-build-python={{host}}/bin/python3
+        --with-ensurepip=no
+    """)
+
+    common_post(c)
 
 
 @task(kind="python", pythons="3", platforms="android")
@@ -161,11 +161,15 @@ def build_android(c: Context):
         f.write("ac_cv_little_endian_double=yes\n")
         f.write("ac_cv_header_langinfo_h=no\n")
 
-    c.run("""./configure {{ cross_config }} --prefix="{{ install }}" --with-system-ffi --enable-ipv6""")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-    c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
+    c.run("""
+        {{configure}} {{ cross_config }}
+        --prefix="{{ install }}"
+        --enable-ipv6
+        --with-build-python={{host}}/bin/python3
+        --with-ensurepip=no
+        """)
+
+    common_post(c)
 
 
 @task(kind="python", pythons="3", platforms="windows")
@@ -184,14 +188,15 @@ def build_windows(c: Context):
 
     c.env("CFLAGS", "{{ CFLAGS }} -Wno-implicit-function-declaration")
 
-    c.run("""./configure {{ cross_config }} --enable-shared --prefix="{{ install }}" --with-system-ffi""")
+    c.run("""
+          {{configure}} {{ cross_config }}
+          --enable-shared
+          --prefix="{{ install }}"
+          --with-build-python={{host}}/bin/python3
+          --with-ensurepip=no
+    """)
 
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
-
-    c.run("""{{ make }}""")
-    c.run("""{{ make }} install""")
-    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
-
+    common_post(c)
 
 @task(kind="python", pythons="3", platforms="web")
 def build_web(c: Context):
@@ -199,17 +204,17 @@ def build_web(c: Context):
     c.var("version", web_version)
 
     c.clean()
-    c.run("tar xzf {{source}}/Python-{{version}}.tgz")
+    c.run("tar xaf {{source}}/Python-{{version}}.tar.xz")
 
     common(c)
 
     c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
 
     c.run("""
-        ./configure {{ cross_config }}
+        {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
         --with-emscripten-target=browser
-        --with-build-python={{host}}/web/bin/python3
+        --with-build-python={{host}}/bin/python3
         """)
 
     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
@@ -221,29 +226,32 @@ def build_web(c: Context):
 
     c.run("""{{ make }}""")
     c.run("""{{ make }} install""")
-    c.copy("{{ host }}/web/bin/python3", "{{ install }}/bin/hostpython3")
+    c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
     for i in [ "ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
         c.var("i", i)
 
         c.copy(
-            "{{ host }}/web/lib/{{pythonver}}/{{ i }}",
+            "{{ host }}/lib/{{pythonver}}/{{ i }}",
             "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 @task(kind="python", pythons="3", platforms="all")
 def pip(c: Context):
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
     c.run("""{{ install }}/bin/hostpython3 -s -m pip install --no-compile --upgrade
-        future==0.18.3
-        six==1.12.0
-        rsa==3.4.2
-        pyasn1==0.4.2
-        ecdsa==0.18.0
-        urllib3==2.0.4
-        charset-normalizer==3.2.0
+        future==1.0.0
+        six==1.16.0
+        rsa==4.9
+        pyasn1==0.6.1
+        ecdsa==0.19.0
+        urllib3==2.2.2
+        charset-normalizer==3.3.2
+        chardet==5.2.0
         certifi
-        idna==3.4
-        requests==2.31.0
-        pefile==2021.9.3
-        chardet==5.1.0
+        idna==3.8
+        requests==2.32.3
+        pefile==2022.5.30
+        websockets==12.0
+        setuptools==74.1.2
+        pysocks==1.7.1
         """)

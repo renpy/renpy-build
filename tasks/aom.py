@@ -23,22 +23,25 @@ def build(c : Context):
     c.clean()
 
     c.run("""
-        {{ cmake }}
+        {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DCONFIG_AV1_ENCODER=0
         -DENABLE_EXAMPLES=0
         -DENABLE_TOOLS=0
         -DENABLE_TESTS=0
         -DCONFIG_PIC=1
-        {% if platform == "android" or platform == "ios" or platform == "emscripten" %}
+        {% if platform == "android" or platform == "ios" or platform == "web" %}
         -DCONFIG_RUNTIME_CPU_DETECT=0
+        {% endif %}
+        {% if platform == "web" %}
+        -DAOM_TARGET_CPU=generic
         {% endif %}
         {{ tmp }}/source/aom
         """)
 
     try:
-        c.run("{{ make }}")
+        c.run("cmake --build .")
     except:
-        c.run("make VERBOSE=1")
+        c.run("cmake --build . -j 1 -v")
 
-    c.run("make install")
+    c.run("cmake --install .")

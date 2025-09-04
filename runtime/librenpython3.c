@@ -32,6 +32,88 @@ static char *pyname;
  */
 PyConfig config;
 
+
+
+
+static char *encode_utf8(wchar_t *s) {
+    char *rv;
+    unsigned char *p;
+    unsigned int ch;
+
+    rv = (char *) malloc(wcslen(s) * 4 + 1);
+    p = (unsigned char *) rv;
+
+    while (*s) {
+        ch = *s++;
+
+        if (ch < 0x80) {
+            *p++ = ch;
+        } else if (ch < 0x800) {
+            *p++ = 0xC0 | (ch >> 6);
+            *p++ = 0x80 | (ch & 0x3F);
+        } else if (ch < 0x10000) {
+            *p++ = 0xE0 | (ch >> 12);
+            *p++ = 0x80 | ((ch >> 6) & 0x3F);
+            *p++ = 0x80 | (ch & 0x3F);
+        } else {
+            *p++ = 0xF0 | (ch >> 18);
+            *p++ = 0x80 | ((ch >> 12) & 0x3F);
+            *p++ = 0x80 | ((ch >> 6) & 0x3F);
+            *p++ = 0x80 | (ch & 0x3F);
+        }
+   }
+
+    *p = 0;
+
+    return rv;
+}
+
+
+static wchar_t *decode_utf8(const char *s) {
+
+    wchar_t *rv;
+    unsigned char *p = (unsigned char *) s;
+    unsigned int ch;
+
+    rv = (wchar_t *) malloc(strlen(s) * sizeof(wchar_t) + sizeof(wchar_t));
+    wchar_t *q = rv;
+
+    while (*p) {
+        ch = *p++;
+
+        if (ch < 0x80) {
+            *q++ = ch;
+        } else if ((ch & 0xE0) == 0xC0) {
+            *q = (ch & 0x1F) << 6;
+            ch = *p++;
+            *q |= ch & 0x3F;
+            q += 1;
+        } else if ((ch & 0xF0) == 0xE0) {
+            *q = (ch & 0x0F) << 12;
+            ch = *p++;
+            *q |= (ch & 0x3F) << 6;
+            ch = *p++;
+            *q |= ch & 0x3F;
+            q += 1;
+        } else {
+            *q = (ch & 0x07) << 18;
+            ch = *p++;
+            *q |= (ch & 0x3F) << 12;
+            ch = *p++;
+            *q |= (ch & 0x3F) << 6;
+            ch = *p++;
+            *q |= ch & 0x3F;
+            q += 1;
+        }
+    }
+
+    *q = 0;
+
+    return rv;
+}
+
+
+
 /**
  * Returns true if every character in a is equivalent to the characters in b0 or b1,
  * and the strings are of the same length. (This exists because strcasecmp considers
@@ -59,7 +141,7 @@ static int compare(const char *a, const char *b0, const char *b1) {
  */
 static void take_argv0(char *argv0) {
 
-    config.program_name = Py_DecodeLocale(argv0, NULL);
+    config.program_name = decode_utf8(argv0);
 
     // This copy is required because dirname can change its arguments.
     argv0 = strdup(argv0);
@@ -149,12 +231,12 @@ static int exists(const char *p1, const char *p2) {
     char *path = join(p1, p2);
 
 #ifdef MS_WINDOWS
-    wchar_t *wpath = Py_DecodeLocale(path, NULL);
+    wchar_t *wpath = decode_utf8(path);
     if (wpath == NULL) {
         return 0;
     }
     FILE *f = _wfopen(wpath, L"rb");
-    PyMem_Free(wpath);
+    free(wpath);
 #else
     FILE *f = fopen(path, "rb");
 #endif
@@ -193,20 +275,29 @@ static void find_python_home(const char *p) {
         return;
     }
 
-
 #ifdef WINDOWS
     if (exists(p, "\\lib\\" PYTHONVER "\\site.pyc") ||
         exists(p, "\\lib\\python" PYCVER ".zip")) {
 
         found = 1;
-        config.home = Py_DecodeLocale(join(p, NULL), NULL);
+        config.home = decode_utf8(join(p, NULL));
+        config.prefix = config.home;
+        config.exec_prefix = config.home;
+        PyWideStringList_Append(&config.module_search_paths, decode_utf8(join(p, "\\lib\\" PYTHONVER)));
+        PyWideStringList_Append(&config.module_search_paths, decode_utf8(join(p, "\\lib\\python" PYCVER ".zip")));
+        config.module_search_paths_set = 1;
     }
 #else
     if (exists(p, "/lib/" PYTHONVER "/site.pyc") ||
         exists(p, "/lib/python" PYCVER ".zip")) {
 
         found = 1;
-        config.home = Py_DecodeLocale(join(p, NULL), NULL);
+        config.home = decode_utf8(join(p, NULL));
+        config.prefix = config.home;
+        config.exec_prefix = config.home;
+        PyWideStringList_Append(&config.module_search_paths, decode_utf8(join(p, "/lib/" PYTHONVER)));
+        PyWideStringList_Append(&config.module_search_paths, decode_utf8(join(p, "/lib/python" PYCVER ".zip")));
+        config.module_search_paths_set = 1;
     }
 #endif
 }
@@ -411,7 +502,7 @@ int EXPORT renpython_main_wide(int argc, wchar_t **argv) {
     preinitialize_wide(0, argc, argv);
 
     set_renpy_platform();
-    take_argv0(Py_EncodeLocale(argv[0], NULL));
+    take_argv0(encode_utf8(argv[0]));
     search_python_home();
 
     config.user_site_directory = 0;
@@ -466,7 +557,7 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
     preinitialize_wide(1, argc, argv);
 
     set_renpy_platform();
-    take_argv0(Py_EncodeLocale(argv[0], NULL));
+    take_argv0(encode_utf8(argv[0]));
     search_python_home();
 
     config.user_site_directory = 0;
@@ -479,7 +570,7 @@ int EXPORT launcher_main_wide(int argc, wchar_t **argv) {
     wchar_t **new_argv = (wchar_t **) alloca((argc + 1) * sizeof(wchar_t *));
 
     new_argv[0] = argv[0];
-    new_argv[1] = Py_DecodeLocale(pyname, NULL);
+    new_argv[1] = decode_utf8(pyname);
 
     for (int i = 1; i < argc; i++) {
         new_argv[i + 1] = argv[i];

@@ -1,0 +1,24 @@
+Disable the HYPER_V socket family.
+
+From: Tom Rothamel <tom@rothamel.us>
+
+
+---
+ Modules/socketmodule.h |    4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/Modules/socketmodule.h b/Modules/socketmodule.h
+index f5ca004..41d6234 100644
+--- a/Modules/socketmodule.h
++++ b/Modules/socketmodule.h
+@@ -249,10 +249,6 @@ typedef int SOCKET_T;
+ #define PyLong_AsSocket_t(fd) (SOCKET_T)PyLong_AsLongLong(fd)
+ #endif
+ 
+-// AF_HYPERV is only supported on Windows
+-#if defined(AF_HYPERV) && defined(MS_WINDOWS)
+-#  define HAVE_AF_HYPERV
+-#endif
+ 
+ /* Socket address */
+ typedef union sock_addr {

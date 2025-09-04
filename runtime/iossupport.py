@@ -30,7 +30,7 @@ def open_url(url):
         UIApplication = autoclass("UIApplication")
 
         nsurl = NSURL.URLWithString_(objc_str(url))
-        UIApplication.sharedApplication().openURL_(nsurl)
+        UIApplication.sharedApplication().openURL_options_completionHandler_(nsurl, {}, None)
     except:
         import traceback
         traceback.print_exc()

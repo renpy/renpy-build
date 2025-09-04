@@ -66,29 +66,28 @@ for fn in RENPY_SEARCH:
 # Submodule importing ##########################################################
 
 # Allow Python to import submodules.
-import imp
+import importlib.machinery
+import importlib.util
 
 
-class BuiltinSubmoduleImporter(object):
+class BuiltinSubmoduleImporter:
 
-    def find_module(self, name, path=None):
+    @staticmethod
+    def find_spec(fullname, path=None, target=None):
         if path is None:
             return None
 
-        if "." not in name:
+        if "." not in fullname:
             return None
 
-        if name in sys.builtin_module_names:
-            return self
+        if fullname not in sys.builtin_module_names:
+            return None
 
-        return None
-
-    def load_module(self, name):
-        f, pathname, desc = imp.find_module(name, None)
-        return imp.load_module(name, f, pathname, desc)
+        i = importlib.machinery.BuiltinImporter
+        return importlib.util.spec_from_loader(fullname, i, origin=i._ORIGIN)
 
 
-sys.meta_path.append(BuiltinSubmoduleImporter())
+sys.meta_path.append(BuiltinSubmoduleImporter)
 
 # Windows Startup ##############################################################
 
@@ -168,6 +167,7 @@ def unpack_web():
 
     import zipfile
     import emscripten
+    import calendar
 
     print("")
     print("Unpacking...")
@@ -178,6 +178,10 @@ def unpack_web():
 
     for i, zi in enumerate(infolist):
         zf.extract(zi, "/")
+
+        # Restore file modification time as zipfile does not
+        mtime = calendar.timegm(zi.date_time + (0, 0, -1))
+        os.utime("/" + zi.filename, (mtime, mtime))
 
         if i % 25 == 0 or i == len(infolist) - 1:
             emscripten.run_script("""progress(%d, %d);""" % (i+1, len(infolist)))

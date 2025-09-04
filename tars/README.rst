@@ -21,7 +21,7 @@ Run ./ios_toolchains.sh /path/to/Xcode.app
 Android NDK
 -----------
 
-* android-ndk-r25c-linux.zip
+* android-ndk-r27c-linux.zip
 
 Downloaded from https://developer.android.com/ndk/downloads .
 
@@ -35,7 +35,7 @@ Downloaded from https://www.live2d.com/en/download/cubism-sdk/ .
 Steamworks SDK
 --------------
 
-* steamworks_sdk_156.zip
+* steamworks_sdk_160.zip
 
 Downloaded from https://partner.steamgames.com/doc/sdk , which is only
 available to Steam partners. Ren'Py will build without the Steamworks

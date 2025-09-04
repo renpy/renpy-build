@@ -335,7 +335,8 @@
 				OTHER_LDFLAGS = (
 					"-lrenpython",
 					"-lrenpy",
-					"-lpython2.7",
+					"-lpython3.12",
+					"-lassimp",
 					"-lavformat",
 					"-lavcodec",
 					"-lswscale",
@@ -359,6 +360,7 @@
 					"-llzma",
 					"-lbz2",
 					"-lz",
+					"-lstdc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
 				PRODUCT_NAME = prototype;
@@ -383,7 +385,8 @@
 				OTHER_LDFLAGS = (
 					"-lrenpython",
 					"-lrenpy",
-					"-lpython3.9",
+					"-lpython3.12",
+					"-lassimp",
 					"-lavformat",
 					"-lavcodec",
 					"-lswscale",
@@ -407,6 +410,7 @@
 					"-llzma",
 					"-lbz2",
 					"-lz",
+					"-lstdc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
 				PRODUCT_NAME = prototype;

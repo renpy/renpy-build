@@ -2,7 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task
 import re
 
-version = "1.2.1"
+version = "1.6.1"
 
 
 @task(kind="host-python")
@@ -17,8 +17,8 @@ def patch(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/")
 
-    c.patch("pyjnius/py3-division.diff")
-    c.patch("pyjnius/no-win-jdk-home.diff")
+    c.patch("pyjnius-{{version}}/py3-division.diff")
+    c.patch("pyjnius-{{version}}/no-win-jdk-home.diff")
 
 @task(kind="host-python")
 def build(c: Context):
@@ -28,11 +28,11 @@ def build(c: Context):
 
     with open(c.path("config.pxi"), "w") as f:
         f.write(c.expand("""\
-DEF JNIUS_PLATFORM = 'android'
-
 # cython: language_level={{ c.python }}
 
-DEF JNIUS_PYTHON3 = {{ c.python == '3' }}
+DEF JNIUS_PLATFORM = 'android'
+
+DEF JNIUS_CYTHON_3 = True
 """))
 
 # on android, rely on SDL to get the JNI env
