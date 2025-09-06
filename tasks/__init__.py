@@ -58,7 +58,6 @@ from . import angle
 
 from . import steam
 
-from . import pygame_sdl2
 from . import librenpy
 from . import pythonlib
 from . import renpython

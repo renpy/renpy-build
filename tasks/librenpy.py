@@ -24,8 +24,8 @@ def build(c: Context):
     if c.platform == "web" and c.python == "2":
         return
 
-    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/src" """)
-    c.env("CXXFLAGS", """{{ CXXFLAGS }} "-I{{ pygame_sdl2 }}" "-I{{ pygame_sdl2 }}/src" "-I{{ renpy }}/src" """)
+    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3" """)
+    c.env("CXXFLAGS", """{{ CXXFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3" """)
 
     gen = "gen3-static/"
 
@@ -54,7 +54,6 @@ def build(c: Context):
                         i = i.replace("gen/", gen)
                     sources.append(dn / i)
 
-    read_setup(c.pygame_sdl2)
     read_setup(c.renpy / "src" )
     read_setup(c.root / "extensions")
 

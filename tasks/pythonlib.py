@@ -183,8 +183,6 @@ past/
 iossupport
 six
 
-pygame_sdl2/
-
 requests/
 rsa/
 pyasn1/
