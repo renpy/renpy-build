@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
-version = "2.13.1"
+version = "2.13.3"
 
 
 @annotator
