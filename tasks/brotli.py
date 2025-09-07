@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
-version = "1.0.9"
+version = "1.1.0"
 
 @task(platforms="all")
 def unpack(c: Context):
@@ -13,14 +13,14 @@ def unpack(c: Context):
 @task(platforms="all")
 def build(c: Context):
     c.var("version", version)
-    c.chdir("brotli-{{version}}")
 
-    c.run("""bash ./bootstrap""")
-
-    c.run("""{{configure}} {{ cross_config }}
-          --disable-shared
-          --prefix="{{ install }}"
+    c.run("""
+        {{ cmake_configure }} {{ cmake_args }}
+        -B build
+        -DCMAKE_INSTALL_PREFIX={{install}}
+        -DBUILD_SHARED_LIBS=0
+        brotli-{{version}}
           """)
 
-    c.run("{{make}}")
-    c.run("{{make}} install")
+    c.run("cmake --build build")
+    c.run("cmake --install build")

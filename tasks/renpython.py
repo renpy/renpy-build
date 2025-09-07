@@ -76,6 +76,7 @@ def link_linux(c: Context):
     -lfribidi
     -lharfbuzz
     -lbrotlidec
+    -lbrotlicommon
     -lfreetype
     -lffi
     -ldl
@@ -158,6 +159,7 @@ def link_android(c: Context):
     -lsharpyuv
     -lharfbuzz
     -lbrotlidec
+    -lbrotlicommon
     -lfribidi
     -lfreetype
     -lffi
@@ -217,6 +219,7 @@ def link_mac(c: Context):
     -lsharpyuv
     -lharfbuzz
     -lbrotlidec
+    -lbrotlicommon
     -lfribidi
     -lfreetype
     -lffi
@@ -370,6 +373,7 @@ def link_windows(c: Context):
     -lsharpyuv
     -lharfbuzz
     -lbrotlidec
+    -lbrotlicommon
     -lfreetype
     -lffi
     -lssl
@@ -605,6 +609,7 @@ def link_web(c: Context):
     -lsharpyuv
     -lharfbuzz
     -lbrotlidec
+    -lbrotlicommon
     -lfribidi
     -lfreetype
     -llzma
