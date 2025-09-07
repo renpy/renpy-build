@@ -37,7 +37,6 @@ ln -s renios3 renios
 # Update the README.
 cp /home/tom/ab/renpy-deps/scripts/README.nightly /home/tom/ab/WWW.nightly/README.txt
 
-link $BASE/pygame_sdl2 pygame_sdl2
 link $BASE/live2d live2d
 link /home/tom/ab/WWW.nightly dl
 link /home/tom/ab/renpy/atom atom
@@ -65,7 +64,7 @@ if [ -e renpy/dl/$PY3_VERSION/branch.txt ]; then
     echo "Already built."
 else
     # Build the distribution.
-    ./lib/py3-linux-x86_64/python -O distribute.py --pygame $BASE/pygame_sdl2 $DISTRIBUTE_ARGS --nightly
+    ./lib/py3-linux-x86_64/python -O distribute.py $DISTRIBUTE_ARGS --nightly
 
     # Copy VCS data to distribution directories.
     pushd $BASE

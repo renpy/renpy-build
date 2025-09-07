@@ -82,8 +82,6 @@ class Context:
 
     # More paths.
     renpy: Path
-    pygame_sdl2: Path
-    renpyweb: Path
 
     def __init__(self, platform : str, arch : str, python : str, root : Path, args : Any):
 
@@ -119,9 +117,6 @@ class Context:
 
         self.renpy = self.root / "renpy"
         self.var("renpy", self.renpy)
-
-        self.renpyweb = self.root / "renpyweb"
-        self.var("renpyweb", self.renpyweb)
 
         self.var("rapt", "{{ renpy }}/rapt")
         self.var("raptver", "{{ rapt }}" + self.python)
