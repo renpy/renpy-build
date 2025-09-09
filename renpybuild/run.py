@@ -125,6 +125,8 @@ def build_environment(c):
     c.env("CFLAGS", "-O3 -I{{ install }}/include")
     c.env("LDFLAGS", "-O3 -L{{install}}/lib")
 
+    c.env("PKG_CONFIG", "pkg-config --static")
+
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
@@ -387,6 +389,9 @@ def build_environment(c):
         c.env("EMSCRIPTEN_TOOLS", "{{emscriptenbin}}/tools")
         c.env("EMSCRIPTEN", "{{emscriptenbin}}")
 
+        # Use emscripten's wrapper to set correct search path for .pc files.
+        c.env("PKG_CONFIG", "emmake pkg-config --static")
+
         c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig:{{cross}}/upstream/emscripten/system/lib/pkgconfig")
         # Add pkg-file search path for emscripten, since emscripten locked PKG_CONFIG_LIBDIR
         c.env("EM_PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
@@ -405,8 +410,6 @@ def build_environment(c):
     if c.kind not in ( "host", "host-python", "cross" ):
         c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
         c.var("cmake_args", "{{cmake_args}} -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY")
-
-    c.env("PKG_CONFIG", "pkg-config --static")
 
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
