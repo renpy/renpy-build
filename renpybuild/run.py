@@ -395,6 +395,7 @@ def build_environment(c):
         c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig:{{cross}}/upstream/emscripten/system/lib/pkgconfig")
         # Add pkg-file search path for emscripten, since emscripten locked PKG_CONFIG_LIBDIR
         c.env("EM_PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
+        c.env("PKG_CONFIG_PATH", "{{ EM_PKG_CONFIG_PATH }}")
 
         # Tell emcc and em++ to use ccache when building
         c.env("EM_COMPILER_WRAPPER", "/usr/bin/ccache")
