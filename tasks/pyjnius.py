@@ -2,7 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task
 import re
 
-version = "1.6.1"
+version = "1.7.0"
 
 
 @task(kind="host-python")
@@ -17,8 +17,8 @@ def patch(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/")
 
-    c.patch("pyjnius-{{version}}/py3-division.diff")
-    c.patch("pyjnius-{{version}}/no-win-jdk-home.diff")
+    # c.patch("pyjnius-{{version}}/py3-division.diff")
+    # c.patch("pyjnius-{{version}}/no-win-jdk-home.diff")
 
 @task(kind="host-python")
 def build(c: Context):
@@ -45,7 +45,7 @@ cdef JNIEnv *get_platform_jnienv():
     return SDL_AndroidGetJNIEnv()
 """)
 
-    c.run("""cython --3str jnius.pyx""")
+    c.run("""cython jnius.pyx""")
 
     c_fn = c.path("jnius.c")
 

@@ -6,7 +6,7 @@ from renpybuild.task import task
 def build(c: Context):
 
     c.run("cp {{runtime}}/emscripten.pyx emscripten.pyx")
-    c.run("cython --3str emscripten.pyx")
+    c.run("cython emscripten.pyx")
 
     c.run("install -d {{install}}/emscripten_pyx")
     c.run("install emscripten.c {{install}}/emscripten_pyx")

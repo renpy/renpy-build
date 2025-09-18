@@ -2,8 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 import re
 
-version = "1.1.0"
-
+commit = "b61d65fdc620dbe19892d2419b77340341e76084"
 
 @annotator
 def annotate(c: Context):
@@ -14,30 +13,30 @@ def annotate(c: Context):
 def unpack(c: Context):
     c.clean()
 
-    # c.var("version", version)
-    # c.run("tar xzf {{source}}/pyobjus-{{version}}.tar.gz")
+    c.var("commit", commit)
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
     c.chdir("pyobjus")
 
-    c.run("git checkout 573bd69b857ca4a64c7154a27f0bff6850851797")
+    c.run("git checkout  {{commit}}")
     c.patch("pyobjus/ffi-h.diff")
 
 
 @task(kind="host-python")
 def host_unpack(c: Context):
+
     c.clean()
 
+    c.var("commit", commit)
     c.run("git clone https://github.com/kivy/pyobjus pyobjus")
     c.chdir("pyobjus")
 
-    c.run("git checkout 573bd69b857ca4a64c7154a27f0bff6850851797")
+    c.run("git checkout  {{commit}}")
     c.patch("pyobjus/ffi-h.diff")
 
 
 @task(kind="python", platforms="mac,ios")
 def build(c: Context):
 
-    c.var("version", version)
     c.chdir("pyobjus/pyobjus")
 
     with open(c.path("config.pxi"), "w") as f:
@@ -48,7 +47,7 @@ DEF ARCH = "{{ c.arch.replace('sim-', '') }}"
 DEF PYOBJUS_CYTHON_3 = True
 """))
 
-    c.run("""cython --3str pyobjus.pyx""")
+    c.run("""cython pyobjus.pyx""")
 
     c_fn = c.path("pyobjus.c")
 
@@ -79,7 +78,6 @@ pyobjus.pyobjus pyobjus.c
 @task(kind="host-python")
 def host_build(c: Context):
 
-    c.var("version", version)
     c.chdir("pyobjus/pyobjus")
 
     c.run("""install -d {{ pytmp }}/pyobjus/pyobjus""")

@@ -13,7 +13,7 @@ def check(c: Context):
     c.run("""touch test.pyx""")
 
     try:
-        c.run("""cython --3str test.pyx""")
+        c.run("""cython test.pyx""")
     except:
         print("", file=sys.stderr)
         raise SystemExit("Cython could not be run.")
