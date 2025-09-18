@@ -479,7 +479,7 @@ class Context:
 
         self.run(command, flags=flags, src=src)
 
-   def get_sysconfigdata_name():
+   def get_sysconfigdata_name(self):
         return os.environ.get('_PYTHON_SYSCONFIGDATA_NAME',
             '_sysconfigdata_{abi}_{platform}_{multiarch}'.format(
             abi=sys.abiflags,
