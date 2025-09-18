@@ -52,11 +52,11 @@ Change into the renpy-build directory, and run prepare.sh::
     ./prepare.sh
 
 **This will globally change your system.**  It will install packages from Ubuntu
-and LLVM repositories. Please make sure you're comfortable with
+and LLVM repositories, and the UV website. Please make sure you're comfortable with
 this change before continuing.
 
 This will first install all the packages required to build Ren'Py, and
-then it will clone Ren'Py and pygame_sdl2. It will also create a python
+then it will clone Ren'Py. It will also create a python
 virtual environment with the tools in it. If this completes successfully,
 you are ready to build.
 
@@ -72,7 +72,7 @@ You'll need to be in the renpy-build directory to build. If you're not, run::
 
 From the renpy-build directory, activate the virtualenv with the command::
 
-    . tmp/virtualenv.py3/bin/activate
+    . renpy/.venv/bin/activate
 
 It should then be possible to build using the command::
 
@@ -111,13 +111,13 @@ The build command can take some options:
 
 
 A second build should be faster than the first, as it will only rebuild
-Ren'Py, pygame_sdl2, and other components that are likely to frequently
+Ren'Py and other components that are likely to frequently
 change.
 
 Updating
 ---------
 
-It's possible to change renpy or pygame_sdl2 to be symlinks to your own
+It's possible to change renpy/ to be a symlink to your own
 clones of those projects after the prepare step is complete. Updating
 renpy-build itself may require deleting the tmp/ directory and a complete
 rebuild, though simple changes may not require that. You may also need to

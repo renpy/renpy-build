@@ -13,6 +13,8 @@ cp -a tasks $nightly/tasks
 rm -Rf $nightly/renpybuild
 cp -a renpybuild $nightly/
 
+rm -Rf $nightly/nightly
+cp -a nightly $nightly/nightly
+
 cd $nightly/
-. tmp/virtualenv.py3/bin/activate
-exec ./build.py "$@"
+nice -n 10 ./nightly/nightly.sh $nightly master --nopull

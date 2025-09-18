@@ -29,10 +29,10 @@ update () {
     fi
 }
 
-update $(git remote get-url origin)
-update https://github.com/renpy/renpy renpy
+if [ "$NOPULL" != 1 ]; then
+    update $(git remote get-url origin)
+    update https://github.com/renpy/renpy renpy
+fi
 
-rm -Rf "$BASE/renpy/module/gen"
-rm -Rf "$BASE/renpy/module/gen3"
-rm -Rf "$BASE/renpy/module/gen-static"
-rm -Rf "$BASE/renpy/module/gen3-static"
+rm -Rf "$BASE/renpy/tmp/gen3"
+rm -Rf "$BASE/renpy/tmp/gen3-static"

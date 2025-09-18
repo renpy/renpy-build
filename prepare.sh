@@ -60,10 +60,12 @@ sudo tmp/llvm.sh 18
 # Darwin clang_rt is needed to prevent undefined symbol: __isPlatformVersionAtLeast
 sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/18/lib/
 
+# UV
+wget -qO- https://astral.sh/uv/install.sh | sh
 
 # Install the programs and virtualenvs.
 
-VENV="$ROOT/tmp/virtualenv.py3"
+VENV="$ROOT/renpy/.venv"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 

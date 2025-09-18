@@ -6,11 +6,12 @@ if [ ! -e $VENV/bin ]; then
     python3 -m venv $VENV
 fi
 
-. $VENV/bin/activate
-
-pip install -r $ROOT/requirements.txt
 
 pushd $BASE/renpy
+
+uv sync
+
+. $VENV/bin/activate
 
 # Delete the generated files.
 rm -Rf renpy/module/gen-static
