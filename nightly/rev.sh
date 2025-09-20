@@ -3,11 +3,6 @@ pushd $BASE/renpy
 RENPY_REV=$(git log -n1 --pretty='"%H", "%h"' HEAD)
 popd
 
-# Capture current renpyweb revision.
-pushd $BASE/renpyweb
-RENPYWEB_REV=$(git log -n1 --pretty='"%H", "%h"' HEAD)
-popd
-
 pushd $BASE
 
 # Capture current renpy-build revision.
