@@ -20,3 +20,5 @@ live2d
 renpyweb
 tmp.initial/
 unpacked
+.venv
+*.lock
