@@ -3,7 +3,6 @@
 from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
 from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode # *
 
-import pygame_sdl2
 import sys
 
 import re
@@ -11,7 +10,6 @@ import tarfile
 import os
 import shutil
 import time
-import zipfile
 import gzip
 import subprocess
 import hashlib
@@ -174,7 +172,6 @@ def make_tar(iface, fn, source_dirs):
 
         return rv
 
-    # zf = zipfile.ZipFile(fn, "w")
     tf = tarfile.open(fn, "w:gz", format=tarfile.GNU_FORMAT)
 
     added = set()
