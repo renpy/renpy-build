@@ -45,6 +45,12 @@ dependencies = [
 
 # This project is not meant to be installed.
 
+# All packages listed here are meant to be placed as folders in workspace root
+# and uv will automatically install their dependencies. Unlike packages listed
+# in `dependencies` uv would not try to build and install them.
+[tool.uv.workspace]
+members = ["renpy"]
+
 [tool.pyright]
 include = [
     "renpybuild/",

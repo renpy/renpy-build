@@ -53,7 +53,7 @@ if [ -z "$1" ]; then
 fi
 
 BASE="$1"
-VENV="$1/renpy/.venv"
+VENV="$1/.venv"
 BRANCH="${2:-master}"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/

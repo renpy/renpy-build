@@ -65,7 +65,7 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 
 # Install the programs and virtualenvs.
 
-VENV="$ROOT/renpy/.venv"
+VENV="$ROOT/.venv"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 
