@@ -72,7 +72,7 @@ You'll need to be in the renpy-build directory to build. If you're not, run::
 
 From the renpy-build directory, activate the virtualenv with the command::
 
-    . renpy/.venv/bin/activate
+    source .venv/bin/activate
 
 It should then be possible to build using the command::
 
