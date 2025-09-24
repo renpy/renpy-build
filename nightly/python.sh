@@ -2,11 +2,6 @@
 
 set -e
 
-if [ ! -e $VENV/bin ]; then
-    python3 -m venv $VENV
-fi
-
-
 pushd $BASE/renpy
 
 uv sync
