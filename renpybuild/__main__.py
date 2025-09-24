@@ -5,8 +5,6 @@ import argparse
 import shutil
 from pathlib import Path
 
-sys.path.insert(1, str(Path(__file__).parent / 'deps'))
-
 import renpybuild.task
 from renpybuild.context import Context
 
@@ -208,8 +206,7 @@ def main():
     if not args.experimental:
         known_platforms[:] = [ i for i in known_platforms if not i.experimental ]
 
-    root = Path(__file__).parent.resolve()
-
+    root = Path(__file__).parent.parent.resolve()
 
     args.function(args)
 

@@ -112,16 +112,12 @@ class Context:
         self.var("prebuilt", self.root / "prebuilt")
 
         # Paths to subprojects.
-        self.pygame_sdl2 = self.root / "pygame_sdl2"
-        self.var("pygame_sdl2", self.pygame_sdl2)
-
         self.renpy = self.root / "renpy"
         self.var("renpy", self.renpy)
 
         self.var("rapt", "{{ renpy }}/rapt")
         self.var("raptver", "{{ rapt }}" + self.python)
 
-        #
         if "arm" in self.arch:
             jni_arch = self.arch.replace("_", "-")
         else:

@@ -13,7 +13,7 @@ fi
 
 # Build the dependencies.
 pushd $BASE
-./build.py --python 3
+python -m renpybuild --python 3
 popd
 
 
