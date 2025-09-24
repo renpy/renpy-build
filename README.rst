@@ -70,13 +70,9 @@ You'll need to be in the renpy-build directory to build. If you're not, run::
 
     cd ~/renpy-build
 
-From the renpy-build directory, activate the virtualenv with the command::
-
-    . renpy/.venv/bin/activate
-
 It should then be possible to build using the command::
 
-    ./build.py
+    ./build.sh
 
 The build command can take some options:
 
