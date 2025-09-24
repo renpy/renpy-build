@@ -69,7 +69,7 @@ mkdir -p "$BASE/tmp"
 
 if [ "$CLEAN" = 1 ]; then
     pushd $BASE
-    ./build.py clean
+    ./build.sh clean
     popd
 fi
 
