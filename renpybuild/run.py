@@ -283,6 +283,7 @@ def build_environment(c):
         android_llvm(c, "armv7a")
 
         c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "armv7-a")
