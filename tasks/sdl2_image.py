@@ -28,7 +28,7 @@ def build(c: Context):
     # c.run("""./autogen.sh""")
     c.run("autoreconf -f")
 
-    c.env("LIBAVIF_LIBS", "-lavif -laom -lyuv")
+    c.env("LIBAVIF_LIBS", "-lavif -ldav1d -lyuv")
 
     if c.platform == "web":
         c.env("SDL_CFLAGS", "-sUSE_SDL=2")
