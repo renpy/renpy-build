@@ -5,7 +5,7 @@ set -e
 # This modifies the renios/buildlib/create.py to use the prototype credentials.
 export RENPY_TEST_IOS=1
 
-./build.py --platform ios --python 3 rebuild renios
+./build.sh --platform ios --python 3 rebuild renios
 
 rm -Rf /tmp/ios-test
 
