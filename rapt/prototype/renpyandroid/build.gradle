@@ -1,15 +1,15 @@
 plugins {
-    id 'com.android.library'
+    id "com.android.library"
 }
 
 android {
-    namespace = 'org.renpy.android'
+    namespace = "org.renpy.android"
 
-    compileSdkVersion = 35
+    compileSdkVersion = "android-36"
 
     defaultConfig {
         minSdkVersion = 21
-        targetSdkVersion = 35
+        targetSdkVersion = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -20,6 +20,7 @@ android {
             minifyEnabled false
             packaging {
                 jniLibs {
+                    useLegacyPackaging = true
                     keepDebugSymbols = [ "**/*.so" ]
                 }
             }
@@ -29,6 +30,7 @@ android {
             minifyEnabled false
             packaging {
                 jniLibs {
+                    useLegacyPackaging = true
                     keepDebugSymbols = [ "**/*.so" ]
                 }
             }
@@ -38,11 +40,10 @@ android {
 
 
 dependencies {
-    api 'com.google.android.play:asset-delivery:2.2.2'
+    api "com.google.android.play:asset-delivery:2.3.0"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10"
-    implementation "androidx.activity:activity:1.7.2"
-    implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'uk.uuid.slf4j:slf4j-android:1.7.25-1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.20"
+    implementation "androidx.activity:activity:1.11.0"
+    implementation "org.slf4j:slf4j-api:2.0.17-0"
+    implementation "uk.uuid.slf4j:slf4j-android:2.0.17-0"
 }

@@ -40,7 +40,8 @@ public class PlayStore extends Store {
 
         final BillingClient bc = BillingClient.newBuilder(activity)
                 .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+                .enableAutoServiceReconnection()
                 .build();
 
         bc.startConnection(new BillingClientStateListener() {
@@ -86,9 +87,7 @@ public class PlayStore extends Store {
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
             }
 
-            for (String sku : purchase.getProducts()) {
-                purchased.add(sku);
-            }
+            purchased.addAll(purchase.getProducts());
         }
     }
 
@@ -114,7 +113,7 @@ public class PlayStore extends Store {
 
             finished = false;
 
-            List<QueryProductDetailsParams.Product> products = new ArrayList<QueryProductDetailsParams.Product>();
+            List<QueryProductDetailsParams.Product> products = new ArrayList<>();
 
             for (String s : skus) {
                 Log.i("iap", "Trying to get prices for " + s);
@@ -127,16 +126,15 @@ public class PlayStore extends Store {
             billingClient.queryProductDetailsAsync(
                 params.build(),
                 new ProductDetailsResponseListener() {
-                    @Override
-                    public void onProductDetailsResponse(@NonNull BillingResult billingResult, List<ProductDetails> productDetailsList) {
+                    public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull QueryProductDetailsResult queryProductDetailsResult) {
                         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                             prices.clear();
 
-                            for (ProductDetails p : productDetailsList) {
-                                String price = p.getOneTimePurchaseOfferDetails().getFormattedPrice();
-                                Log.i("iap", "Got price id=" + p.getProductId() + " price=" + price);
-                                prices.put(p.getProductId(), price);
-                                productDetailsMap.put(p.getProductId(), p);
+                            for (ProductDetails productDetails : queryProductDetailsResult.getProductDetailsList()) {
+                                String price = Objects.requireNonNull(productDetails.getOneTimePurchaseOfferDetails()).getFormattedPrice();
+                                Log.i("iap", "Got price id=" + productDetails.getProductId() + " price=" + price);
+                                prices.put(productDetails.getProductId(), price);
+                                productDetailsMap.put(productDetails.getProductId(), productDetails);
                             }
 
                             finished = true;
@@ -159,7 +157,7 @@ public class PlayStore extends Store {
                 QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
                 new PurchasesResponseListener() {
                     @Override
-                    public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, List<Purchase> purchases) {
+                    public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
                         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                             for (Purchase p : purchases) {
                                 handlePurchase(p);
@@ -186,7 +184,7 @@ public class PlayStore extends Store {
             Log.i("iap", "beginPurchase " + sku);
 
             ArrayList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
-            productDetailsParamsList.add(BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(productDetailsMap.get(sku)).build());
+            productDetailsParamsList.add(BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(Objects.requireNonNull(productDetailsMap.get(sku))).build());
             BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList).build();
 
             int responseCode = billingClient.launchBillingFlow(activity, billingFlowParams).getResponseCode();
