@@ -12,30 +12,30 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
-    compileSdkVersion 35
+    compileSdkVersion = 35
 
-    namespace "{{ config.package }}"
+    namespace = "{{ config.package }}"
 
     defaultConfig {
-        applicationId "{{ config.package }}"
-        minSdkVersion 21
-        targetSdkVersion 35
-        versionCode {{ config.numeric_version }}
-        versionName "{{ config.version }}"
+        applicationId = "{{ config.package }}"
+        minSdkVersion = 21
+        targetSdkVersion = 35
+        versionCode = {{ config.numeric_version }}
+        versionName = "{{ config.version }}"
     }
 
     signingConfigs {
         release {
-            storeFile file(localProperties["key.store"])
-            storePassword localProperties["key.store.password"]
-            keyAlias localProperties['key.alias']
-            keyPassword localProperties["key.alias.password"]
+            storeFile = file(localProperties["key.store"])
+            storePassword = localProperties["key.store.password"]
+            keyAlias = localProperties['key.alias']
+            keyPassword = localProperties["key.alias.password"]
         }
     }
 
     buildTypes {
         debug {
-            minifyEnabled false
+            minifyEnabled = false
             packaging {
                 jniLibs {
                     keepDebugSymbols = [ "**/*.so" ]
@@ -44,8 +44,8 @@ android {
         }
 
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
+            signingConfig =signingConfigs.release
+            minifyEnabled = false
             packaging {
                 jniLibs {
                     keepDebugSymbols = [ "**/*.so" ]
