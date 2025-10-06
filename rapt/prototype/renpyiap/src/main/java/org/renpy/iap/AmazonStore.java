@@ -43,7 +43,7 @@ public class AmazonStore extends Store implements PurchasingListener {
 
     @Override
     public void updatePrices() {
-        HashSet<String> skuset = new HashSet<String>(skus);
+        HashSet<String> skuset = new HashSet<>(skus);
 
         finished = false;
         PurchasingService.getProductData(skuset);
@@ -106,8 +106,9 @@ public class AmazonStore extends Store implements PurchasingListener {
         if (response.getRequestStatus() == ProductDataResponse.RequestStatus.SUCCESSFUL) {
             final Map<String, Product> products = response.getProductData();
             for (final String key : products.keySet()) {
-              Product product = products.get(key);
-              prices.put(product.getSku(), product.getPrice());
+                Product product = products.get(key);
+                assert product != null;
+                prices.put(product.getSku(), product.getPrice());
             }
         }
 

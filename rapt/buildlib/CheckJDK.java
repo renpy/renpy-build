@@ -18,7 +18,7 @@ public class CheckJDK {
         System.out.println("Java version: " + version);
         System.out.println("Target version: " + target);
 
-        if (version == target) {
+        if (version >= target) {
             System.out.println("OK");
             Runtime.getRuntime().exit(0);
         } else {
