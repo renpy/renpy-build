@@ -104,7 +104,7 @@ def build_environment(c):
         emsdk_environment(c)
 
     if c.platform == "android":
-        c.var("ndk_version", "android-ndk-r27c")
+        c.var("ndk_version", "android-ndk-r29")
 
     cpuccount = os.cpu_count()
 
