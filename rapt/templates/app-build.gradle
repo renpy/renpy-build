@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id "com.android.application"
 }
 
 {% if bundle %}
@@ -12,14 +12,14 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
-    compileSdkVersion = 35
+    compileSdkVersion = "android-36"
 
     namespace = "{{ config.package }}"
 
     defaultConfig {
         applicationId = "{{ config.package }}"
         minSdkVersion = 21
-        targetSdkVersion = 35
+        targetSdkVersion = 36
         versionCode = {{ config.numeric_version }}
         versionName = "{{ config.version }}"
     }
@@ -28,7 +28,7 @@ android {
         release {
             storeFile = file(localProperties["key.store"])
             storePassword = localProperties["key.store.password"]
-            keyAlias = localProperties['key.alias']
+            keyAlias = localProperties["key.alias"]
             keyPassword = localProperties["key.alias.password"]
         }
     }
@@ -38,6 +38,7 @@ android {
             minifyEnabled = false
             packaging {
                 jniLibs {
+                    useLegacyPackaging = true
                     keepDebugSymbols = [ "**/*.so" ]
                 }
             }
@@ -48,6 +49,7 @@ android {
             minifyEnabled = false
             packaging {
                 jniLibs {
+                    useLegacyPackaging = true
                     keepDebugSymbols = [ "**/*.so" ]
                 }
             }
@@ -59,13 +61,13 @@ android {
 {% endif %}
 
     androidResources {
-        noCompress = [ 'ogv', 'avi', 'mpg', 'webm', 'mkv', 'mp4', 'mp3', 'mp2', 'ogg', 'opus', 'flac', 'png', 'jpg', 'jpeg', 'webp', 'avif', 'rpyc', 'rpymc', 'rpyb', ]
+        noCompress = [ "ogv", "avi", "mpg", "webm", "mkv", "mp4", "mp3", "mp2", "ogg", "opus", "flac", "png", "jpg", "jpeg", "webp", "avif", "rpyc", "rpymc", "rpyb", ]
     }
 }
 
 dependencies {
-    implementation project(':renpyandroid')
+    implementation project(":renpyandroid")
 {% if config.store != "none" %}
-    implementation project(':renpyiap')
+    implementation project(":renpyiap")
 {% endif %}
 }

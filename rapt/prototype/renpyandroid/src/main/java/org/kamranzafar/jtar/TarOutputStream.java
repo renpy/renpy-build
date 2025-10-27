@@ -17,13 +17,15 @@
 
 package org.kamranzafar.jtar;
 
+import android.os.Build;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 
 /**
  * @author Kamran Zafar
@@ -41,8 +43,12 @@ public class TarOutputStream extends OutputStream {
         currentFileSize = 0;
     }
 
-	public TarOutputStream(final File fout) throws FileNotFoundException {
-		this.out = new BufferedOutputStream(new FileOutputStream(fout));
+	public TarOutputStream(final File fout) throws IOException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.out = new BufferedOutputStream(Files.newOutputStream(fout.toPath()));
+        } else {
+            this.out = new BufferedOutputStream(new FileOutputStream(fout));
+        }
 		bytesWritten = 0;
 		currentFileSize = 0;
 	}
