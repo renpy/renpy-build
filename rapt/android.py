@@ -6,7 +6,6 @@ sys.path.insert(0, 'buildlib')
 import os
 import argparse
 import subprocess
-import pygame_sdl2
 
 import rapt.interface as interface
 import rapt.install_sdk as install_sdk
