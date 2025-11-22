@@ -413,6 +413,14 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         });
     }
 
+    
+    @Override
+    public void addConsumableSKU(String sku) {
+        skus.add(sku);
+        consumableSKUs.add(sku);
+        Log.i("iap", "Added consumable SKU: " + sku);
+    }
+
     @Override
     protected void onDestroy() {
         Log.v("python", "onDestroy()");
