@@ -242,11 +242,6 @@ public class PlayStore extends Store {
                                                 Log.e("iap", "Failed to consume " + sku);
                                             }
                                              
-                                            try {
-                                                Thread.sleep(100);
-                                            } catch (InterruptedException e) {
-                                                // Ignore.
-                                            }
                                             finished = true;
                                         }
                                     });
