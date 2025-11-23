@@ -35,8 +35,6 @@ public class PlayStore extends Store {
     /* A map from sku to ProductDetails object. */
     private HashMap<String, ProductDetails> productDetailsMap = new HashMap<>();
 
-    /* A set of SKUs that are consumable. */
-    private HashSet<String> consumableSKUs = new HashSet<>();
 
     public PlayStore(Activity activity) {
         this.activity = activity;
