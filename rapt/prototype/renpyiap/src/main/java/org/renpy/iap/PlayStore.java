@@ -231,7 +231,6 @@ public class PlayStore extends Store {
                                     ConsumeParams consumeParams = ConsumeParams.newBuilder()
                                         .setPurchaseToken(p.getPurchaseToken())
                                         .build();
-                                    
                                     billingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
                                         @Override
                                         public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String purchaseToken) {
