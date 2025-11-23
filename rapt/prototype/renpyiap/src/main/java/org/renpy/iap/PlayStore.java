@@ -241,7 +241,6 @@ public class PlayStore extends Store {
                                             } else {
                                                 Log.e("iap", "Failed to consume " + sku);
                                             }
-                                             
                                             finished = true;
                                         }
                                     });
