@@ -201,6 +201,8 @@ pefile
 ordlookup/
 
 steamapi
+
+brotli
 """
 
 
@@ -220,6 +222,7 @@ def python3(c: Context):
         c.path("{{ pytmp }}/pyjnius"),
         c.path("{{ pytmp }}/pyobjus"),
         c.path("{{ pytmp }}/steam"),
+        c.path("{{ pytmp }}/brotli"),
         ]
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
