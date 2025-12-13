@@ -69,6 +69,8 @@ def build(c: Context):
     if c.platform == "web" and c.python == "3":
         read_setup(c.path("{{ install }}/emscripten_pyx"))
 
+    read_setup(c.path("{{ pytmp }}/brotli"))
+
     objects = [ ]
 
     with c.run_group() as g:
