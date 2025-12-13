@@ -24,17 +24,3 @@ def build(c: Context):
 
     c.run("cmake --build build")
     c.run("cmake --install build")
-
-@task(platforms="all", always=True)
-def python(c: Context):
-
-    c.var("version", version)
-    c.chdir("brotli-{{ version }}/python")
-
-    c.run("""install -d {{ pytmp }}/brotli""")
-    c.run("""install brotli.py _brotli.c {{ pytmp }}/brotli""")
-
-    with open(c.path("{{ pytmp }}/brotli/Setup"), "w") as f:
-        f.write(c.expand("""\
-_brotli _brotli.c
-"""))
