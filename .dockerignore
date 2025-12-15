@@ -1,0 +1,16 @@
+tmp/
+dist/
+renpy/
+.git/
+**/.git/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+*.o
+*.a
+*.dylib
+*.dll

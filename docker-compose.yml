@@ -1,0 +1,22 @@
+services:
+  renpy-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: renpy-build:latest
+
+    volumes:
+      # Build cache
+      - build-tmp:/build/tmp
+
+      # Cache Python venv
+      - renpy-venv:/build/renpy/.venv
+
+    environment:
+      - RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
+
+volumes:
+  build-tmp:
+    driver: local
+  renpy-venv:
+    driver: local

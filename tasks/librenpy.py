@@ -85,13 +85,14 @@ def build(c: Context):
             c.var("src", source)
             c.var("object", object)
 
+            print(f"Working on {name}.")
             if ext == "c":
-                g.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}")
+                c.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}")
             else:
-                g.run("{{ CXX }} {{ CXXFLAGS }} -c {{ src }} -o {{ object }}")
+                c.run("{{ CXX }} {{ CXXFLAGS }} -c {{ src }} -o {{ object }}")
 
         c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "inittab.c", modules=modules)
-        g.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")
+        c.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")
         objects.append("inittab.o")
 
     c.var("objects", " ".join(objects))
