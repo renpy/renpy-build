@@ -39,7 +39,7 @@ def unpack_windows(c: Context):
 
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
 def patch_posix(c: Context):
-    c.var("version", win_version)
+    c.var("version", version)
 
     c.chdir("Python-{{ version }}")
     c.patch("Python-{{ version }}/cross-darwin.diff")
@@ -66,7 +66,7 @@ def patch_ios(c: Context):
 
 @task(kind="python", pythons="3", platforms="windows")
 def patch_windows(c: Context):
-    c.var("version", version)
+    c.var("version", win_version)
 
     c.chdir("cpython-mingw")
     c.patch("Python-{{ version }}/single-dllmain.diff")
