@@ -36,7 +36,6 @@ def unpack_windows(c: Context):
     c.chdir("cpython-mingw")
     c.run("git checkout mingw-v{{ version }}")
 
-
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
 def patch_posix(c: Context):
     c.var("version", version)
