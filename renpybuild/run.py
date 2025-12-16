@@ -494,6 +494,7 @@ class RunGroup:
         spinner_chars = "|/-\\"
         spinner_i = 0
         last_write_len = 0
+        interrupted = False
 
         while futures:
             try:
@@ -516,6 +517,9 @@ class RunGroup:
             except TimeoutError:
                 pass
 
+            except KeyboardInterrupt:
+                interrupted = True
+
             # Update spinner output after new report or timeout
             spinner_i = (spinner_i + 1) % len(spinner_chars)
             failed_str = f" ({failed} failed)" if failed else ""
@@ -526,6 +530,14 @@ class RunGroup:
 
             if not self.wait_all and failed > 0:
                 break
+
+            if interrupted:
+                break
+
+        if interrupted:
+            self.executor.shutdown(wait=False, cancel_futures=True)
+            print("\nRun group interrupted.")
+            raise KeyboardInterrupt
 
         # Clear the spinner line before exiting
         print(f"\r{' ' * last_write_len}\r", end="", file=stderr)
