@@ -535,6 +535,9 @@ class RunGroup:
             if self.wait_all:
                 print(f"\n{failed} tasks failed.")
 
+                for result in (r for r in self.futures if r.code):
+                    result.report()
+
             sys.exit(1)
 
     def _execute_command(self, command: list[str], cwd: str, env: dict):
