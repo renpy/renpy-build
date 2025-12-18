@@ -401,6 +401,7 @@ def link_windows(c: Context):
     -lsetupapi
     -lversion
     -luuid
+    -lcrypt32
 
     -Wl,--export-all-symbols
     """)
