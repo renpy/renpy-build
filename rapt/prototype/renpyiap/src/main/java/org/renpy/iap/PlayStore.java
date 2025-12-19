@@ -35,6 +35,7 @@ public class PlayStore extends Store {
     /* A map from sku to ProductDetails object. */
     private HashMap<String, ProductDetails> productDetailsMap = new HashMap<>();
 
+
     public PlayStore(Activity activity) {
         this.activity = activity;
 
@@ -211,5 +212,51 @@ public class PlayStore extends Store {
         });
 
         return true;
+    }
+
+    @Override
+    public boolean consumePurchase(String sku) {
+        try {
+            Log.i("iap", "consumePurchase " + sku);
+            finished = false;
+
+            billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                new PurchasesResponseListener() {
+                    @Override
+                    public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            for (Purchase p : purchases) {
+                                if (p.getProducts().contains(sku) && p.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                    ConsumeParams consumeParams = ConsumeParams.newBuilder()
+                                        .setPurchaseToken(p.getPurchaseToken())
+                                        .build();
+                                    billingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
+                                        @Override
+                                        public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String purchaseToken) {
+                                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                                Log.i("iap", "Successfully consumed " + sku);
+                                                purchased.remove(sku);
+                                            } else {
+                                                Log.e("iap", "Failed to consume " + sku);
+                                            }
+                                            finished = true;
+                                        }
+                                    });
+                                    return;
+                                }
+                            }
+                        }
+                        finished = true;
+                    }
+                }
+            );
+
+            return true;
+        } catch (Exception e) {
+            finished = true;
+            Log.e("iap", "consumePurchase failed.", e);
+            return false;
+        }
     }
 }
