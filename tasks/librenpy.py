@@ -66,9 +66,6 @@ def build(c: Context):
     if c.platform == "windows" or c.platform == "mac" or c.platform == "linux":
         read_setup(c.renpy / "src", ".tfd")
 
-    if c.platform != "web":
-        read_setup(c.renpy / "src", ".ecs")
-
     if c.platform == "web" and c.python == "3":
         read_setup(c.path("{{ install }}/emscripten_pyx"))
 
