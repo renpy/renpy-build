@@ -255,7 +255,8 @@ def python3(c: Context):
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(fn, dest)
 
-    # used_rules.add("steamapi")
+    if not c.path("{{host}}/steam/sdk").exists():
+        used_rules.add("steamapi")
 
     if rules - used_rules:
         if c.platform != "web":

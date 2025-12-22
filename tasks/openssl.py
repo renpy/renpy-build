@@ -4,7 +4,7 @@ from renpybuild.task import task
 version = "3.3.2"
 
 
-@task()
+@task(platforms="all")
 def unpack(c: Context):
     c.clean()
 
@@ -12,7 +12,7 @@ def unpack(c: Context):
     c.run("tar xzf {{source}}/openssl-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="all")
 def build(c: Context):
     c.var("version", version)
     c.chdir("openssl-{{version}}")
@@ -26,7 +26,8 @@ def build(c: Context):
     elif c.platform == "android":
         c.run("""./Configure cc no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif c.platform == "web":
-        raise Exception("OpenSSL should be built by embuilder")
+        # c.run("""./Configure cc no-shared no-asm no-engine threads no-buildtest-c++ no-tests no-external-tests no-quic --prefix="{{ install }}" """)
+        c.run("""./Configure cc no-shared no-asm no-engine threads no-apps --prefix="{{ install }}" """)
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 

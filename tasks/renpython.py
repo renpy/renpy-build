@@ -617,6 +617,7 @@ def link_web(c: Context):
     -lbz2
     -lz
     -lm
+    -lcrypto
 
     -lidbfs.js
 
