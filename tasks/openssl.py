@@ -26,8 +26,14 @@ def build(c: Context):
     elif c.platform == "android":
         c.run("""./Configure cc no-shared no-asm no-engine threads --prefix="{{ install }}" """)
     elif c.platform == "web":
-        # c.run("""./Configure cc no-shared no-asm no-engine threads no-buildtest-c++ no-tests no-external-tests no-quic --prefix="{{ install }}" """)
-        c.run("""./Configure cc no-shared no-asm no-engine threads no-apps --prefix="{{ install }}" """)
+        c.run("""./Configure cc no-shared no-asm no-engine threads
+              no-apps no-idea no-camellia no-seed no-bf no-cast
+              no-des no-rc2 no-rc4 no-rc5 no-md2 no-md4
+              no-ripemd no-mdc2 no-dsa no-dh no-ecdh
+              no-sock no-ssl2 no-ssl3
+              no-err no-engine no-hw no-cms no-capieng
+              no-weak-ssl-ciphers
+              --prefix="{{ install }}" """)
     else:
         c.run("""./Configure cc no-shared no-asm no-engine threads -lpthread --prefix="{{ install }}" """)
 
