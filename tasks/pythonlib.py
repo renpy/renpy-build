@@ -176,7 +176,6 @@ socks
 android/
 certifi/
 chardet/
-ecdsa/
 future/
 idna/
 past/

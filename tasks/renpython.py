@@ -571,7 +571,7 @@ def link_web(c: Context):
         'byn$fpcast-emu$slot_tp_init',
         'type_call',
         'byn$fpcast-emu$type_call',
-        # async function for ECDSA signing (ec_sign_core_web.c)
+        # async function for ECDSA signing (ecsign.pyx)
         'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_9validate_private_key',
         'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_7get_public_key_from_private',
         'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_5verify_data',
@@ -645,7 +645,6 @@ def link_web(c: Context):
 
     -sASYNCIFY=1
     -sASYNCIFY_STACK_SIZE=65535
-    -sASYNCIFY_ONLY="{{ asyncify_only }}"
     -sINITIAL_MEMORY=192MB
     -sALLOW_MEMORY_GROWTH=1
     -sSTACK_SIZE=1024KB
