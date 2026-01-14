@@ -243,7 +243,6 @@ def pip(c: Context):
         six==1.16.0
         rsa==4.9
         pyasn1==0.6.1
-        ecdsa==0.19.0
         urllib3==2.2.2
         charset-normalizer==3.3.2
         chardet==5.2.0

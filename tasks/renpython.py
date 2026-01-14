@@ -401,6 +401,7 @@ def link_windows(c: Context):
     -lsetupapi
     -lversion
     -luuid
+    -lcrypt32
 
     -Wl,--export-all-symbols
     """)
@@ -570,6 +571,19 @@ def link_web(c: Context):
         'byn$fpcast-emu$slot_tp_init',
         'type_call',
         'byn$fpcast-emu$type_call',
+        # async function for ECDSA signing (ecsign.pyx)
+        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_9validate_private_key',
+        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_7get_public_key_from_private',
+        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_5verify_data',
+        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_3sign_data',
+        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_1generate_private_key',
+        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_11validate_public_key',
+        '__pyx_pw_5renpy_6ecsign_9validate_private_key',
+        '__pyx_pw_5renpy_6ecsign_7get_public_key_from_private',
+        '__pyx_pw_5renpy_6ecsign_5verify_data',
+        '__pyx_pw_5renpy_6ecsign_3sign_data',
+        '__pyx_pw_5renpy_6ecsign_1generate_private_key',
+        '__pyx_pw_5renpy_6ecsign_11validate_public_key',
         ]
 
     c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
