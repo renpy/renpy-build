@@ -243,12 +243,11 @@ def pip(c: Context):
         six==1.16.0
         rsa==4.9
         pyasn1==0.6.1
-        urllib3==2.2.2
-        charset-normalizer==3.3.2
-        chardet==5.2.0
+        urllib3==2.6.3
+        charset-normalizer==3.4.4
         certifi
-        idna==3.8
-        requests==2.32.3
+        idna==3.11
+        requests==2.32.5
         pefile==2022.5.30
         websockets==12.0
         setuptools==74.1.2
