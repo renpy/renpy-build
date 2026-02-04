@@ -1,7 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "4.3.1"
+version = "4.4.6"
 
 
 @task(platforms="all")
@@ -14,8 +14,7 @@ def unpack(c: Context):
     c.var("version", version)
     c.chdir("ffmpeg-{{version}}")
 
-    c.patch("ffmpeg-4.3.1-sse.diff")
-    c.patch("ffmpeg-4.3.1-ff_seek_frame_binary.diff")
+    c.patch("ffmpeg-5.0-backport-ranlib-build-fix.patch")
 
 
 @task()
@@ -106,7 +105,7 @@ def build(c: Context):
         --enable-swscale
         --enable-avfilter
         --enable-avresample
-        --enable-libaom
+        --enable-libdav1d
 
         --disable-bzlib
 
@@ -149,7 +148,7 @@ def build(c: Context):
         --enable-decoder=vp3
         --enable-decoder=vp8
         --enable-decoder=vp9
-        --enable-decoder=libaom_av1
+        --enable-decoder=libdav1d
 
         --enable-parser=mpegaudio
         --enable-parser=mpegvideo
