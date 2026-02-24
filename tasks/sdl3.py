@@ -1,10 +1,19 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
-import shutil
+import os
+import requests
 
 version = "3.4.2"
 
 
+@task(kind="host", platforms="all", always=True)
+def download(c: Context):
+    c.var("version", version)
+
+    url = f"https://github.com/libsdl-org/SDL/releases/download/release-{ version }/SDL3-{ version }.tar.gz"
+    dest = c.expand("SDL3-{{version}}.tar.gz")
+
+    c.download(url, dest)
 
 @task(kind="host", platforms="all")
 def unpack(c: Context):
@@ -16,13 +25,7 @@ def unpack(c: Context):
         c.var("version", version)
         c.clean("{{ tmp }}/source/SDL3-{{version}}")
         c.chdir("{{ tmp }}/source")
-        c.run("tar xzf {{source}}/SDL3-{{version}}.tar.gz")
-
-
-        # c.chdir("SDL2-{{version}}")
-        # c.patchdir("SDL2-{{version}}")
-
-        # c.run("""./autogen.sh""")
+        c.run("tar xzf {{tmp}}/tars/SDL3-{{version}}.tar.gz")
 
 
 @task()
@@ -36,7 +39,6 @@ def build(c: Context):
         -DSDL_SHARED=OFF
         -DSDL_CAMERA=OFF
         -DSDL_DEPS_SHARED=ON
-        -DSDL_X11_XTEST=OFF
         {{ tmp }}/source/SDL3-{{version}}
         """)
 
@@ -46,6 +48,7 @@ def build(c: Context):
         c.run("cmake --build . -j 1 -v")
 
     c.run("cmake --install .")
+
 
 
 # @task(kind="arch-python", platforms="android", archs="x86_64", always=True)

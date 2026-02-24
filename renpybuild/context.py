@@ -5,6 +5,7 @@ import subprocess
 import shutil
 
 import jinja2
+import requests
 
 import renpybuild.run
 
@@ -473,3 +474,27 @@ class Context:
                 flags = f'-b {flags}'
 
         self.run(command, flags=flags, src=src)
+
+
+    def download(self, url : str, fn : str):
+        """
+        Downloads `url` to tmp/tars/`fn`.
+        """
+
+        url = self.expand(url)
+        fn = self.expand(fn)
+
+        dest = self.path("{{ tmp }}/tars") / fn
+
+        if os.path.exists(dest):
+            return
+
+        dest.parent.mkdir(parents=True, exist_ok=True)
+
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(dest.with_suffix(".tmp"), "wb") as f:
+                for chunk in r.iter_content(chunk_size=1024*1024):
+                    f.write(chunk)
+
+        dest.with_suffix(".tmp").rename(dest)
