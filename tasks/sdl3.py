@@ -1,7 +1,5 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
-import os
-import requests
 
 version = "3.4.2"
 
@@ -31,6 +29,8 @@ def unpack(c: Context):
 @task()
 def build(c: Context):
     c.var("version", version)
+
+    c.clean()
 
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}
