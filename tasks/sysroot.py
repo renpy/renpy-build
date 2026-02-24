@@ -2,32 +2,35 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 PACKAGES = [
-    'build-essential',
-    'libasound2-dev',
-    'libpulse-dev',
-    'libaudio-dev',
-    'libx11-dev',
-    'libxext-dev',
-    'libxrandr-dev',
-    'libxcursor-dev',
-    'libxi-dev',
-    'libxinerama-dev',
-    'libxxf86vm-dev',
-    'libxss-dev',
-    'libgl1-mesa-dev',
-    'libdbus-1-dev',
-    'libudev-dev',
-    'libgl1-mesa-dev',
-    'libgles2-mesa-dev',
-    'libglu1-mesa-dev',
-    'libegl1-mesa-dev',
-    'libibus-1.0-dev',
-    'fcitx-libs-dev',
-    'libsamplerate0-dev',
-    'libsndio-dev',
-    'libxkbcommon-dev',
-    "libusb-1.0-0-dev",
-    'libwayland-dev',
+    "build-essential",
+    "pkg-config",
+    "libasound2-dev",
+    "libpulse-dev",
+    "libaudio-dev",
+    "libfribidi-dev",
+    "libjack-dev",
+    "libsndio-dev",
+    "libx11-dev",
+    "libxext-dev",
+    "libxrandr-dev",
+    "libxcursor-dev",
+    "libxfixes-dev",
+    "libxi-dev",
+    "libxss-dev",
+    "libxtst-dev",
+    "libxkbcommon-dev",
+    "libdrm-dev",
+    "libgbm-dev",
+    "libgl1-mesa-dev",
+    "libgles2-mesa-dev",
+    "libegl1-mesa-dev",
+    "libdbus-1-dev",
+    "libibus-1.0-dev",
+    "libudev-dev",
+    "libthai-dev",
+    "libpipewire-0.3-dev",
+    "libwayland-dev",
+    "libdecor-0-dev",
 ]
 
 
@@ -36,10 +39,10 @@ def install_linux(c: Context):
 
     if c.arch == "x86_64":
         deb_arch = "amd64"
-        release = "focal"
+        release = "jammy"
     elif c.arch == "aarch64":
         deb_arch = "arm64"
-        release = "focal"
+        release = "jammy"
     else:
         raise Exception("Unknown arch {}".format(c.arch))
 
