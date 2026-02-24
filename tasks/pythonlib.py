@@ -175,7 +175,7 @@ socks
 
 android/
 certifi/
-chardet/
+charset_normalizer/
 future/
 idna/
 past/
