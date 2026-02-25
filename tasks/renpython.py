@@ -64,8 +64,8 @@ def link_linux(c: Context):
     -lswresample
     -lavutil
 
-    -lSDL2_image
-    -lSDL2
+    -lSDL3_image
+    -lSDL3
     -lavif
     -laom
     -lyuv
@@ -142,8 +142,8 @@ def link_android(c: Context):
     -lswresample
     -lavutil
 
-    -lSDL2_image
-    -lSDL2
+    -lSDL3_image
+    -lSDL3
 
     -lGLESv1_CM
     -lGLESv2
@@ -208,8 +208,8 @@ def link_mac(c: Context):
     -lswresample
     -lavutil
 
-    -lSDL2_image
-    -lSDL2
+    -lSDL3_image
+    -lSDL3
     -lavif
     -laom
     -lyuv
@@ -361,8 +361,8 @@ def link_windows(c: Context):
     -lswresample
     -lavutil
 
-    -lSDL2_image
-    -lSDL2
+    -lSDL3_image
+    -lSDL3
     -lopengl32
     -lavif
     -laom
@@ -612,8 +612,8 @@ def link_web(c: Context):
     -lswscale
     -lswresample
     -lavutil
-    -lSDL2_image
-    -lSDL2
+    -lSDL3_image
+    -lSDL3
     -lavif
     -laom
     -lyuv
