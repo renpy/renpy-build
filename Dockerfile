@@ -1,26 +1,39 @@
-FROM renpy-build-base:latest
+FROM ubuntu:24.04
 
-WORKDIR /build
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean && \
+    apt-get update && apt-get install --fix-missing --no-install-recommends -y \
+    git build-essential ccache unzip autoconf autoconf-archive automake libtool-bin \
+    python3-dev python3-pip python3-venv \
+    curl \
+    python3-jinja2 \
+    debootstrap qemu-user-static \
+    libgmp-dev libmpfr-dev libmpc-dev \
+    software-properties-common \
+    libssl-dev libbz2-dev liblzma-dev \
+    bc \
+    cmake clang libxml2-dev llvm \
+    quilt \
+    ninja-build \
+    libavcodec-dev libavformat-dev \
+    libswresample-dev libswscale-dev libfreetype6-dev libfribidi-dev libsdl2-dev \
+    libsdl2-image-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libjpeg-dev \
+    libharfbuzz-dev libassimp-dev
 
-# Copy build system files
-COPY extensions/ /build/extensions/
-COPY nvlib/ /build/nvlib/
-COPY patches/ /build/patches/
-COPY prebuilt/ /build/prebuilt/
-COPY renios/ /build/renios/
-COPY renpybuild/ /build/renpybuild/
-COPY runtime/ /build/runtime/
-COPY source/ /build/source/
-COPY specs/ /build/specs/
-COPY steamapi/ /build/steamapi/
-COPY tars/ /build/tars/
-COPY tasks/ /build/tasks/
-COPY tools/ /build/tools/
+RUN wget -O /tmp/llvm.sh https://apt.llvm.org/llvm.sh && \
+    chmod +x /tmp/llvm.sh && \
+    /tmp/llvm.sh 18 && \
+    rm /tmp/llvm.sh
 
-COPY docker-entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
-VOLUME ["/build/renpy", "/build/dist", "/build/tmp"]
+RUN uv python install 3.12
 
-ENTRYPOINT ["/entrypoint.sh"]
+RUN --mount=type=bind,source=prebuilt/clang_rt.tar.gz,target=/tmp/clang_rt.tar.gz \
+    tar xzf /tmp/clang_rt.tar.gz -C /usr/lib/llvm-18/lib/
+
+COPY . /build
+
+ENTRYPOINT ["/build/docker-entrypoint.sh"]
 CMD ["--help"]
