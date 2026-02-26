@@ -96,7 +96,8 @@ def emsdk(c: Context):
     c.var("emsdk_version", "3.1.67")
 
     c.clean("{{ cross }}")
-    c.run("git clone https://github.com/emscripten-core/emsdk/ {{cross}}")
+    c.clone("https://github.com/emscripten-core/emsdk/", directory="{{ cross }}")
+
     c.chdir("{{ cross }}")
     c.run("./emsdk install {{ emsdk_version }}")
     c.run("./emsdk activate {{ emsdk_version }}")
