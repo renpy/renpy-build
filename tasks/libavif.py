@@ -2,11 +2,11 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 @task(kind="host", platforms="all")
-def download(c : Context):
+def download(c: Context):
     c.clean("{{ tmp }}/source/libavif")
     c.chdir("{{ tmp }}/source")
 
-    c.run("git clone --branch v0.11.1 https://github.com/AOMediaCodec/libavif")
+    c.clone("https://github.com/AOMediaCodec/libavif", "--branch v0.11.1")
 
 @task(platforms="all")
 def build(c : Context):
