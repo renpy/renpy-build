@@ -1,0 +1,33 @@
+services:
+  renpy-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: renpy-build:latest
+    volumes:
+      - type: bind
+        source: ./renpy
+        target: /build/renpy
+        bind:
+          selinux: z
+      - type: volume
+        source: build_tmp
+        target: /build/tmp
+      - type: volume
+        source: venv_cache
+        target: /cache/venv
+      - type: volume
+        source: ccache_data
+        target: /cache/ccache
+    environment:
+      - CCACHE_DIR=/cache/ccache
+      - UV_PROJECT_ENVIRONMENT=/cache/venv
+      - RENPY_VIRTUAL_ENV=/cache/venv
+      - PYTHONUNBUFFERED=1
+      - PYTHONHASHSEED=0
+      - RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
+
+volumes:
+  build_tmp:
+  venv_cache:
+  ccache_data:
