@@ -14,23 +14,20 @@ def unpack(c: Context):
     c.clean()
 
     c.var("commit", commit)
-    c.run("git clone https://github.com/kivy/pyobjus pyobjus")
-    c.chdir("pyobjus")
+    c.clone("https://github.com/kivy/pyobjus", "--revision {{ commit }}")
 
-    c.run("git checkout  {{commit}}")
+    c.chdir("pyobjus")
     c.patch("pyobjus/ffi-h.diff")
 
 
 @task(kind="host-python")
 def host_unpack(c: Context):
-
     c.clean()
 
     c.var("commit", commit)
-    c.run("git clone https://github.com/kivy/pyobjus pyobjus")
-    c.chdir("pyobjus")
+    c.clone("https://github.com/kivy/pyobjus", "--revision {{ commit }}")
 
-    c.run("git checkout  {{commit}}")
+    c.chdir("pyobjus")
     c.patch("pyobjus/ffi-h.diff")
 
 
