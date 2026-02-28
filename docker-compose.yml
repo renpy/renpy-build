@@ -1,0 +1,6 @@
+services:
+  renpy-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: localhost/renpy-build:${TAG:-latest}

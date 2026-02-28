@@ -31,8 +31,18 @@ PACKAGES = [
 ]
 
 
+def _in_podman():
+    "Return True if we're running in a podman container."
+
+    import os
+
+    return os.path.exists("/run/.containerenv")
+
+
 @task(platforms="linux", archs="x86_64,aarch64", always=True)
 def install_linux(c: Context):
+    if c.path("{{ sysroot }}").exists():
+        return
 
     if c.arch == "x86_64":
         deb_arch = "amd64"
@@ -43,16 +53,26 @@ def install_linux(c: Context):
     else:
         raise Exception("Unknown arch {}".format(c.arch))
 
-
     c.var("deb_arch", deb_arch)
     c.var("release", release)
 
-    if not c.path("{{ sysroot }}").exists():
+    c.var("packages", ",".join(PACKAGES))
 
-        c.var("packages", ",".join(PACKAGES))
+    c.run("""mkdir -p "{{ tmp }}/debs" """)
 
-        c.run("""mkdir -p "{{ tmp }}/debs" """)
-        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """)
+    if _in_podman():
+        c.run(
+            """debootstrap --download-only --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """
+        )
+        c.run(
+            """bash -c 'for deb in "{{ tmp }}"/debs/*.deb "{{ sysroot }}"/var/cache/apt/archives/*.deb; do [ -f "$deb" ] && dpkg-deb -x "$deb" "{{ sysroot }}"; done' """
+        )
+
+        c.run("""{{source}}/make_links_relative.py {{sysroot}}""")
+    else:
+        c.run(
+            """sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """
+        )
         c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
 
 
@@ -63,7 +83,11 @@ def permissions(c: Context):
     c.var("uid", str(os.getuid()))
     c.var("gid", str(os.getgid()))
 
-    c.run("""sudo chown -R {{uid}}:{{gid}} {{sysroot}}""")
+    if _in_podman():
+        c.run("""chown -R {{uid}}:{{gid}} {{sysroot}}""")
+    else:
+        c.run("""{{ sudo }}chown -R {{uid}}:{{gid}} {{sysroot}}""")
+
 
 @task(platforms="linux")
 def fix_pkgconf_prefix(c: Context):
@@ -74,6 +98,9 @@ def fix_pkgconf_prefix(c: Context):
     https://github.com/pkgconf/pkgconf/issues/213 and https://github.co
     m/pkgconf/pkgconf/pull/280.
     """
+
+    if _in_podman():
+        return
 
     c.run("""
           bash -c "grep -rl {{sysroot}} {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig > /dev/null || sed -i 's#/usr#{{sysroot}}/usr#g' $(grep -rl /usr {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig) $(grep -rl /usr {{sysroot}}/usr/share/pkgconfig)"

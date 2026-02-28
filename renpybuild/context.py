@@ -2,11 +2,8 @@ import os
 import shutil
 from pathlib import Path
 import subprocess
-import shutil
 
 import jinja2
-
-import renpybuild.run
 
 from typing import Any
 
@@ -226,7 +223,9 @@ class Context:
         else:
             self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
 
-        renpybuild.run.build_environment(self)
+        from .run import build_environment
+
+        build_environment(self)
 
     def expand(self, s : str, **kwargs) -> str:
         """
@@ -319,7 +318,10 @@ class Context:
         """
 
         command = self.expand(command, **kwargs)
-        renpybuild.run.run(command, self, verbose, quiet)
+
+        from .run import run
+
+        run(command, self, verbose, quiet)
 
     def run_group(self):
         """
@@ -327,7 +329,9 @@ class Context:
         that allows multiple commands to be run in parallel.
         """
 
-        return renpybuild.run.RunGroup(self)
+        from .run import RunGroup
+
+        return RunGroup(self)
 
     def clean(self, d : str="{{build}}"):
         """
@@ -473,3 +477,40 @@ class Context:
                 flags = f'-b {flags}'
 
         self.run(command, flags=flags, src=src)
+
+    def clone(
+        self,
+        url: str,
+        options: str = "",
+        *,
+        directory: str = "",
+        minimal: bool = True,
+        submodules: bool = False,
+    ):
+        """
+        Clones the repository at `url` into the current directory.
+
+        `options`
+            Options to pass to git clone.
+
+        `directory`
+            The directory to clone into.
+
+        `minimal`
+            If true, automatically applies options to minimize download size.
+
+        `submodules`
+            If true, also clones submodules recursively.
+        """
+
+        url = self.expand(url)
+        options = self.expand(options)
+        directory = self.expand(directory)
+
+        if minimal:
+            options = f"--depth 1 --no-tags --single-branch --shallow-submodules {options}"
+
+        if submodules:
+            options = f"--recurse-submodules {options}"
+
+        self.run(f"git clone {options} {url} {directory}")

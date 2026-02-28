@@ -1,0 +1,16 @@
+*
+!extensions/
+!nvlib/
+!patches/
+!prebuilt/
+!rapt/
+!renios/
+!renpybuild/
+!runtime/
+!source/
+!specs/
+!steamapi/
+!tars/
+!tasks/
+!tools/
+!docker-entrypoint.sh
