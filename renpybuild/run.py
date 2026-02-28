@@ -66,6 +66,7 @@ def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
     c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}")
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
+    c.env("OBJC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} ")
 
     # c.env("LD", "ccache " + ld)
     c.env("AR", "{{llvm_bin}}llvm-ar{{llvm_suffix}}")
@@ -75,6 +76,8 @@ def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
     c.env("READELF", "{{llvm_bin}}llvm-readelf{{llvm_suffix}}")
 
     c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
+    c.env("INSTALL_NAME_TOOL", "{{llvm_bin}}{{llvm_prefix}}install_name_tool{{llvm_suffix}}")
+
 
     if c.platform == "windows":
         c.env("RC", "{{WINDRES}}")
@@ -240,6 +243,7 @@ def build_environment(c):
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
+        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
         llvm(
@@ -303,7 +307,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "mac") and (c.arch == "arm64"):
 
@@ -318,7 +322,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
 

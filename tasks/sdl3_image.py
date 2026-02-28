@@ -15,6 +15,7 @@ def download(c: Context):
 
 @task(kind="host", platforms="all")
 def unpack(c: Context):
+    c.var("version", version)
 
     c.clean("{{ tmp }}/source/SDL3_image-{{version}}")
     c.chdir("{{ tmp }}/source")
@@ -37,6 +38,7 @@ def build(c: Context):
         -DSDLIMAGE_AVIF_SAVE=OFF
         -DSDLIMAGE_GIF_SAVE=OFF
         -DSDLIMAGE_WEBP_SAVE=OFF
+        -DSDLIMAGE_SAMPLES=OFF
 
         {{ tmp }}/source/SDL3_image-{{version}}
         """)
