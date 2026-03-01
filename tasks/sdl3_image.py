@@ -22,7 +22,7 @@ def unpack(c: Context):
     c.run("tar xzf {{tmp}}/tars/SDL3_image-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="all")
 def build(c: Context):
     c.var("version", version)
 

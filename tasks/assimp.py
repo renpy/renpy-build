@@ -17,6 +17,9 @@ def build(c : Context):
 
     c.env("CXXFLAGS", "-Wno-unknown-pragmas {{CXXFLAGS}}")
 
+    if c.arch == "wasm":
+        c.env("CXXFLAGS", "{{CXXFLAGS}} -Wno-nontrivial-memcall")
+
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}

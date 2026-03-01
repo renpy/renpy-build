@@ -80,7 +80,8 @@ def mockrt(c: Context):
 
 @task(platforms="web")
 def emsdk(c: Context):
-    c.var("emsdk_version", "3.1.67")
+    # c.var("emsdk_version", "3.1.67")
+    c.var("emsdk_version", "5.0.2")
 
     c.clean("{{ cross }}")
     c.run("git clone https://github.com/emscripten-core/emsdk/ {{cross}}")
@@ -95,4 +96,4 @@ def embuilder(c: Context):
     c.run("embuilder build zlib")
     c.run("embuilder build libjpeg")
     c.run("embuilder build libpng")
-    c.run("embuilder build sdl2")
+    c.run("embuilder build sdl3")

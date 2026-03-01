@@ -124,8 +124,8 @@ def build_environment(c):
     c.var("sysroot", c.tmp / f"sysroot.{c.platform}-{c.arch}")
     c.var("build_platform", sysconfig.get_config_var("HOST_GNU_TYPE"))
 
-    c.env("CPPFLAGS", "-I{{ install }}/include")
-    c.env("CFLAGS", "-O3 -I{{ install }}/include")
+    c.env("CPPFLAGS", "-I{{ install }}/include  -DSDL_MAIN_HANDLED")
+    c.env("CFLAGS", "-O3 -I{{ install }}/include -DSDL_MAIN_HANDLED")
     c.env("LDFLAGS", "-O3 -L{{install}}/lib")
 
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
@@ -243,7 +243,7 @@ def build_environment(c):
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("CFLAGS", "{{ CFLAGS }}")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
         llvm(
@@ -262,7 +262,7 @@ def build_environment(c):
 
         android_llvm(c, "x86_64")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("CFLAGS", "{{ CFLAGS }}")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
@@ -274,7 +274,7 @@ def build_environment(c):
 
         android_llvm(c, "aarch64")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("CFLAGS", "{{ CFLAGS }}")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
@@ -286,7 +286,7 @@ def build_environment(c):
 
         android_llvm(c, "armv7a")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED")
+        c.env("CFLAGS", "{{ CFLAGS }}")
         c.env("LDFLAGS", "{{ LDFLAGS }} -Wl,-z,max-page-size=16384")
 
         c.var("cmake_system_name", "Android")
@@ -331,7 +331,7 @@ def build_environment(c):
             clang_args="-target arm64-apple-ios13.0 --sysroot {{cross}}/sdk",
         )
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -miphoneos-version-min=13.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -miphoneos-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "Darwin")
@@ -345,7 +345,7 @@ def build_environment(c):
             clang_args="-target arm64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
         )
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "Darwin")
@@ -359,7 +359,7 @@ def build_environment(c):
             clang_args="-target x86_64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
         )
 
-        c.env("CFLAGS", "{{ CFLAGS }} -DSDL_MAIN_HANDLED -mios-simulator-version-min=13.0")
+        c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "Darwin")
@@ -373,8 +373,8 @@ def build_environment(c):
         c.var("configure", "emconfigure ./configure")
         c.var("cmake_configure", "emcmake cmake")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
+        c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=3 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=3 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
 
         c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
         c.var("crossbin", "{{ cross }}/upstream/bin")

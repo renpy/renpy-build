@@ -40,8 +40,8 @@ from . import pyjnius
 from . import pyobjus
 from . import iossupport
 
-from . import sdl2
-from . import sdl2_image
+# from . import sdl2
+# from . import sdl2_image
 from . import sdl3
 from . import sdl3_image
 
