@@ -28,6 +28,8 @@ from . import libyuv
 from . import aom
 from . import libavif
 
+from . import ffmpeg
+
 from . import hostpython3
 from . import python3
 
@@ -40,12 +42,9 @@ from . import pyjnius
 from . import pyobjus
 from . import iossupport
 
-# from . import sdl2
-# from . import sdl2_image
 from . import sdl3
 from . import sdl3_image
 
-from . import ffmpeg
 
 from . import assimp
 

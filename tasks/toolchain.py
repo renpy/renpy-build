@@ -96,4 +96,3 @@ def embuilder(c: Context):
     c.run("embuilder build zlib")
     c.run("embuilder build libjpeg")
     c.run("embuilder build libpng")
-    c.run("embuilder build sdl3")

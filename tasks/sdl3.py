@@ -26,7 +26,7 @@ def unpack(c: Context):
         c.run("tar xzf {{tmp}}/tars/SDL3-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="all")
 def build(c: Context):
     c.var("version", version)
 
@@ -39,6 +39,7 @@ def build(c: Context):
         -DSDL_SHARED=OFF
         -DSDL_CAMERA=OFF
         -DSDL_DEPS_SHARED=ON
+        -DSDL_TESTS=OFF
         {{ tmp }}/source/SDL3-{{version}}
         """)
 
