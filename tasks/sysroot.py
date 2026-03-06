@@ -114,11 +114,13 @@ def update_wayland_headers(c: Context):
     any of the newer features.
     """
 
+    c.run("mkdir -p {{sysroot}}/usr/include")
     for i in c.path("{{source}}/wayland-headers/").glob("wayland*.h"):
         c.copy(str(i), "{{ sysroot }}/usr/include/" + i.name)
 
 @task(platforms="linux")
 def update_wayland_pkgconfig(c: Context):
 
+    c.run("mkdir -p {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig")
     for i in c.path("{{source}}/wayland-pc-files/").glob("wayland*.pc"):
         c.copy(str(i), "{{ sysroot }}/usr/lib/{{architecture_name}}/pkgconfig/" + i.name)

@@ -31,9 +31,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 RUN uv python install 3.12
 
 RUN --mount=type=bind,source=prebuilt/clang_rt.tar.gz,target=/tmp/clang_rt.tar.gz \
-    tar xzf /tmp/clang_rt.tar.gz -C /usr/lib/llvm-18/lib/
+    mkdir -p /usr/lib/llvm-18/lib/clang/18/lib/ && \
+    tar xzf /tmp/clang_rt.tar.gz -C /usr/lib/llvm-18/lib/clang/18/lib/
 
 COPY . /build
-
-ENTRYPOINT ["/build/docker-entrypoint.sh"]
-CMD ["--help"]
