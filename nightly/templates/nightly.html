@@ -52,12 +52,11 @@
       <p>
       This build is temporary, it will be removed from the web after a few
       days.
-      {% if vcs|length > 2 %}
-      It was built from the <code>{{ branch }}</code> branch, revisions
-      {%- for src in vcs[:-2] %}
+      {% if vcs|length > 1 %}
+      It was built from the <code>{{ branch }}</code> branch, with
+      {%- for src in vcs[:-1] %}
       <code><a href="{{ src.url }}">{{ src.text }}</a></code>,
-      {%- endfor %} and
-      <code><a href="{{ vcs[-2].url }}">{{ vcs[-2].text }}</a></code>, using
+      {%- endfor %} using
       <code><a href="{{ vcs[-1].url }}">{{ vcs[-1].text }}</a></code>.
       {% endif -%}
       </p>
