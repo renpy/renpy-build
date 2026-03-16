@@ -106,7 +106,7 @@ def common_post(c: Context):
 
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
-    for i in [ "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+    for i in [ "{}.py".format(c.get_sysconfigdata_name()) ]:
         c.var("i", i)
 
         c.copy(
@@ -228,7 +228,7 @@ def build_web(c: Context):
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
-    for i in [ "ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+    for i in [ "ssl.py", "{}.py".format(c.get_sysconfigdata_name()) ]:
         c.var("i", i)
 
         c.copy(
