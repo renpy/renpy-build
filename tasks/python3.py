@@ -249,7 +249,7 @@ def pip(c: Context):
         chardet==5.2.0
         certifi
         idna==3.8
-        requests==2.32.3
+        requests==2.33.0
         pefile==2022.5.30
         websockets==12.0
         setuptools==74.1.2
