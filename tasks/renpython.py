@@ -511,7 +511,7 @@ def build_web(c: Context):
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c: Context):
 
-    debug_asyncify = True
+    debug_asyncify = False
 
     asyncify_only = [
         # CPython functions.
