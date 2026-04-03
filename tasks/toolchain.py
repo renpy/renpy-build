@@ -8,7 +8,7 @@ mingw_version = "20241217-ucrt-ubuntu-20.04-x86_64"
 
 
 @task(kind="cross", platforms="windows")
-def download(c: Context):
+def download_windows(c: Context):
 
     c.var("mingw_version", mingw_version)
 
@@ -32,7 +32,7 @@ def download(c: Context):
 
 
 @task(kind="cross", platforms="windows")
-def unpack(c: Context):
+def unpack_windows(c: Context):
     c.var("mingw_version", mingw_version)
 
     c.clean("{{cross}}")
@@ -43,7 +43,7 @@ def unpack(c: Context):
 
 
 @task(kind="cross", platforms="android", always=True)
-def build(c: Context):
+def build_android(c: Context):
 
     if c.path("{{cross}}/{{ndk_version}}").exists():
         return
@@ -54,7 +54,7 @@ def build(c: Context):
     c.run("""unzip -q {{ tars }}/{{ndk_version}}-linux.zip""")
 
 @task(kind="cross", platforms="mac")
-def build(c: Context):
+def build_mac(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
@@ -63,7 +63,7 @@ def build(c: Context):
 
 
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")
-def build(c: Context):
+def build_ios(c: Context):
 
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
@@ -73,7 +73,7 @@ def build(c: Context):
 
 
 @task(kind="cross", platforms="ios", archs="sim-arm64,sim-x86_64")
-def build(c: Context):
+def build_ios_sim(c: Context):
 
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
@@ -108,5 +108,4 @@ def embuilder(c: Context):
     c.run("embuilder build bzip2")
     c.run("embuilder build zlib")
     c.run("embuilder build libjpeg")
-    c.run("embuilder build libpng")
     c.run("embuilder build sdl2")

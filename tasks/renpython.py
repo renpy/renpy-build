@@ -510,10 +510,87 @@ def build_web(c: Context):
 
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c: Context):
-    c.run("""
+
+    debug_asyncify = True
+
+    asyncify_only = [
+        # CPython functions.
+        "PyEval_EvalCode",
+        "PyImport_Import",
+        "PyImport_ImportModule",
+        "PyImport_ImportModuleLevelObject",
+        "PyObject_Call",
+        "PyObject_CallFunction",
+        "PyObject_CallFunctionObjArgs",
+        "PyObject_CallMethod",
+        "PyObject_CallMethodObjArgs",
+        "PyObject_CallNoArgs",
+        "PyObject_CallObject",
+        "PyObject_CallOneArg",
+        "PyObject_Vectorcall",
+        "PyVectorcall_Call",
+        "_PyEval_EvalFrameDefault",
+        "_PyEval_Vector",
+        "_PyEval_ImportName",
+        "_PyFunction_Vectorcall",
+        "_PyObject_Call",
+        "_PyObject_CallFunctionVa",
+        "_PyObject_Call_Prepend",
+        "_PyObject_VectorcallDictTstate",
+        "_PyObject_MakeTpCall",
+        "_PyRun_AnyFileObject",
+        "_PyRun_SimpleFileObject",
+        "PyRun_StringFlags",
+        "_PyVectorcall_Call",
+        "builtin___import__",
+        "builtin_exec",
+        "builtin_eval",
+        "cfunction_vectorcall_*",
+        "method_vectorcall*",
+        "object_vacall",
+        "slot_tp_call",
+        "run_mod",
+        "partial_vectorcall",
+        "slot_tp_init",
+        "main",
+        "launcher_main",
+        "Py_InitializeFromConfig",
+        "init_interp_main",
+        "init_import_site",
+        "pymain_run_file",
+        "Py_RunMain",
+        # opcode_transform generated functions.
+        "handler_*",
+        # emscripten.pyx functions and cython wrappers.
+        "__pyx_*_*emscripten_*sleep",
+        "__Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS_*",
+        # async function for ECDSA signing (ecsign.pyx)
+        "__pyx_*_*renpy_*ecsign_*validate_private_key",
+        "__pyx_*_*renpy_*ecsign_*get_public_key_from_private",
+        "__pyx_*_*renpy_*ecsign_*verify_data",
+        "__pyx_*_*renpy_*ecsign_*sign_data",
+        "__pyx_*_*renpy_*ecsign_*generate_private_key",
+        "__pyx_*_*renpy_*ecsign_*validate_public_key",
+        "ECGetPublicKeyFromPrivate",
+        "ECSign",
+        "ECVerify",
+        "ECValidateKey",
+        "ECGeneratePrivateKey",
+    ]
+
+    c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
+
+    command = """
         {{ CXX }} {{ LDFLAGS }}
 
+        {% if debug_asyncify %}
+        -O0 -g -gsource-map --source-map-base ./
+
+        -ASYNCIFY_DEBUG=2
+
+        {% else %}
         -g0
+        {% endif %}
 
         -o renpy.html
         librenpython.o
@@ -552,29 +629,31 @@ def link_web(c: Context):
 
         -lidbfs.js
 
-        --preload-file {{ dist }}@/
+        --preload-file {{ dist }}/lib/{{ pythonver }}@/lib/{{ pythonver }}
 
-        -sFULL_ES2=1
-        -sFULL_ES3=1
+        -sFULL_ES2
+        -sFULL_ES3
         -sMAX_WEBGL_VERSION=2
-        --emit-symbol-map
 
-        -sWASM_BIGINT
-        -sEXIT_RUNTIME
-        -sFILESYSTEM=1
-        -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS','ccall']
+        -sFILESYSTEM
+        -sFORCE_FILESYSTEM
 
-        -sJSPI
+        -sASYNCIFY=1
+        -sASYNCIFY_STACK_SIZE=65535
+        -sASYNCIFY_ONLY="{{ asyncify_only }}"
         -sINITIAL_MEMORY=192MB
-        -sALLOW_MEMORY_GROWTH=1
         -sSTACK_SIZE=1024KB
+        -sALLOW_MEMORY_GROWTH
+        -sALLOW_TABLE_GROWTH
 
         -sEXPORTED_FUNCTIONS=['_main']
 
         -sMINIFY_HTML=0
 
         --shell-file {{ runtime }}/web/shell.html
-    """)
+    """
+
+    c.run(command, debug_asyncify=debug_asyncify)
 
     c.run("""install -d {{ renpy }}/web3""")
     c.run("""install renpy.html {{ renpy }}/web3/index.html""")
@@ -587,3 +666,6 @@ def link_web(c: Context):
     c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web3/web-icon.png""")
     c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web3/manifest.json""")
     c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web3/service-worker.js""")
+
+    if debug_asyncify:
+        c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")

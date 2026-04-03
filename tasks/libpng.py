@@ -4,7 +4,7 @@ from renpybuild.task import task
 version = "1.6.43"
 
 
-@task()
+@task(platforms="all")
 def unpack(c: Context):
     c.clean()
 
@@ -12,7 +12,7 @@ def unpack(c: Context):
     c.run("tar xzf {{source}}/libpng-{{version}}.tar.gz")
 
 
-@task()
+@task(platforms="all")
 def build(c: Context) :
     c.var("version", version)
     c.chdir("libpng-{{version}}")

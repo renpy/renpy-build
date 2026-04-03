@@ -1,0 +1,88 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -4,7 +4,7 @@
+
+ ACLOCAL_AMFLAGS = -I m4
+
+-SUBDIRS = src util test perf docs
++SUBDIRS = src util perf docs
+
+ EXTRA_DIST = \
+ 	autogen.sh \
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -440,18 +440,6 @@
+ src/Makefile
+ src/harfbuzz-config.cmake
+ util/Makefile
+-test/Makefile
+-test/api/Makefile
+-test/fuzzing/Makefile
+-test/shape/Makefile
+-test/shape/data/Makefile
+-test/shape/data/aots/Makefile
+-test/shape/data/in-house/Makefile
+-test/shape/data/text-rendering-tests/Makefile
+-test/subset/Makefile
+-test/subset/data/Makefile
+-test/subset/data/repack_tests/Makefile
+-test/threads/Makefile
+ perf/Makefile
+ docs/Makefile
+ docs/version.xml
+
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -385,18 +385,7 @@
+ 	|| ($(RM) $(srcdir)/harfbuzz.cc; false)
+ BUILT_SOURCES += harfbuzz.cc
+
+-noinst_PROGRAMS = \
+-	main \
+-	test \
+-	test-buffer-serialize \
+-	test-ot-meta \
+-	test-ot-name \
+-	test-ot-glyphname \
+-	test-gpos-size-params \
+-	test-gsub-get-alternates \
+-	test-gsub-would-substitute \
+-	test-use-table \
+-	$(NULL)
++noinst_PROGRAMS =
+ bin_PROGRAMS =
+
+ main_SOURCES = main.cc
+@@ -439,30 +428,7 @@
+ test_gsub_would_substitute_CPPFLAGS = $(HBCFLAGS) $(FREETYPE_CFLAGS)
+ test_gsub_would_substitute_LDADD = libharfbuzz.la $(HBLIBS) $(FREETYPE_LIBS)
+
+-COMPILED_TESTS = \
+-	test-algs \
+-	test-array \
+-	test-bimap \
+-	test-iter \
+-	test-machinery \
+-	test-map \
+-	test-multimap \
+-	test-number \
+-	test-ot-tag \
+-	test-priority-queue \
+-	test-set \
+-	test-serialize \
+-	test-unicode-ranges \
+-	test-vector \
+-	test-repacker \
+-	test-classdef-graph \
+-	test-instancer-solver \
+-	test-tuple-varstore \
+-	$(NULL)
+-COMPILED_TESTS_CPPFLAGS = $(HBCFLAGS) -DMAIN -UNDEBUG
+-COMPILED_TESTS_LDADD = libharfbuzz.la $(HBLIBS)
+-check_PROGRAMS += $(COMPILED_TESTS)
+-TESTS += $(COMPILED_TESTS)
++COMPILED_TESTS =
+
+ test_algs_SOURCES = test-algs.cc hb-static.cc
+ test_algs_CPPFLAGS = $(COMPILED_TESTS_CPPFLAGS)

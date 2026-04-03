@@ -370,8 +370,17 @@ def build_environment(c):
         c.var("configure", "emconfigure ./configure")
         c.var("cmake_configure", "emcmake cmake")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
+        c.var(
+            "use_ports",
+            """\
+            --use-port=sdl2 \
+            --use-port=libjpeg \
+            --use-port=bzip2 \
+            --use-port=zlib \
+            """,
+        )
+        c.env("CFLAGS", "{{ CFLAGS }} {{ use_ports }} -fexceptions")
+        c.env("LDFLAGS", "{{ LDFLAGS }} {{ use_ports }}")
 
         c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
         c.var("crossbin", "{{ cross }}/upstream/bin")
