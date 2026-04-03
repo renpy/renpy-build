@@ -238,6 +238,8 @@ def build_web(c: Context):
 
     patch_common(c)
 
+    c.patch("Python-{{ version }}/fix-emscripten-main-wrapper.diff")
+
     c.run(""" autoreconf -vfi """)
 
     c.env("PYTHON_FOR_BUILD", "{{ host }}/web/bin/python3")

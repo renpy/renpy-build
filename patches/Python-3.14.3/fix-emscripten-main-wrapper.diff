@@ -1,0 +1,18 @@
+Fix that Python's emscripten_syscalls.c works only with --enable-wasm-dynamic-linking.
+
+
+############################################################################
+--- a/Python/emscripten_syscalls.c
++++ b/Python/emscripten_syscalls.c
+@@ -96,6 +96,11 @@
+         FS.registerDevice(dev, ops);
+         return FS.mkdev(path, mode, dev);
+     };
++    if (typeof resolveGlobalSymbol === 'undefined') {
++        // Static linking - no dynamic symbol resolver.
++        // JSPI_EXPORTS handles main wrapping.
++        return;
++    }
+     if (!WebAssembly.promising) {
+         // No stack switching support =(
+         return;
