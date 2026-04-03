@@ -1,7 +1,6 @@
 from renpybuild.context import Context
 from renpybuild.task import task
-import os
-import time
+
 
 @task(kind="python", always=True)
 def clean(c: Context):
@@ -272,7 +271,6 @@ def link_mac(c: Context):
     c.run("""install renpy {{ install }}/mac{{python}}/renpy""")
 
 
-
 @task(kind="host-python", platforms="mac", always=True)
 def lipo_mac(c: Context):
 
@@ -311,12 +309,12 @@ def fix_pe(c: Context, fn):
     """
 
     import sys
+
     print(sys.executable, sys.path)
 
     fn = str(c.path(fn))
 
     with open(c.path("fix_pe.py"), "w") as f:
-
         f.write("""\
 import sys
 print(sys.executable, sys.path)
@@ -334,7 +332,6 @@ pe.write(fn)
 """)
 
     c.run("""{{ hostpython }} fix_pe.py """ + fn)
-
 
 
 @task(kind="python", always=True, platforms="windows")
@@ -441,7 +438,9 @@ def link_windows(c: Context):
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
 
     if not c.args.nostrip:
-        c.run("""{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe""")
+        c.run(
+            """{{ STRIP }} --strip-unneeded lib{{ pythonver }}.dll librenpython.dll python.exe pythonw.exe renpy.exe"""
+        )
         c.run("""{{ STRIP }} -R .reloc python.exe pythonw.exe renpy.exe""")
 
     fix_pe(c, "python.exe")
@@ -456,7 +455,10 @@ def link_windows(c: Context):
     if c.arch == "x86_64":
         c.run("""install renpy.exe {{ renpy }}/renpy{{ python }}.exe""")
         c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/bin/libwinpthread-1.dll", "{{ dlpa }}/libwinpthread-1.dll")
-        c.copy("{{cross}}/llvm-mingw/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt", "{{ dlpa }}/libwinpthread-1.txt")
+        c.copy(
+            "{{cross}}/llvm-mingw/x86_64-w64-mingw32/share/mingw32/COPYING.winpthreads.txt",
+            "{{ dlpa }}/libwinpthread-1.txt",
+        )
 
         if c.python == "3":
             c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
@@ -470,9 +472,11 @@ def link_ios(c: Context):
     c.run("""install -d {{install}}/lib""")
     c.run("""install librenpython.a {{ install }}/lib""")
 
+
 @task(kind="python", platforms="web", pythons="3", always=True)
 def clean_web(c: Context):
     c.clean()
+
 
 @task(kind="python", platforms="web", pythons="3", always=True)
 def build_web(c: Context):
@@ -503,160 +507,74 @@ def build_web(c: Context):
     {{ runtime }}/launcher{{ c.python }}_posix.c
     """)
 
+
 @task(kind="python", platforms="web", pythons="3", always=True)
 def link_web(c: Context):
-
-    debug_asyncify = False
-
-    asyncify_only = [
-        'PyEval_EvalCode',
-        'PyImport_Import',
-        'PyImport_ImportModule',
-
-        'PyImport_ImportModuleLevelObject',
-        'PyObject_Call',
-        'PyObject_CallFunction',
-        'PyObject_CallFunctionObjArgs',
-        'PyObject_CallMethod',
-        'PyObject_CallMethodObjArgs',
-        'PyObject_CallNoArgs',
-        'PyObject_CallObject',
-        'PyObject_CallOneArg',
-        'PyObject_Vectorcall',
-        'PyVectorcall_Call',
-        '_PyEval_EvalFrameDefault',
-        '_PyEval_Vector',
-        '_PyFunction_Vectorcall',
-        '_PyObject_FastCall',
-        '_PyObject_Call',
-        '_PyObject_CallFunction_SizeT',
-        '_PyObject_CallFunctionVa',
-        '_PyObject_CallMethodId',
-        '_PyObject_CallMethodIdObjArgs',
-        '_PyObject_CallMethodIdOneArg',
-        '_PyObject_CallMethod_SizeT',
-        '_PyObject_Call_Prepend',
-        '_PyObject_FastCallDictTstate',
-        '_PyObject_MakeTpCall',
-        '_PyRun_AnyFileObject',
-        '_PyRun_SimpleFileObject',
-        'PyRun_StringFlags',
-        '_PyVectorcall_Call',
-        '__pyx_pw_10emscripten_19sleep',
-        'builtin___import__',
-        'builtin_exec',
-        'builtin_eval',
-        'cfunction_vectorcall_FASTCALL_KEYWORDS',
-        'cfunction_vectorcall_O',
-        'main',
-        'method_vectorcall',
-        'object_vacall',
-        'opfunc_*',
-        'run_mod',
-        'slot_tp_call',
-        'byn$fpcast-emu$_PyFunction_Vectorcall',
-        'byn$fpcast-emu$__pyx_pw_10emscripten_19sleep',
-        'byn$fpcast-emu$builtin___import__',
-        'byn$fpcast-emu$builtin_exec',
-        'byn$fpcast-emu$builtin_eval',
-        'byn$fpcast-emu$cfunction_vectorcall_FASTCALL_KEYWORDS',
-        'byn$fpcast-emu$cfunction_vectorcall_O',
-        'byn$fpcast-emu$method_vectorcall',
-        'byn$fpcast-emu$slot_tp_call',
-        'byn$fpcast-emu$opfunc_*',
-        '__Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS',
-        'byn$fpcast-emu$__Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS',
-        'partial_vectorcall',
-        'byn$fpcast-emu$partial_vectorcall',
-        'slot_tp_init',
-        'byn$fpcast-emu$slot_tp_init',
-        'type_call',
-        'byn$fpcast-emu$type_call',
-        # async function for ECDSA signing (ecsign.pyx)
-        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_9validate_private_key',
-        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_7get_public_key_from_private',
-        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_5verify_data',
-        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_3sign_data',
-        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_1generate_private_key',
-        'byn$fpcast-emu$__pyx_pw_5renpy_6ecsign_11validate_public_key',
-        '__pyx_pw_5renpy_6ecsign_9validate_private_key',
-        '__pyx_pw_5renpy_6ecsign_7get_public_key_from_private',
-        '__pyx_pw_5renpy_6ecsign_5verify_data',
-        '__pyx_pw_5renpy_6ecsign_3sign_data',
-        '__pyx_pw_5renpy_6ecsign_1generate_private_key',
-        '__pyx_pw_5renpy_6ecsign_11validate_public_key',
-        ]
-
-    c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
-
     c.run("""
-    {{ CXX }} {{ LDFLAGS }}
+        {{ CXX }} {{ LDFLAGS }}
 
-    {% if debug_asyncify %}
-    -g2 -gsource-map --source-map-base ./
-    {% else %}
-    -g0
-    {% endif %}
+        -g0
 
-    -o renpy.html
-    librenpython.o
-    launcher.o
+        -o renpy.html
+        librenpython.o
+        launcher.o
 
-    -l{{ pythonver }}
+        -l{{ pythonver }}
+        -lffi
 
-    -lrenpy
+        -lrenpy
 
-    -lassimp
+        -lassimp
 
-    -lavformat
-    -lavcodec
-    -lswscale
-    -lswresample
-    -lavutil
-    -lSDL2_image
-    -lSDL2
-    -lavif
-    -laom
-    -lyuv
-    -ljpeg
-    -lpng
-    -lwebp
-    -lsharpyuv
-    -lharfbuzz
-    -lbrotlidec
-    -lbrotlicommon
-    -lfribidi
-    -lfreetype
-    -llzma
-    -lbz2
-    -lz
-    -lm
+        -lavformat
+        -lavcodec
+        -lswscale
+        -lswresample
+        -lavutil
+        -lSDL2_image
+        -lSDL2
+        -lavif
+        -laom
+        -lyuv
+        -ljpeg
+        -lpng
+        -lwebp
+        -lsharpyuv
+        -lharfbuzz
+        -lbrotlidec
+        -lbrotlicommon
+        -lfribidi
+        -lfreetype
+        -llzma
+        -lbz2
+        -lz
+        -lm
 
-    -lidbfs.js
+        -lidbfs.js
 
-    --preload-file {{ dist }}@/
+        --preload-file {{ dist }}@/
 
-    -sFULL_ES2=1
-    -sFULL_ES3=1
-    -sMAX_WEBGL_VERSION=2
-    --emit-symbol-map
+        -sFULL_ES2=1
+        -sFULL_ES3=1
+        -sMAX_WEBGL_VERSION=2
+        --emit-symbol-map
 
-    -sFILESYSTEM=1
-    -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS','ccall']
+        -sWASM_BIGINT
+        -sEXIT_RUNTIME
+        -sFILESYSTEM=1
+        -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS','ccall']
 
-    -sASYNCIFY=1
-    -sASYNCIFY_STACK_SIZE=65535
-    -sASYNCIFY_ONLY="{{ asyncify_only }}"
-    -sINITIAL_MEMORY=192MB
-    -sALLOW_MEMORY_GROWTH=1
-    -sSTACK_SIZE=1024KB
+        -sJSPI
+        -sINITIAL_MEMORY=192MB
+        -sALLOW_MEMORY_GROWTH=1
+        -sSTACK_SIZE=1024KB
 
-    -sEXPORTED_FUNCTIONS=['_main']
+        -sEXPORTED_FUNCTIONS=['_main']
 
-    -sMINIFY_HTML=0
+        -sMINIFY_HTML=0
 
-    --shell-file {{ runtime }}/web/shell.html
-    """, debug_asyncify=debug_asyncify)
+        --shell-file {{ runtime }}/web/shell.html
+    """)
 
     c.run("""install -d {{ renpy }}/web3""")
     c.run("""install renpy.html {{ renpy }}/web3/index.html""")
@@ -669,9 +587,3 @@ def link_web(c: Context):
     c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web3/web-icon.png""")
     c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web3/manifest.json""")
     c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web3/service-worker.js""")
-
-    if debug_asyncify:
-        c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")
-
-    # -sASYNCIFY_IGNORE_INDIRECT=1
-    # -sASSERTIONS=1
