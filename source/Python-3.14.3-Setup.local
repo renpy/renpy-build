@@ -1,0 +1,12 @@
+# Ren'Py overrides for building Python during cross-compilation.
+# Modules defined here override Setup.stdlib and Setup.bootstrap.
+
+# Before makesetup is even run, Setup.stdlib.in is patched to force
+# static builds on all platforms.
+
+*disabled*
+_decimal
+_dbm
+_gdbm
+readline
+_wmi

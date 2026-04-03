@@ -28,7 +28,7 @@ RUN wget -O /tmp/llvm.sh https://apt.llvm.org/llvm.sh && \
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
-RUN uv python install 3.12
+RUN uv python install 3.14
 
 RUN --mount=type=bind,source=prebuilt/clang_rt.tar.gz,target=/tmp/clang_rt.tar.gz \
     mkdir -p /usr/lib/llvm-18/lib/clang/18/lib/ && \
