@@ -17,6 +17,9 @@ def build(c : Context):
 
     c.env("CXXFLAGS", "-Wno-unknown-pragmas {{CXXFLAGS}}")
 
+    if c.platform == "web":
+        c.env("CXXFLAGS", "-Wno-nontrivial-memcall {{CXXFLAGS}}")
+
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
