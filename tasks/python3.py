@@ -261,8 +261,6 @@ def build_web(c: Context):
 
     c.run("""{{ make }}""")
 
-    # c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
-
     common_post(c)
 
 
@@ -272,6 +270,7 @@ def pip(c: Context):
     c.run("""
         {{ hostpython }} -s -m pip install --no-compile --upgrade
         --target {{ install }}/lib/{{ pythonver }}/site-packages
+        legacy-cgi
         future==1.0.0
         six==1.16.0
         rsa==4.9
