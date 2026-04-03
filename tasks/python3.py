@@ -29,12 +29,11 @@ def unpack_windows(c: Context):
     c.var("version", win_version)
 
     if (c.root / "unpacked" / "cpython-mingw").exists():
-        c.run("git clone {{ c.root }}/unpacked/cpython-mingw")
+        c.var("repo", "{{ c.root }}/unpacked/cpython-mingw")
     else:
-        c.run("git clone https://github.com/msys2-contrib/cpython-mingw")
+        c.var("repo", "https://github.com/msys2-contrib/cpython-mingw")
 
-    c.chdir("cpython-mingw")
-    c.run("git checkout mingw-v{{ version }}")
+    c.clone("{{ repo }}", "--branch mingw-v{{ version }}")
 
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
 def patch_posix(c: Context):
