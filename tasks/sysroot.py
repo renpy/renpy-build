@@ -68,7 +68,7 @@ def install_linux(c: Context):
             """bash -c 'for deb in "{{ tmp }}"/debs/*.deb "{{ sysroot }}"/var/cache/apt/archives/*.deb; do [ -f "$deb" ] && dpkg-deb -x "$deb" "{{ sysroot }}"; done' """
         )
 
-        c.run("""{{source}}/make_links_relative.py {{sysroot}}""")
+        c.run("""uv run {{source}}/make_links_relative.py {{sysroot}}""")
     else:
         c.run(
             """sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """
