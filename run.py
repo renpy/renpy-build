@@ -248,6 +248,8 @@ def main() -> None:
         "-e",
         "RENPY_VIRTUAL_ENV=/build/tmp/venv",
         "-e",
+        "CCACHE_DIR=/build/tmp/ccache",
+        "-e",
         "PYTHONUNBUFFERED=1",
         "-e",
         "PYTHONHASHSEED=0",
