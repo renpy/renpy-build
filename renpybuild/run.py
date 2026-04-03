@@ -1,12 +1,13 @@
 import os
 import re
+import sys
 import shlex
 import subprocess
-import sys
 import sysconfig
-import threading
 
-import jinja2
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
+
+from .context import Context
 
 # This caches the results of emsdk_environment.
 emsdk_cache : dict[str, str] = { }
@@ -192,7 +193,7 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
-    c.var("lipo", "llvm-lipo-15")
+    c.var("lipo", "llvm-lipo-18")
 
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
@@ -369,8 +370,17 @@ def build_environment(c):
         c.var("configure", "emconfigure ./configure")
         c.var("cmake_configure", "emcmake cmake")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_SDL=2 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
+        c.var(
+            "use_ports",
+            """\
+            --use-port=sdl2 \
+            --use-port=libjpeg \
+            --use-port=bzip2 \
+            --use-port=zlib \
+            """,
+        )
+        c.env("CFLAGS", "{{ CFLAGS }} {{ use_ports }} -fexceptions")
+        c.env("LDFLAGS", "{{ LDFLAGS }} {{ use_ports }}")
 
         c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
         c.var("crossbin", "{{ cross }}/upstream/bin")
@@ -441,38 +451,20 @@ def run(command, context, verbose=False, quiet=False):
         traceback.print_stack()
         sys.exit(1)
 
-class RunCommand(threading.Thread):
 
-    def __init__(self, command, context):
-        super().__init__()
+class CommandResult:
+    """Stores the result of a single command execution."""
 
-        command = context.expand(command)
-        self.command = shlex.split(command)
-
-        self.cwd = context.cwd
-        self.environ = context.environ.copy()
-
-        self.start()
-
-
-    def run(self):
-        result = subprocess.run(self.command, cwd=self.cwd, env=self.environ, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
-        self.output = result.stdout
-        self.code = result.returncode
-
-    def wait(self):
-        self.join()
+    def __init__(self, command_str: str, future: Future[tuple[str, int]]):
+        self.command_str = command_str
+        self.future = future
+        self.output: str = ""
+        self.code: int = 0
+        self.done: bool = False
 
     def report(self):
-        print ("-" * 78)
-
-        for i in self.command:
-            if " " in i:
-                print(repr(i), end=" ")
-            else:
-                print(i, end=" ")
-
-        print()
+        print("-" * 78)
+        print(self.command_str)
         print()
         print(self.output)
 
@@ -480,11 +472,13 @@ class RunCommand(threading.Thread):
             print()
             print(f"Process failed with {self.code}.")
 
-class RunGroup(object):
 
-    def __init__(self, context):
+class RunGroup:
+    def __init__(self, context: Context, wait_all: bool = True):
+        self.executor = ThreadPoolExecutor()
         self.context = context
-        self.tasks = [ ]
+        self.futures: list[CommandResult] = []
+        self.wait_all = wait_all
 
     def __enter__(self):
         return self
@@ -493,22 +487,99 @@ class RunGroup(object):
         if exc_type is not None:
             return
 
-        for i in self.tasks:
-            i.wait()
+        # If there are no tasks to do, exit early
+        if not next(not f.done for f in self.futures):
+            return
 
-        good = [ i for i in self.tasks if i.code == 0 ]
-        bad = [ i for i in self.tasks if i.code != 0 ]
+        futures = [f.future for f in self.futures]
+        total = len(futures)
+        completed = 0
+        failed = 0
 
-        for i in good:
-            i.report()
+        stderr = sys.stderr
+        if stderr is None:
+            stderr = open(os.devnull, "w")
 
-        for i in bad:
-            i.report()
+        spinner_chars = "|/-\\"
+        spinner_i = 0
+        last_write_len = 0
+        interrupted = False
 
-        if bad:
-            print()
-            print("{} tasks failed.".format(len(bad)))
+        while futures:
+            try:
+                future = next(as_completed(futures, 0.1))
+                cmd_result = next(f for f in self.futures if f.future == future)
+                futures.remove(future)
+
+                # Clean last spinner output
+                print(f"\r{' ' * last_write_len}\r", end="", file=stderr)
+
+                cmd_result.output, cmd_result.code = future.result()
+                cmd_result.done = True
+                cmd_result.report()
+
+                if cmd_result.code == 0:
+                    completed += 1
+                else:
+                    failed += 1
+
+            except TimeoutError:
+                pass
+
+            except KeyboardInterrupt:
+                interrupted = True
+
+            # Update spinner output after new report or timeout
+            spinner_i = (spinner_i + 1) % len(spinner_chars)
+            failed_str = f" ({failed} failed)" if failed else ""
+            out_text = f"Run group working... {spinner_chars[spinner_i]} {completed}/{total}{failed_str}"
+            print(f"\r{out_text}", end="", file=stderr)
+            stderr.flush()
+            last_write_len = len(out_text)
+
+            if not self.wait_all and failed > 0:
+                break
+
+            if interrupted:
+                break
+
+        if interrupted:
+            self.executor.shutdown(wait=False, cancel_futures=True)
+            print("\nRun group interrupted.")
+            raise KeyboardInterrupt
+
+        # Clear the spinner line before exiting
+        print(f"\r{' ' * last_write_len}\r", end="", file=stderr)
+        stderr.flush()
+
+        if failed > 0:
+            if self.wait_all:
+                print(f"\n{failed} tasks failed.")
+
+                for result in (r for r in self.futures if r.code):
+                    result.report()
+
             sys.exit(1)
 
-    def run(self, command):
-        self.tasks.append(RunCommand(command, self.context))
+    def _execute_command(self, command: list[str], cwd: str, env: dict):
+        process = subprocess.run(
+            command,
+            cwd=cwd,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            encoding="utf-8",
+            check=False,
+        )
+        return process.stdout, process.returncode
+
+    def run(self, command: str):
+        command = self.context.expand(command)
+        cmd_env = self.context.environ.copy()
+        future = self.executor.submit(
+            self._execute_command,
+            shlex.split(command),
+            str(self.context.cwd),
+            cmd_env,
+        )
+        self.futures.append(CommandResult(command, future))

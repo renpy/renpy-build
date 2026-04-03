@@ -1,0 +1,14 @@
+*
+!extensions/
+!nvlib/
+!patches/
+!prebuilt/
+!rapt/
+!renios/
+!renpybuild/
+!runtime/
+!source/
+!specs/
+!steamapi/
+!tasks/
+!tools/

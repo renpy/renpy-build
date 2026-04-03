@@ -1,0 +1,17 @@
+Make sure HACL* is statically linked.
+
+############################################################################
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -8062,8 +8062,8 @@
+   LIBHACL_LDEPS_LIBTYPE=STATIC
+   AC_MSG_RESULT([static])
+ else
+-  LIBHACL_LDEPS_LIBTYPE=SHARED
+-  AC_MSG_RESULT([shared])
++  LIBHACL_LDEPS_LIBTYPE=${LIBHACL_LDEPS_LIBTYPE:-SHARED}
++  AC_MSG_RESULT([$LIBHACL_LDEPS_LIBTYPE])
+ fi
+ # Used to complete the "MODULE_<NAME>_LDEPS" Makefile variable.
+ # The LDEPS variable is a Makefile rule prerequisite.
