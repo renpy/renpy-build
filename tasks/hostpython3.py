@@ -3,6 +3,7 @@ from renpybuild.task import task
 
 version = "3.14.3"
 
+
 @task(kind="host", pythons="3", platforms="all")
 def unpack_hostpython(c: Context):
     c.clean()
@@ -33,38 +34,13 @@ def build_host(c: Context):
 
     c.chdir("Python-{{ version }}")
 
-    c.run("""
-          {{configure}}
-          --prefix="{{ host }}"
-          --without-readline
-          --disable-test-modules
-          MODULE_BUILDTYPE=static
-          LIBHACL_LDEPS_LIBTYPE=STATIC
-          """)
+    c.env("MODULE_BUILDTYPE", "static")
+    c.env("LIBHACL_LDEPS_LIBTYPE", "STATIC")
+
+    c.run("""{{configure}} --prefix="{{ host }}" --disable-test-modules""")
 
     c.run("""{{ make }} install""")
 
     c.rmtree("{{ host }}/lib/python3.14/config-3.14-x86_64-linux-gnu/Tools/")
     c.run("install -d {{ host }}/lib/python3.14/config-3.14-x86_64-linux-gnu/Tools/")
     c.run("cp -a Tools/scripts {{ host }}/lib/python3.14/config-3.14-x86_64-linux-gnu/Tools/scripts")
-
-
-
-# @task(kind="host", platforms="web", pythons="3")
-# def unpack_web(c: Context):
-#     c.clean()
-
-#     c.var("version", web_version)
-#     c.run("tar xzf {{source}}/Python-{{version}}.tgz")
-
-
-# @task(kind="host", platforms="web", pythons="3")
-# def build_web(c: Context):
-#     c.var("version", web_version)
-
-#     c.chdir("Python-{{ version }}")
-#     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
-#     c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
-
-#     c.run("""{{configure}} --prefix="{{ host }}/web" """)
-#     c.run("""{{ make }} install""")
