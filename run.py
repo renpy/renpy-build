@@ -266,9 +266,9 @@ def main() -> None:
         cmd += args.cmd
     else:
         sub_command = [
-            "cd /build/renpy",
-            "uv sync",
             "cd /build",
+            "uv --project renpy sync",
+            ". /build/tmp/venv/bin/activate",
             'exec uv --project renpy run -m renpybuild "$@"',
         ]
         cmd += ["sh", "-c", " && ".join(sub_command), "--", *inner_argv]
