@@ -206,7 +206,7 @@ class Context:
         # The install for linux-x86_64, used to find file from any python isntall.
         self.var("linuxinstall", self.tmp / "install.linux-x86_64")
 
-        # The path to a version of Python comp
+        # The path to a version of Python compiled for the host.
         self.var("hostpython", "{{ install }}/bin/hostpython{{ c.python }}")
 
         # Final installation paths.
