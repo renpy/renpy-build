@@ -99,26 +99,20 @@ def patch_windows(c: Context):
 
 
 def common(c: Context):
-    if c.platform == "web":
-        c.var("version", web_version)
-        c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
-        c.env("PYTHON_FOR_BUILD", "{{ host }}/web/bin/python3")
-    else:
-        c.var("version", version)
-        c.env("CONFIG_SITE", "config.site")
-        c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python3")
-        c.env("MODULE_BUILDTYPE", "static")
-        c.env("LIBHACL_LDEPS_LIBTYPE", "STATIC")
+    c.var("version", version)
+    c.env("CONFIG_SITE", "config.site")
+    c.env("PYTHON_FOR_BUILD", "{{ host }}/bin/python3")
+    c.env("MODULE_BUILDTYPE", "static")
+    c.env("LIBHACL_LDEPS_LIBTYPE", "STATIC")
 
     if c.platform == "windows":
         c.chdir("cpython-mingw")
     else:
         c.chdir("Python-{{ version }}")
 
-    if c.platform != "web":
-        with open(c.path("config.site"), "w") as f:
-            f.write("ac_cv_file__dev_ptmx=no\n")
-            f.write("ac_cv_file__dev_ptc=no\n")
+    with open(c.path("config.site"), "w") as f:
+        f.write("ac_cv_file__dev_ptmx=no\n")
+        f.write("ac_cv_file__dev_ptc=no\n")
 
 
 def common_post(c: Context):
@@ -235,35 +229,45 @@ def build_windows(c: Context):
 
 @task(kind="python", pythons="3", platforms="web")
 def build_web(c: Context):
-
     c.var("version", web_version)
 
     c.clean()
     c.run("tar xaf {{source}}/Python-{{version}}.tar.xz")
 
-    common(c)
+    c.chdir("Python-{{ version }}")
 
-    c.env("CONFIG_SITE", "Tools/wasm/config.site-wasm32-emscripten")
+    c.copy(
+        "{{ source }}/Python-{{ version }}-Setup.local",
+        "Modules/Setup.local",
+    )
+
+    c.env("PYTHON_FOR_BUILD", "{{ host }}/web/bin/python3")
+    c.env("CONFIG_SITE", "Tools/wasm/emscripten/config.site-wasm32-emscripten")
+    c.env("CFLAGS", "{{ CFLAGS }} -DPY_CALL_TRAMPOLINE")
+    c.env("CXXFLAGS", " {{ CXXFLAGS }} -DPY_CALL_TRAMPOLINE")
+    c.env("PKG_CONFIG", "pkg-config")
 
     c.run("""
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
-        --with-emscripten-target=browser
         --with-build-python={{host}}/bin/python3
+        --enable-wasm-pthreads
+        --disable-shared
+        --disable-ipv6
+        --without-pymalloc
+        --disable-test-modules
         """)
 
-    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
-
     c.run("""{{ make }}""")
 
-    c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
+    # c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
 
-    c.run("""{{ make }}""")
+    # c.run("""{{ make }}""")
+
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
-    for i in ["ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py"]:
+    for i in ["_sysconfigdata__linux_x86_64-linux-gnu.py"]:
         c.var("i", i)
 
         c.copy("{{ host }}/lib/{{pythonver}}/{{ i }}", "{{ install }}/lib/{{pythonver}}/{{ i }}")
