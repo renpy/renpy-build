@@ -473,3 +473,40 @@ class Context:
                 flags = f'-b {flags}'
 
         self.run(command, flags=flags, src=src)
+
+    def clone(
+        self,
+        url: str,
+        options: str = "",
+        *,
+        directory: str = "",
+        minimal: bool = True,
+        submodules: bool = False,
+    ):
+        """
+        Clones the repository at `url` into the current directory.
+
+        `options`
+            Options to pass to git clone.
+
+        `directory`
+            The directory to clone into.
+
+        `minimal`
+            If true, automatically applies options to minimize download size.
+
+        `submodules`
+            If true, also clones submodules recursively.
+        """
+
+        url = self.expand(url)
+        options = self.expand(options)
+        directory = self.expand(directory)
+
+        if minimal:
+            options = f"--depth 1 --no-tags --single-branch --shallow-submodules {options}"
+
+        if submodules:
+            options = f"--recurse-submodules {options}"
+
+        self.run(f"git clone {options} {url} {directory}")
