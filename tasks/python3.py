@@ -244,7 +244,7 @@ def pip(c: Context):
         rsa==4.9
         pyasn1==0.6.1
         ecdsa==0.19.0
-        urllib3==2.2.2
+        urllib3==2.7.0
         charset-normalizer==3.3.2
         chardet==5.2.0
         certifi
