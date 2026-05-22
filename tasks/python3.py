@@ -1,6 +1,9 @@
 from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
+import tomllib
+from pathlib import Path
+
 version = "3.12.8"
 win_version = "3.12.7"
 web_version = "3.12.8"
@@ -235,23 +238,49 @@ def build_web(c: Context):
             "{{ host }}/lib/{{pythonver}}/{{ i }}",
             "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
+
+def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
+    """
+    Parses a uv.lock file and returns a dictionary mapping package names to versions.
+    """
+    with open(lock_path, "rb") as f:
+        lock_data = tomllib.load(f)
+
+    # uv.lock stores package information in a list of tables named [[package]]
+    packages = lock_data.get("package", [])
+
+    return {
+        pkg["name"]: pkg["version"]
+        for pkg in packages
+        if "name" in pkg and "version" in pkg
+    }
+
 @task(kind="python", pythons="3", platforms="all")
 def pip(c: Context):
+
+    package_versions = get_uv_lock_versions(c.path("{{renpy}}/uv.lock"))
+
+    def v(name):
+        if name not in package_versions:
+            raise RuntimeError(f"Package '{name}' was not found in uv.lock package_versions.")
+
+        return f"{name}=={package_versions[name]}"
+
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
-    c.run("""{{ install }}/bin/hostpython3 -s -m pip install --no-compile --upgrade
-        future==1.0.0
-        six==1.16.0
-        rsa==4.9
-        pyasn1==0.6.1
-        ecdsa==0.19.0
-        urllib3==2.7.0
-        charset-normalizer==3.3.2
-        chardet==5.2.0
+    c.run(f"""{{{{ install }}}}/bin/hostpython3 -s -m pip install --no-compile --upgrade
+        {v("future")}
+        {v("six")}
+        {v("rsa")}
+        {v("pyasn1")}
+        {v("ecdsa")}
+        {v("urllib3")}
+        {v("charset-normalizer")}
+        {v("chardet")}
         certifi
-        idna==3.8
-        requests==2.33.0
-        pefile==2022.5.30
-        websockets==12.0
-        setuptools==74.1.2
-        pysocks==1.7.1
+        {v("idna")}
+        {v("requests")}
+        {v("pefile")}
+        {v("websockets")}
+        {v("setuptools")}
+        {v("pysocks")}
         """)
