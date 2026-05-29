@@ -1,5 +1,5 @@
-#include "SDL.h"
-#include "SDL_image.h"
+#include "SDL3/SDL.h"
+#include "SDL3_image/SDL_image.h"
 #include "Python.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -144,8 +144,8 @@ int start_python(void) {
 }
 
 void call_prepare_python(void) {
-	JNIEnv* env = (JNIEnv*) SDL_AndroidGetJNIEnv();
-	jobject activity = (jobject) SDL_AndroidGetActivity();
+	JNIEnv* env = (JNIEnv*) SDL_GetAndroidJNIEnv();
+	jobject activity = (jobject) SDL_GetAndroidActivity();
 	jclass clazz = (*env)->GetObjectClass(env, activity);
 	jmethodID method_id = (*env)->GetMethodID(env, clazz, "preparePython", "()V");
 	(*env)->CallVoidMethod(env, activity, method_id);
