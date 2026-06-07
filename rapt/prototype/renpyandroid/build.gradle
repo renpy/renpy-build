@@ -41,6 +41,7 @@ android {
 
 dependencies {
     api "com.google.android.play:asset-delivery:2.3.0"
+    implementation 'com.google.android.play:age-signals:0.0.3'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.20"
     implementation "androidx.activity:activity:1.11.0"
