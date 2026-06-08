@@ -333,9 +333,9 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -miphoneos-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
 
-        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneOS14.0.sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
@@ -347,9 +347,9 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
-        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneSimulator14.0.sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
@@ -361,9 +361,9 @@ def build_environment(c):
         c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
 
-        c.var("cmake_system_name", "Darwin")
+        c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneSimulator14.0.sdk -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
