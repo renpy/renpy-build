@@ -76,8 +76,7 @@ def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
     c.env("READELF", "{{llvm_bin}}llvm-readelf{{llvm_suffix}}")
 
     c.env("WINDRES", "{{llvm_bin}}{{llvm_prefix}}windres{{llvm_suffix}}")
-    c.env("INSTALL_NAME_TOOL", "{{llvm_bin}}{{llvm_prefix}}install_name_tool{{llvm_suffix}}")
-
+    c.env("INSTALL_NAME_TOOL", "{{llvm_bin}}{{llvm_prefix}}llvm-install-name-tool{{llvm_suffix}}")
 
     if c.platform == "windows":
         c.env("RC", "{{WINDRES}}")
@@ -336,7 +335,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
 
@@ -350,7 +349,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
 
@@ -364,7 +363,7 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk")
+        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
 
