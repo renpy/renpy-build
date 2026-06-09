@@ -1,0 +1,20 @@
+diff --git a/include/SDL3/SDL_opengl.h b/include/SDL3/SDL_opengl.h
+index f8de9fb8f..00cb0ec6a 100644
+--- a/include/SDL3/SDL_opengl.h
++++ b/include/SDL3/SDL_opengl.h
+@@ -31,8 +31,6 @@
+
+ #include <SDL3/SDL_platform.h>
+
+-#ifndef SDL_PLATFORM_IOS  /* No OpenGL on iOS. */
+-
+ /*
+  * Mesa 3-D graphics library
+  *
+@@ -3096,6 +3094,4 @@
+
+ #endif /* __gl_h_ */
+
+-#endif /* !SDL_PLATFORM_IOS */
+-
+ #endif /* SDL_opengl_h_ */
