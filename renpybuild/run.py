@@ -332,6 +332,7 @@ def build_environment(c):
         )
 
         c.env("CFLAGS", "{{ CFLAGS }} -miphoneos-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -miphoneos-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
         c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
@@ -347,6 +348,7 @@ def build_environment(c):
         )
 
         c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
@@ -362,6 +364,7 @@ def build_environment(c):
         )
 
         c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")

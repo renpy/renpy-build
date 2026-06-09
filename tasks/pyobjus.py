@@ -7,6 +7,7 @@ commit = "b61d65fdc620dbe19892d2419b77340341e76084"
 @annotator
 def annotate(c: Context):
     c.env("CFLAGS", "{{ CFLAGS }} -DOBJC_OLD_DISPATCH_PROTOTYPES=1")
+    c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -DOBJC_OLD_DISPATCH_PROTOTYPES=1")
 
 
 @task(kind="python", platforms="mac,ios")
