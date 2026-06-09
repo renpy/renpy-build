@@ -139,7 +139,9 @@ def build_ios(c: Context):
         # f.write("ac_cv_header_langinfo_h=no\n")
         f.write("ac_cv_func_getentropy=no\n")
         f.write("ac_cv_have_long_long_format=yes\n")
-        f.write("ac_cv_func_clock_settime=no")
+        f.write("ac_cv_func_clock_settime=no\n")
+        f.write("ac_cv_func_dup3=no\n")
+        f.write("ac_cv_func_pipe2=no\n")
 
     c.run("""
         {{configure}} {{ cross_config }}

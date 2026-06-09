@@ -1,0 +1,72 @@
+--- a/client.c	2026-06-09 01:46:00.010628638 -0400
++++ b/client.c	2026-06-09 01:46:26.182491155 -0400
+@@ -488,7 +488,7 @@
+                 filename = strdup(optarg);
+                 break;
+             case 'i':
+-                seedfiles = append_ptrlist(&nseedfiles, seedfiles, optarg);
++                seedfiles = (char **)append_ptrlist(&nseedfiles, (void **)seedfiles, optarg);
+                 break;
+             case 'V':
+                 printf(PACKAGE " v" VERSION " (compiled " __DATE__ " " __TIME__
+@@ -553,7 +553,7 @@
+         /* If the target file already exists, we're probably updating that file
+          * - so it's a seed file */
+         if (!access(filename, R_OK)) {
+-            seedfiles = append_ptrlist(&nseedfiles, seedfiles, filename);
++                seedfiles = (char **)append_ptrlist(&nseedfiles, (void **)seedfiles, filename);
+         }
+         /* If the .part file exists, it's probably an interrupted earlier
+          * effort; a normal HTTP client would 'resume' from where it got to,
+@@ -561,7 +561,7 @@
+          * current version on the remote) and doesn't need to, because we can
+          * treat it like any other local source of data. Use it now. */
+         if (!access(temp_file, R_OK)) {
+-            seedfiles = append_ptrlist(&nseedfiles, seedfiles, temp_file);
++                seedfiles = (char **)append_ptrlist(&nseedfiles, (void **)seedfiles, temp_file);
+         }
+
+         /* Try any seed files supplied by the command line */
+--- a/libzsync/zsync.c	2010-09-19 16:51:53.000000000 -0400
++++ b/libzsync/zsync.c	2026-06-09 01:46:26.181192360 -0400
+@@ -440,12 +440,12 @@
+     if (zs->zmap && zs->nzurl) {
+         *n = zs->nzurl;
+         *t = 1;
+-        return zs->zurl;
++        return (const char *const *) zs->zurl;
+     }
+     else {
+         *n = zs->nurl;
+         *t = 0;
+-        return zs->url;
++        return (const char *const *) zs->url;
+     }
+ }
+
+@@ -816,7 +816,7 @@
+     struct z_stream_s strm;     /* Decompression object */
+     int url_type;               /* Compressed or not */
+     unsigned char *outbuf;      /* Working buffer to keep incomplete blocks of data */
+-    off_t outoffset;            /* and the position in that buffer */
++    long long outoffset;            /* and the position in that buffer */
+ };
+
+ /* Constructor */
+@@ -922,7 +922,7 @@
+         return 0;
+
+     /* Now set up for the downloaded block */
+-    zr->strm.next_in = buf;
++    zr->strm.next_in = (Bytef *) buf;
+     zr->strm.avail_in = len;
+
+     if (zr->strm.total_in == 0 || offset != zr->strm.total_in) {
+@@ -939,7 +939,7 @@
+                     "data didn't align with block boundary in compressed stream\n");
+             return 1;
+         }
+-        zr->strm.next_in = buf;
++        zr->strm.next_in = (Bytef *) buf;
+         zr->strm.avail_in = len;
+     }

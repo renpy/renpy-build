@@ -17,7 +17,7 @@ def build(c : Context):
 
     c.env("CXXFLAGS", "-Wno-unknown-pragmas {{CXXFLAGS}}")
 
-    if c.arch == "wasm":
+    if (c.arch == "wasm") or ("clang++-22" in c.environ.get("CXX", "")):
         c.env("CXXFLAGS", "{{CXXFLAGS}} -Wno-nontrivial-memcall")
 
     c.run("""
