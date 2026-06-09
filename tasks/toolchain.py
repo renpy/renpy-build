@@ -2,7 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 import os
-import requests
+import shlex
 
 mingw_version = "20241217-ucrt-ubuntu-20.04-x86_64"
 
@@ -55,8 +55,19 @@ def build(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
-    c.run("tar xaf {{ tars }}/iPhoneOS14.0.sdk.tar.gz")
-    c.run("ln -s iPhoneOS14.0.sdk sdk")
+    tarball = c.path("{{ tars }}/iPhoneOS.sdk.tar.gz")
+
+    if not tarball.exists():
+        raise RuntimeError("Missing required iOS SDK tarball: {{ tars }}/iPhoneOS.sdk.tar.gz")
+
+    c.run("tar xaf " + shlex.quote(str(tarball)))
+
+    sdk_dir = c.path("iPhoneOS.sdk")
+
+    if not sdk_dir.exists():
+        raise RuntimeError("Expected unpacked SDK directory missing: {{ cross }}/iPhoneOS.sdk")
+
+    os.symlink("iPhoneOS.sdk", c.path("sdk"))
 
 
 @task(kind="cross", platforms="ios", archs="sim-arm64,sim-x86_64")
@@ -65,8 +76,19 @@ def build(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
-    c.run("tar xaf {{ tars }}/iPhoneSimulator14.0.sdk.tar.gz")
-    c.run("ln -s iPhoneSimulator14.0.sdk sdk")
+    tarball = c.path("{{ tars }}/iPhoneSimulator.sdk.tar.gz")
+
+    if not tarball.exists():
+        raise RuntimeError("Missing required iOS simulator SDK tarball: {{ tars }}/iPhoneSimulator.sdk.tar.gz")
+
+    c.run("tar xaf " + shlex.quote(str(tarball)))
+
+    sdk_dir = c.path("iPhoneSimulator.sdk")
+
+    if not sdk_dir.exists():
+        raise RuntimeError("Expected unpacked SDK directory missing: {{ cross }}/iPhoneSimulator.sdk")
+
+    os.symlink("iPhoneSimulator.sdk", c.path("sdk"))
 
 
 @task(platforms="ios")
