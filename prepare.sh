@@ -6,6 +6,7 @@ set -e
 ROOT=$(cd $(dirname $0); pwd)
 REFS=$ROOT
 BASE="$ROOT"
+LLVM_MAJOR=22
 
 # Needed to build things.
 sudo apt-get install -y git build-essential ccache unzip autoconf autoconf-archive automake libtool-bin
@@ -55,10 +56,10 @@ mkdir -p $ROOT/tmp
 # Clang is needed to compile for many platforms.
 wget -O tmp/llvm.sh https://apt.llvm.org/llvm.sh
 chmod +x tmp/llvm.sh
-sudo tmp/llvm.sh 18
+sudo tmp/llvm.sh $LLVM_MAJOR
 
 # Darwin clang_rt is needed to prevent undefined symbol: __isPlatformVersionAtLeast
-sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/18/lib/
+sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/$LLVM_MAJOR/lib/
 
 # UV
 wget -qO- https://astral.sh/uv/install.sh | sh
