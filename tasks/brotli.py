@@ -14,11 +14,17 @@ def unpack(c: Context):
 def build(c: Context):
     c.var("version", version)
 
+    if c.platform == "ios":
+        c.var("brotli_cmake_args", "-DCMAKE_MACOSX_BUNDLE=OFF -DBROTLI_DISABLE_TESTS=ON")
+    else:
+        c.var("brotli_cmake_args", "")
+
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}
         -B build
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DBUILD_SHARED_LIBS=0
+        {{ brotli_cmake_args }}
         brotli-{{version}}
           """)
 
