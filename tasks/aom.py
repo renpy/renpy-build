@@ -36,6 +36,9 @@ def build(c : Context):
         {% if platform == "web" %}
         -DAOM_TARGET_CPU=generic
         {% endif %}
+        {% if platform == "ios" and c.arch == "sim-x86_64" %}
+        -DAOM_TARGET_CPU=generic
+        {% endif %}
         {{ tmp }}/source/aom
         """)
 
