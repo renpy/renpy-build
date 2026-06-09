@@ -38,7 +38,7 @@ def emsdk_environment(c):
         c.env(k, v)
 
 
-def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
+def llvm(c, bin="", prefix="", suffix="-22", clang_args="", use_ld=True):
 
     if bin:
         c.env("PATH", bin + ":{{ PATH }}")
@@ -80,6 +80,8 @@ def llvm(c, bin="", prefix="", suffix="-18", clang_args="", use_ld=True):
 
     if c.platform == "windows":
         c.env("RC", "{{WINDRES}}")
+
+    c.var("lipo", "{{llvm_bin}}llvm-lipo{{llvm_suffix}}")
 
 def android_llvm(c, arch):
 
@@ -130,9 +132,9 @@ def build_environment(c):
     c.env("PATH", "{{ host }}/bin:{{ PATH }}")
 
     if (c.platform == "linux") and (c.arch == "x86_64"):
-        c.var("host_platform", "x86_64-pc-linux-gnu")
+        c.var("host_platform", "x86_64-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "aarch64"):
-        c.var("host_platform", "aarch64-pc-linux-gnu")
+        c.var("host_platform", "aarch64-linux-gnu")
     elif (c.platform == "linux") and (c.arch == "armv7l"):
         c.var("host_platform", "arm-linux-gnueabihf")
     elif (c.platform == "windows") and (c.arch == "x86_64"):
@@ -193,8 +195,6 @@ def build_environment(c):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
-
-    c.var("lipo", "llvm-lipo-22")
 
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
@@ -327,7 +327,6 @@ def build_environment(c):
 
         llvm(
             c,
-            suffix="-19",
             clang_args="-target arm64-apple-ios13.0 --sysroot {{cross}}/sdk",
         )
 
@@ -343,7 +342,6 @@ def build_environment(c):
 
         llvm(
             c,
-            suffix="-19",
             clang_args="-target arm64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
         )
 
@@ -359,7 +357,6 @@ def build_environment(c):
 
         llvm(
             c,
-            suffix="-19",
             clang_args="-target x86_64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
         )
 
