@@ -26,6 +26,7 @@ def unpack(c: Context):
         c.run("tar xzf {{tmp}}/tars/SDL3-{{version}}.tar.gz")
         c.chdir("SDL3-{{version}}")
         c.patch("sdl3-opengl-ios.diff")
+        c.patch("sdl3-metalangle.diff")
 
 
 @task(platforms="all")
