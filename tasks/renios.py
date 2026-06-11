@@ -63,6 +63,7 @@ def lipo(c: Context, namefilter):
         c.run("""
         {{ lipo }}
         -create
+        -segalign arm64 8
 {% for p in paths %}
         {{ p }}/{{ i }}
 {% endfor %}
@@ -97,6 +98,8 @@ def lipo(c: Context, namefilter):
         c.run("""
         {{ lipo }}
         -create
+        -segalign arm64 8
+        -segalign x86_64 8
 {% for p in paths %}
         {{ p }}/{{ i }}
 {% endfor %}

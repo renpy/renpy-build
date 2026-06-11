@@ -96,7 +96,7 @@ def mockrt(c: Context):
     c.clean()
     c.run("{{ CC }} {{ CFLAGS }} -c {{ source }}/mockrt.c")
     c.run("mkdir -p {{ install }}/lib")
-    c.run("{{ AR }} rc {{ install }}/lib/libmockrt.a mockrt.o")
+    c.run("{{ AR }} --format=darwin rc {{ install }}/lib/libmockrt.a mockrt.o")
     c.run("{{ RANLIB }} {{ install }}/lib/libmockrt.a")
 
 

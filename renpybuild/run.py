@@ -68,7 +68,6 @@ def llvm(c, bin="", prefix="", suffix="-22", clang_args="", use_ld=True):
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
     c.env("OBJC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} ")
 
-    # c.env("LD", "ccache " + ld)
     c.env("AR", "{{llvm_bin}}llvm-ar{{llvm_suffix}}")
     c.env("RANLIB", "{{llvm_bin}}llvm-ranlib{{llvm_suffix}}")
     c.env("STRIP", "{{llvm_bin}}llvm-strip{{llvm_suffix}}")
@@ -418,7 +417,12 @@ def build_environment(c):
     c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
-    c.var("cmake_args", "-G Ninja {{ cmake_args }} -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_PARALLEL_LEVEL=" + str(cpuccount))
+    if c.platform in ("mac", "ios"):
+        format_args = " -DCMAKE_C_ARCHIVE_CREATE=\"<CMAKE_AR> --format=darwin qc <TARGET> <LINK_FLAGS> <OBJECTS>\" -DCMAKE_CXX_ARCHIVE_CREATE=\"<CMAKE_AR> --format=darwin qc <TARGET> <LINK_FLAGS> <OBJECTS>\""
+    else:
+        format_args = ""
+
+    c.var("cmake_args", "-G Ninja {{ cmake_args }}" + format_args + " -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_PARALLEL_LEVEL=" + str(cpuccount))
 
     # Used by zlib.
     if c.kind != "host":
