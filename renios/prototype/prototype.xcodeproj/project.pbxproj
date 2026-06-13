@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		E218D27D1A69F7DF00698833 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218D27C1A69F7DF00698833 /* IAPHelper.m */; };
+		E2C6A00230A1000000A0A001 /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C6A00130A1000000A0A001 /* Age.swift */; };
+		E2C6A00430A1000000A0A001 /* DeclaredAgeRange.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2C6A00330A1000000A0A001 /* DeclaredAgeRange.framework */; };
 		E21AB823285E85C9002B88AF /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */; };
 		E21AB824285E85C9002B88AF /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E21AB826285E878A002B88AF /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21AB81D285E8538002B88AF /* CoreServices.framework */; };
@@ -67,6 +69,8 @@
 		E2907EC224284D42003439CC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayer.m; sourceTree = "<group>"; };
 		E2BB98821A631363009C927E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		E2C6A00130A1000000A0A001 /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Age.swift; sourceTree = "<group>"; };
+		E2C6A00330A1000000A0A001 /* DeclaredAgeRange.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeclaredAgeRange.framework; path = System/Library/Frameworks/DeclaredAgeRange.framework; sourceTree = SDKROOT; };
 		E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		E2EF82F81B40D83600A94E16 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
 		E2F6E416241629FB00E81516 /* base */ = {isa = PBXFileReference; lastKnownFileType = folder; path = base; sourceTree = "<group>"; };
@@ -79,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2C6A00430A1000000A0A001 /* DeclaredAgeRange.framework in Frameworks */,
 				E2300001285E8791002B88AF /* CoreBluetooth.framework in Frameworks */,
 				E2300003285E8791002B88AF /* CoreHaptics.framework in Frameworks */,
 				E2F6E4132414A79E00E81516 /* CoreMotion.framework in Frameworks */,
@@ -100,6 +105,7 @@
 		E22EF4BC1A33491100A74B9F = {
 			isa = PBXGroup;
 			children = (
+				E2C6A00330A1000000A0A001 /* DeclaredAgeRange.framework */,
 				E21AB822285E85C9002B88AF /* MetalANGLE.xcframework */,
 				E21AB821285E85B8002B88AF /* ios */,
 				E2F6E416241629FB00E81516 /* base */,
@@ -117,6 +123,7 @@
 				E22EF5041A3352F600A74B9F /* MobileCoreServices.framework */,
 				E22EF5001A3352D900A74B9F /* QuartzCore.framework */,
 				E22EF4F61A33523800A74B9F /* UIKit.framework */,
+				E2C6A00130A1000000A0A001 /* Age.swift */,
 				E218D27C1A69F7DF00698833 /* IAPHelper.m */,
 				E2EF82F81B40D83600A94E16 /* Log.m */,
 				E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */,
@@ -211,6 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2C6A00230A1000000A0A001 /* Age.swift in Sources */,
 				E218D27D1A69F7DF00698833 /* IAPHelper.m in Sources */,
 				E2EF82F91B40D83600A94E16 /* Log.m in Sources */,
 				E2845E1F1A350A57004BC3F8 /* main.c in Sources */,
@@ -341,6 +349,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = XHTE5H7Z79;
@@ -393,6 +402,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
 				PRODUCT_NAME = prototype;
+				SWIFT_VERSION = 5.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -401,6 +411,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = XHTE5H7Z79;
@@ -451,6 +462,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.renpy.prototype;
 				PRODUCT_NAME = prototype;
+				SWIFT_VERSION = 5.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
