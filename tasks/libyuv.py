@@ -4,7 +4,7 @@ from renpybuild.task import task
 @task(kind="host", platforms="all")
 def download(c : Context):
 
-    c.var("commit", "331c361581896292fb46c8c6905e41262b7ca95f")
+    c.var("commit", "d23308a2a7442be8e559b1b471862fd7588d6a57")
 
     if c.path("{{ tmp }}/source/libyuv").exists():
         c.chdir("{{ tmp }}/source/libyuv")
