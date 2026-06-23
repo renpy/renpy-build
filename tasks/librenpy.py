@@ -24,8 +24,8 @@ def build(c: Context):
     if c.platform == "web" and c.python == "2":
         return
 
-    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3" """)
-    c.env("CXXFLAGS", """{{ CXXFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3" """)
+    c.env("CFLAGS", """{{ CFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3-static" """)
+    c.env("CXXFLAGS", """{{ CXXFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3-static" """)
 
     gen = "gen3-static/"
 
