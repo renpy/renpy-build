@@ -96,7 +96,7 @@ class Context:
         self.variables = { }
 
         # The local temporary directory.
-        self.tmp = self.root / "tmp"
+        self.tmp = self.root / os.environ.get("RENPY_BUILD_TMP", "tmp")
 
         self.var("tmp", self.tmp)
 
