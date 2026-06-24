@@ -8,7 +8,11 @@
     "renpyweb/cache": true,
     "renpyweb/pygame_sdl2": true,
     "renpyweb/renpy": true,
-    "tmp": true
+    "tmp": true,
+    "**/*.rpyc": true,
+    "**/*.rpa": true,
+    "**/*.rpymc": true,
+    "**/cache/": true
   },
   "files.watcherExclude": {
     "**/__pycache__": true,

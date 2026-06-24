@@ -117,7 +117,7 @@ class Context:
         self.var("renpy", self.renpy)
 
         self.var("rapt", "{{ renpy }}/rapt")
-        self.var("raptver", "{{ rapt }}" + self.python)
+        self.var("raptver", "{{ rapt }}")
 
         if "arm" in self.arch:
             jni_arch = self.arch.replace("_", "-")
@@ -129,7 +129,7 @@ class Context:
 
         self.var("jni_unstripped", "{{ raptver }}/symbols/{{ jni_arch }}")
 
-        self.var("renios", "{{ renpy }}/renios" + self.python)
+        self.var("renios", "{{ renpy }}/renios")
 
         # Python version specific storage.
         self.var("pytmp", self.tmp / ("py" + python))

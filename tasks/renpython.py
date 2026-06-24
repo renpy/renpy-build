@@ -670,20 +670,20 @@ def link_web(c: Context):
     --shell-file {{ runtime }}/web/shell.html
     """, debug_asyncify=debug_asyncify)
 
-    c.run("""install -d {{ renpy }}/web3""")
-    c.run("""install renpy.html {{ renpy }}/web3/index.html""")
-    c.run("""install renpy.html.symbols {{ renpy }}/web3/index.html.symbols""")
-    c.run("""install {{ runtime }}/web/renpy-pre.js {{ renpy }}/web3/renpy-pre.js""")
-    c.run("""install renpy.js {{ renpy }}/web3/renpy.js""")
-    c.run("""install renpy.wasm {{ renpy }}/web3/renpy.wasm""")
-    c.run("""install renpy.data {{ renpy }}/web3/renpy.data""")
-    c.run("""install {{runtime}}/web/web-presplash.jpg {{ renpy }}/web3/web-presplash.jpg""")
-    c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web3/web-icon.png""")
-    c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web3/manifest.json""")
-    c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web3/service-worker.js""")
+    c.run("""install -d {{ renpy }}/web""")
+    c.run("""install renpy.html {{ renpy }}/web/index.html""")
+    c.run("""install renpy.html.symbols {{ renpy }}/web/index.html.symbols""")
+    c.run("""install {{ runtime }}/web/renpy-pre.js {{ renpy }}/web/renpy-pre.js""")
+    c.run("""install renpy.js {{ renpy }}/web/renpy.js""")
+    c.run("""install renpy.wasm {{ renpy }}/web/renpy.wasm""")
+    c.run("""install renpy.data {{ renpy }}/web/renpy.data""")
+    c.run("""install {{runtime}}/web/web-presplash.jpg {{ renpy }}/web/web-presplash.jpg""")
+    c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web/web-icon.png""")
+    c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web/manifest.json""")
+    c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web/service-worker.js""")
 
     if debug_asyncify:
-        c.run("""install renpy.wasm.map {{ renpy }}/web3/renpy.wasm.map""")
+        c.run("""install renpy.wasm.map {{ renpy }}/web/renpy.wasm.map""")
 
     # -sASYNCIFY_IGNORE_INDIRECT=1
     # -sASSERTIONS=1

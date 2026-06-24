@@ -159,18 +159,9 @@ def clean(args):
     rmgen(root / "tmp")
     rmgen(root / "pygame_sdl2")
 
-    def rmtrio(name : str):
-        """
-        Deletes groups of directories and symlinks, like web, renios, and rapt.
-        """
-
-        unlink(root / "renpy" / name)
-        rmtree(root / "renpy" / (name + "2"))
-        rmtree(root / "renpy" / (name + "3"))
-
-    rmtrio("web")
-    rmtrio("renios")
-    rmtrio("rapt")
+    rmtree(root / "renpy" / "web")
+    rmtree(root / "renpy" / "renios")
+    rmtree(root / "renpy" / "rapt")
 
 def main():
     ap = argparse.ArgumentParser()

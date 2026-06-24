@@ -19,12 +19,12 @@ def copytree(c: Context):
     c.run("""find {{ renios }}/prototype/ -name ._* -delete""")
 
 
-def check_sdk(name, paths):
+def check_sdk(c: Context, name, paths):
 
     for d in paths:
         fn = d / name
 
-        p = subprocess.run([ "llvm-otool-15", "-l", f"{fn}"], capture_output=True)
+        p = subprocess.run([c.expand("{{ otool }}"), "-l", f"{fn}"], capture_output=True)
 
         obj = None
 
@@ -55,7 +55,7 @@ def lipo(c: Context, namefilter):
         if not namefilter(i):
             continue
 
-        check_sdk(i, paths)
+        check_sdk(c, i, paths)
 
         print("(Release) Lipo and strip:", i)
 

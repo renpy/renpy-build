@@ -10,8 +10,6 @@ from . import toolchain
 
 from . import nasm
 
-from . import metalangle
-
 from . import zlib
 from . import bzip2
 from . import xz
@@ -58,6 +56,8 @@ from . import sayvbs
 from . import angle
 
 from . import steam
+
+from . import metalangle
 
 from . import librenpy
 from . import pythonlib

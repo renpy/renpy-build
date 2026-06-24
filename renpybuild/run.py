@@ -81,6 +81,7 @@ def llvm(c, bin="", prefix="", suffix="-22", clang_args="", use_ld=True):
         c.env("RC", "{{WINDRES}}")
 
     c.var("lipo", "{{llvm_bin}}llvm-lipo{{llvm_suffix}}")
+    c.var("otool", "{{llvm_bin}}llvm-otool{{llvm_suffix}}")
 
 def android_llvm(c, arch):
 

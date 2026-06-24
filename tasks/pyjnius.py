@@ -77,4 +77,4 @@ def rapt(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")
 
-    c.copytree("src/org/jnius", "{{ rapt }}{{ c.python }}/prototype/renpyandroid/src/main/java/org/jnius")
+    c.copytree("src/org/jnius", "{{ rapt }}/prototype/renpyandroid/src/main/java/org/jnius")
