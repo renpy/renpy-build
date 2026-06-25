@@ -13,22 +13,9 @@ def download(c: Context):
     c.var("mingw_version", mingw_version)
 
     url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20241217/llvm-mingw-20241217-ucrt-ubuntu-20.04-x86_64.tar.xz"
-    dest = c.path("{{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
+    dest = f"llvm-mingw-{mingw_version}.tar.xz"
 
-    if os.path.exists(dest):
-        return
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-
-    print("Downloading windows toolchain.")
-
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(dest.with_suffix(".tmp"), "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024*1024):
-                f.write(chunk)
-
-    dest.with_suffix(".tmp").rename(dest)
+    c.download(url, dest)
 
 
 @task(kind="cross", platforms="windows")

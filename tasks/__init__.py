@@ -42,6 +42,7 @@ from . import iossupport
 
 from . import sdl2
 from . import sdl2_image
+from . import sdl3
 
 from . import ffmpeg
 
