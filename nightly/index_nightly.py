@@ -115,7 +115,7 @@ def main():
     dates = set()
 
     for i in os.listdir(args.nightly):
-        if i[0] in "78":
+        if i[0] in "8":
             full = os.path.join(args.nightly, i)
 
             dt = directory(i, full)
@@ -161,8 +161,6 @@ def main():
             (date, [
                 col(d, 8, "main"),
                 col(d, 8, "fix"),
-                col(d, 7, "main"),
-                col(d, 7, "fix"),
             ]))
 
     tmpl = env.get_template("root.html")
