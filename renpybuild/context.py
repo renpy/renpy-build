@@ -2,12 +2,9 @@ import os
 import shutil
 from pathlib import Path
 import subprocess
-import shutil
 
 import jinja2
 import requests
-
-import renpybuild.run
 
 from typing import Any
 
@@ -227,7 +224,9 @@ class Context:
         else:
             self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
 
-        renpybuild.run.build_environment(self)
+        from .run import build_environment
+
+        build_environment(self)
 
     def expand(self, s : str, **kwargs) -> str:
         """
@@ -320,7 +319,10 @@ class Context:
         """
 
         command = self.expand(command, **kwargs)
-        renpybuild.run.run(command, self, verbose, quiet)
+
+        from .run import run
+
+        run(command, self, verbose, quiet)
 
     def run_group(self):
         """
@@ -328,7 +330,9 @@ class Context:
         that allows multiple commands to be run in parallel.
         """
 
-        return renpybuild.run.RunGroup(self)
+        from .run import RunGroup
+
+        return RunGroup(self)
 
     def clean(self, d : str="{{build}}"):
         """
