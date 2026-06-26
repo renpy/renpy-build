@@ -32,6 +32,9 @@ def build(c : Context):
         {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DBUILD_SHARED_LIBS=0
+        {% if platform == "linux" and arch == "aarch64" %}
+        -DCMAKE_CXX_FLAGS=-DLIBYUV_DISABLE_SME
+        {% endif %}
         {% if platform == "web" %}
         -DCMAKE_SIZEOF_VOID_P=4
         {% endif %}
