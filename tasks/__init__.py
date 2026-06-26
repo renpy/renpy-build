@@ -40,6 +40,8 @@ from . import pyjnius
 from . import pyobjus
 from . import iossupport
 
+from . import metalangle
+
 from . import sdl3
 from . import sdl3_image
 
@@ -56,8 +58,6 @@ from . import sayvbs
 from . import angle
 
 from . import steam
-
-from . import metalangle
 
 from . import librenpy
 from . import pythonlib

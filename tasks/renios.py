@@ -90,7 +90,7 @@ def lipo(c: Context, namefilter):
         if not namefilter(i):
             continue
 
-        check_sdk(i, paths)
+        check_sdk(c, i, paths)
 
         print("(Debug) Lipo and strip:", i)
 
