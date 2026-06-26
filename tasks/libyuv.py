@@ -1,31 +1,22 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-@task(kind="host", platforms="all")
-def download(c : Context):
 
+@task(kind="host", platforms="all")
+def download(c: Context):
     c.var("commit", "d23308a2a7442be8e559b1b471862fd7588d6a57")
 
-    if c.path("{{ tmp }}/source/libyuv").exists():
-        c.chdir("{{ tmp }}/source/libyuv")
-        c.run("git reset --hard")
-        c.run("git checkout main")
-        c.run("git pull")
-        c.run("git checkout {{ commit }}")
+    c.clean("{{ tmp }}/source/libyuv")
+    c.chdir("{{ tmp }}/source")
 
-    else:
+    c.clone("https://chromium.googlesource.com/libyuv/libyuv", "--revision {{ commit }}")
 
-        c.clean("{{ tmp }}/source/libyuv")
-        c.chdir("{{ tmp }}/source")
-
-        c.run("git clone https://chromium.googlesource.com/libyuv/libyuv")
-        c.chdir("{{ tmp }}/source/libyuv")
-        c.run("git checkout {{ commit }}")
-
+    c.chdir("{{ tmp }}/source/libyuv")
     c.patch("libyuv-noshared.diff")
 
+
 @task(platforms="all")
-def build(c : Context):
+def build(c: Context):
     c.clean()
 
     c.run("""
