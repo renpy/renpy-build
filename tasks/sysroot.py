@@ -71,12 +71,12 @@ def install_linux(c: Context):
             """bash -c 'for deb in "{{ tmp }}"/debs/*.deb "{{ sysroot }}"/var/cache/apt/archives/*.deb; do [ -f "$deb" ] && dpkg-deb -x "$deb" "{{ sysroot }}"; done' """
         )
 
-        c.run("""{{source}}/make_links_relative.py {{sysroot}}""")
     else:
         c.run(
             """sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """
         )
-        c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
+
+    c.run("""sudo python3 {{source}}/make_links_relative.py {{sysroot}}""")
 
 
 @task(platforms="linux")
@@ -86,10 +86,7 @@ def permissions(c: Context):
     c.var("uid", str(os.getuid()))
     c.var("gid", str(os.getgid()))
 
-    if _in_podman():
-        c.run("""chown -R {{uid}}:{{gid}} {{sysroot}}""")
-    else:
-        c.run("""{{ sudo }}chown -R {{uid}}:{{gid}} {{sysroot}}""")
+    c.run("""sudo chown -R {{uid}}:{{gid}} {{sysroot}}""")
 
 
 @task(platforms="linux")
