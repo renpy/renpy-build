@@ -46,7 +46,7 @@ if ($args.Count -lt 1) {
     Show-Usage
     exit 1
 }
-$Mode, $BuildArgs = $args
+$Mode, [string[]]$BuildArgs = $args
 
 $envVars = @(
     "-e", "UV_PROJECT_ENVIRONMENT=/cache/venv"
