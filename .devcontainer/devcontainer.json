@@ -26,6 +26,7 @@
   },
   "remoteUser": "vscode",
   "mounts": [
+    "source=${localWorkspaceFolder}/renpy,target=${containerWorkspaceFolder}/renpy,type=bind,consistency=cached",
     "source=renpy-uv-cache,target=/home/vscode/.cache/uv,type=volume",
     "source=renpy-ccache-cache,target=/home/vscode/.ccache,type=volume",
   ],
