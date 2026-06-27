@@ -1,14 +1,3 @@
 *
-!extensions/
-!nvlib/
-!patches/
+# Needed by Dockerfile
 !prebuilt/
-!rapt/
-!renios/
-!renpybuild/
-!runtime/
-!source/
-!specs/
-!steamapi/
-!tasks/
-!tools/

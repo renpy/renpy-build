@@ -12,14 +12,6 @@ TMP_VOLUME = "renpy-build-tmp"
 TARS_VOLUME = "tars"
 
 
-def _git(*args: str) -> str:
-    return subprocess.check_output(
-        ["git", *args],
-        text=True,
-        cwd=SCRIPT_DIR,
-    ).strip()
-
-
 def make_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="run.ps1" if os.name == "nt" else "run.sh",
@@ -71,9 +63,9 @@ def make_parser() -> argparse.ArgumentParser:
 
     # Image build options.
     ap.add_argument(
-        "--dev",
-        action="store_true",
-        help="mount source tree into the container for development on renpy-build itself",
+        "--tag",
+        default="latest",
+        help="tag to use for the image",
     )
     ap.add_argument(
         "--dry-run",
@@ -102,10 +94,11 @@ def make_parser() -> argparse.ArgumentParser:
         help="output file (default: renpy-build-tmp.tar)",
     )
 
-    sp = subparsers.add_parser("exec", help="run a command in the build container")
-    sp.add_argument("cmd", nargs="*", default=["bash"], help="command to run")
     sp = subparsers.add_parser("import", help="import tmp volume from a tarball")
     sp.add_argument("src", help="tarball to import")
+
+    sp = subparsers.add_parser("exec", help="run a command in the build container")
+    sp.add_argument("cmd", nargs="*", default=["bash"], help="command to run")
 
     return ap
 
@@ -153,7 +146,7 @@ def volume_import(src: str) -> None:
 
 def main() -> None:
     # Check prerequisites.
-    for tool in ("podman", "git"):
+    for tool in ("podman",):
         if not shutil.which(tool):
             print(f"Error: '{tool}' is not installed.", file=sys.stderr)
             sys.exit(1)
@@ -183,28 +176,16 @@ def main() -> None:
         sys.exit(1)
 
     # Make sure there is an image with needed tag.
-    # Dev mode always uses the 'dev', otherwise it uses the current commit SHA.
-    if args.dev:
-        tag = "dev"
-    else:
-        if bool(_git("status", "--porcelain")):
-            print(
-                "Error: working tree is dirty. Commit or stash changes before building.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-        branch = _git("rev-parse", "--abbrev-ref", "HEAD").replace("/", "-")
-        sha = _git("rev-parse", "--short=7", "HEAD")
-        tag = f"{branch}-{sha}"
-
-    ensure_image(tag, no_cache=args.no_cache)
+    ensure_image(args.tag, no_cache=args.no_cache)
 
     # Assemble podman command.
-    cmd: list[str] = ["podman", "run", "--rm"]
-
-    if args.command == "exec" or args.dev:
-        cmd += ["-it"]
+    cmd: list[str] = [
+        "podman",
+        "run",
+        "--rm",
+        "--interactive",
+        "--tty",
+    ]
 
     cmd += [
         "-v",
@@ -215,27 +196,25 @@ def main() -> None:
         f"{TARS_VOLUME}:/build/tars",
     ]
 
-    if args.dev:
-        # In dev mode, mount each non-ignored directory in renpy-build as a
-        # volume shadowing files in the container that could be stale.
-        for d in [
-            "extensions/",
-            "nvlib/",
-            "patches/",
-            "prebuilt/",
-            "rapt/",
-            "renios/",
-            "renpybuild/",
-            "runtime/",
-            "source/",
-            "specs/",
-            "steamapi/",
-            "tasks/",
-            "tools/",
-        ]:
-            host_path = SCRIPT_DIR / d
-            if host_path.is_dir():
-                cmd += ["-v", f"{host_path}:/build/{d}"]
+    # Mount each non-ignored directory in renpy-build as a volume.
+    for d in [
+        "extensions/",
+        "nvlib/",
+        "patches/",
+        "prebuilt/",
+        "rapt/",
+        "renios/",
+        "renpybuild/",
+        "runtime/",
+        "source/",
+        "specs/",
+        "steamapi/",
+        "tasks/",
+        "tools/",
+    ]:
+        host_path = SCRIPT_DIR / d
+        if host_path.is_dir():
+            cmd += ["-v", f"{host_path}:/build/{d}"]
 
     cmd += [
         # Store venv in a tmp volume, so build system doesn't change venv in
@@ -257,10 +236,10 @@ def main() -> None:
         "RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/",
     ]
 
-    cmd += [f"{IMAGE_NAME}:{tag}"]
+    cmd += [f"{IMAGE_NAME}:{args.tag}"]
 
     # Strip wrapper-only flags so the inner script doesn't see them.
-    inner_argv = [a for a in sys.argv[1:] if a not in ("--dev", "--dry-run", "--no-cache")]
+    inner_argv = [a for a in sys.argv[1:] if a not in ("--tag", "--dry-run", "--no-cache")]
 
     if args.command == "exec":
         cmd += args.cmd

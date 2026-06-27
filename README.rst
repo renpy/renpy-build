@@ -100,7 +100,7 @@ Supported Platform / Architecture Combinations
 Cleaning
 ~~~~~~~~
 
-To perform a clean build, run::
+To perform a clean of build artifacts and other temporary files, run::
 
     ./run.sh clean
 
@@ -109,6 +109,9 @@ Advanced Usage
 
 Container Management
 ~~~~~~~~~~~~~~~~~~~~
+
+``--tag``
+    Tag to use for the image. Defaults to ``latest``.
 
 ``--no-cache``
     Rebuild the container image from scratch, ignoring the cache.
@@ -134,19 +137,14 @@ and re-import it later (e.g. to share a partial build)::
     ./run.sh export renpy-build-tmp.tar
     ./run.sh import renpy-build-tmp.tar
 
-Developer Mode
-~~~~~~~~~~~~~~
+Updating
+---------
 
-.. note::
-
-   Dev mode is intended for people working on renpy-build itself, not for
-   building Ren'Py from source.
-
-Dev mode mounts the renpy-build source directories into the container so
-that changes to build tasks and scripts are reflected without rebuilding
-the image::
-
-    ./run.sh --dev --platform linux build
+It's possible to change renpy/ to be a symlink to your own
+clone of the Ren'Py source after the prepare step is complete. Updating
+renpy-build itself may require deleting the tmp/ directory and a complete
+rebuild, though simple changes may not require that. You may also need to
+run prepare.sh again.
 
 Note
 ----
