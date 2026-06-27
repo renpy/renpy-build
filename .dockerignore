@@ -10,7 +10,5 @@
 !source/
 !specs/
 !steamapi/
-!tars/
 !tasks/
 !tools/
-!docker-entrypoint.sh
