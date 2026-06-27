@@ -1,9 +1,9 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-@task(kind="host", platforms="all")
-def download(c : Context):
 
+@task(kind="host", platforms="all")
+def download(c: Context):
     c.var("commit", "d23308a2a7442be8e559b1b471862fd7588d6a57")
 
     if c.path("{{ tmp }}/source/libyuv").exists():
@@ -14,18 +14,18 @@ def download(c : Context):
         c.run("git checkout {{ commit }}")
 
     else:
-
         c.clean("{{ tmp }}/source/libyuv")
         c.chdir("{{ tmp }}/source")
 
-        c.run("git clone https://chromium.googlesource.com/libyuv/libyuv")
+        c.clone("https://chromium.googlesource.com/libyuv/libyuv", minimal=False)
         c.chdir("{{ tmp }}/source/libyuv")
         c.run("git checkout {{ commit }}")
 
     c.patch("libyuv-noshared.diff")
 
+
 @task(platforms="all")
-def build(c : Context):
+def build(c: Context):
     c.clean()
 
     c.run("""
