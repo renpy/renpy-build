@@ -389,6 +389,7 @@ def link_windows(c: Context):
     -lffi
     -lssl
     -lcrypto
+    -lcrypt32
     -llzma
     -lbz2
     -lbcrypt

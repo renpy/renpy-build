@@ -1,0 +1,4 @@
+*
+# Needed by Dockerfile
+!prepare.sh
+!prebuilt/
