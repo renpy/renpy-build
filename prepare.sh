@@ -62,11 +62,10 @@ sudo tar xzf "$BASE/prebuilt/clang_rt.tar.gz" -C /usr/lib/clang/$LLVM_MAJOR/lib/
 
 # UV
 wget -qO- https://astral.sh/uv/install.sh | sh
+uv python install 3.12
 
 # Install the programs and virtualenvs (but not in a dev container - we use the
 # presence of nightly to check.)
-
-
 if [ -d "$ROOT/nightly" ]; then
     VENV="$ROOT/renpy/.venv"
 
