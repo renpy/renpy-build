@@ -151,6 +151,9 @@ def main() -> None:
             print(f"Error: '{tool}' is not installed.", file=sys.stderr)
             sys.exit(1)
 
+    if not sys.argv[1:]:
+        sys.argv.append("--help")
+
     # Validate build arguments through argparse.
     parser = make_parser()
     args = parser.parse_args()
@@ -232,8 +235,6 @@ def main() -> None:
         "PYTHONUNBUFFERED=1",
         "-e",
         "PYTHONHASHSEED=0",
-        "-e",
-        "RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/",
     ]
 
     cmd += [f"{IMAGE_NAME}:{args.tag}"]
@@ -250,7 +251,7 @@ def main() -> None:
             ". /build/tmp/venv/bin/activate",
             'exec uv --project renpy run -m renpybuild "$@"',
         ]
-        cmd += ["sh", "-c", " && ".join(sub_command), "--", *inner_argv]
+        cmd += ["bash", "-c", " && ".join(sub_command), "--", *inner_argv]
 
     if args.dry_run:
         print(" \\\n  ".join(shlex.quote(c) for c in cmd))
