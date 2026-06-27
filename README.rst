@@ -8,6 +8,7 @@ the same manner that is used to make official Ren'Py releases.
 Requirements
 ------------
 
+- Python 3.12 or newer (available as ``python3`` in your PATH)
 - `Podman <https://podman.io/docs/installation>`_ (with ``podman compose``)
 - Git
 - At least **64 GB** of free disk space
@@ -27,7 +28,11 @@ Download the required third-party archives listed in `tars/README.rst
 
 Then build::
 
-    ./run.sh build build
+    ./run.sh build
+
+On Windows, use ``run.ps1`` instead of ``run.sh``::
+
+    .\run.ps1 build
 
 This will:
 
@@ -36,16 +41,12 @@ This will:
 
 Subsequent builds reuse the image and only rebuild components that changed.
 
-On Windows, use ``run.ps1`` instead of ``run.sh``::
-
-    .\run.ps1 build build
-
 Build Options
 ~~~~~~~~~~~~~
 
-Options are passed after the ``build`` command::
+Options are passed before the ``build`` command::
 
-    ./run.sh build --platform linux --arch x86_64 build
+    ./run.sh --platform linux --arch x86_64 build
 
 ``--platform <name>``
     The platform to build for. One of ``linux``, ``windows``, ``mac``,
@@ -54,8 +55,14 @@ Options are passed after the ``build`` command::
 ``--arch <name>``
     The architecture to build for. See the table below.
 
-``--python <version>``
-    The Python version to build. Only ``3`` is currently valid.
+``--nostrip``
+    Do not strip binaries.
+
+``--experimental``
+    Include experimental platforms.
+
+``--stop <task>``
+    Stop after the specified task.
 
 Supported Platform / Architecture Combinations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,10 +102,40 @@ Cleaning
 
 To perform a clean build, run::
 
-    ./run.sh build clean
+    ./run.sh clean
+
+Advanced Usage
+--------------
+
+Container Management
+~~~~~~~~~~~~~~~~~~~~
+
+``--no-cache``
+    Rebuild the container image from scratch, ignoring the cache.
+
+``--dry-run``
+    Print the ``podman`` command that would be executed without running it.
+
+Running Commands in the Container
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can run an arbitrary command (default: ``bash``) inside the build
+container::
+
+    ./run.sh exec
+    ./run.sh exec ls /build
+
+Exporting and Importing the Build Volume
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The build state lives in a Podman volume. You can export it to a tarball
+and re-import it later (e.g. to share a partial build)::
+
+    ./run.sh export renpy-build-tmp.tar
+    ./run.sh import renpy-build-tmp.tar
 
 Developer Mode
---------------
+~~~~~~~~~~~~~~
 
 .. note::
 
@@ -107,18 +144,9 @@ Developer Mode
 
 Dev mode mounts the renpy-build source directories into the container so
 that changes to build tasks and scripts are reflected without rebuilding
-the image.
+the image::
 
-::
-
-    ./run.sh dev --platform linux build
-
-Rebuilding Specific Tasks
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In dev mode you can rebuild individual tasks without a full clean::
-
-    ./run.sh dev rebuild <task_name>
+    ./run.sh --dev --platform linux build
 
 Note
 ----
