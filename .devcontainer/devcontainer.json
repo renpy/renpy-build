@@ -24,6 +24,7 @@
       ]
     }
   },
+  "onCreateCommand": "sudo chown vscode:vscode /home/vscode/.cache/uv /home/vscode/.ccache",
   "remoteUser": "vscode",
   "mounts": [
     "source=${localWorkspaceFolder}/renpy,target=${containerWorkspaceFolder}/renpy,type=bind,consistency=cached",
