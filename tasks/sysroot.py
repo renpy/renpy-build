@@ -56,7 +56,7 @@ def install_linux(c: Context):
 
         c.run("""mkdir -p "{{ tmp }}/debs" """)
         c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """)
-        c.run("""sudo {{source}}/make_links_relative.py {{sysroot}}""")
+        c.run("""sudo python3 {{source}}/make_links_relative.py {{sysroot}}""")
 
 
 @task(platforms="linux")

@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
-import sys
 import argparse
 import shutil
+import sys
 from pathlib import Path
 
 import renpybuild.task
@@ -10,13 +8,12 @@ from renpybuild.context import Context
 
 import tasks as _
 
-known_platforms = [ ]
+known_platforms = []
 
 # Platform Registry ############################################################
 
 
 class Platform:
-
     def __init__(self, platform, arch, python, experimental=False):
         self.platform = platform
         self.arch = arch
@@ -46,6 +43,7 @@ Platform("ios", "sim-arm64", "3")
 
 Platform("web", "wasm", "3")
 
+
 def build(args):
 
     platforms = set(i.strip() for i in args.platforms.split(",") if i)
@@ -55,17 +53,17 @@ def build(args):
     # Check that the platforms, archs, and pythons are known.
 
     for i in platforms:
-        if i not in { j.platform for j in known_platforms }:
+        if i not in {j.platform for j in known_platforms}:
             print("Platform", i, "is not known.", file=sys.stderr)
             sys.exit(1)
 
     for i in archs:
-        if i not in { j.arch for j in known_platforms }:
+        if i not in {j.arch for j in known_platforms}:
             print("Architecture", i, "is not known.", file=sys.stderr)
             sys.exit(1)
 
     for i in pythons:
-        if i not in { j.python for j in known_platforms }:
+        if i not in {j.python for j in known_platforms}:
             print("Python", i, "is not known.", file=sys.stderr)
             sys.exit(1)
 
@@ -80,7 +78,6 @@ def build(args):
 
     for task in renpybuild.task.tasks:
         for p in known_platforms:
-
             if platforms and (p.platform not in platforms):
                 continue
 
@@ -90,16 +87,7 @@ def build(args):
             if pythons and (p.python not in pythons):
                 continue
 
-            platform = p.platform
-            arch = p.arch
-            python = p.python
-
-            context = Context(
-                p.platform,
-                p.arch,
-                p.python,
-                root,
-                args)
+            context = Context(p.platform, p.arch, p.python, root, args)
 
             task.run(context)
 
@@ -112,7 +100,7 @@ def build(args):
 
 def remove_complete(args):
 
-    tmp = root / "tmp"
+    tmp = root / os.environ.get("RENPY_BUILD_TMP", "tmp")
     complete = tmp / "complete"
 
     if not complete.is_dir():
@@ -134,15 +122,11 @@ def rebuild(args):
 
 def clean(args):
 
-    def rmtree(p : Path):
+    def rmtree(p: Path):
         if p.exists():
             shutil.rmtree(p)
 
-    def unlink(p : Path):
-        if p.exists():
-            p.unlink()
-
-    tmp = root / "tmp"
+    tmp = root / os.environ.get("RENPY_BUILD_TMP", "tmp")
 
     rmtree(tmp / "build")
     rmtree(tmp / "complete")
@@ -152,16 +136,13 @@ def clean(args):
     for i in tmp.glob("install.*"):
         rmtree(i)
 
-    def rmgen(d):
-        rmtree(d / "gen3")
-        rmtree(d / "gen3-static")
-
-    rmgen(root / "tmp")
-    rmgen(root / "pygame_sdl2")
+    rmtree(root / "renpy" / "tmp" / "gen3")
+    rmtree(root / "renpy" / "tmp" / "gen3-static")
 
     rmtree(root / "renpy" / "web")
     rmtree(root / "renpy" / "renios")
     rmtree(root / "renpy" / "rapt")
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -184,7 +165,7 @@ def main():
     sp.set_defaults(function=build)
 
     sp = subparsers.add_parser("rebuild")
-    sp.add_argument("tasks", nargs='+')
+    sp.add_argument("tasks", nargs="+")
     sp.set_defaults(function=rebuild)
 
     sp = subparsers.add_parser("clean")
@@ -195,7 +176,7 @@ def main():
     args = ap.parse_args()
 
     if not args.experimental:
-        known_platforms[:] = [ i for i in known_platforms if not i.experimental ]
+        known_platforms[:] = [i for i in known_platforms if not i.experimental]
 
     root = Path(__file__).parent.parent.resolve()
 
@@ -205,8 +186,8 @@ def main():
 if __name__ == "__main__":
     import os
 
-    if os.environ.get('PYTHONHASHSEED') is None:
-        os.environ['PYTHONHASHSEED'] = "0"
+    if os.environ.get("PYTHONHASHSEED") is None:
+        os.environ["PYTHONHASHSEED"] = "0"
         os.execv(sys.executable, sys.orig_argv)
         # script will now re-execute with new hash seed
 

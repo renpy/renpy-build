@@ -536,4 +536,8 @@ class Context:
         if submodules:
             options = f"--recurse-submodules {options}"
 
+        # In devcontainer on Windows VS Code uses CRLF endings and this breaks
+        # a lot of Linux assumptions.
+        options = f"{options} --config core.autocrlf=false --config core.eol=lf"
+
         self.run(f"git clone {options} {url} {directory}")
