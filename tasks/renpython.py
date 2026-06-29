@@ -641,7 +641,8 @@ def link_web(c: Context):
 
         -lidbfs.js
 
-        --preload-file {{ dist }}/lib/{{ pythonver }}@/lib/{{ pythonver }}
+        --preload-file {{ dist }}@/
+        --emit-symbol-map
 
         -sFULL_ES2
         -sFULL_ES3
