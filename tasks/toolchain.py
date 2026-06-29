@@ -40,6 +40,7 @@ def build(c: Context):
 
     c.run("""unzip -q {{ tars }}/{{ndk_version}}-linux.zip""")
 
+
 @task(kind="cross", platforms="mac")
 def build(c: Context):
     c.clean("{{ cross }}")
@@ -102,7 +103,6 @@ def mockrt(c: Context):
 
 @task(platforms="web")
 def emsdk(c: Context):
-    # c.var("emsdk_version", "3.1.67")
     c.var("emsdk_version", "5.0.2")
 
     c.clean("{{ cross }}")
