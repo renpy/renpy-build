@@ -2,10 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 import shutil
-import os
 import re
-
-
 
 PY3_MODULES = """
 asyncio/
@@ -22,25 +19,43 @@ logging/
 multiprocessing/
 zoneinfo/
 xml/
+pathlib/
+string/
+compression/
+
+_ast_unparse
+_collections_abc
+_colorize
+_compat_pickle
+_markupbase
+_opcode_metadata
+_osx_support
+_py_abc
+_py_warnings
+_pydatetime
+_pydecimal
+_pyio
+_pylong
+_pyrepl/
+_strptime
+_threading_local
+_weakrefset
 
 abc
+annotationlib
 argparse
 ast
 base64
 bisect
 bz2
 calendar
-cgi
-chunk
 cmd
 code
 codecs
 codeop
-_collections_abc
 colorsys
 _compat_pickle
 compileall
-_compression
 configparser
 contextlib
 contextvars
@@ -73,7 +88,6 @@ hashlib
 heapq
 hmac
 imaplib
-imghdr
 inspect
 io
 ipaddress
@@ -92,12 +106,9 @@ opcode
 operator
 optparse
 os
-_osx_support
-pathlib
 pdb
 pickle
 pickletools
-pipes
 pkgutil
 platform
 plistlib
@@ -107,12 +118,9 @@ pprint
 profile
 pstats
 pty
-_py_abc
 pyclbr
 py_compile
-_pydecimal
 pydoc
-_pyio
 queue
 quopri
 random
@@ -137,12 +145,9 @@ sre_parse
 ssl
 stat
 statistics
-string
 stringprep
-_strptime
 struct
 subprocess
-sunau
 symtable
 tabnanny
 tarfile
@@ -150,7 +155,6 @@ tempfile
 textwrap
 this
 threading
-_threading_local
 timeit
 token
 tokenize
@@ -160,12 +164,10 @@ tracemalloc
 tty
 types
 typing
-uu
 uuid
 warnings
 wave
 weakref
-_weakrefset
 webbrowser
 zipapp
 zipfile/
@@ -209,7 +211,6 @@ brotli
 def python3(c: Context):
     # Remove stdlib packages which include non-compilable code.
     c.rmtree("{{ install }}/lib/{{ pythonver }}/test")
-    c.rmtree("{{ install }}/lib/{{ pythonver }}/lib2to3")
 
     # The list of rules.
     rules = set(PY3_MODULES.split())

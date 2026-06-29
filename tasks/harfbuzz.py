@@ -16,6 +16,13 @@ def unpack(c: Context):
     c.var("version", version)
     c.run("tar xaf {{source}}/harfbuzz-{{version}}.tar.xz")
 
+    c.chdir("harfbuzz-{{version}}")
+
+    if c.platform == "web":
+        c.patch("harfbuzz-web-disable-threads.diff")
+
+    c.patch("harfbuzz-disable-tests.diff")
+    c.run("autoreconf -f")
 
 
 @task(platforms="all")

@@ -10,7 +10,8 @@ from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from .context import Context
 
 # This caches the results of emsdk_environment.
-emsdk_cache : dict[str, str] = { }
+emsdk_cache: dict[str, str] = {}
+
 
 def emsdk_environment(c):
     """
@@ -23,15 +24,14 @@ def emsdk_environment(c):
         return
 
     if not emsdk_cache:
-
         env = dict(os.environ)
         env["EMSDK_BASH"] = "1"
         env["EMSDK_QUIET"] = "1"
 
-        bash = subprocess.check_output([ str(emsdk), "construct_env" ], env=env, text=True)
+        bash = subprocess.check_output([str(emsdk), "construct_env"], env=env, text=True)
 
         for l in bash.split("\n"):
-            m = re.match(r'export (\w+)=\"(.*?)\";?$', l)
+            m = re.match(r"export (\w+)=\"(.*?)\";?$", l)
             if m:
                 emsdk_cache[m.group(1)] = m.group(2)
 
@@ -65,7 +65,10 @@ def llvm(c, bin="", prefix="", suffix="-22", clang_args="", use_ld=True):
     c.var("clang_args", clang_args)
 
     c.env("CC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -std=gnu17")
-    c.env("CXX", "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}")
+    c.env(
+        "CXX",
+        "ccache {{llvm_bin}}{{llvm_prefix}}clang++{{llvm_suffix}} {{ clang_args }} -std=gnu++17 {{ cxx_clang_args }}",
+    )
     c.env("CPP", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} -E")
     c.env("OBJC", "ccache {{llvm_bin}}{{llvm_prefix}}clang{{llvm_suffix}} {{ clang_args }} ")
 
@@ -84,6 +87,7 @@ def llvm(c, bin="", prefix="", suffix="-22", clang_args="", use_ld=True):
     c.var("lipo", "{{llvm_bin}}llvm-lipo{{llvm_suffix}}")
     c.var("otool", "{{llvm_bin}}llvm-otool{{llvm_suffix}}")
 
+
 def android_llvm(c, arch):
 
     if arch == "armv7a":
@@ -94,18 +98,19 @@ def android_llvm(c, arch):
     llvm(
         c,
         bin="{{cross}}/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin",
-        prefix=f"{arch}-linux-android{ eabi }21-",
+        prefix=f"{arch}-linux-android{eabi}21-",
         suffix="",
         clang_args="",
         use_ld=False,
     )
+
 
 def build_environment(c):
     """
     Sets up the build environment inside the context.
     """
 
-    if c.platform == "web" and c.kind not in ( "host",  "host-python", "cross" ):
+    if c.platform == "web" and c.kind not in ("host", "host-python", "cross"):
         emsdk_environment(c)
 
     if c.platform == "android":
@@ -197,9 +202,7 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
-
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
-
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
         c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
@@ -209,10 +212,12 @@ def build_environment(c):
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
     elif (c.platform == "linux") and (c.arch == "x86_64"):
-
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        c.env(
+            "PKG_CONFIG_LIBDIR",
+            "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig",
+        )
         # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
@@ -220,10 +225,12 @@ def build_environment(c):
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "aarch64"):
-
         llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        c.env(
+            "PKG_CONFIG_LIBDIR",
+            "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig",
+        )
         # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
@@ -231,10 +238,15 @@ def build_environment(c):
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "linux") and (c.arch == "armv7l"):
-
-        llvm(c, clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard")
+        llvm(
+            c,
+            clang_args="-target {{ host_platform }} --sysroot {{ sysroot }} -fPIC -pthread -mfpu=neon -mfloat-abi=hard",
+        )
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib32")
-        c.env("PKG_CONFIG_LIBDIR", "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig")
+        c.env(
+            "PKG_CONFIG_LIBDIR",
+            "{{ sysroot }}/usr/lib/{{ architecture_name }}/pkgconfig:{{ sysroot }}/usr/share/pkgconfig",
+        )
         # c.env("PKG_CONFIG_SYSROOT_DIR", "{{ sysroot }}")
 
         c.var("cmake_system_name", "Linux")
@@ -242,7 +254,6 @@ def build_environment(c):
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ sysroot }}' -DCMAKE_SYSROOT={{ sysroot }}")
 
     elif (c.platform == "windows") and (c.arch == "x86_64"):
-
         c.env("CFLAGS", "{{ CFLAGS }}")
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
 
@@ -252,14 +263,17 @@ def build_environment(c):
             prefix="x86_64-w64-mingw32-",
             suffix="",
             clang_args="-target {{ host_platform }} --sysroot {{ cross }}/llvm-mingw/x86_64-w64-mingw32 -fPIC -pthread",
-            use_ld=False)
+            use_ld=False,
+        )
 
         c.var("cmake_system_name", "Windows")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/x86_64-w64-mingw32")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/llvm-mingw/x86_64-w64-mingw32' -DCMAKE_SYSROOT={{ cross }}/llvm-mingw/x86_64-w64-mingw32",
+        )
 
     elif (c.platform == "android") and (c.arch == "x86_64"):
-
         android_llvm(c, "x86_64")
 
         c.env("CFLAGS", "{{ CFLAGS }}")
@@ -268,10 +282,12 @@ def build_environment(c):
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "x86_64")
         c.var("android_abi", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF",
+        )
 
     elif (c.platform == "android") and (c.arch == "arm64_v8a"):
-
         android_llvm(c, "aarch64")
 
         c.env("CFLAGS", "{{ CFLAGS }}")
@@ -280,10 +296,12 @@ def build_environment(c):
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "aarch64")
         c.var("android_abi", "arm64-v8a")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF",
+        )
 
     elif (c.platform == "android") and (c.arch == "armeabi_v7a"):
-
         android_llvm(c, "armv7a")
 
         c.env("CFLAGS", "{{ CFLAGS }}")
@@ -292,10 +310,12 @@ def build_environment(c):
         c.var("cmake_system_name", "Android")
         c.var("cmake_system_processor", "armv7-a")
         c.var("android_abi", "armeabi-v7a")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH={{ install }} -DCMAKE_TOOLCHAIN_FILE={{cross}}/{{ndk_version}}/build/cmake/android.toolchain.cmake -DANDROID_ABI={{ android_abi }} -DANDROID_PLATFORM=android-21 -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=OFF",
+        )
 
     elif (c.platform == "mac") and (c.arch == "x86_64"):
-
         llvm(
             c,
             clang_args="-target x86_64-apple-darwin14 --sysroot {{cross}}/sdk",
@@ -307,10 +327,12 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk  -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}",
+        )
 
     elif (c.platform == "mac") and (c.arch == "arm64"):
-
         llvm(
             c,
             clang_args="-target arm64-apple-macos11 --sysroot {{cross}}/sdk",
@@ -322,10 +344,12 @@ def build_environment(c):
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}",
+        )
 
     elif (c.platform == "ios") and (c.arch == "arm64"):
-
         llvm(
             c,
             clang_args="-target arm64-apple-ios13.0 --sysroot {{cross}}/sdk",
@@ -337,47 +361,65 @@ def build_environment(c):
 
         c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneOS.sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneOS.sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}",
+        )
 
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
-
         llvm(
             c,
             clang_args="-target arm64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
         )
 
         c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
-        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env(
+            "OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks"
+        )
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "aarch64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneSimulator.sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneSimulator.sdk -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}",
+        )
 
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
-
         llvm(
             c,
             clang_args="-target x86_64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
         )
 
         c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
-        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env(
+            "OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks"
+        )
         c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "x86_64")
-        c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneSimulator.sdk -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}")
+        c.var(
+            "cmake_args",
+            "-DCMAKE_FIND_ROOT_PATH='{{ install }};{{ cross }}/sdk' -DCMAKE_SYSROOT={{ cross }}/sdk -DCMAKE_OSX_SYSROOT={{ cross }}/iPhoneSimulator.sdk -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_INSTALL_NAME_TOOL={{ INSTALL_NAME_TOOL }}",
+        )
 
     elif (c.platform == "web") and (c.arch == "wasm") and (c.name != "web"):
-
         # Use emscripten wrapper to configure and build
         c.var("make", "emmake {{ make }}")
         c.var("configure", "emconfigure ./configure")
         c.var("cmake_configure", "emcmake cmake")
 
-        c.env("CFLAGS", "{{ CFLAGS }} -O3 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -O3 -sUSE_LIBPNG -sUSE_LIBJPEG=1 -sUSE_BZIP2=1 -sUSE_ZLIB=1 -sEMULATE_FUNCTION_POINTER_CASTS=1")
+        c.var(
+            "use_ports",
+            """\
+            --use-port=libjpeg \
+            --use-port=bzip2 \
+            --use-port=zlib \
+            """,
+        )
+        c.env("CFLAGS", "{{ CFLAGS }} {{ use_ports }} -fexceptions")
+        c.env("LDFLAGS", "{{ LDFLAGS }} {{ use_ports }} -sEMULATE_FUNCTION_POINTER_CASTS=1")
 
         c.var("emscriptenbin", "{{ cross }}/upstream/emscripten")
         c.var("crossbin", "{{ cross }}/upstream/bin")
@@ -395,7 +437,10 @@ def build_environment(c):
         c.env("EMSCRIPTEN_TOOLS", "{{emscriptenbin}}/tools")
         c.env("EMSCRIPTEN", "{{emscriptenbin}}")
 
-        c.env("PKG_CONFIG_LIBDIR", "{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig:{{cross}}/upstream/emscripten/system/lib/pkgconfig")
+        c.env(
+            "PKG_CONFIG_LIBDIR",
+            "{{cross}}/upstream/emscripten/cache/sysroot/lib/pkgconfig:{{cross}}/upstream/emscripten/system/lib/pkgconfig",
+        )
         # Add pkg-file search path for emscripten, since emscripten locked PKG_CONFIG_LIBDIR
         c.env("EM_PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
@@ -409,10 +454,12 @@ def build_environment(c):
         c.var("cmake_system_processor", "generic")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
-
-    if c.kind not in ( "host", "host-python", "cross" ):
+    if c.kind not in ("host", "host-python", "cross"):
         c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
-        c.var("cmake_args", "{{cmake_args}} -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY")
+        c.var(
+            "cmake_args",
+            "{{cmake_args}} -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY",
+        )
 
     c.env("PKG_CONFIG", "pkg-config --static")
 
@@ -420,11 +467,17 @@ def build_environment(c):
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
     if c.platform in ("mac", "ios"):
-        format_args = " -DCMAKE_C_ARCHIVE_CREATE=\"<CMAKE_AR> --format=darwin qc <TARGET> <LINK_FLAGS> <OBJECTS>\" -DCMAKE_CXX_ARCHIVE_CREATE=\"<CMAKE_AR> --format=darwin qc <TARGET> <LINK_FLAGS> <OBJECTS>\""
+        format_args = ' -DCMAKE_C_ARCHIVE_CREATE="<CMAKE_AR> --format=darwin qc <TARGET> <LINK_FLAGS> <OBJECTS>" -DCMAKE_CXX_ARCHIVE_CREATE="<CMAKE_AR> --format=darwin qc <TARGET> <LINK_FLAGS> <OBJECTS>"'
     else:
         format_args = ""
 
-    c.var("cmake_args", "-G Ninja {{ cmake_args }}" + format_args + " -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_PARALLEL_LEVEL=" + str(cpuccount))
+    c.var(
+        "cmake_args",
+        "-G Ninja {{ cmake_args }}"
+        + format_args
+        + " -DCMAKE_PROJECT_INCLUDE_BEFORE={{root}}/tools/cmake_build_variables.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_PARALLEL_LEVEL="
+        + str(cpuccount),
+    )
 
     # Used by zlib.
     if c.kind != "host":
@@ -450,6 +503,7 @@ def run(command, context, verbose=False, quiet=False):
         print("path:", context.cwd)
         print("args:", " ".join(repr(i) for i in args))
         import traceback
+
         traceback.print_stack()
         sys.exit(1)
 

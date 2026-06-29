@@ -21,8 +21,6 @@
 
 import sys
 import os
-import time
-import locale
 
 # A variable giving the Ren'Py platform ########################################
 
@@ -219,6 +217,18 @@ class WebBrowserController:
 
 
 if RENPY_PLATFORM.startswith("web-"):
+    import types
+
+    # Stub out select before anything imports selectors.
+    # On web/Asyncify, the real select module calls poll() at import time
+    # (via selectors probing available backends), which crashes under Asyncify
+    # in emsdk 4.x. Subprocess is documented as unsupported on web.
+    select = types.ModuleType("select")
+    select.select = lambda *args, **kwargs: ([], [], [])
+    select.error = OSError
+    sys.modules["select"] = select
+    del select
+
     unpack_web()
 
     import atexit
