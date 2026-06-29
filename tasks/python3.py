@@ -265,6 +265,8 @@ def build_web(c: Context):
         --disable-test-modules
         """)
 
+    c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py .""")
+
     c.run("""{{ make }}""")
 
     common_post(c)
