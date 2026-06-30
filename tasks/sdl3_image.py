@@ -35,11 +35,14 @@ def build(c: Context):
         -DSDLIMAGE_DEPS_SHARED=OFF
         -DSDLIMAGE_BACKEND_STB=OFF
         -DSDLIMAGE_ANI_SAVE=OFF
+        -DSDLIMAGE_AVIF=TRUE
+        -DSDLIMAGE_VENDORED=OFF
         -DSDLIMAGE_AVIF_SAVE=OFF
         -DSDLIMAGE_GIF_SAVE=OFF
         -DSDLIMAGE_WEBP_SAVE=OFF
         -DSDLIMAGE_SAMPLES=OFF
-
+        -DPKG_CONFIG_USE_STATIC_LIBS=ON
+        -DCMAKE_FIND_LIBRARY_SUFFIXES=".a"
         {{ tmp }}/source/SDL3_image-{{version}}
         """)
 

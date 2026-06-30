@@ -197,12 +197,12 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
 
+    c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
     if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
 
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
-        c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
         # c.var("cmake_system_name", "Linux")
         # c.var("cmake_system_processor", "x86_64")
