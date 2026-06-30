@@ -45,17 +45,15 @@ def build_mac(c: Context):
     c.run("""{{configure}} {{ cross_config }} --prefix="{{ install }}" """)
     c.run("""{{ make }}""")
 
-    c.run("""install -d {{ install }}/mac{{python}}""")
-    c.run("""install zsync zsyncmake {{ install }}/mac{{python}}""")
+    c.run("""install -d {{ install }}/mac""")
+    c.run("""install zsync zsyncmake {{ install }}/mac""")
 
 
 @task(kind="host-python", platforms="mac")
 def lipo_mac(c: Context):
 
-    c.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
-
-    c.var("ac", "{{ renpy }}/renpy{{ python }}.app/Contents")
-    c.var("acm", "{{ renpy }}/renpy{{ python }}.app/Contents/MacOS")
+    c.var("ac", "{{ renpy }}/renpy.app/Contents")
+    c.var("acm", "{{ renpy }}/renpy.app/Contents/MacOS")
 
     c.run("""install -d {{ dlpa }}""")
     c.run("""install -d {{ acm }}""")
@@ -65,8 +63,8 @@ def lipo_mac(c: Context):
         c.run("""
             {{ lipo }} -create
             -output {{ dlpa }}/{{ fn }}
-            {{tmp}}/install.mac-x86_64/mac{{python}}/{{fn}}
-            {{tmp}}/install.mac-arm64/mac{{python}}/{{fn}}
+            {{tmp}}/install.mac-x86_64/mac/{{fn}}
+            {{tmp}}/install.mac-arm64/mac/{{fn}}
             """)
 
         c.run("install {{ dlpa }}/{{ fn }} {{ acm }}/{{ fn }}")

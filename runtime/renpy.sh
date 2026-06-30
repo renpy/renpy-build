@@ -1,6 +1,5 @@
 #!/bin/sh
 
-PYTHON="py{{ python }}"
 SCRIPT="$0"
 
 # Resolve the chain of symlinks leading to this script.
@@ -45,7 +44,7 @@ if [ -z "$RENPY_PLATFORM" ] ; then
     esac
 fi
 
-LIB="$ROOT/lib/$PYTHON-$RENPY_PLATFORM"
+LIB="$ROOT/lib/py3-$RENPY_PLATFORM"
 
 if ! test -d "$LIB"; then
     echo "Ren'Py platform files not found in:"
