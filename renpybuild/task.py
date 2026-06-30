@@ -1,11 +1,5 @@
 import time
-import os
-import shutil
-import pathlib
-import subprocess
-import shutil
 
-import jinja2
 
 class Task:
     """
@@ -13,7 +7,7 @@ class Task:
     proceed.
     """
 
-    def __init__(self, task, name, function, *, kind="arch", always=False, platforms="-web", archs=None, pythons=None):
+    def __init__(self, task, name, function, *, kind="arch", always=False, platforms="-web", archs=None):
 
         self.task = task
         self.name = name
@@ -33,7 +27,7 @@ class Task:
             else:
                 negative = False
 
-            rv = { i.strip() for i in v.split(",") }
+            rv = {i.strip() for i in v.split(",")}
 
             if negative:
                 rv.add("negative")
@@ -42,7 +36,6 @@ class Task:
 
         self.platforms = split(platforms)
         self.archs = split(archs)
-        self.pythons = split(pythons)
 
         self.function = function
 
@@ -63,9 +56,6 @@ class Task:
             return
 
         if not check(self.archs, context.arch):
-            return
-
-        if not check(self.pythons, context.python):
             return
 
         if self.kind == "host":
@@ -100,7 +90,12 @@ class Task:
         complete.write_text(str(time.time()))
 
 
-def task(**kwargs):
+def task(
+    kind: str = "arch",
+    always: bool = False,
+    platforms: str = "-web",
+    archs: str | None = None,
+):
     """
     This is a decorator that wraps a function to define a task. The function must
     have a name of the form `task`_`name`. For example, "build_libz" or "unpack_python_38".
@@ -132,16 +127,12 @@ def task(**kwargs):
     `archs`
         If not None, a string giving a comma-separated architectures that the
         task should be run on.
-
-    `pythons`
-        If not None, a string giving a comma-separated list of python major
-        versions the task should run on. ("3", "2", or "3,2")
     """
 
     def create_task(f):
         task = f.__name__
         name = f.__module__.split(".")[-1]
-        Task(task, name, f, **kwargs)
+        Task(task, name, f, kind=kind, always=always, platforms=platforms, archs=archs)
 
         return f
 
@@ -149,7 +140,7 @@ def task(**kwargs):
 
 
 # A list of annotation functions.
-annotators = [ ]
+annotators = []
 
 
 def annotator(f):
@@ -162,7 +153,7 @@ def annotator(f):
 
 
 # A list of tasks that are known.
-tasks = [ ]
+tasks = []
 
 # A set of tasks that ran during the current session.
 ran_tasks = set()
