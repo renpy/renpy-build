@@ -8,7 +8,7 @@ def clean(c: Context):
 
 
 
-@task(kind="host-python", platforms="all", pythons="3", always=True)
+@task(kind="host-python", platforms="all", always=True)
 def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}")

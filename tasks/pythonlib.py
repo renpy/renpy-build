@@ -205,7 +205,7 @@ brotli
 """
 
 
-@task(kind="host-python", pythons="3", always=True)
+@task(kind="host-python", always=True)
 def python3(c: Context):
     # Remove stdlib packages which include non-compilable code.
     c.rmtree("{{ install }}/lib/{{ pythonver }}/test")
@@ -284,7 +284,7 @@ def python3(c: Context):
     c.run("cp {{ install }}/lib/{{ pythonver }}/site-packages/certifi/cacert.pem {{ distlib }}/{{ pythonver }}/certifi/cacert.pem")
 
 
-@task(kind="python", platforms="web", pythons="3", always=True)
+@task(kind="python", platforms="web", always=True)
 def python3_web(c: Context):
     """
     This should do the same work as Python 3, but for the web version of Python.
