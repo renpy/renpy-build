@@ -2,6 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
 import tomllib
+import hashlib
 from pathlib import Path
 
 version = "3.12.8"
@@ -259,7 +260,19 @@ def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
 @task(kind="python", pythons="3", platforms="all", always=True)
 def pip(c: Context):
 
-    package_versions = get_uv_lock_versions(c.path("{{renpy}}/uv.lock"))
+    lock_path = c.path("{{renpy}}/uv.lock")
+
+    with open(lock_path, "rb") as f:
+        lock_hash = hashlib.sha256(f.read()).hexdigest()
+
+    hash_path = c.path("{{ build }}/uv.lock.hash")
+
+    if hash_path.exists():
+        with open(hash_path, "r") as f:
+            if f.read().strip() == lock_hash:
+                return
+
+    package_versions = get_uv_lock_versions(lock_path)
 
     def v(name):
         if name not in package_versions:
@@ -283,3 +296,6 @@ def pip(c: Context):
         {v("setuptools")}
         {v("pysocks")}
         """)
+
+    with open(hash_path, "w") as f:
+        f.write(lock_hash)
