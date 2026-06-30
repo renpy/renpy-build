@@ -30,7 +30,7 @@ sudo tmp/llvm.sh $LLVM_MAJOR
 #   python3-dev python3-pip python3-venv : python build deps
 #   curl : to install python2 pip
 #   python3-jinja2 : needed by renpy-build itself
-#   debootstrap qemu-user-binfmt : needed by sysroot
+#   debootstrap : needed by sysroot
 #   libgmp-dev libmpfr-dev libmpc-dev : needed by gcc
 #   libssl-dev libbz2-dev liblzma-dev : needed by hostpython
 #   bc : needed by brotli
@@ -42,7 +42,7 @@ sudo apt-get install --no-install-recommends -y \
     python3-dev python3-pip python3-venv \
     curl \
     python3-jinja2 \
-    debootstrap qemu-user-binfmt \
+    debootstrap \
     libgmp-dev libmpfr-dev libmpc-dev \
     libssl-dev libbz2-dev liblzma-dev \
     bc \

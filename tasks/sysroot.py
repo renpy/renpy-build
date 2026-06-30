@@ -44,19 +44,29 @@ def install_linux(c: Context):
         deb_arch = "arm64"
         release = "jammy"
     else:
-        raise Exception("Unknown arch {}".format(c.arch))
-
+        raise Exception(f"Unknown arch {c.arch}")
 
     c.var("deb_arch", deb_arch)
     c.var("release", release)
 
-    if not c.path("{{ sysroot }}").exists():
+    if not c.path("{{ sysroot }}/.done").exists():
 
         c.var("packages", ",".join(PACKAGES))
 
         c.run("""mkdir -p "{{ tmp }}/debs" """)
-        c.run("""sudo debootstrap --cache-dir="{{ tmp }}/debs" --variant=minbase --include={{ packages }} --components=main,restricted,universe,multiverse --arch {{deb_arch}} {{ release }} "{{ sysroot }}" """)
-        c.run("""sudo python3 {{source}}/make_links_relative.py {{sysroot}}""")
+        c.run("""
+              debootstrap
+              --download-only
+              --cache-dir="{{ tmp }}/debs"
+              --variant=minbase
+              --include={{ packages }}
+              --components=main,restricted,universe,multiverse
+              --arch {{ deb_arch }} {{ release }} "{{ sysroot }}" """)
+        c.run("""
+              bash -c 'for deb in "{{ tmp }}"/debs/*.deb; \
+              do [ -f "$deb" ] && dpkg-deb -x "$deb" "{{ sysroot }}"; done' """)
+        c.run("""python3 {{ source }}/make_links_relative.py {{ sysroot }}""")
+        c.run("touch {{ sysroot }}/.done")
 
 
 @task(platforms="linux")
