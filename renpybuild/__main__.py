@@ -14,43 +14,39 @@ known_platforms = []
 
 
 class Platform:
-    def __init__(self, platform, arch, python, experimental=False):
+    def __init__(self, platform, arch, experimental=False):
         self.platform = platform
         self.arch = arch
-        self.python = python
         self.experimental = experimental
 
         known_platforms.append(self)
 
 
-# Python 3
+Platform("linux", "x86_64")
+Platform("linux", "aarch64")
 
-Platform("linux", "x86_64", "3")
-Platform("linux", "aarch64", "3")
+Platform("windows", "x86_64")
 
-Platform("windows", "x86_64", "3")
+Platform("mac", "x86_64")
+Platform("mac", "arm64")
 
-Platform("mac", "x86_64", "3")
-Platform("mac", "arm64", "3")
+Platform("android", "x86_64")
+Platform("android", "arm64_v8a")
+Platform("android", "armeabi_v7a")
 
-Platform("android", "x86_64", "3")
-Platform("android", "arm64_v8a", "3")
-Platform("android", "armeabi_v7a", "3")
+Platform("ios", "arm64")
+Platform("ios", "sim-x86_64")
+Platform("ios", "sim-arm64")
 
-Platform("ios", "arm64", "3")
-Platform("ios", "sim-x86_64", "3")
-Platform("ios", "sim-arm64", "3")
-
-Platform("web", "wasm", "3")
+Platform("web", "wasm")
 
 
 def build(args):
 
     platforms = set(i.strip() for i in args.platforms.split(",") if i)
     archs = set(i.strip() for i in args.archs.split(",") if i)
-    pythons = set(i.strip() for i in args.pythons.split(",") if i)
 
-    # Check that the platforms, archs, and pythons are known.
+    # Check that the platforms, archs are known.
 
     for i in platforms:
         if i not in {j.platform for j in known_platforms}:
@@ -60,11 +56,6 @@ def build(args):
     for i in archs:
         if i not in {j.arch for j in known_platforms}:
             print("Architecture", i, "is not known.", file=sys.stderr)
-            sys.exit(1)
-
-    for i in pythons:
-        if i not in {j.python for j in known_platforms}:
-            print("Python", i, "is not known.", file=sys.stderr)
             sys.exit(1)
 
     # Actually build everything.
@@ -84,10 +75,7 @@ def build(args):
             if archs and (p.arch not in archs):
                 continue
 
-            if pythons and (p.python not in pythons):
-                continue
-
-            context = Context(p.platform, p.arch, p.python, root, args)
+            context = Context(p.platform, p.arch, root, args)
 
             task.run(context)
 
@@ -148,7 +136,6 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--platforms", "--platform", default="")
     ap.add_argument("--archs", "--arch", default="")
-    ap.add_argument("--pythons", "--python", default="3")
 
     ap.add_argument("--nostrip", action="store_true", default=False)
     ap.add_argument("--sdl", action="store_true", default=False, help="Do not clean SDL on rebuild.")

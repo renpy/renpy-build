@@ -112,11 +112,9 @@ def lipo(c: Context, namefilter):
 @task(kind="host-python", platforms="ios")
 def lipo_all(c: Context):
 
-    python = "libpython{}.".format(c.python)
-
     def namefilter(i):
 
-        if i.startswith("libpython") and not i.startswith(python):
+        if i.startswith("libpython") and not i.startswith("libpython3"):
             return False
 
         return True
@@ -134,7 +132,3 @@ def unpack_metalangle(c: Context):
     c.chdir("{{ renios }}/prototype/Frameworks")
 
     c.run("tar xaf {{ source }}/MetalANGLE.xcframework.tar.gz")
-
-@task(kind="host-python", platforms="ios", always=True, pythons="2")
-def copyback(c: Context):
-    c.copytree("{{ renios }}/prototype/prebuilt", "{{ root }}/renios/prototype/prebuilt")

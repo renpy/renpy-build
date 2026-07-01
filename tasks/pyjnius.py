@@ -27,13 +27,15 @@ def build(c: Context):
     c.chdir("pyjnius-{{version}}/jnius")
 
     with open(c.path("config.pxi"), "w") as f:
-        f.write(c.expand("""\
-# cython: language_level={{ c.python }}
+        f.write(
+            c.expand("""\
+# cython: language_level=3
 
 DEF JNIUS_PLATFORM = 'android'
 
 DEF JNIUS_CYTHON_3 = True
-"""))
+""")
+        )
 
 # on android, rely on SDL to get the JNI env
     with open(c.path("jnius_jvm_android.pxi"), "w") as f:

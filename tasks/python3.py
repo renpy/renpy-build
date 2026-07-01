@@ -11,15 +11,13 @@ web_version = "3.12.8"
 
 @annotator
 def annotate(c: Context):
-    if c.python == "3":
+    c.var("pythonver", "python3.12")
+    c.var("pycver", "312")
 
-        c.var("pythonver", "python3.12")
-        c.var("pycver", "312")
-
-        c.include("{{ install }}/include/{{ pythonver }}")
+    c.include("{{ install }}/include/{{ pythonver }}")
 
 
-@task(kind="python", pythons="3", platforms="linux,mac,android,ios")
+@task(kind="python", platforms="linux,mac,android,ios")
 def unpack(c: Context):
     c.clean()
 
@@ -27,7 +25,7 @@ def unpack(c: Context):
     c.run("tar xaf {{source}}/Python-{{version}}.tar.xz")
 
 
-@task(kind="python", pythons="3", platforms="windows")
+@task(kind="python", platforms="windows")
 def unpack_windows(c: Context):
     c.clean()
     c.var("version", win_version)
@@ -39,7 +37,7 @@ def unpack_windows(c: Context):
 
     c.clone("{{ repo }}", "--branch mingw-v{{ version }}")
 
-@task(kind="python", pythons="3", platforms="linux,mac,ios")
+@task(kind="python", platforms="linux,mac,ios")
 def patch_posix(c: Context):
     c.var("version", version)
 
@@ -53,7 +51,7 @@ def patch_posix(c: Context):
     c.run(""" autoreconf -vfi """)
 
 
-@task(kind="python", pythons="3", platforms="ios")
+@task(kind="python", platforms="ios")
 def patch_ios(c: Context):
     c.var("version", version)
 
@@ -66,7 +64,7 @@ def patch_ios(c: Context):
     c.run("cython _scproxy.pyx")
 
 
-@task(kind="python", pythons="3", platforms="windows")
+@task(kind="python", platforms="windows")
 def patch_windows(c: Context):
     c.var("version", win_version)
 
@@ -117,7 +115,7 @@ def common_post(c: Context):
             "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 
-@task(kind="python", pythons="3", platforms="linux,mac")
+@task(kind="python", platforms="linux,mac")
 def build_posix(c: Context):
 
     common(c)
@@ -133,7 +131,7 @@ def build_posix(c: Context):
     common_post(c)
 
 
-@task(kind="python", pythons="3", platforms="ios")
+@task(kind="python", platforms="ios")
 def build_ios(c: Context):
     common(c)
 
@@ -158,7 +156,7 @@ def build_ios(c: Context):
     common_post(c)
 
 
-@task(kind="python", pythons="3", platforms="android")
+@task(kind="python", platforms="android")
 def build_android(c: Context):
     common(c)
 
@@ -177,7 +175,7 @@ def build_android(c: Context):
     common_post(c)
 
 
-@task(kind="python", pythons="3", platforms="windows")
+@task(kind="python", platforms="windows")
 def build_windows(c: Context):
     common(c)
 
@@ -203,7 +201,7 @@ def build_windows(c: Context):
 
     common_post(c)
 
-@task(kind="python", pythons="3", platforms="web")
+@task(kind="python", platforms="web")
 def build_web(c: Context):
 
     c.var("version", web_version)
@@ -257,7 +255,7 @@ def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
         if "name" in pkg and "version" in pkg
     }
 
-@task(kind="python", pythons="3", platforms="all", always=True)
+@task(kind="python", platforms="all", always=True)
 def pip(c: Context):
 
     lock_path = c.path("{{renpy}}/uv.lock")
