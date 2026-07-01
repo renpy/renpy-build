@@ -2,6 +2,7 @@ __pycache__
 .project
 .pydevproject
 .settings
+.venv
 /0old
 /deps
 /tmp
