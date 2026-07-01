@@ -50,7 +50,6 @@ def install_linux(c: Context):
     c.var("release", release)
 
     if not c.path("{{ sysroot }}/.done").exists():
-
         c.var("packages", ",".join(PACKAGES))
 
         c.run("""mkdir -p "{{ tmp }}/debs" """)
@@ -70,15 +69,6 @@ def install_linux(c: Context):
 
 
 @task(platforms="linux")
-def permissions(c: Context):
-    import os
-
-    c.var("uid", str(os.getuid()))
-    c.var("gid", str(os.getgid()))
-
-    c.run("""sudo chown -R {{uid}}:{{gid}} {{sysroot}}""")
-
-@task(platforms="linux")
 def fix_pkgconf_prefix(c: Context):
     """
     Replace prefix for .pc file in sysroot, so pkgconfig can pass right
@@ -92,6 +82,7 @@ def fix_pkgconf_prefix(c: Context):
           bash -c "grep -rl {{sysroot}} {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig > /dev/null || sed -i 's#/usr#{{sysroot}}/usr#g' $(grep -rl /usr {{sysroot}}/usr/lib/{{architecture_name}}/pkgconfig) $(grep -rl /usr {{sysroot}}/usr/share/pkgconfig)"
           """)
 
+
 @task(platforms="linux")
 def update_wayland_headers(c: Context):
     """
@@ -102,6 +93,7 @@ def update_wayland_headers(c: Context):
 
     for i in c.path("{{source}}/wayland-headers/").glob("wayland*.h"):
         c.copy(str(i), "{{ sysroot }}/usr/include/" + i.name)
+
 
 @task(platforms="linux")
 def update_wayland_pkgconfig(c: Context):
