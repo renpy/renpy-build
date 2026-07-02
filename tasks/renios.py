@@ -134,7 +134,3 @@ def unpack_metalangle(c: Context):
     c.chdir("{{ renios }}/prototype/Frameworks")
 
     c.run("tar xaf {{ source }}/MetalANGLE.xcframework.tar.gz")
-
-@task(kind="host-python", platforms="ios", always=True, pythons="2")
-def copyback(c: Context):
-    c.copytree("{{ renios }}/prototype/prebuilt", "{{ root }}/renios/prototype/prebuilt")
