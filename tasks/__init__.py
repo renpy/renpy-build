@@ -54,7 +54,6 @@ from . import harfbuzz
 from . import freetypehb
 
 from . import zsync
-from . import sayvbs
 from . import angle
 
 from . import steam
