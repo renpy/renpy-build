@@ -49,7 +49,7 @@ def build_mac(c: Context):
     c.run("""install zsync zsyncmake {{ install }}/mac""")
 
 
-@task(kind="host", platforms="mac")
+@task(kind="platform", platforms="mac")
 def lipo_mac(c: Context):
 
     c.var("ac", "{{ renpy }}/renpy.app/Contents")

@@ -5,7 +5,7 @@ import time
 import os
 
 
-@task(kind="platform", platforms="android", always=True)
+@task(kind="host", always=True)
 def copy(c: Context):
 
     c.copytree("{{ root }}/rapt", "{{ raptver }}")
@@ -37,7 +37,7 @@ def copy(c: Context):
     c.rmtree("{{ raptver }}/prototype/app/build/")
 
 
-@task(kind="host", always=True)
+@task(kind="platform", always=True)
 def android_module(c: Context):
     c.run("""install -d {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/__init__.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")

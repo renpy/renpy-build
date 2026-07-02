@@ -109,7 +109,7 @@ def lipo(c: Context, namefilter):
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
 
 
-@task(kind="host", platforms="ios")
+@task(kind="platform", platforms="ios")
 def lipo_all(c: Context):
 
     def namefilter(i):
@@ -121,12 +121,12 @@ def lipo_all(c: Context):
 
     lipo(c, namefilter)
 
-@task(kind="host", platforms="ios", always=True)
+@task(kind="platform", platforms="ios", always=True)
 def lipo_renpy(c: Context):
     lipo(c, lambda n : "librenpy" in n)
 
 
-@task(kind="host", platforms="ios", always=True)
+@task(kind="platform", platforms="ios", always=True)
 def unpack_metalangle(c: Context):
     c.clean("{{ renios }}/prototype/Frameworks")
     c.chdir("{{ renios }}/prototype/Frameworks")

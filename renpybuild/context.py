@@ -186,7 +186,7 @@ class Context:
         self.var("install", install)
 
         # The path to a version of Python compiled for the host.
-        self.var("hostpython", "{{ install }}/bin/hostpython3")
+        self.var("hostpython", "{{tmp}}/install.{{platform}}-{{arch}}/bin/hostpython3")
 
         # Final installation paths.
         if self.platform == "web":

@@ -282,7 +282,7 @@ def link_mac(c: Context):
 
 
 
-@task(kind="host", platforms="mac", always=True)
+@task(kind="platform", platforms="mac", always=True)
 def lipo_mac(c: Context):
 
     c.var("ac", "{{ renpy }}/renpy.app/Contents")
