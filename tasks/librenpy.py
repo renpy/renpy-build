@@ -2,13 +2,13 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 
-@task(kind="python")
+@task(kind="arch")
 def clean(c: Context):
     c.clean()
 
 
 
-@task(kind="host-python", platforms="all", always=True)
+@task(kind="host", platforms="all", always=True)
 def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}")
@@ -18,7 +18,7 @@ def gen_static3(c: Context):
     c.run("{{ hostpython }} setup.py generate")
 
 
-@task(kind="python", platforms="all", always=True)
+@task(kind="arch", platforms="all", always=True)
 def build(c: Context):
 
     c.env("CFLAGS", """{{ CFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3-static" """)

@@ -155,19 +155,11 @@ class Context:
 
         if kind == "host":
             self.dir_name = f"{self.name}.host"
-        elif kind == "host-python":
-            self.dir_name = f"{self.name}.host"
         elif kind == "cross":
             self.dir_name = f"{self.name}.cross-{self.platform}-{self.arch}"
         elif kind == "platform":
             self.dir_name = f"{self.name}.{self.platform}"
-        elif kind == "platform-python":
-            self.dir_name = f"{self.name}.{self.platform}"
         elif kind == "arch":
-            self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
-        elif kind == "arch-python":
-            self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
-        elif kind == "python":
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
 
         self.task_name = f"{self.task}-{self.dir_name}"

@@ -9,6 +9,9 @@ class Task:
 
     def __init__(self, task, name, function, *, kind="arch", always=False, platforms="-web", archs=None):
 
+        if kind not in ("arch", "platform", "host", "cross"):
+            raise Exception(f"Unknown kind {kind!r}.")
+
         self.task = task
         self.name = name
         self.kind = kind
@@ -106,12 +109,8 @@ def task(
         Determines how often this task shold run. One of:
 
         "arch" - Once per platform/architecture pair.
-        "arch-python" - Once per platform/architecture/python version triple, but sharing a build directory with "arch".
-        "python" - Once per platform/architecture/python version triple.
         "platform" - Once per platform.
-        "platform-python" - Once per platform/python version pair.
         "host" - Only runs, compiling for the host.
-        "host-python" - Once per python, compiling for the host.
         "cross" - Once per platform/architecture pair, compiling for the host, and targeting the "{{cross}}" directory for installs.
 
         This defaults to "arch".

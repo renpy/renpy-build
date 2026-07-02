@@ -3,12 +3,12 @@ from renpybuild.task import task
 import os
 import time
 
-@task(kind="python", always=True)
+@task(kind="arch", always=True)
 def clean(c: Context):
     c.clean()
 
 
-@task(kind="python", always=True)
+@task(kind="arch", always=True)
 def build(c: Context):
 
     c.run("""
@@ -25,7 +25,7 @@ def build(c: Context):
     """)
 
 
-@task(kind="python", always=True, platforms="android")
+@task(kind="arch", always=True, platforms="android")
 def build_android(c: Context):
 
     c.run("""
@@ -41,7 +41,7 @@ def build_android(c: Context):
     """)
 
 
-@task(kind="python", always=True, platforms="linux")
+@task(kind="arch", always=True, platforms="linux")
 def link_linux(c: Context):
 
     c.run("""
@@ -120,7 +120,7 @@ def link_linux(c: Context):
     c.run("""install renpy {{ dlpa }}/renpy""")
 
 
-@task(kind="python", always=True, platforms="android")
+@task(kind="arch", always=True, platforms="android")
 def link_android(c: Context):
 
     c.run("""
@@ -189,7 +189,7 @@ def link_android(c: Context):
     c.run("install librenpython.so {{ jniLibs }}")
 
 
-@task(kind="python", always=True, platforms="mac")
+@task(kind="arch", always=True, platforms="mac")
 def link_mac(c: Context):
 
     c.run("""
@@ -282,7 +282,7 @@ def link_mac(c: Context):
 
 
 
-@task(kind="host-python", platforms="mac", always=True)
+@task(kind="host", platforms="mac", always=True)
 def lipo_mac(c: Context):
 
     c.var("ac", "{{ renpy }}/renpy.app/Contents")
@@ -343,7 +343,7 @@ pe.write(fn)
     c.run("""{{ hostpython }} fix_pe.py """ + fn)
 
 
-@task(kind="python", always=True, platforms="windows")
+@task(kind="arch", always=True, platforms="windows")
 def link_windows(c: Context):
 
     c.run("""
@@ -472,7 +472,7 @@ def link_windows(c: Context):
         c.run("""install renpy.exe {{ renpy }}/renpy.exe""")
 
 
-@task(kind="python", always=True, platforms="ios")
+@task(kind="arch", always=True, platforms="ios")
 def link_ios(c: Context):
 
     c.unlink("librenpython.a")
@@ -481,12 +481,12 @@ def link_ios(c: Context):
     c.run("""install librenpython.a {{ install }}/lib""")
 
 
-@task(kind="python", platforms="web", always=True)
+@task(kind="arch", platforms="web", always=True)
 def clean_web(c: Context):
     c.clean()
 
 
-@task(kind="python", platforms="web", always=True)
+@task(kind="arch", platforms="web", always=True)
 def build_web(c: Context):
 
     c.run("""
@@ -516,7 +516,7 @@ def build_web(c: Context):
     """)
 
 
-@task(kind="python", platforms="web", always=True)
+@task(kind="arch", platforms="web", always=True)
 def link_web(c: Context):
 
     debug_asyncify = False

@@ -4,7 +4,7 @@ from renpybuild.task import task
 version = "0.6.2"
 
 
-@task(kind="python")
+@task(kind="arch")
 def unpack(c: Context):
     c.clean()
 
@@ -13,7 +13,7 @@ def unpack(c: Context):
 
     c.run("""cp /usr/share/misc/config.sub zsync-{{version}}/autotools""")
 
-@task(kind="python", platforms="linux")
+@task(kind="arch", platforms="linux")
 def build_linux(c: Context):
 
     c.var("version", version)
@@ -31,7 +31,7 @@ def build_linux(c: Context):
     c.run("install zsync zsyncmake {{ dlpa }}")
 
 
-@task(kind="python", platforms="mac")
+@task(kind="arch", platforms="mac")
 def build_mac(c: Context):
 
     c.var("version", version)
@@ -49,7 +49,7 @@ def build_mac(c: Context):
     c.run("""install zsync zsyncmake {{ install }}/mac""")
 
 
-@task(kind="host-python", platforms="mac")
+@task(kind="host", platforms="mac")
 def lipo_mac(c: Context):
 
     c.var("ac", "{{ renpy }}/renpy.app/Contents")
@@ -73,7 +73,7 @@ def lipo_mac(c: Context):
     lipo("zsyncmake")
 
 
-@task(kind="python", platforms="windows")
+@task(kind="arch", platforms="windows")
 def install(c: Context):
     c.run("install -d {{ dlpa }}")
     c.run("install {{ prebuilt }}/zsync.exe {{ prebuilt}}/zsyncmake.exe {{ dlpa }}")

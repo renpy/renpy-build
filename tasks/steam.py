@@ -26,7 +26,7 @@ def patch_sdk(c: Context):
     # c.patch("steam-cdecl.diff")
 
 
-@task(kind="python", platforms="linux,windows,mac", always=True)
+@task(kind="arch", platforms="linux,windows,mac", always=True)
 def build(c: Context):
 
     if not c.path("{{host}}/steam/sdk").exists():

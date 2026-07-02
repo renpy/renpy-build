@@ -2,7 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 
-@task(kind="python", platforms="web", always=True)
+@task(kind="arch", platforms="web", always=True)
 def build(c: Context):
 
     c.run("cp {{runtime}}/emscripten.pyx emscripten.pyx")

@@ -10,7 +10,7 @@ def annotate(c: Context):
         c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -F {{install}} -DMETALANGLE -Wno-unused-command-line-argument")
         c.env("CXXFLAGS", "{{ CXXFLAGS }} -F {{install}} -DMETALANGLE -Wno-unused-command-line-argument")
 
-@task(kind="python", platforms="ios")
+@task(kind="arch", platforms="ios")
 def install(c: Context):
     c.clean("{{ install }}/MetalANGLE.framework")
 

@@ -5,14 +5,14 @@ import re
 version = "1.7.0"
 
 
-@task(kind="host-python")
+@task(kind="host")
 def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
     c.run("tar xzf {{source}}/pyjnius-{{version}}.tar.gz")
 
-@task(kind="host-python")
+@task(kind="host")
 def patch(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/")
@@ -20,7 +20,7 @@ def patch(c: Context):
     # c.patch("pyjnius-{{version}}/py3-division.diff")
     # c.patch("pyjnius-{{version}}/no-win-jdk-home.diff")
 
-@task(kind="host-python", always=True)
+@task(kind="host", always=True)
 def build(c: Context):
 
     c.var("version", version)
@@ -74,7 +74,7 @@ jnius.jnius jnius.c
 """))
 
 
-@task(kind="host-python", platforms="android", always=True)
+@task(kind="host", platforms="android", always=True)
 def rapt(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")
