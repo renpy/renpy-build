@@ -11,12 +11,10 @@ web_version = "3.12.8"
 
 @annotator
 def annotate(c: Context):
-    if c.python == "3":
+    c.var("pythonver", "python3.12")
+    c.var("pycver", "312")
 
-        c.var("pythonver", "python3.12")
-        c.var("pycver", "312")
-
-        c.include("{{ install }}/include/{{ pythonver }}")
+    c.include("{{ install }}/include/{{ pythonver }}")
 
 
 @task(kind="python", platforms="linux,mac,android,ios")
