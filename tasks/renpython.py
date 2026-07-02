@@ -480,11 +480,11 @@ def link_ios(c: Context):
     c.run("""install -d {{install}}/lib""")
     c.run("""install librenpython.a {{ install }}/lib""")
 
-@task(kind="python", platforms="web", pythons="3", always=True)
+@task(kind="python", platforms="web", always=True)
 def clean_web(c: Context):
     c.clean()
 
-@task(kind="python", platforms="web", pythons="3", always=True)
+@task(kind="python", platforms="web", always=True)
 def build_web(c: Context):
 
     c.run("""
@@ -513,7 +513,7 @@ def build_web(c: Context):
     {{ runtime }}/launcher{{ c.python }}_posix.c
     """)
 
-@task(kind="python", platforms="web", pythons="3", always=True)
+@task(kind="python", platforms="web", always=True)
 def link_web(c: Context):
 
     debug_asyncify = False
