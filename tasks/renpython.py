@@ -21,7 +21,7 @@ def build(c: Context):
     -D{{ c.platform|upper }}
 
     -c -o librenpython.o
-    {{ runtime }}/librenpython3.c
+    {{ runtime }}/librenpython.c
     """)
 
 
@@ -37,7 +37,7 @@ def build_android(c: Context):
     -DPYCVER=\\"{{ pycver }}\\"
 
     -c -o librenpython_android.o
-    {{ runtime }}/librenpython3_android.c
+    {{ runtime }}/librenpython_android.c
     """)
 
 
@@ -95,7 +95,7 @@ def link_linux(c: Context):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o python
-    {{ runtime }}/renpython3_posix.c
+    {{ runtime }}/renpython_posix.c
 
     librenpython.so
     -Wl,-rpath -Wl,$ORIGIN
@@ -104,7 +104,7 @@ def link_linux(c: Context):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o renpy
-    {{ runtime }}/launcher3_posix.c
+    {{ runtime }}/launcher_posix.c
 
     librenpython.so
     -Wl,-rpath -Wl,$ORIGIN
@@ -257,7 +257,7 @@ def link_mac(c: Context):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o python
-    {{ runtime }}/renpython3_posix.c
+    {{ runtime }}/renpython_posix.c
 
     librenpython.dylib
     """)
@@ -265,7 +265,7 @@ def link_mac(c: Context):
     c.run("""
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -o renpy
-    {{ runtime }}/launcher3_posix.c
+    {{ runtime }}/launcher_posix.c
 
     librenpython.dylib
     """)
@@ -422,7 +422,7 @@ def link_windows(c: Context):
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -mconsole -municode
     -o python.exe
-    {{ runtime }}/renpython3_win.c
+    {{ runtime }}/renpython_win.c
     renpy_resources.o
     librenpython.dll
     """)
@@ -431,7 +431,7 @@ def link_windows(c: Context):
     {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
     -mwindows -municode
     -o pythonw.exe
-    {{ runtime }}/renpython3_win.c
+    {{ runtime }}/renpython_win.c
     renpy_resources.o
     librenpython.dll
     """)
@@ -441,7 +441,7 @@ def link_windows(c: Context):
     -mwindows -municode
     -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
     -o renpy.exe
-    {{ runtime }}/launcher3_win.c
+    {{ runtime }}/launcher_win.c
     renpy_resources.o
     """)
 
@@ -499,7 +499,7 @@ def build_web(c: Context):
     -D{{ c.platform|upper }}
 
     -c -o librenpython.o
-    {{ runtime }}/librenpython3.c
+    {{ runtime }}/librenpython.c
     """)
 
     c.run("""
@@ -512,7 +512,7 @@ def build_web(c: Context):
     -D{{ c.platform|upper }}
 
     -c -o launcher.o
-    {{ runtime }}/launcher3_posix.c
+    {{ runtime }}/launcher_posix.c
     """)
 
 
