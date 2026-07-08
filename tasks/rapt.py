@@ -10,12 +10,6 @@ def copy(c: Context):
 
     c.copytree("{{ root }}/rapt", "{{ raptver }}")
 
-    c.run("mv {{ raptver }}/blocklist3.txt {{ raptver }}/blocklist.txt")
-    c.run("mv {{ raptver }}/keeplist3.txt {{ raptver }}/keeplist.txt")
-
-    c.run("rm {{ raptver }}/blocklist2.txt")
-    c.run("rm {{ raptver }}/keeplist2.txt")
-
     with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
         f.write(time.ctime())
 
