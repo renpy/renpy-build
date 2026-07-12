@@ -10,8 +10,6 @@ from . import toolchain
 
 from . import nasm
 
-from . import metalangle
-
 from . import zlib
 from . import bzip2
 from . import xz
@@ -28,6 +26,8 @@ from . import libyuv
 from . import aom
 from . import libavif
 
+from . import ffmpeg
+
 from . import hostpython3
 from . import python3
 
@@ -40,10 +40,11 @@ from . import pyjnius
 from . import pyobjus
 from . import iossupport
 
-from . import sdl2
-from . import sdl2_image
+from . import metalangle
 
-from . import ffmpeg
+from . import sdl3
+from . import sdl3_image
+
 
 from . import assimp
 
@@ -53,7 +54,6 @@ from . import harfbuzz
 from . import freetypehb
 
 from . import zsync
-from . import sayvbs
 from . import angle
 
 from . import steam

@@ -20,7 +20,7 @@ def patch(c: Context):
     # c.patch("pyjnius-{{version}}/py3-division.diff")
     # c.patch("pyjnius-{{version}}/no-win-jdk-home.diff")
 
-@task(kind="host-python")
+@task(kind="host-python", always=True)
 def build(c: Context):
 
     c.var("version", version)
@@ -38,11 +38,11 @@ DEF JNIUS_CYTHON_3 = True
 # on android, rely on SDL to get the JNI env
     with open(c.path("jnius_jvm_android.pxi"), "w") as f:
         f.write("""
-cdef extern from "SDL2/SDL.h":
-    JNIEnv *SDL_AndroidGetJNIEnv()
+cdef extern from "SDL3/SDL.h":
+    JNIEnv *SDL_GetAndroidJNIEnv()
 
 cdef JNIEnv *get_platform_jnienv():
-    return SDL_AndroidGetJNIEnv()
+    return SDL_GetAndroidJNIEnv()
 """)
 
     c.run("""cython jnius.pyx""")
@@ -77,4 +77,4 @@ def rapt(c: Context):
     c.var("version", version)
     c.chdir("pyjnius-{{version}}/jnius")
 
-    c.copytree("src/org/jnius", "{{ rapt }}{{ c.python }}/prototype/renpyandroid/src/main/java/org/jnius")
+    c.copytree("src/org/jnius", "{{ rapt }}/prototype/renpyandroid/src/main/java/org/jnius")

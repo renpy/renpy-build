@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "{{ config.package }}"
-        minSdkVersion = 21
+        minSdkVersion = 23
         targetSdkVersion = 36
         versionCode = {{ config.numeric_version }}
         versionName = "{{ config.version }}"
@@ -30,6 +30,17 @@ android {
             storePassword = localProperties["key.store.password"]
             keyAlias = localProperties["key.alias"]
             keyPassword = localProperties["key.alias.password"]
+            v1SigningEnabled true
+            v2SigningEnabled true
+            enableV3Signing true
+            enableV4Signing true
+        }
+
+        debug {
+            v1SigningEnabled true
+            v2SigningEnabled true
+            enableV3Signing true
+            enableV4Signing true
         }
     }
 

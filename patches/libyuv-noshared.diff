@@ -1,25 +1,25 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7a4a1994..abccd817 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -29,14 +29,6 @@ endif()
+diff --git i/CMakeLists.txt w/CMakeLists.txt
+index 77e0527f..ae62c97d 100644
+--- i/CMakeLists.txt
++++ w/CMakeLists.txt
+@@ -172,14 +172,6 @@ endif()
  # this creates the static library (.a)
- ADD_LIBRARY				( ${ly_lib_static} STATIC ${ly_source_files} )
+ add_library( ${ly_lib_static} STATIC ${ly_lib_parts})
  
 -# this creates the shared library (.so)
--ADD_LIBRARY				( ${ly_lib_shared} SHARED ${ly_source_files} )
--SET_TARGET_PROPERTIES	( ${ly_lib_shared} PROPERTIES OUTPUT_NAME "${ly_lib_name}" )
--SET_TARGET_PROPERTIES	( ${ly_lib_shared} PROPERTIES PREFIX "lib" )
+-add_library( ${ly_lib_shared} SHARED ${ly_lib_parts})
+-set_target_properties( ${ly_lib_shared} PROPERTIES OUTPUT_NAME "${ly_lib_name}" )
+-set_target_properties( ${ly_lib_shared} PROPERTIES PREFIX "lib" )
 -if(WIN32)
--  SET_TARGET_PROPERTIES	( ${ly_lib_shared} PROPERTIES IMPORT_PREFIX "lib" )
+-  set_target_properties( ${ly_lib_shared} PROPERTIES IMPORT_PREFIX "lib" )
 -endif()
 -
- # this creates the conversion tool
- ADD_EXECUTABLE			( yuvconvert ${ly_base_dir}/util/yuvconvert.cc )
- TARGET_LINK_LIBRARIES	( yuvconvert ${ly_lib_static} )
-@@ -45,13 +37,6 @@ TARGET_LINK_LIBRARIES	( yuvconvert ${ly_lib_static} )
- ADD_EXECUTABLE      ( yuvconstants ${ly_base_dir}/util/yuvconstants.c )
- TARGET_LINK_LIBRARIES  ( yuvconstants ${ly_lib_static} )
+ # this creates the cpuid tool
+ add_executable      ( cpuid ${ly_base_dir}/util/cpuid.c )
+ target_link_libraries  ( cpuid ${ly_lib_static} )
+@@ -192,13 +184,6 @@ target_link_libraries	( yuvconvert ${ly_lib_static} )
+ add_executable      ( yuvconstants ${ly_base_dir}/util/yuvconstants.c )
+ target_link_libraries  ( yuvconstants ${ly_lib_static} )
  
 -find_package ( JPEG )
 -if (JPEG_FOUND)
@@ -31,15 +31,15 @@ index 7a4a1994..abccd817 100644
  if(UNIT_TEST)
    find_library(GTEST_LIBRARY gtest)
    if(GTEST_LIBRARY STREQUAL "GTEST_LIBRARY-NOTFOUND")
-@@ -94,11 +79,8 @@ endif()
+@@ -242,11 +227,8 @@ endif()
  
  
  # install the conversion tool, .so, .a, and all the header files
--INSTALL ( PROGRAMS ${CMAKE_BINARY_DIR}/yuvconvert			DESTINATION bin )
- INSTALL ( TARGETS ${ly_lib_static}						DESTINATION lib )
--INSTALL ( TARGETS ${ly_lib_shared} LIBRARY				DESTINATION lib RUNTIME DESTINATION bin )
- INSTALL ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )
+-install ( TARGETS yuvconvert DESTINATION bin )
+ install ( TARGETS ${ly_lib_static}						DESTINATION lib )
+-install ( TARGETS ${ly_lib_shared} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib )
+ install ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )
  
  # create the .deb and .rpm packages using cpack
- INCLUDE ( CM_linux_packages.cmake )
+ include ( CM_linux_packages.cmake )
 -

@@ -1,0 +1,45 @@
+{
+  "name": "Ren'Py Build",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/home/vscode/.venv-${localWorkspaceFolderBasename}/bin/python",
+        "editor.formatOnSave": false,
+        "[python]": {
+          "editor.defaultFormatter": null,
+          "editor.formatOnSave": false
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "renpy.language-renpy",
+        "ktnrg45.vscode-cython",
+        "vincaslt.highlight-matching-tag",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "onCreateCommand": "sudo chown vscode:vscode /home/vscode/.cache/uv /home/vscode/.ccache",
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localWorkspaceFolder}/renpy,target=${containerWorkspaceFolder}/renpy,type=bind,consistency=cached",
+    "source=renpy-uv-cache,target=/home/vscode/.cache/uv,type=volume",
+    "source=renpy-ccache-cache,target=/home/vscode/.ccache,type=volume",
+  ],
+  "containerEnv": {
+    "UV_PROJECT_ENVIRONMENT": "/home/vscode/.venv-${localWorkspaceFolderBasename}",
+    "RENPY_VIRTUAL_ENV": "/home/vscode/.venv-${localWorkspaceFolderBasename}",
+    "RENPY_BUILD_TMP": "/home/vscode/renpy-build-tmp",
+    "UV_LINK_MODE": "copy",
+    "RENPY_CC": "ccache gcc",
+    "RENPY_LD": "ccache gcc",
+  },
+  "forwardPorts": [
+    8042
+  ],
+}

@@ -2,6 +2,7 @@ from renpybuild.context import Context
 from renpybuild.task import task, annotator
 
 import tomllib
+import hashlib
 from pathlib import Path
 
 version = "3.12.8"
@@ -32,12 +33,11 @@ def unpack_windows(c: Context):
     c.var("version", win_version)
 
     if (c.root / "unpacked" / "cpython-mingw").exists():
-        c.run("git clone {{ c.root }}/unpacked/cpython-mingw")
+        c.var("repo", "{{ c.root }}/unpacked/cpython-mingw")
     else:
-        c.run("git clone https://github.com/msys2-contrib/cpython-mingw")
+        c.var("repo", "https://github.com/msys2-contrib/cpython-mingw")
 
-    c.chdir("cpython-mingw")
-    c.run("git checkout mingw-v{{ version }}")
+    c.clone("{{ repo }}", "--branch mingw-v{{ version }}")
 
 @task(kind="python", pythons="3", platforms="linux,mac,ios")
 def patch_posix(c: Context):
@@ -142,7 +142,9 @@ def build_ios(c: Context):
         # f.write("ac_cv_header_langinfo_h=no\n")
         f.write("ac_cv_func_getentropy=no\n")
         f.write("ac_cv_have_long_long_format=yes\n")
-        f.write("ac_cv_func_clock_settime=no")
+        f.write("ac_cv_func_clock_settime=no\n")
+        f.write("ac_cv_func_dup3=no\n")
+        f.write("ac_cv_func_pipe2=no\n")
 
     c.run("""
         {{configure}} {{ cross_config }}
@@ -258,7 +260,19 @@ def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
 @task(kind="python", pythons="3", platforms="all", always=True)
 def pip(c: Context):
 
-    package_versions = get_uv_lock_versions(c.path("{{renpy}}/uv.lock"))
+    lock_path = c.path("{{renpy}}/uv.lock")
+
+    with open(lock_path, "rb") as f:
+        lock_hash = hashlib.sha256(f.read()).hexdigest()
+
+    hash_path = c.path("{{ build }}/uv.lock.hash")
+
+    if hash_path.exists():
+        with open(hash_path, "r") as f:
+            if f.read().strip() == lock_hash:
+                return
+
+    package_versions = get_uv_lock_versions(lock_path)
 
     def v(name):
         if name not in package_versions:
@@ -282,3 +296,6 @@ def pip(c: Context):
         {v("setuptools")}
         {v("pysocks")}
         """)
+
+    with open(hash_path, "w") as f:
+        f.write(lock_hash)

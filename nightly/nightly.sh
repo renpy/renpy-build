@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 # Set up the environment variables.
 
 SCRIPTS=$(cd $(dirname $0); pwd)
-ROOT="$SCRIPTS/.."
+ROOT=$(realpath -m "$SCRIPTS/..")
 REFS=$ROOT
 
 eval set -- $(getopt -o '' --long clean,upload,nosign,prune,nopull -- "$@")
@@ -52,8 +52,8 @@ if [ -z "$1" ]; then
     exit
 fi
 
-BASE="$1"
-VENV="$1/renpy/.venv"
+BASE=$(realpath -m "$1")
+VENV="$BASE/renpy/.venv"
 BRANCH="${2:-master}"
 
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/

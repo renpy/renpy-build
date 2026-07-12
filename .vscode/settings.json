@@ -1,15 +1,18 @@
 {
   "files.exclude": {
-    "tmp": true,
     "**/__pycache__": true,
     "**/__pycache__.*": true,
-    "renpy": true,
     "pygame_sdl2": true,
     "renios/prototype/prebuilt": true,
     "renpyweb/build": true,
     "renpyweb/cache": true,
     "renpyweb/pygame_sdl2": true,
-    "renpyweb/renpy": true
+    "renpyweb/renpy": true,
+    "tmp": true,
+    "**/*.rpyc": true,
+    "**/*.rpa": true,
+    "**/*.rpymc": true,
+    "**/cache/": true
   },
   "files.watcherExclude": {
     "**/__pycache__": true,

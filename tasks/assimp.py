@@ -6,7 +6,7 @@ def download(c : Context):
     c.clean("{{ tmp }}/source/assimp")
     c.chdir("{{ tmp }}/source")
 
-    c.run("git clone --depth 1 --branch v5.4.3 https://github.com/assimp/assimp")
+    c.clone("https://github.com/assimp/assimp", "--branch v5.4.3")
 
     c.chdir("assimp")
     c.patch("assimp.diff")
@@ -16,6 +16,9 @@ def build(c : Context):
     c.clean()
 
     c.env("CXXFLAGS", "-Wno-unknown-pragmas {{CXXFLAGS}}")
+
+    if (c.arch == "wasm") or ("clang++-22" in c.environ.get("CXX", "")):
+        c.env("CXXFLAGS", "{{CXXFLAGS}} -Wno-nontrivial-memcall")
 
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}

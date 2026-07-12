@@ -5,7 +5,7 @@ import struct
 import zipfile
 import io
 
-from pygame_sdl2.rwobject import RWopsIO
+from renpy.pygame.iostream import IOStream
 
 class APK(object):
 
@@ -76,7 +76,6 @@ class APK(object):
         info = self.info[fn]
 
         if info.compress_type == zipfile.ZIP_STORED:
-
-            return io.BufferedReader(RWopsIO(self.apk, "rb", name=fn, base=self.offset[fn], length=info.file_size))
+            return io.BufferedReader(IOStream(self.apk, "rb", name=fn, base=self.offset[fn], length=info.file_size))
 
         return io.BytesIO(self.zf.read(info))
