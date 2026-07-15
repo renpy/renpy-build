@@ -34,14 +34,10 @@ def build_host(c: Context):
 
     c.chdir("Python-{{ version }}")
 
-    c.run("""
-          {{configure}}
-          --prefix="{{ host }}"
-          --without-readline
-          --disable-test-modules
-          MODULE_BUILDTYPE=static
-          LIBHACL_LDEPS_LIBTYPE=STATIC
-          """)
+    c.env("MODULE_BUILDTYPE", "static")
+    c.env("LIBHACL_LDEPS_LIBTYPE", "STATIC")
+
+    c.run("""{{configure}} --prefix="{{ host }}" --disable-test-modules""")
 
     c.run("""{{ make }} install""")
 

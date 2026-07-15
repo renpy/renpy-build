@@ -5,6 +5,10 @@
 # static builds on all platforms.
 
 *disabled*
+readline
+_curses
+_curses_panel
+_sqlite3
 _decimal
 _dbm
 _gdbm
