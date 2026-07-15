@@ -81,7 +81,6 @@ class Context:
     renpy: Path
 
     def __init__(self, platform: str, arch: str, root: Path, args: Any):
-
         self.platform = platform
         self.arch = arch
         self.root = root
