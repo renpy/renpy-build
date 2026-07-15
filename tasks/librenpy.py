@@ -84,7 +84,7 @@ def build(c: Context):
             else:
                 g.run("{{ CXX }} {{ CXXFLAGS }} -c {{ src }} -o {{ object }}")
 
-        c.generate("{{ runtime }}/librenpy_inittab3.c", "inittab.c", modules=modules)
+        c.generate("{{ runtime }}/librenpy_inittab.c", "inittab.c", modules=modules)
         g.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")
         objects.append("inittab.o")
 

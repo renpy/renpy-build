@@ -261,7 +261,7 @@ def python3(c: Context):
         if c.platform != "web":
             raise Exception(f"Unused rules: {rules - used_rules}")
 
-    c.copy("{{ runtime }}/site3.py", "{{ distlib }}/{{ pythonver }}/sitecustomize.py")
+    c.copy("{{ runtime }}/sitecustomize.py", "{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
     import socket
     with open(c.path("{{ distlib }}/{{ pythonver }}/sitecustomize.py"), "a") as f:
