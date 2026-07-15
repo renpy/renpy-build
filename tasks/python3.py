@@ -265,8 +265,6 @@ def build_web(c: Context):
 
     c.run("""{{ make }}""")
 
-    # c.run("""python3 {{ root }}/tools/opfunc/opfunc_transform.py Python/ceval.c""")
-
     common_post(c)
 
 
@@ -317,6 +315,7 @@ def pip(c: Context):
         {v("pyasn1")}
         {v("urllib3")}
         {v("charset-normalizer")}
+        legacy-cgi
         certifi
         {v("idna")}
         {v("requests")}
