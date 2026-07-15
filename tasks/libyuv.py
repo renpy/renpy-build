@@ -6,14 +6,14 @@ from renpybuild.task import task
 def download(c: Context):
     c.var("commit", "d23308a2a7442be8e559b1b471862fd7588d6a57")
 
-    if c.path("{{ tmp }}/source/libyuv").exists():
+    try:
         c.chdir("{{ tmp }}/source/libyuv")
         c.run("git reset --hard")
         c.run("git checkout main")
         c.run("git pull")
         c.run("git checkout {{ commit }}")
 
-    else:
+    except BaseException:
         c.clean("{{ tmp }}/source/libyuv")
         c.chdir("{{ tmp }}/source")
 
