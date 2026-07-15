@@ -16,15 +16,6 @@ def unpack_sdk(c: Context):
     zf.close()
 
 
-@task(kind="host", platforms="all")
-def patch_sdk(c: Context):
-
-    if not c.path("{{host}}/steam/sdk").exists():
-        return
-
-    c.chdir("{{ install }}/steam/sdk")
-    # c.patch("steam-cdecl.diff")
-
 
 @task(kind="arch", platforms="linux,windows,mac", always=True)
 def build(c: Context):

@@ -19,7 +19,7 @@ def unpack(c: Context):
     c.chdir("pyobjus")
 
     c.run("git checkout {{ commit }}")
-    c.patch("pyobjus/ffi-h.diff")
+    c.patch("pyobjus-ffi-h.diff")
 
 
 @task(kind="host")
@@ -31,7 +31,7 @@ def host_unpack(c: Context):
     c.chdir("pyobjus")
 
     c.run("git checkout {{ commit }}")
-    c.patch("pyobjus/ffi-h.diff")
+    c.patch("pyobjus-ffi-h.diff")
 
 
 @task(kind="arch", platforms="mac,ios")
