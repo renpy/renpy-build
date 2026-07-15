@@ -1,7 +1,6 @@
 from renpybuild.context import Context
 from renpybuild.task import task
-import os
-import time
+
 
 @task(kind="arch", always=True)
 def clean(c: Context):
@@ -10,7 +9,6 @@ def clean(c: Context):
 
 @task(kind="arch", always=True)
 def build(c: Context):
-
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
@@ -27,7 +25,6 @@ def build(c: Context):
 
 @task(kind="arch", always=True, platforms="android")
 def build_android(c: Context):
-
     c.run("""
     {{ CC }} {{ CFLAGS }}
 
@@ -43,7 +40,6 @@ def build_android(c: Context):
 
 @task(kind="arch", always=True, platforms="linux")
 def link_linux(c: Context):
-
     c.run("""
     {{ CXX }} {{ LDFLAGS }}
     -shared
@@ -122,7 +118,6 @@ def link_linux(c: Context):
 
 @task(kind="arch", always=True, platforms="android")
 def link_android(c: Context):
-
     c.run("""
     {{ CXX }} {{ LDFLAGS }}
     -shared
@@ -191,7 +186,6 @@ def link_android(c: Context):
 
 @task(kind="arch", always=True, platforms="mac")
 def link_mac(c: Context):
-
     c.run("""
     {{ CXX }} {{ LDFLAGS }}
     -shared
@@ -279,7 +273,6 @@ def link_mac(c: Context):
     c.run("""install python {{ install }}/mac/python""")
     c.run("""install python {{ install }}/mac/pythonw""")
     c.run("""install renpy {{ install }}/mac/renpy""")
-
 
 
 @task(kind="platform", platforms="mac", always=True)
@@ -605,70 +598,67 @@ def link_web(c: Context):
         """
     {{ CXX }} {{ LDFLAGS }}
 
-    {% if debug_asyncify %}
-    -g2 -gsource-map --source-map-base ./
-    {% else %}
-    -g0
-    {% endif %}
+        -g0
 
-    -o renpy.html
-    librenpython.o
-    launcher.o
+        -o renpy.html
+        librenpython.o
+        launcher.o
 
-    -l{{ pythonver }}
+        -l{{ pythonver }}
+        -lffi
 
-    -lrenpy
+        -lrenpy
 
-    -lassimp
+        -lassimp
 
-    -lavformat
-    -lavcodec
-    -lswscale
-    -lswresample
-    -lavutil
-    -lSDL3_image
-    -lSDL3
-    -lavif
-    -laom
-    -lyuv
-    -ljpeg
-    -lpng
-    -lwebp
-    -lwebpmux
-    -lwebpdemux
-    -lsharpyuv
-    -lharfbuzz
-    -lbrotlidec
-    -lbrotlicommon
-    -lfribidi
-    -lfreetype
-    -llzma
-    -lbz2
-    -lz
-    -lm
+        -lavformat
+        -lavcodec
+        -lswscale
+        -lswresample
+        -lavutil
+        -lSDL3_image
+        -lSDL3
+        -lavif
+        -laom
+        -lyuv
+        -ljpeg
+        -lpng
+        -lwebp
+        -lwebpmux
+        -lwebpdemux
+        -lsharpyuv
+        -lharfbuzz
+        -lbrotlidec
+        -lbrotlicommon
+        -lfribidi
+        -lfreetype
+        -llzma
+        -lbz2
+        -lz
+        -lm
 
-    -lidbfs.js
+        -lidbfs.js
 
-    --preload-file {{ dist }}@/
+        --preload-file {{ dist }}@/
 
-    -sFULL_ES2=1
-    -sFULL_ES3=1
-    -sMAX_WEBGL_VERSION=2
-    --emit-symbol-map
+        -sFULL_ES2=1
+        -sFULL_ES3=1
+        -sMAX_WEBGL_VERSION=2
+        --emit-symbol-map
 
-    -sFILESYSTEM=1
-    -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS','ccall']
+        -sWASM_BIGINT
+        -sEXIT_RUNTIME
+        -sFILESYSTEM=1
+        -sEXPORTED_RUNTIME_METHODS=['stackTrace','FS','ccall']
 
-    -sASYNCIFY=1
-    -sASYNCIFY_STACK_SIZE=65535
-    -sASYNCIFY_ONLY="{{ asyncify_only }}"
-    -sINITIAL_MEMORY=192MB
-    -sALLOW_MEMORY_GROWTH=1
-    -sSTACK_SIZE=1024KB
+        -sJSPI
+        -sINITIAL_MEMORY=192MB
+        -sALLOW_MEMORY_GROWTH=1
+        -sSTACK_SIZE=1024KB
 
-    -sEXPORTED_FUNCTIONS=['_main']
+        -sEXPORTED_FUNCTIONS=['_main']
 
-    -sMINIFY_HTML=0
+        -sMINIFY_HTML=0
 
     --shell-file {{ runtime }}/web/shell.html
     """,
@@ -686,6 +676,3 @@ def link_web(c: Context):
     c.run("""install {{runtime}}/web/web-icon.png {{ renpy }}/web/web-icon.png""")
     c.run("""install {{runtime}}/web/manifest.json {{ renpy }}/web/manifest.json""")
     c.run("""install {{runtime}}/web/service-worker.js {{ renpy }}/web/service-worker.js""")
-
-    if debug_asyncify:
-        c.run("""install renpy.wasm.map {{ renpy }}/web/renpy.wasm.map""")
