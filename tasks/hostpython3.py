@@ -18,7 +18,14 @@ def patch_hostpython(c: Context):
 
     c.chdir("Python-{{ version }}")
 
-    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+    c.copy(
+        "{{ source }}/Python-{{ version }}-Setup.local",
+        "Modules/Setup.local",
+    )
+
+    c.patch("Python-{{ version }}/static-hacl.diff")
+
+    c.run(""" autoreconf -vfi """)
 
 
 @task(kind="host", platforms="all")
@@ -27,7 +34,14 @@ def build_host(c: Context):
 
     c.chdir("Python-{{ version }}")
 
-    c.run("""{{configure}} --prefix="{{ host }}" --disable-test-modules""")
+    c.run("""
+          {{configure}}
+          --prefix="{{ host }}"
+          --without-readline
+          --disable-test-modules
+          MODULE_BUILDTYPE=static
+          LIBHACL_LDEPS_LIBTYPE=STATIC
+          """)
 
     c.run("""{{ make }} install""")
 
