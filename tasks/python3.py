@@ -256,7 +256,6 @@ def build_web(c: Context):
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
         --with-build-python={{host}}/bin/python3
-        --enable-wasm-pthreads
         --disable-shared
         --disable-ipv6
         --without-pymalloc
