@@ -1,7 +1,8 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "3.12.8"
+version = "3.14.3"
+
 
 @task(kind="host", platforms="all")
 def unpack_hostpython(c: Context):
@@ -12,17 +13,24 @@ def unpack_hostpython(c: Context):
 
 
 @task(kind="host", platforms="all")
+def patch_hostpython(c: Context):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+
+    c.generate("{{ source }}/Python-{{ version }}-Setup.local", "Modules/Setup.local")
+
+
+@task(kind="host", platforms="all")
 def build_host(c: Context):
     c.var("version", version)
 
     c.chdir("Python-{{ version }}")
 
-    c.run("""{{configure}} --prefix="{{ host }}" """)
-    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup.stdlib")
-    c.generate("{{ source }}/Python-{{ version }}-Setup.stdlib", "Modules/Setup")
+    c.run("""{{configure}} --prefix="{{ host }}" --disable-test-modules""")
 
     c.run("""{{ make }} install""")
 
-    c.rmtree("{{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/")
-    c.run("install -d {{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/")
-    c.run("cp -a Tools/scripts {{ host }}/lib/python3.12/config-3.12-x86_64-linux-gnu/Tools/scripts")
+    c.rmtree("{{ host }}/lib/python3.14/config-3.14-x86_64-linux-gnu/Tools/")
+    c.run("install -d {{ host }}/lib/python3.14/config-3.14-x86_64-linux-gnu/Tools/")
+    c.run("cp -a Tools/scripts {{ host }}/lib/python3.14/config-3.14-x86_64-linux-gnu/Tools/scripts")
