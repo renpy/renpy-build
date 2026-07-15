@@ -3,7 +3,7 @@ import hashlib
 from pathlib import Path
 
 from renpybuild.context import Context
-from renpybuild.task import task, annotator
+from renpybuild.task import annotator, task
 
 version = "3.14.3"
 win_version = "3.14.3"
@@ -48,7 +48,7 @@ def patch_common(c: Context):
     c.patch("Python-{{ version }}/static-hacl.diff")
 
 
-@task(kind="arch", platforms="linux,mac,ios")
+@task(kind="arch", platforms="linux,mac")
 def patch_posix(c: Context):
     c.var("version", version)
 
@@ -72,6 +72,20 @@ def patch_ios(c: Context):
     c.chdir("Modules")
     c.run("rm -f _scproxy.c")
     c.run("cython _scproxy.pyx")
+
+
+@task(kind="arch", platforms="android")
+def patch_android(c: Context):
+    c.var("version", version)
+
+    c.chdir("Python-{{ version }}")
+
+    patch_common(c)
+
+    c.patch("Python-{{ version }}/3.14_armv7l_fix.patch")
+    c.patch("Python-{{ version }}/3.14_fix_remote_debug.patch")
+
+    c.run(""" autoreconf -vfi """)
 
 
 @task(kind="arch", platforms="windows")
@@ -188,9 +202,11 @@ def build_android(c: Context):
     c.run("""
         {{configure}} {{ cross_config }}
         --prefix="{{ install }}"
-        --enable-ipv6
         --with-build-python={{host}}/bin/python3
         --with-ensurepip=no
+        --enable-ipv6
+        --without-mimalloc
+        --disable-test-modules
         """)
 
     common_post(c)
