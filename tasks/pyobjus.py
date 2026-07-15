@@ -10,7 +10,7 @@ def annotate(c: Context):
     c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -DOBJC_OLD_DISPATCH_PROTOTYPES=1")
 
 
-@task(kind="python", platforms="mac,ios")
+@task(kind="arch", platforms="mac,ios")
 def unpack(c: Context):
     c.clean()
 
@@ -22,7 +22,7 @@ def unpack(c: Context):
     c.patch("pyobjus-ffi-h.diff")
 
 
-@task(kind="host-python")
+@task(kind="host")
 def host_unpack(c: Context):
     c.clean()
 
@@ -34,7 +34,7 @@ def host_unpack(c: Context):
     c.patch("pyobjus-ffi-h.diff")
 
 
-@task(kind="python", platforms="mac,ios")
+@task(kind="arch", platforms="mac,ios")
 def build(c: Context):
 
     c.chdir("pyobjus/pyobjus")
@@ -75,7 +75,7 @@ pyobjus.pyobjus pyobjus.c
 """))
 
 
-@task(kind="host-python")
+@task(kind="host")
 def host_build(c: Context):
 
     c.chdir("pyobjus/pyobjus")

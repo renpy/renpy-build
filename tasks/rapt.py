@@ -5,21 +5,16 @@ import time
 import os
 
 
-@task(kind="platform-python", platforms="android", always=True)
+@task(kind="host", always=True)
 def copy(c: Context):
 
     c.copytree("{{ root }}/rapt", "{{ raptver }}")
 
-    c.run("mv {{ raptver }}/blocklist{{ python }}.txt {{ raptver }}/blocklist.txt")
-    c.run("mv {{ raptver }}/keeplist{{ python }}.txt {{ raptver }}/keeplist.txt")
+    c.run("mv {{ raptver }}/blocklist3.txt {{ raptver }}/blocklist.txt")
+    c.run("mv {{ raptver }}/keeplist3.txt {{ raptver }}/keeplist.txt")
 
-
-    if c.python == "3":
-        c.run("rm {{ raptver }}/blocklist2.txt")
-        c.run("rm {{ raptver }}/keeplist2.txt")
-    else:
-        c.run("rm {{ raptver }}/blocklist3.txt")
-        c.run("rm {{ raptver }}/keeplist3.txt")
+    c.run("rm {{ raptver }}/blocklist2.txt")
+    c.run("rm {{ raptver }}/keeplist2.txt")
 
     with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
         f.write(time.ctime())
@@ -42,7 +37,7 @@ def copy(c: Context):
     c.rmtree("{{ raptver }}/prototype/app/build/")
 
 
-@task(kind="host-python", always=True)
+@task(kind="platform", always=True)
 def android_module(c: Context):
     c.run("""install -d {{ install }}/lib/{{ pythonver }}/site-packages/android""")
     c.run("""install {{ runtime }}/android/__init__.py {{ install }}/lib/{{ pythonver }}/site-packages/android""")

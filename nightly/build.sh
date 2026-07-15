@@ -13,7 +13,7 @@ fi
 
 # Build the dependencies.
 pushd $BASE
-python -m renpybuild --python 3
+python -m renpybuild
 popd
 
 
@@ -46,7 +46,7 @@ export RENPY_CYTHON=cython
 export RENPY_DEPS_INSTALL=/usr::/usr/lib/x86_64-linux-gnu/
 export RENPY_SIMPLE_EXCEPTIONS=1
 
-./renpy3.sh tutorial quit
+./renpy.sh tutorial quit
 
 # Build the documentation.
 pushd $BASE/renpy/sphinx

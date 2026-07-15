@@ -105,7 +105,7 @@ def build_environment(c):
     Sets up the build environment inside the context.
     """
 
-    if c.platform == "web" and c.kind not in ( "host",  "host-python", "cross" ):
+    if c.platform == "web" and c.kind not in ("host", "cross"):
         emsdk_environment(c)
 
     if c.platform == "android":
@@ -199,7 +199,7 @@ def build_environment(c):
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
-    if c.kind == "host" or c.kind == "host-python" or c.kind == "cross":
+    if c.kind in ("host", "cross"):
 
         llvm(c)
         c.env("LDFLAGS", "{{ LDFLAGS }} -L{{install}}/lib64")
@@ -409,8 +409,7 @@ def build_environment(c):
         c.var("cmake_system_processor", "generic")
         c.var("cmake_args", "-DCMAKE_FIND_ROOT_PATH={{ install }}")
 
-
-    if c.kind not in ( "host", "host-python", "cross" ):
+    if c.kind not in ("host", "cross"):
         c.env("PKG_CONFIG_LIBDIR", "{{ install }}/lib/pkgconfig:{{ PKG_CONFIG_LIBDIR }}")
         c.var("cmake_args", "{{cmake_args}} -DCMAKE_SYSTEM_NAME={{ cmake_system_name }} -DCMAKE_SYSTEM_PROCESSOR={{ cmake_system_processor }} -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY")
 

@@ -2,13 +2,13 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 
-@task(kind="python")
+@task(kind="arch")
 def clean(c: Context):
     c.clean()
 
 
 
-@task(kind="host-python", platforms="all", pythons="3", always=True)
+@task(kind="host", always=True)
 def gen_static3(c: Context):
 
     c.chdir("{{ renpy }}")
@@ -18,11 +18,8 @@ def gen_static3(c: Context):
     c.run("{{ hostpython }} setup.py generate")
 
 
-@task(kind="python", platforms="all", always=True)
+@task(kind="arch", platforms="all", always=True)
 def build(c: Context):
-
-    if c.platform == "web" and c.python == "2":
-        return
 
     c.env("CFLAGS", """{{ CFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3-static" """)
     c.env("CXXFLAGS", """{{ CXXFLAGS }} "-I{{ renpy }}/src" "-I{{renpy}}/tmp/gen3-static" """)
@@ -44,9 +41,6 @@ def build(c: Context):
 
                 parts = l.split()
 
-                if parts[0] == "renpy.compat.dictviews" and c.python != "2":
-                    continue
-
                 modules.append(parts[0])
 
                 for i in parts[1:]:
@@ -66,7 +60,7 @@ def build(c: Context):
     if c.platform == "windows" or c.platform == "mac" or c.platform == "linux":
         read_setup(c.renpy / "src", ".tfd")
 
-    if c.platform == "web" and c.python == "3":
+    if c.platform == "web":
         read_setup(c.path("{{ install }}/emscripten_pyx"))
 
     read_setup(c.path("{{ source }}/brotli"))
@@ -90,7 +84,7 @@ def build(c: Context):
             else:
                 g.run("{{ CXX }} {{ CXXFLAGS }} -c {{ src }} -o {{ object }}")
 
-        c.generate("{{ runtime }}/librenpy_inittab{{ c.python }}.c", "inittab.c", modules=modules)
+        c.generate("{{ runtime }}/librenpy_inittab3.c", "inittab.c", modules=modules)
         g.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")
         objects.append("inittab.o")
 

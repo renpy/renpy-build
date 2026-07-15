@@ -76,9 +76,6 @@ It should then be possible to build using the command::
 
 The build command can take some options:
 
-`--python <version>`
-    The python version to build. Only 3 is currently valid.
-
 `--platform <name>`
     The platform to build for. One of linux, windows, mac, android, ios, or web.
 
@@ -87,23 +84,23 @@ The build command can take some options:
     here is a copy of the table from build.py. ::
 
 
-        Platform("linux", "x86_64", "3")
-        Platform("linux", "aarch64", "3")
+        Platform("linux", "x86_64")
+        Platform("linux", "aarch64")
 
-        Platform("windows", "x86_64", "3")
+        Platform("windows", "x86_64")
 
-        Platform("mac", "x86_64", "3")
-        Platform("mac", "arm64", "3")
+        Platform("mac", "x86_64")
+        Platform("mac", "arm64")
 
-        Platform("android", "x86_64", "3")
-        Platform("android", "arm64_v8a", "3")
-        Platform("android", "armeabi_v7a", "3")
+        Platform("android", "x86_64")
+        Platform("android", "arm64_v8a")
+        Platform("android", "armeabi_v7a")
 
-        Platform("ios", "arm64", "3")
-        Platform("ios", "sim-x86_64", "3")
-        Platform("ios", "sim-arm64", "3")
+        Platform("ios", "arm64")
+        Platform("ios", "sim-x86_64")
+        Platform("ios", "sim-arm64")
 
-        Platform("web", "wasm", "3")
+        Platform("web", "wasm")
 
 
 A second build should be faster than the first, as it will only rebuild

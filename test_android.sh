@@ -2,17 +2,12 @@
 
 set -ex
 
-PY=$(python -c 'import sys; print(sys.version[0])')
-
 
 ROOT="$(dirname $(readlink -f $0))"
 
 pushd "$ROOT"
-./build.sh --python $PY --platform android rebuild rapt rapt-sdl2
+./build.sh --platform android rebuild rapt rapt-sdl2
 popd
-
-rm "$ROOT/renpy/rapt"
-ln -s "rapt$PY" "$ROOT/renpy/rapt"
 
 export PYTHONPATH="$ROOT/renpy:$ROOT/renpy/launcher/game"
 

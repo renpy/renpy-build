@@ -21,6 +21,6 @@ def build(c: Context):
     c.run("make install")
 
 
-@task(platforms="web", pythons="3")
+@task(platforms="web")
 def build_web(c: Context):
     c.run("embuilder build zlib")

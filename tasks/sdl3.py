@@ -55,7 +55,7 @@ def build(c: Context):
 
 
 
-@task(kind="arch-python", platforms="android", archs="x86_64", always=True)
+@task(kind="arch", platforms="android", archs="x86_64", always=True)
 def rapt(c: Context):
     c.var("version", version)
     c.chdir("{{ tmp }}/source/SDL3-{{version}}")

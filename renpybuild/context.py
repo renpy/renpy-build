@@ -38,9 +38,6 @@ class Context:
     # The architecture. Varies based on the platform.
     arch: str
 
-    # The version of Python, one of "2" or "3"
-    python: str
-
     # The root directory of the build.
     root: Path
 
@@ -83,11 +80,10 @@ class Context:
     # More paths.
     renpy: Path
 
-    def __init__(self, platform: str, arch: str, python: str, root: Path, args: Any):
+    def __init__(self, platform: str, arch: str, root: Path, args: Any):
 
         self.platform = platform
         self.arch = arch
-        self.python = python
         self.root = root
         self.args = args
 
@@ -101,7 +97,6 @@ class Context:
 
         self.var("platform", platform)
         self.var("arch", arch)
-        self.var("python", python)
         self.var("root", root)
 
         # Paths relative to root.
@@ -130,8 +125,8 @@ class Context:
 
         self.var("renios", "{{ renpy }}/renios")
 
-        # Python version specific storage.
-        self.var("pytmp", self.tmp / ("py" + python))
+        # Python specific storage.
+        self.var("pytmp", self.tmp / "py")
 
     def set_names(self, kind: str, task: str, name: str):
         """
@@ -158,31 +153,16 @@ class Context:
         # The path to the cross compiler.
         self.var("cross", cross)
 
-        per_python = False
-
         if kind == "host":
             self.dir_name = f"{self.name}.host"
-        elif kind == "host-python":
-            self.dir_name = f"{self.name}.py{self.python}"
         elif kind == "cross":
             self.dir_name = f"{self.name}.cross-{self.platform}-{self.arch}"
         elif kind == "platform":
             self.dir_name = f"{self.name}.{self.platform}"
-        elif kind == "platform-python":
-            self.dir_name = f"{self.name}.{self.platform}"
-            per_python = True
         elif kind == "arch":
             self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
-        elif kind == "arch-python":
-            self.dir_name = f"{self.name}.{self.platform}-{self.arch}"
-            per_python = True
-        elif kind == "python":
-            self.dir_name = f"{self.name}.{self.platform}-{self.arch}-py{self.python}"
 
         self.task_name = f"{self.task}-{self.dir_name}"
-
-        if per_python:
-            self.task_name += "-py" + self.python
 
         build = self.tmp / "build" / self.dir_name
         build.mkdir(parents=True, exist_ok=True)
@@ -205,11 +185,8 @@ class Context:
         self.install = install
         self.var("install", install)
 
-        # The install for linux-x86_64, used to find file from any python isntall.
-        self.var("linuxinstall", self.tmp / "install.linux-x86_64")
-
-        # The path to a version of Python comp
-        self.var("hostpython", "{{ install }}/bin/hostpython{{ c.python }}")
+        # The path to a version of Python compiled for the host.
+        self.var("hostpython", "{{tmp}}/install.{{platform}}-{{arch}}/bin/hostpython3")
 
         # Final installation paths.
         if self.platform == "web":
@@ -221,9 +198,9 @@ class Context:
 
         # renpy/lib/py3-linux-x86_64 and friends. ({{dist}}/lib/py-platform-arch)
         if self.platform == "mac":
-            self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-universal")
+            self.var("dlpa", "{{distlib}}/py3-mac-universal")
         else:
-            self.var("dlpa", "{{distlib}}/py{{ python }}-{{ platform }}-{{ arch }}")
+            self.var("dlpa", "{{distlib}}/py3-{{ platform }}-{{ arch }}")
 
         from .run import build_environment
 
@@ -465,16 +442,11 @@ class Context:
         src = self.expand(str(src))
         dst = self.expand("lib/{{ pythonver }}")
 
-        if self.python == "2":
-            command = "{{ hostpython }} -OO -m compileall {{ flags }} {{ src }}"
-            flags = f"-d {dst} -fq"
+        command = "{{ hostpython }} -m compileall {{ flags }} {{ src }}"
+        flags = f"-d {dst} -fq --invalidation-mode unchecked-hash"
 
-        else:
-            command = "{{ hostpython }} -m compileall {{ flags }} {{ src }}"
-            flags = f"-d {dst} -fq --invalidation-mode unchecked-hash"
-
-            if src.endswith(".py"):
-                flags = f"-b {flags}"
+        if src.endswith(".py"):
+            flags = f"-b {flags}"
 
         self.run(command, flags=flags, src=src)
 

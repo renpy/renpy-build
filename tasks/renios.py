@@ -6,7 +6,7 @@ import subprocess
 import re
 
 
-@task(kind="host-python")
+@task(kind="host")
 def copytree(c: Context):
     c.copytree("{{ root }}/renios", "{{ renios }}")
 
@@ -109,32 +109,26 @@ def lipo(c: Context, namefilter):
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
 
 
-@task(kind="host-python", platforms="ios")
+@task(kind="platform", platforms="ios")
 def lipo_all(c: Context):
-
-    python = "libpython{}.".format(c.python)
 
     def namefilter(i):
 
-        if i.startswith("libpython") and not i.startswith(python):
+        if i.startswith("libpython") and not i.startswith("libpython3"):
             return False
 
         return True
 
     lipo(c, namefilter)
 
-@task(kind="host-python", platforms="ios", always=True)
+@task(kind="platform", platforms="ios", always=True)
 def lipo_renpy(c: Context):
     lipo(c, lambda n : "librenpy" in n)
 
 
-@task(kind="host-python", platforms="ios", always=True)
+@task(kind="platform", platforms="ios", always=True)
 def unpack_metalangle(c: Context):
     c.clean("{{ renios }}/prototype/Frameworks")
     c.chdir("{{ renios }}/prototype/Frameworks")
 
     c.run("tar xaf {{ source }}/MetalANGLE.xcframework.tar.gz")
-
-@task(kind="host-python", platforms="ios", always=True, pythons="2")
-def copyback(c: Context):
-    c.copytree("{{ renios }}/prototype/prebuilt", "{{ root }}/renios/prototype/prebuilt")
