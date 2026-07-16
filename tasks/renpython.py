@@ -597,6 +597,22 @@ def link_web(c: Context):
         "__pyx_pw_5renpy_6ecsign_3sign_data",
         "__pyx_pw_5renpy_6ecsign_1generate_private_key",
         "__pyx_pw_5renpy_6ecsign_11validate_public_key",
+        "byn$fpcast-emu$gen_close",
+        "byn$fpcast-emu$gen_close_iter",
+        "byn$fpcast-emu$gen_iternext",
+        "byn$fpcast-emu$gen_send",
+        "byn$fpcast-emu$gen_send_ex",
+        "byn$fpcast-emu$gen_send_ex2",
+        "byn$fpcast-emu$gen_throw",
+        "byn$fpcast-emu$_gen_throw",
+        "gen_close",
+        "gen_close_iter",
+        "gen_iternext",
+        "gen_send",
+        "gen_send_ex",
+        "gen_send_ex2",
+        "gen_throw",
+        "_gen_throw",
     ]
 
     c.var("asyncify_only", repr(asyncify_only).replace(" ", ""))
