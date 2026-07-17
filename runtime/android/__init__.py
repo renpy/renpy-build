@@ -37,11 +37,6 @@ class AndroidBrowser(object):
     def open_new_tab(self, url):
         open_url(url)
 
-import sys
+import webbrowser
 
-if sys.version_info.major >= 3:
-    import webbrowser
-    webbrowser.register('android', AndroidBrowser, None, preferred=True)
-else:
-    import webbrowser
-    webbrowser.register('android', AndroidBrowser, None, -1)
+webbrowser.register("android", AndroidBrowser, None, preferred=True)

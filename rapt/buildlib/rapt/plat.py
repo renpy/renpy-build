@@ -87,11 +87,7 @@ else:
     gradlew = "project/gradlew"
 
 # The path to RAPT.
-
-if sys.version_info.major >= 3:
-    RAPT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-else:
-    RAPT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__.decode(sys.getfilesystemencoding())))))
+RAPT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def path(path, relative=False):

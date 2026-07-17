@@ -31,12 +31,6 @@ sys.path.append(os.path.join(plat.RAPT_PATH, "buildlib", "jinja2.egg"))
 import jinja2
 import rapt.configure as configure
 
-# If we have python 2.7, record the path to it.
-if sys.version_info.major == 2 and sys.version_info.minor == 7:
-    PYTHON = sys.executable
-else:
-    PYTHON = None
-
 
 class PatternList(object):
     """
@@ -143,15 +137,6 @@ def render(always, template, dest, **kwargs):
     f = open(dest, "wb")
     f.write(text.encode("utf-8"))
     f.close()
-
-
-def compile_dir(iface, dfn):
-    """
-    Compile *.py in directory `dfn` to *.pyo
-    """
-
-    # -OO = strip docstrings
-    iface.call([PYTHON, '-O', '-m', 'compileall', '-f', dfn])
 
 
 def make_tar(iface, fn, source_dirs):
