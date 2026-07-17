@@ -8,27 +8,27 @@ import os
 @task(kind="host", always=True)
 def copy(c: Context):
 
-    c.copytree("{{ root }}/rapt", "{{ raptver }}")
+    c.copytree("{{ root }}/rapt", "{{ rapt }}")
 
-    with open(c.path("{{ raptver }}/prototype/build.txt"), "w") as f:
+    with open(c.path("{{ rapt }}/prototype/build.txt"), "w") as f:
         f.write(time.ctime())
 
-    c.rmtree("{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
-    c.rmtree("{{ raptver }}/prototype/renpyandroid/src/main/java/org/jnius")
+    c.rmtree("{{ rapt }}/prototype/renpyandroid/src/main/java/org/libsdl")
+    c.rmtree("{{ rapt }}/prototype/renpyandroid/src/main/java/org/jnius")
 
-    os.unlink(c.path("{{ raptver }}/prototype/renpyandroid/src/main/java/org/renpy/android/Constants.java"))
+    os.unlink(c.path("{{ rapt }}/prototype/renpyandroid/src/main/java/org/renpy/android/Constants.java"))
 
-    if c.path("{{ raptver }}/prototype/local.properties").exists():
-        os.unlink(c.path("{{ raptver }}/prototype/local.properties"))
+    if c.path("{{ rapt }}/prototype/local.properties").exists():
+        os.unlink(c.path("{{ rapt }}/prototype/local.properties"))
 
-    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-mdpi")
-    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-hdpi")
-    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-xhdpi")
-    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-xxhdpi")
-    c.rmtree("{{ raptver }}/prototype/app/src/main/res/mipmap-xxxhdpi")
+    c.rmtree("{{ rapt }}/prototype/app/src/main/res/mipmap-mdpi")
+    c.rmtree("{{ rapt }}/prototype/app/src/main/res/mipmap-hdpi")
+    c.rmtree("{{ rapt }}/prototype/app/src/main/res/mipmap-xhdpi")
+    c.rmtree("{{ rapt }}/prototype/app/src/main/res/mipmap-xxhdpi")
+    c.rmtree("{{ rapt }}/prototype/app/src/main/res/mipmap-xxxhdpi")
 
-    c.rmtree("{{ raptver }}/prototype/renpyandroid/build/")
-    c.rmtree("{{ raptver }}/prototype/app/build/")
+    c.rmtree("{{ rapt }}/prototype/renpyandroid/build/")
+    c.rmtree("{{ rapt }}/prototype/app/build/")
 
 
 @task(kind="platform", always=True)

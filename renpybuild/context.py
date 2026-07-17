@@ -111,7 +111,6 @@ class Context:
         self.var("renpy", self.renpy)
 
         self.var("rapt", "{{ renpy }}/rapt")
-        self.var("raptver", "{{ rapt }}")
 
         if "arm" in self.arch:
             jni_arch = self.arch.replace("_", "-")
@@ -119,9 +118,9 @@ class Context:
             jni_arch = self.arch
 
         self.var("jni_arch", jni_arch)
-        self.var("jniLibs", "{{ raptver }}/prototype/renpyandroid/src/main/jniLibs/{{ jni_arch }}")
+        self.var("jniLibs", "{{ rapt }}/prototype/renpyandroid/src/main/jniLibs/{{ jni_arch }}")
 
-        self.var("jni_unstripped", "{{ raptver }}/symbols/{{ jni_arch }}")
+        self.var("jni_unstripped", "{{ rapt }}/symbols/{{ jni_arch }}")
 
         self.var("renios", "{{ renpy }}/renios")
 
