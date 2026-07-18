@@ -8,10 +8,7 @@ import plistlib
 import re
 import sys
 
-if sys.version_info.major >= 3:
-    RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-else:
-    RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__.decode(sys.getfilesystemencoding())))))
+RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def replace_name(o, template, replacement, path=()):
     if isinstance(o, dict):

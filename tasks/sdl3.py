@@ -59,4 +59,4 @@ def build(c: Context):
 def rapt(c: Context):
     c.var("version", version)
     c.chdir("{{ tmp }}/source/SDL3-{{version}}")
-    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ raptver }}/prototype/renpyandroid/src/main/java/org/libsdl")
+    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ rapt }}/prototype/renpyandroid/src/main/java/org/libsdl")

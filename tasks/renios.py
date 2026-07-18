@@ -1,14 +1,33 @@
+import os
+import re
+import subprocess
+import zipfile
+
 from renpybuild.context import Context
 from renpybuild.task import task
-import sys
-import os
-import subprocess
-import re
 
 
 @task(kind="host")
+def download(c: Context):
+    url = "https://github.com/mikr/xcodeprojer/archive/refs/heads/master.zip"
+    dest = c.expand("xcodeprojer-master.zip")
+
+    c.download(url, dest)
+
+
+@task(kind="host")
+def unpack(c: Context):
+    c.clean("{{ tmp }}/source/xcodeprojer-master")
+
+    with zipfile.ZipFile(c.path("{{ tmp }}/tars/xcodeprojer-master.zip")) as zf:
+        zf.extractall(c.path("{{ tmp }}/source"))
+
+
+@task(kind="host", always=True)
 def copytree(c: Context):
     c.copytree("{{ root }}/renios", "{{ renios }}")
+
+    c.copy("{{ tmp }}/source/xcodeprojer-master/xcodeprojer.py", "{{ renios }}/buildlib/xcodeprojer.py")
 
     c.rmtree("{{ renios }}/prototype/prebuilt")
     c.rmtree("{{ renios }}/prototype/base")
