@@ -1,6 +1,3 @@
-from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
-
 import os
 import argparse
 import json

@@ -1,5 +1,3 @@
-from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-
 import webbrowser
 import textwrap
 import sys

@@ -13,8 +13,6 @@
 # Note: Py->C auto-UTF-8 (instead of .encode('UTF-8')) not supported for Py2
 # Note: causes issues with Typed Memoryviews
 
-from __future__ import print_function
-
 cdef extern from "emscripten.h":
     ctypedef void (*em_callback_func)() noexcept
     ctypedef void (*em_arg_callback_func)(void*) noexcept

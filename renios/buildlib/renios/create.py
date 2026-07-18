@@ -1,6 +1,3 @@
-from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
-
 import xcodeprojer
 import shutil
 import os
@@ -28,7 +25,7 @@ def replace_name(o, template, replacement, path=()):
 
         return o
 
-    elif isinstance(o, basestring):
+    elif isinstance(o, str):
         return o.replace(template, replacement)
 
     else:
@@ -37,7 +34,6 @@ def replace_name(o, template, replacement, path=()):
 
 # Copytree - taken from shuiti
 def copytree(src, dst, symlinks=False, ignore=None):
-
     names = os.listdir(src)
     if ignore is not None:
         ignored_names = ignore(src, names)
@@ -155,10 +151,7 @@ def create_project(interface, dest, name=None, version="1.0"):
 
     plist_fn = os.path.join(dest, "Info.plist")
 
-    if PY2:
-        plistlib.writePlist(plist, plist_fn)
-    else:
-        with open(plist_fn, "wb") as f:
-            plistlib.dump(plist, f)
+    with open(plist_fn, "wb") as f:
+        plistlib.dump(plist, f)
 
     interface.success("Created the Xcode project.")

@@ -1,7 +1,5 @@
 # This sets up various variables and commands based on the platform we're on.
 
-from __future__ import print_function
-
 ##############################################################################
 # These are set based on the platform we're on.
 windows = False

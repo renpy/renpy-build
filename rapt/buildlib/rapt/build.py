@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-
-from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
-
 import sys
 
 import re
@@ -60,7 +55,6 @@ class PatternList(object):
         return False
 
     def load(self, fn):
-
         with open(fn, "r") as f:
             for l in f:
                 l = l.strip()
@@ -163,7 +157,6 @@ def make_tar(iface, fn, source_dirs):
     added = set()
 
     def add(fn, relfn):
-
         adds = []
 
         while relfn:
@@ -200,12 +193,10 @@ def make_tar(iface, fn, source_dirs):
 
 
 def make_tree(src, dest):
-
     src = plat.path(src)
     dest = plat.path(dest)
 
     def ignore(dir, files):
-
         rv = []
 
         for basename in files:
@@ -255,7 +246,6 @@ MAX_SIZE = 1000000000
 
 
 def make_bundle_tree(src):
-
     src = plat.path(src)
     sizes = collections.defaultdict(int)
 
@@ -380,9 +370,6 @@ def eliminate_pycache(directory):
     Eliminates the __pycache__ directory, and moves the files in it up a level,
     renaming them to remove the cache tag.
     """
-
-    if PY2:
-        return
 
     import pathlib
     import sys
