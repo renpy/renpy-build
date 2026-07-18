@@ -372,7 +372,6 @@ def eliminate_pycache(directory):
     """
 
     import pathlib
-    import sys
 
     paths = list(pathlib.Path(directory).glob("**/__pycache__/*.pyc"))
 

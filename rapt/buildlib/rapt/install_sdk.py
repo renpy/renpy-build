@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import traceback
 import os
 import zipfile
-import tarfile
 import shutil
 import subprocess
 import stat

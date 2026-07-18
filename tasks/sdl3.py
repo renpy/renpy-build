@@ -1,5 +1,5 @@
 from renpybuild.context import Context
-from renpybuild.task import task, annotator
+from renpybuild.task import task
 
 version = "3.4.8"
 

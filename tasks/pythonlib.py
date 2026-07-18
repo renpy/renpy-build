@@ -2,7 +2,6 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 import shutil
-import os
 import re
 
 

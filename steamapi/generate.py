@@ -1,8 +1,5 @@
 import json
-import pprint
 import re
-import io
-import sys
 import argparse
 
 # The file that the generated code will be written to.

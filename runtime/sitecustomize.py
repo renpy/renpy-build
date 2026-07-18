@@ -21,8 +21,6 @@
 
 import sys
 import os
-import time
-import locale
 
 # A variable giving the Ren'Py platform ########################################
 

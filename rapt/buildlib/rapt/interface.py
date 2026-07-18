@@ -3,7 +3,6 @@ import textwrap
 import sys
 import time
 import subprocess
-import urllib
 
 from . import plat
 

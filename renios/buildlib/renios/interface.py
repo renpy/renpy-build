@@ -2,8 +2,6 @@ import webbrowser
 import textwrap
 import sys
 import time
-import subprocess
-import urllib
 
 
 class Interface(object):
