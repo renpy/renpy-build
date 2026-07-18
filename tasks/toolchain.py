@@ -40,6 +40,7 @@ def build(c: Context):
 
     c.run("""unzip -q {{ tars }}/{{ndk_version}}-linux.zip""")
 
+
 @task(kind="cross", platforms="mac")
 def build(c: Context):
     c.clean("{{ cross }}")

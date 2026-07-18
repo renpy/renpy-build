@@ -4,6 +4,7 @@ from pathlib import Path
 
 import argparse
 
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("path", help="Path to nightly directory")
@@ -26,6 +27,7 @@ def main():
 
     link("8*/*-sdk.zip", "renpy-nightly-sdk.zip")
     link("8*/*-sdk.tar.bz2", "renpy-nightly-sdk.tar.bz2")
+
 
 if __name__ == "__main__":
     main()

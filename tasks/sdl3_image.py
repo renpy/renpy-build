@@ -8,10 +8,11 @@ version = "3.4.0"
 def download(c: Context):
     c.var("version", version)
 
-    url = f"https://github.com/libsdl-org/SDL_image/releases/download/release-{ version }/SDL3_image-{ version }.tar.gz"
+    url = f"https://github.com/libsdl-org/SDL_image/releases/download/release-{version}/SDL3_image-{version}.tar.gz"
     dest = c.expand("SDL3_image-{{version}}.tar.gz")
 
     c.download(url, dest)
+
 
 @task(kind="host", platforms="all")
 def unpack(c: Context):

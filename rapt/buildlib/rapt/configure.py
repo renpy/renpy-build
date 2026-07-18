@@ -22,7 +22,6 @@ true false null
 
 
 class Configuration(object):
-
     def __init__(self, directory):
 
         self.package = None
@@ -31,7 +30,7 @@ class Configuration(object):
         self.version = "1.0"
         self.numeric_version = 1
         self.orientation = "sensorLandscape"
-        self.permissions = [ "VIBRATE" ]
+        self.permissions = ["VIBRATE"]
         self.include_pil = False
         self.include_sqlite = False
         self.layout = None
@@ -45,8 +44,7 @@ class Configuration(object):
         self.heap_size = None
         self.update_keystores = True
 
-        for fn in [ "android.json", ".android.json" ]:
-
+        for fn in ["android.json", ".android.json"]:
             try:
                 with open(os.path.join(directory, fn), "r") as f:
                     d = json.load(f)
@@ -64,7 +62,6 @@ class Configuration(object):
         with open(os.path.join(base, "android.json"), "w") as f:
             json.dump(self.__dict__, f, indent=4, sort_keys=True)
 
-
     def set_heap_size(self, newSize, gradle_dir):
         """
         Sets the Java Heap Size for Gradle in gradle.properties.
@@ -72,8 +69,10 @@ class Configuration(object):
 
         with open(gradle_dir, "r+") as g:
             contents = g.read()
-            contents = contents.replace("org.gradle.jvmargs=-Xmx" + str(self.heap_size) + "g\n",
-                "org.gradle.jvmargs=-Xmx" + str(newSize) + "g\n")
+            contents = contents.replace(
+                "org.gradle.jvmargs=-Xmx" + str(self.heap_size) + "g\n",
+                "org.gradle.jvmargs=-Xmx" + str(newSize) + "g\n",
+            )
             g.seek(0)
             g.write(contents)
 
@@ -87,8 +86,9 @@ class Configuration(object):
                 if "org.gradle.jvmargs" in line:
                     heapValue = line
 
-        heapValue = heapValue.replace('org.gradle.jvmargs=-Xmx', "").replace('g\n', "")
+        heapValue = heapValue.replace("org.gradle.jvmargs=-Xmx", "").replace("g\n", "")
         self.heap_size = heapValue
+
 
 def configure(interface, directory, default_name=None, default_version=None):
 
@@ -97,14 +97,27 @@ def configure(interface, directory, default_name=None, default_version=None):
     if config.name is None:
         config.name = default_name
 
-    config.name = interface.input(__("What is the full name of your application? This name will appear in the list of installed applications."), config.name)
+    config.name = interface.input(
+        __("What is the full name of your application? This name will appear in the list of installed applications."),
+        config.name,
+    )
 
     if config.icon_name is None:
         config.icon_name = config.name
 
-    config.icon_name = interface.input(__("What is the short name of your application? This name will be used in the launcher, and for application shortcuts."), config.icon_name)
+    config.icon_name = interface.input(
+        __(
+            "What is the short name of your application? This name will be used in the launcher, and for application shortcuts."
+        ),
+        config.icon_name,
+    )
 
-    config.package = interface.input(__("What is the name of the package?\n\nThis is usually of the form com.domain.program or com.domain.email.program. It may only contain ASCII letters and dots. It must contain at least one dot."), config.package)
+    config.package = interface.input(
+        __(
+            "What is the name of the package?\n\nThis is usually of the form com.domain.program or com.domain.email.program. It may only contain ASCII letters and dots. It must contain at least one dot."
+        ),
+        config.package,
+    )
 
     config.package = config.package.strip().lower()
 
@@ -117,48 +130,66 @@ def configure(interface, directory, default_name=None, default_version=None):
     if "." not in config.package:
         interface.fail(__("The package name must contain at least one dot."))
 
-    for part in config.package.split('.'):
+    for part in config.package.split("."):
         if not part:
             interface.fail(__("The package name may not contain two dots in a row, or begin or end with a dot."))
 
         if not re.match(r"[a-zA-Z_]\w*$", part):
-            interface.fail(__("Each part of the package name must start with a letter, and contain only letters, numbers, and underscores."))
+            interface.fail(
+                __(
+                    "Each part of the package name must start with a letter, and contain only letters, numbers, and underscores."
+                )
+            )
 
         if part in JAVA_KEYWORDS:
             interface.fail(__("{} is a Java keyword, and can't be used as part of a package name.").format(part))
 
     config.get_heap_size()
 
-    heap_size = interface.input(__("How much RAM (in GB) do you want to allocate to Gradle?\nThis must be a positive integer number."), config.heap_size)
+    heap_size = interface.input(
+        __("How much RAM (in GB) do you want to allocate to Gradle?\nThis must be a positive integer number."),
+        config.heap_size,
+    )
 
-    if not re.match(r'^[\d]+$', heap_size):
+    if not re.match(r"^[\d]+$", heap_size):
         interface.fail(__("The RAM size must contain only numbers and be positive."))
 
     config.set_heap_size(heap_size, plat.path("project/gradle.properties"))
 
-    config.orientation = interface.choice(__("How would you like your application to be displayed?"), [
-        ("sensorLandscape", __("In landscape orientation.")),
-        ("portrait", __("In portrait orientation.")),
-        ("sensor", __("In the user's preferred orientation.")),
-        ], config.orientation)
+    config.orientation = interface.choice(
+        __("How would you like your application to be displayed?"),
+        [
+            ("sensorLandscape", __("In landscape orientation.")),
+            ("portrait", __("In portrait orientation.")),
+            ("sensor", __("In the user's preferred orientation.")),
+        ],
+        config.orientation,
+    )
 
-    config.store = interface.choice(__("Which app store would you like to support in-app purchasing through?"), [
-        ("play", __("Google Play.")),
-        ("amazon", __("Amazon App Store.")),
-        ("all", __("Both, in one app.")),
-        ("none", __("Neither.")),
-        ], config.store)
+    config.store = interface.choice(
+        __("Which app store would you like to support in-app purchasing through?"),
+        [
+            ("play", __("Google Play.")),
+            ("amazon", __("Amazon App Store.")),
+            ("all", __("Both, in one app.")),
+            ("none", __("Neither.")),
+        ],
+        config.store,
+    )
 
-    permissions = [ i for i in config.permissions if i not in [ "INTERNET" ] ]
+    permissions = [i for i in config.permissions if i not in ["INTERNET"]]
     permissions.append("INTERNET")
 
     config.permissions = permissions
 
     config.update_always = interface.choice(
-        __("Do you want to automatically update the Java source code?"), [
+        __("Do you want to automatically update the Java source code?"),
+        [
             (True, __("Yes. This is the best choice for most projects.")),
-            (False, __("No. This may require manual updates when Ren'Py or the project configuration changes."))
-            ], config.update_always)
+            (False, __("No. This may require manual updates when Ren'Py or the project configuration changes.")),
+        ],
+        config.update_always,
+    )
 
     config.save(directory)
 

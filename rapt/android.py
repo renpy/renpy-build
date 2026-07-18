@@ -1,7 +1,8 @@
 #!/usr/bin/env python2.7
 
 import sys
-sys.path.insert(0, 'buildlib')
+
+sys.path.insert(0, "buildlib")
 
 import os
 import argparse
@@ -12,6 +13,7 @@ import rapt.install_sdk as install_sdk
 import rapt.configure as configure
 import rapt.build as build
 import rapt.plat as plat
+
 
 def main():
 

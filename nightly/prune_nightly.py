@@ -17,14 +17,13 @@ def main():
     path = Path(args.path)
 
     for dn in path.iterdir():
-
         if not dn.is_dir():
             continue
 
-        m = re.search(r'20(\d{2})-(\d{2})-(\d{2})', dn.name)
+        m = re.search(r"20(\d{2})-(\d{2})-(\d{2})", dn.name)
 
         if not m:
-            m = re.search(r'\d+\.(\d\d)(\d\d)(\d\d)', dn.name)
+            m = re.search(r"\d+\.(\d\d)(\d\d)(\d\d)", dn.name)
 
         if not m:
             continue
@@ -40,6 +39,7 @@ def main():
         print("Removing", dn)
 
         shutil.rmtree(dn)
+
 
 if __name__ == "__main__":
     main()

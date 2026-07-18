@@ -7,8 +7,8 @@ import io
 
 from renpy.pygame.iostream import IOStream
 
-class APK(object):
 
+class APK(object):
     def __init__(self, apk=None, prefix="assets/"):
         """
         Opens an apk file, and lets you read the assets out of it.
@@ -31,22 +31,23 @@ class APK(object):
         self.zf = zipfile.ZipFile(apk, "r")
 
         # A map from unprefixed filename to ZipInfo object.
-        self.info = { }
+        self.info = {}
 
         for i in self.zf.infolist():
             fn = i.filename
             if not fn.startswith(prefix):
                 continue
 
-            fn = fn[len(prefix):]
+            fn = fn[len(prefix) :]
 
             self.info[fn] = i
 
         f = open(self.apk, "rb")
 
-        self.offset = { }
+        self.offset = {}
 
         import time
+
         start = time.time()
 
         for fn, info in self.info.items():
@@ -55,10 +56,11 @@ class APK(object):
             h = struct.unpack(zipfile.structFileHeader, f.read(zipfile.sizeFileHeader))
 
             self.offset[fn] = (
-                info.header_offset +
-                zipfile.sizeFileHeader +
-                h[zipfile._FH_FILENAME_LENGTH] +
-                h[zipfile._FH_EXTRA_FIELD_LENGTH])
+                info.header_offset
+                + zipfile.sizeFileHeader
+                + h[zipfile._FH_FILENAME_LENGTH]
+                + h[zipfile._FH_EXTRA_FIELD_LENGTH]
+            )
 
         f.close()
 

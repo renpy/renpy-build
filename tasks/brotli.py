@@ -3,12 +3,14 @@ from renpybuild.task import task, annotator
 
 version = "1.1.0"
 
+
 @task(platforms="all")
 def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
     c.run("tar xaf {{source}}/brotli-{{version}}.tar.gz")
+
 
 @task(platforms="all")
 def build(c: Context):

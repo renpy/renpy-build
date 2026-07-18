@@ -13,7 +13,7 @@ def unpack(c: Context):
 
 
 @task()
-def build(c: Context) :
+def build(c: Context):
     c.var("version", version)
     c.chdir("libpng-{{version}}")
 

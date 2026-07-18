@@ -9,7 +9,10 @@ def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
-    c.download("https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-{{version}}.tar.gz", "libwebp-{{version}}.tar.gz")
+    c.download(
+        "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-{{version}}.tar.gz",
+        "libwebp-{{version}}.tar.gz",
+    )
     c.run("tar xzf {{ tmp }}/tars/libwebp-{{version}}.tar.gz")
 
 

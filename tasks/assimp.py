@@ -1,8 +1,9 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
+
 @task(kind="host", platforms="all")
-def download(c : Context):
+def download(c: Context):
     c.clean("{{ tmp }}/source/assimp")
     c.chdir("{{ tmp }}/source")
 
@@ -11,8 +12,9 @@ def download(c : Context):
     c.chdir("assimp")
     c.patch("assimp.diff")
 
+
 @task(platforms="all")
-def build(c : Context):
+def build(c: Context):
     c.clean()
 
     c.env("CXXFLAGS", "-Wno-unknown-pragmas {{CXXFLAGS}}")

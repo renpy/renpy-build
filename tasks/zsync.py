@@ -13,6 +13,7 @@ def unpack(c: Context):
 
     c.run("""cp /usr/share/misc/config.sub zsync-{{version}}/autotools""")
 
+
 @task(kind="arch", platforms="linux")
 def build_linux(c: Context):
 

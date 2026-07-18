@@ -3,18 +3,17 @@ from renpybuild.task import task
 
 import os
 
+
 @task(platforms="all", always=True)
 def unpack(c: Context):
 
     with open(c.expand("{{ install }}/env.sh"), "w") as f:
-
         for k, v in sorted(c.environ.items()):
-
-            old_v = os.environ.get(k, '')
+            old_v = os.environ.get(k, "")
 
             if v == old_v:
                 continue
 
-            print(f"export {k}=\"{v}\"", file=f)
+            print(f'export {k}="{v}"', file=f)
 
-        print(f"export PS1=\"(r-b {c.platform}-{c.arch}) $PS1\"", file=f)
+        print(f'export PS1="(r-b {c.platform}-{c.arch}) $PS1"', file=f)

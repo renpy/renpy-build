@@ -13,11 +13,13 @@ def unpack(c: Context):
 
 
 @task(platforms="all")
-def build(c: Context) :
+def build(c: Context):
     c.var("version", version)
     c.chdir("xz-{{version}}")
 
-    c.run("""{{configure}} {{ cross_config }} --enable-static --disable-shared --disable-xz --disable-xzdec --disable-lzmainfo --disable-scripts  --prefix="{{ install }}" """)
+    c.run(
+        """{{configure}} {{ cross_config }} --enable-static --disable-shared --disable-xz --disable-xzdec --disable-lzmainfo --disable-scripts  --prefix="{{ install }}" """
+    )
 
     c.run("""rm -f src/common/common_w32res.rc""")
     c.run("""touch src/common/common_w32res.rc""")
