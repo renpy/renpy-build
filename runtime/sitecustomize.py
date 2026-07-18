@@ -156,7 +156,7 @@ if RENPY_PLATFORM.startswith("android-"):
 # iOS Startup ##################################################################
 
 if RENPY_PLATFORM.startswith("ios-"):
-    import iossupport
+    import iossupport as iossupport
 
 # Web ##########################################################################
 

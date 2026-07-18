@@ -6,7 +6,7 @@ from pathlib import Path
 import renpybuild.task
 from renpybuild.context import Context
 
-import tasks as _
+import tasks as tasks
 
 known_platforms = []
 
