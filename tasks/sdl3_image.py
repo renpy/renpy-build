@@ -1,5 +1,5 @@
 from renpybuild.context import Context
-from renpybuild.task import task, annotator
+from renpybuild.task import task
 
 version = "3.4.0"
 
@@ -49,7 +49,7 @@ def build(c: Context):
 
     try:
         c.run("cmake --build .")
-    except:
+    except Exception:
         c.run("cmake --build . -j 1 -v")
 
     c.run("cmake --install .")

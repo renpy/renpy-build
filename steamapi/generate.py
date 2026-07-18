@@ -1,8 +1,5 @@
 import json
-import pprint
 import re
-import io
-import sys
 import argparse
 
 # The file that the generated code will be written to.
@@ -514,7 +511,7 @@ def main():
     ap.add_argument("output", default="steamapi.py", nargs="?")
     args = ap.parse_args()
 
-    with open(args.api_json, "r") as f:
+    with open(args.api_json) as f:
         api = json.load(f)
 
     global out

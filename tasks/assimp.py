@@ -38,7 +38,7 @@ def build(c: Context):
 
     try:
         c.run("cmake --build .")
-    except:
+    except Exception:
         c.run("cmake --build . -j 1 -v")
 
     c.run("cmake --install .")

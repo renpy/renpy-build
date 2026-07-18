@@ -32,7 +32,7 @@ def build_nightly():
                 stderr=f,
                 cwd=RB_FIX_PATH + "/nightly",
             )
-        except Exception as e:
+        except Exception:
             traceback.print_exc(file=f)
 
     with open("/tmp/nightly-build-master.txt", "w+") as f:
@@ -43,7 +43,7 @@ def build_nightly():
                 stderr=f,
                 cwd=RB_MASTER_PATH + "/nightly",
             )
-        except Exception as e:
+        except Exception:
             traceback.print_exc(file=f)
 
 

@@ -21,7 +21,7 @@ true false null
 """.replace("*", "").split()
 
 
-class Configuration(object):
+class Configuration:
     def __init__(self, directory):
 
         self.package = None
@@ -46,12 +46,12 @@ class Configuration(object):
 
         for fn in ["android.json", ".android.json"]:
             try:
-                with open(os.path.join(directory, fn), "r") as f:
+                with open(os.path.join(directory, fn)) as f:
                     d = json.load(f)
 
                 self.__dict__.update(d)
                 break
-            except:
+            except Exception:
                 pass
 
         if self.orientation == "landscape":
@@ -81,7 +81,7 @@ class Configuration(object):
         Gets the Java Heap Size from gradle.properties
         """
 
-        with open(plat.path("project/gradle.properties"), "r") as heap:
+        with open(plat.path("project/gradle.properties")) as heap:
             for line in heap.readlines():
                 if "org.gradle.jvmargs" in line:
                     heapValue = line

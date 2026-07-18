@@ -30,7 +30,7 @@ def unpack(c: Context):
 
 
 @task(kind="cross", platforms="android", always=True)
-def build(c: Context):
+def build_android(c: Context):
 
     if c.path("{{cross}}/{{ndk_version}}").exists():
         return
@@ -42,7 +42,7 @@ def build(c: Context):
 
 
 @task(kind="cross", platforms="mac")
-def build(c: Context):
+def build_mac(c: Context):
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
 
@@ -51,7 +51,7 @@ def build(c: Context):
 
 
 @task(kind="cross", platforms="ios", archs="armv7s,arm64")
-def build(c: Context):
+def build_ios(c: Context):
 
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")
@@ -72,7 +72,7 @@ def build(c: Context):
 
 
 @task(kind="cross", platforms="ios", archs="sim-arm64,sim-x86_64")
-def build(c: Context):
+def build_ios_sim(c: Context):
 
     c.clean("{{ cross }}")
     c.chdir("{{ cross }}")

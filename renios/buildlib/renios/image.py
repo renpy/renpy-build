@@ -1,6 +1,3 @@
-from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
-
 import os
 import argparse
 import json
@@ -32,7 +29,7 @@ def generate(source, destination, scale):
     src = pygame.image.load(source).convert_alpha()
     sw, sh = src.get_size()
 
-    with open(os.path.join(destination, "Contents.json"), "r") as f:
+    with open(os.path.join(destination, "Contents.json")) as f:
         contents = json.load(f)
 
     for i in contents["images"]:

@@ -50,7 +50,7 @@ def llvm(c, bin="", prefix="", suffix="-22", clang_args="", use_ld=True):
     c.var("llvm_prefix", prefix)
     c.var("llvm_suffix", suffix)
 
-    ld = c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
+    c.expand("{{llvm_bin}}lld{{llvm_suffix}}")
 
     if use_ld:
         clang_args = "-fuse-ld=lld -Wno-unused-command-line-argument " + clang_args

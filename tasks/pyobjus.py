@@ -56,7 +56,7 @@ DEF PYOBJUS_CYTHON_3 = True
     parent_module = "pyobjus"
     parent_module_identifier = "pyobjus"
 
-    with open(c_fn, "r") as f:
+    with open(c_fn) as f:
         ccode = f.read()
 
     ccode = re.sub(r'Py_InitModule4\("([^"]+)"', 'Py_InitModule4("' + parent_module + '.\\1"', ccode)

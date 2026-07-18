@@ -1,69 +1,68 @@
-from renpybuild.context import Context
 # The tasks to run, in order.
 
-from . import cython
+from . import cython as cython
 
-from . import env_sh
+from . import env_sh as env_sh
 
-from . import sysroot
-from . import toolchain
+from . import sysroot as sysroot
+from . import toolchain as toolchain
 
-from . import nasm
+from . import nasm as nasm
 
-from . import zlib
-from . import bzip2
-from . import xz
-from . import brotli
+from . import zlib as zlib
+from . import bzip2 as bzip2
+from . import xz as xz
+from . import brotli as brotli
 
-from . import openssl
-from . import libffi
+from . import openssl as openssl
+from . import libffi as libffi
 
-from . import libpng
-from . import libjpeg_turbo
-from . import libwebp
+from . import libpng as libpng
+from . import libjpeg_turbo as libjpeg_turbo
+from . import libwebp as libwebp
 
-from . import libyuv
-from . import aom
-from . import libavif
+from . import libyuv as libyuv
+from . import aom as aom
+from . import libavif as libavif
 
-from . import ffmpeg
+from . import ffmpeg as ffmpeg
 
-from . import hostpython3
-from . import python3
+from . import hostpython3 as hostpython3
+from . import python3 as python3
 
-from . import emscripten_pyx
+from . import emscripten_pyx as emscripten_pyx
 
-from . import live2d
+from . import live2d as live2d
 
-from . import rapt
-from . import pyjnius
-from . import pyobjus
-from . import iossupport
+from . import rapt as rapt
+from . import pyjnius as pyjnius
+from . import pyobjus as pyobjus
+from . import iossupport as iossupport
 
-from . import metalangle
+from . import metalangle as metalangle
 
-from . import sdl3
-from . import sdl3_image
+from . import sdl3 as sdl3
+from . import sdl3_image as sdl3_image
 
 
-from . import assimp
+from . import assimp as assimp
 
-from . import fribidi
-from . import freetype
-from . import harfbuzz
-from . import freetypehb
+from . import fribidi as fribidi
+from . import freetype as freetype
+from . import harfbuzz as harfbuzz
+from . import freetypehb as freetypehb
 
-from . import zsync
-from . import angle
+from . import zsync as zsync
+from . import angle as angle
 
-from . import steam
+from . import steam as steam
 
-from . import librenpy
-from . import pythonlib
-from . import renpython
+from . import librenpy as librenpy
+from . import pythonlib as pythonlib
+from . import renpython as renpython
 
-from . import renpysh
-from . import renios
+from . import renpysh as renpysh
+from . import renios as renios
 
-from . import nvdrs
-from . import sevenzip
+from . import nvdrs as nvdrs
+from . import sevenzip as sevenzip

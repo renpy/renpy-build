@@ -13,4 +13,4 @@ def get_path(name, scheme=None, vars=None, expand=None):
     if name in ["platstdlib", "platlib", "scripts"]:
         return PLATLIB
 
-    raise ValueError("Ren'Py does not understand what to do with %r." % name)
+    raise ValueError(f"Ren'Py does not understand what to do with {name!r}.")

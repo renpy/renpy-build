@@ -111,7 +111,7 @@ class LineList:
         This does not match the word if it's preceded by -> or .
         """
 
-        self.lines = [re.sub(r"(?<!\.)(?<!->)\b{}\b".format(old), new, i) for i in self.lines]
+        self.lines = [re.sub(rf"(?<!\.)(?<!->)\b{old}\b", new, i) for i in self.lines]
 
     def insert_at_start(self, text):
         """
@@ -527,7 +527,7 @@ def main():
     macros.write_text(mt)
 
     # Adjust ceval.c.
-    with open(args.ceval, "r") as f:
+    with open(args.ceval) as f:
         lines = [i.rstrip() for i in f.readlines()]
 
     opfuncs = opcode_funcs(ceval)

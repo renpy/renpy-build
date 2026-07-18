@@ -14,6 +14,6 @@ def check(c: Context):
 
     try:
         c.run("""cython test.pyx""")
-    except:
-        print("", file=sys.stderr)
+    except Exception:
+        print(file=sys.stderr)
         raise SystemExit("Cython could not be run.")

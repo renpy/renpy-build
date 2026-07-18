@@ -1,7 +1,5 @@
 from renpybuild.context import Context
 from renpybuild.task import task
-import os
-import time
 
 
 @task(kind="arch", always=True)

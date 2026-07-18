@@ -212,7 +212,7 @@ class Context:
 
         template = jinja2.Template(s)
 
-        variables = dict()
+        variables = {}
         variables.update(self.environ)
         variables.update(self.variables)
         variables.update({"c": self})
@@ -345,7 +345,7 @@ class Context:
         with open(fpath, "rb") as f:
             patch = f.read()
 
-        subprocess.run(["patch", "-p%d" % p], input=patch, cwd=self.cwd, check=True)
+        subprocess.run(["patch", f"-p{p}"], input=patch, cwd=self.cwd, check=True)
 
     def patchdir(self, dn: str):
         """

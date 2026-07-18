@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 
-import traceback
 import os
-import zipfile
-import tarfile
 import shutil
 import subprocess
-import stat
 
 from . import plat
 from .properties import set_property, get_property, local_properties, bundle_properties
@@ -73,7 +69,7 @@ def backup_keys(source):
 
         shutil.copy(source, keyfile)
 
-    except:
+    except Exception:
         pass
 
 

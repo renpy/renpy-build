@@ -3,7 +3,6 @@
 import datetime
 import os.path
 import argparse
-import re
 import json
 from collections import namedtuple, defaultdict
 from jinja2 import Environment, FileSystemLoader, select_autoescape

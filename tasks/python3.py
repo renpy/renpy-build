@@ -261,7 +261,7 @@ def pip(c: Context):
     hash_path = c.path("{{ build }}/uv.lock.hash")
 
     if hash_path.exists():
-        with open(hash_path, "r") as f:
+        with open(hash_path) as f:
             if f.read().strip() == lock_hash:
                 return
 

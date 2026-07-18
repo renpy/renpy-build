@@ -1,38 +1,23 @@
-#!/usr/bin/env python
-
-from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
-
-import sys
-
-import re
-import tarfile
-import os
-import shutil
-import time
-import gzip
-import subprocess
-import hashlib
 import collections
+import gzip
+import hashlib
+import os
+import re
+import shutil
+import subprocess
+import tarfile
+import time
 
-from . import plat
-from . import iconmaker
-from .properties import set_property, local_properties, bundle_properties
-from .keys import update_project_keys, get_local_key_properties
+import jinja2
 
-import rapt.plat as plat
-import rapt.iconmaker as iconmaker
-import rapt.install_sdk as install_sdk
+from . import configure, iconmaker, install_sdk, plat
+from .keys import get_local_key_properties, update_project_keys
+from .properties import bundle_properties, local_properties, set_property
 
 __ = plat.__
 
-sys.path.append(os.path.join(plat.RAPT_PATH, "buildlib", "jinja2.egg"))
 
-import jinja2
-import rapt.configure as configure
-
-
-class PatternList(object):
+class PatternList:
     """
     Used to load in the blocklist and keeplist patterns.
     """
@@ -60,8 +45,7 @@ class PatternList(object):
         return False
 
     def load(self, fn):
-
-        with open(fn, "r") as f:
+        with open(fn) as f:
             for l in f:
                 l = l.strip()
                 if not l:
@@ -163,7 +147,6 @@ def make_tar(iface, fn, source_dirs):
     added = set()
 
     def add(fn, relfn):
-
         adds = []
 
         while relfn:
@@ -181,7 +164,7 @@ def make_tar(iface, fn, source_dirs):
     for sd in source_dirs:
         sd = os.path.abspath(sd)
 
-        for dir, dirs, files in os.walk(sd):  # @ReservedAssignment
+        for dir, dirs, files in os.walk(sd):
             for _fn in dirs:
                 fn = os.path.join(dir, _fn)
                 relfn = os.path.relpath(fn, sd)
@@ -200,12 +183,10 @@ def make_tar(iface, fn, source_dirs):
 
 
 def make_tree(src, dest):
-
     src = plat.path(src)
     dest = plat.path(dest)
 
     def ignore(dir, files):
-
         rv = []
 
         for basename in files:
@@ -255,7 +236,6 @@ MAX_SIZE = 1000000000
 
 
 def make_bundle_tree(src):
-
     src = plat.path(src)
     sizes = collections.defaultdict(int)
 
@@ -274,7 +254,7 @@ def make_bundle_tree(src):
 
         try:
             os.makedirs(i, 0o777)
-        except:
+        except Exception:
             pass
 
         with open(os.path.join(i, "00_pack.txt"), "w") as f:
@@ -306,7 +286,7 @@ def make_bundle_tree(src):
 
             try:
                 os.makedirs(newdir, 0o777)
-            except:
+            except Exception:
                 pass
 
             plat.rename(old, new)
@@ -334,7 +314,7 @@ def edit_file(fn, pattern, line):
 
     lines = []
 
-    with open(fn, "r") as f:
+    with open(fn) as f:
         for l in f:
             if re.match(pattern, l):
                 l = line + "\n"
@@ -381,11 +361,7 @@ def eliminate_pycache(directory):
     renaming them to remove the cache tag.
     """
 
-    if PY2:
-        return
-
     import pathlib
-    import sys
 
     paths = list(pathlib.Path(directory).glob("**/__pycache__/*.pyc"))
 
@@ -474,7 +450,7 @@ def copy_project(update_always=False):
         fn = plat.path(fn)
 
         if os.path.exists(fn):
-            return open(fn, "r").read().strip()
+            return open(fn).read().strip()
         else:
             return None
 
@@ -739,7 +715,7 @@ def build(
 
             sfn = os.path.join(i, j)
 
-            dfn = "bin/{}-{}-{}-{}".format(config.package, config.version, config.numeric_version, j[4:])
+            dfn = f"bin/{config.package}-{config.version}-{config.numeric_version}-{j[4:]}"
 
             dfn = plat.path(dfn)
 
@@ -796,7 +772,7 @@ def build(
                     "-W",
                     "-a",
                     "android.intent.action.MAIN",
-                    "{}/org.renpy.android.{}".format(config.package, launch_activity),
+                    f"{config.package}/org.renpy.android.{launch_activity}",
                 ],
                 cancel=True,
             )
@@ -836,5 +812,5 @@ def distclean(interface):
 
     try:
         rmdir("Sdk")
-    except:
+    except Exception:
         rm("Sdk")
