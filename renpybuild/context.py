@@ -212,7 +212,7 @@ class Context:
 
         template = jinja2.Template(s)
 
-        variables = dict()
+        variables = {}
         variables.update(self.environ)
         variables.update(self.variables)
         variables.update({"c": self})

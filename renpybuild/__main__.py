@@ -43,8 +43,8 @@ Platform("web", "wasm")
 
 def build(args):
 
-    platforms = set(i.strip() for i in args.platforms.split(",") if i)
-    archs = set(i.strip() for i in args.archs.split(",") if i)
+    platforms = {i.strip() for i in args.platforms.split(",") if i}
+    archs = {i.strip() for i in args.archs.split(",") if i}
 
     # Check that the platforms, archs are known.
 

@@ -126,26 +126,26 @@ def create_project(interface, dest, name=None, version="1.0"):
 
     os.rename(pbxproj + ".new", pbxproj)
 
-    plist = dict(
-        CFBundleDevelopmentRegion="en",
-        CFBundleDisplayName="$(PRODUCT_NAME)",
-        CFBundleExecutable="$(EXECUTABLE_NAME)",
-        CFBundleIdentifier="$(PRODUCT_BUNDLE_IDENTIFIER)",
-        CFBundleInfoDictionaryVersion="6.0",
-        CFBundleName="$(PRODUCT_NAME)",
-        CFBundlePackageType="APPL",
-        CFBundleShortVersionString=version,
-        CFBundleSignature="????",
-        CFBundleVersion="1",
-        UILaunchStoryboardName="Launch Screen",
-        LSRequiresIPhoneOS=True,
-        UIRequiresFullScreen=True,
-        UIStatusBarHidden=True,
-        UISupportedInterfaceOrientations=[
+    plist = {
+        "CFBundleDevelopmentRegion": "en",
+        "CFBundleDisplayName": "$(PRODUCT_NAME)",
+        "CFBundleExecutable": "$(EXECUTABLE_NAME)",
+        "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
+        "CFBundleInfoDictionaryVersion": "6.0",
+        "CFBundleName": "$(PRODUCT_NAME)",
+        "CFBundlePackageType": "APPL",
+        "CFBundleShortVersionString": version,
+        "CFBundleSignature": "????",
+        "CFBundleVersion": "1",
+        "UILaunchStoryboardName": "Launch Screen",
+        "LSRequiresIPhoneOS": True,
+        "UIRequiresFullScreen": True,
+        "UIStatusBarHidden": True,
+        "UISupportedInterfaceOrientations": [
             "UIInterfaceOrientationLandscapeRight",
             "UIInterfaceOrientationLandscapeLeft",
         ],
-    )
+    }
 
     plist_fn = os.path.join(dest, "Info.plist")
 
