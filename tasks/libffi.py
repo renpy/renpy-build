@@ -8,7 +8,7 @@ version = "3.4.8"
 def download(c: Context):
     c.var("version", version)
 
-    url = f"https://github.com/libffi/libffi/releases/download/v{ version }/libffi-{ version }.tar.gz"
+    url = f"https://github.com/libffi/libffi/releases/download/v{version}/libffi-{version}.tar.gz"
     dest = c.expand("libffi-{{version}}.tar.gz")
 
     c.download(url, dest)
@@ -27,6 +27,8 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("libffi-{{version}}")
 
-    c.run("""{{configure}} {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """)
+    c.run(
+        """{{configure}} {{ ffi_cross_config }} --disable-shared --enable-portable-binary --prefix="{{ install }}" """
+    )
     c.run("""{{ make }}""")
     c.run("""make install """)

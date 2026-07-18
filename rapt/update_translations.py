@@ -21,7 +21,6 @@ init python hide:
         dn = os.path.join(base, "buildlib", "rapt")
 
         for fn in sorted(os.listdir(dn)):
-
             fn = os.path.join(dn, fn)
 
             if not fn.endswith(".py"):
@@ -35,5 +34,4 @@ init python hide:
 
 
 if __name__ == "__main__":
-
     main()

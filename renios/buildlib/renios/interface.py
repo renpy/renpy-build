@@ -7,8 +7,8 @@ import time
 import subprocess
 import urllib
 
-class Interface(object):
 
+class Interface(object):
     def write(self, s, style=""):
         """
         Writes out s, in the given style and color.
@@ -73,7 +73,6 @@ class Interface(object):
         self.write(prompt)
 
         while True:
-
             if default is True:
                 prompt = "yes/no [yes]> "
             elif default is False:
@@ -104,12 +103,12 @@ class Interface(object):
         self.info("Opening {} in a web browser.".format(url))
 
         webbrowser.open_new(url)
-        time.sleep(.5)
+        time.sleep(0.5)
 
         if not self.yesno(prompt):
             self.fail("You must accept the terms and conditions to proceed.")
 
-    def input(self, prompt, empty=None): # @ReservedAssignment
+    def input(self, prompt, empty=None):  # @ReservedAssignment
         """
         Prompts the user for input. The input is expected to be a string, which
         is stripped of leading and trailing whitespace. If `empty` is true,
@@ -120,7 +119,6 @@ class Interface(object):
         self.write(prompt)
 
         while True:
-
             if empty:
                 prompt = "[{}]> ".format(empty)
             else:
@@ -156,7 +154,6 @@ class Interface(object):
         self.write(prompt)
 
         for i, (value, label) in enumerate(choices):
-
             i += 1
 
             if value == default:

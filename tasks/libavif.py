@@ -1,6 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
+
 @task(kind="host", platforms="all")
 def download(c: Context):
     c.clean("{{ tmp }}/source/libavif")
@@ -9,10 +10,13 @@ def download(c: Context):
     c.clone("https://github.com/AOMediaCodec/libavif", "--branch v1.4.2")
     c.chdir("{{ tmp }}/source/libavif")
     c.run("sed -i 's/if(BUILD_SHARED_LIBS OR VCPKG_TARGET_TRIPLET)/if(1)/' CMakeLists.txt")
-    c.run("sed -i 's/if(APPLE)/if(APPLE AND CMAKE_HOST_SYSTEM_NAME STREQUAL \"Darwin\")/' cmake/Modules/merge_static_libs.cmake")
+    c.run(
+        "sed -i 's/if(APPLE)/if(APPLE AND CMAKE_HOST_SYSTEM_NAME STREQUAL \"Darwin\")/' cmake/Modules/merge_static_libs.cmake"
+    )
+
 
 @task(platforms="all")
-def build(c : Context):
+def build(c: Context):
     c.clean()
 
     c.run("""

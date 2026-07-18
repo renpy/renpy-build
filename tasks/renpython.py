@@ -3,6 +3,7 @@ from renpybuild.task import task
 import os
 import time
 
+
 @task(kind="arch", always=True)
 def clean(c: Context):
     c.clean()
@@ -279,7 +280,6 @@ def link_mac(c: Context):
     c.run("""install python {{ install }}/mac/python""")
     c.run("""install python {{ install }}/mac/pythonw""")
     c.run("""install renpy {{ install }}/mac/renpy""")
-
 
 
 @task(kind="platform", platforms="mac", always=True)

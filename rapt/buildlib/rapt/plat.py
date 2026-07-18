@@ -104,6 +104,7 @@ def path(path, relative=False):
 
     return path
 
+
 jdk_requirement = 21
 sdk_version = "11076708_latest"
 

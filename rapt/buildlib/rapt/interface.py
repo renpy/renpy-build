@@ -9,8 +9,8 @@ import urllib
 
 from . import plat
 
-class Interface(object):
 
+class Interface(object):
     def write(self, s, style=""):
         """
         Writes out s, in the given style and color.
@@ -75,7 +75,6 @@ class Interface(object):
         self.write(prompt)
 
         while True:
-
             if default is True:
                 prompt = "yes/no [yes]> "
             elif default is False:
@@ -106,12 +105,12 @@ class Interface(object):
         self.info("Opening {} in a web browser.".format(url))
 
         webbrowser.open_new(url)
-        time.sleep(.5)
+        time.sleep(0.5)
 
         if not self.yesno(prompt):
             self.fail("You must accept the terms and conditions to proceed.")
 
-    def input(self, prompt, empty=None): # @ReservedAssignment
+    def input(self, prompt, empty=None):  # @ReservedAssignment
         """
         Prompts the user for input. The input is expected to be a string, which
         is stripped of leading and trailing whitespace. If `empty` is true,
@@ -122,7 +121,6 @@ class Interface(object):
         self.write(prompt)
 
         while True:
-
             if empty:
                 prompt = "[{}]> ".format(empty)
             else:
@@ -158,7 +156,6 @@ class Interface(object):
         self.write(prompt)
 
         for i, (value, label) in enumerate(choices):
-
             i += 1
 
             if value == default:
@@ -226,8 +223,8 @@ class Interface(object):
 
             try:
                 while p.poll() is None:
-                    time.sleep(.2)
-                    p.stdin.write(b'y\n')
+                    time.sleep(0.2)
+                    p.stdin.write(b"y\n")
                     p.stdin.flush()
             except:
                 pass
@@ -243,8 +240,9 @@ class Interface(object):
         """
 
         import requests
+
         resp = requests.get(url)
-        with open(dest, 'wb') as f:
+        with open(dest, "wb") as f:
             f.write(resp.content)
 
     def background(self, f):

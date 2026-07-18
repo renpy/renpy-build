@@ -3,6 +3,7 @@ from renpybuild.task import task
 
 version = "3.12.8"
 
+
 @task(kind="host", platforms="all")
 def unpack_hostpython(c: Context):
     c.clean()

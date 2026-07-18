@@ -48,7 +48,7 @@ def check_sdk(c: Context, name, paths):
         obj = None
 
         for l in p.stdout.decode("utf-8").split("\n"):
-            if re.match(r'.*\.a\(.*\)', l):
+            if re.match(r".*\.a\(.*\)", l):
                 if obj is not None and not ("asm" in obj):
                     raise Exception(f"{obj} does not have a minos defined, in {fn}")
 
@@ -57,11 +57,12 @@ def check_sdk(c: Context, name, paths):
             if "minos" in l:
                 obj = None
 
+
 def lipo(c: Context, namefilter):
 
     paths = [
         c.path("{{ tmp }}/install.ios-arm64/lib"),
-        ]
+    ]
 
     c.run("install -d {{ renios }}/prototype/prebuilt/release")
 
@@ -79,7 +80,8 @@ def lipo(c: Context, namefilter):
         print("(Release) Lipo and strip:", i)
 
         c.var("i", i)
-        c.run("""
+        c.run(
+            """
         {{ lipo }}
         -create
         -segalign arm64 8
@@ -87,7 +89,9 @@ def lipo(c: Context, namefilter):
         {{ p }}/{{ i }}
 {% endfor %}
         -output {{ renios }}/prototype/prebuilt/release/{{ i }}
-        """, paths=paths)
+        """,
+            paths=paths,
+        )
 
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/release/{{ i }}"), 0o755)
 
@@ -96,7 +100,7 @@ def lipo(c: Context, namefilter):
     paths = [
         c.path("{{ tmp }}/install.ios-sim-x86_64/lib"),
         c.path("{{ tmp }}/install.ios-sim-arm64/lib"),
-        ]
+    ]
 
     c.run("install -d {{ renios }}/prototype/prebuilt/debug")
 
@@ -114,7 +118,8 @@ def lipo(c: Context, namefilter):
         print("(Debug) Lipo and strip:", i)
 
         c.var("i", i)
-        c.run("""
+        c.run(
+            """
         {{ lipo }}
         -create
         -segalign arm64 8
@@ -123,7 +128,9 @@ def lipo(c: Context, namefilter):
         {{ p }}/{{ i }}
 {% endfor %}
         -output {{ renios }}/prototype/prebuilt/debug/{{ i }}
-        """, paths=paths)
+        """,
+            paths=paths,
+        )
 
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
 
@@ -140,9 +147,10 @@ def lipo_all(c: Context):
 
     lipo(c, namefilter)
 
+
 @task(kind="platform", platforms="ios", always=True)
 def lipo_renpy(c: Context):
-    lipo(c, lambda n : "librenpy" in n)
+    lipo(c, lambda n: "librenpy" in n)
 
 
 @task(kind="platform", platforms="ios", always=True)

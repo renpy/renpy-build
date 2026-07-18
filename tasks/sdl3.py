@@ -8,16 +8,16 @@ version = "3.4.8"
 def download(c: Context):
     c.var("version", version)
 
-    url = f"https://github.com/libsdl-org/SDL/releases/download/release-{ version }/SDL3-{ version }.tar.gz"
+    url = f"https://github.com/libsdl-org/SDL/releases/download/release-{version}/SDL3-{version}.tar.gz"
     dest = c.expand("SDL3-{{version}}.tar.gz")
 
     c.download(url, dest)
+
 
 @task(kind="host", platforms="all")
 def unpack(c: Context):
 
     if not c.args.sdl:
-
         c.clean()
 
         c.var("version", version)
@@ -54,9 +54,10 @@ def build(c: Context):
     c.run("cmake --install .")
 
 
-
 @task(kind="arch", platforms="android", archs="x86_64", always=True)
 def rapt(c: Context):
     c.var("version", version)
     c.chdir("{{ tmp }}/source/SDL3-{{version}}")
-    c.copytree("android-project/app/src/main/java/org/libsdl", "{{ rapt }}/prototype/renpyandroid/src/main/java/org/libsdl")
+    c.copytree(
+        "android-project/app/src/main/java/org/libsdl", "{{ rapt }}/prototype/renpyandroid/src/main/java/org/libsdl"
+    )

@@ -37,6 +37,7 @@ def default_keystore_path(base):
 
     return os.path.join(base, "android.keystore")
 
+
 def bundle_keystore_path(base):
     """
     Returns the bundle keystore path for the given project.
@@ -44,23 +45,25 @@ def bundle_keystore_path(base):
 
     return os.path.join(base, "bundle.keystore")
 
+
 def get_dname(interface):
     global dname
 
     if dname is None:
-        dname = "CN=" + interface.input(__("Please enter your name or the name of your organization."), "A Ren'Py Creator")
+        dname = "CN=" + interface.input(
+            __("Please enter your name or the name of your organization."), "A Ren'Py Creator"
+        )
 
 
 def backup_keys(source):
 
     try:
-
         import __main__
         import time
         import renpy
         import shutil
 
-        backups = __main__.path_to_saves(renpy.config.gamedir, "backups") # type: ignore
+        backups = __main__.path_to_saves(renpy.config.gamedir, "backups")  # type: ignore
 
         keys = os.path.join(backups, "keys")
         keyfile = os.path.join(keys, os.path.basename(source) + "-" + str(int(time.time())))
@@ -79,7 +82,6 @@ def generate_android_keys(interface, base):
     Generates the android.keystore file, if it doesn't exist.
     """
 
-
     keystore = default_keystore_path(base)
     old_keystore = plat.path("android.keystore").replace("\\", "/")
 
@@ -93,11 +95,36 @@ def generate_android_keys(interface, base):
 
     get_dname(interface)
 
-    if not interface.yesno(__("I will create the key in the android.keystore file.\n\nYou need to back this file up. If you lose it, you will not be able to upgrade your application.\n\nYou also need to keep the key safe. If evil people get this file, they could make fake versions of your application, and potentially steal your users' data.\n\nWill you make a backup of android.keystore, and keep it in a safe place?") +
-                           __("\n\nSaying 'No' will prevent key creation.")):
+    if not interface.yesno(
+        __(
+            "I will create the key in the android.keystore file.\n\nYou need to back this file up. If you lose it, you will not be able to upgrade your application.\n\nYou also need to keep the key safe. If evil people get this file, they could make fake versions of your application, and potentially steal your users' data.\n\nWill you make a backup of android.keystore, and keep it in a safe place?"
+        )
+        + __("\n\nSaying 'No' will prevent key creation.")
+    ):
         return
 
-    if not run(interface, plat.keytool, "-genkey", "-keystore", keystore, "-alias", "android", "-keyalg", "RSA", "-keysize", "2048", "-keypass", "android", "-storepass", "android", "-dname", dname, "-validity", "20000", use_path=True):
+    if not run(
+        interface,
+        plat.keytool,
+        "-genkey",
+        "-keystore",
+        keystore,
+        "-alias",
+        "android",
+        "-keyalg",
+        "RSA",
+        "-keysize",
+        "2048",
+        "-keypass",
+        "android",
+        "-storepass",
+        "android",
+        "-dname",
+        dname,
+        "-validity",
+        "20000",
+        use_path=True,
+    ):
         interface.fail(__("Could not create android.keystore. Is keytool in your path?"))
 
     interface.success(__("I've finished creating android.keystore. Please back it up, and keep it in a safe place."))
@@ -111,7 +138,6 @@ def generate_bundle_keys(interface, base):
     """
     Generates the bundle.keystore file, if it doesn't exist.
     """
-
 
     keystore = bundle_keystore_path(base)
     old_keystore = plat.path("bundle.keystore").replace("\\", "/")
@@ -158,6 +184,7 @@ def generate_keys(interface, base):
 
     # Create the project directory.
     import rapt.build
+
     rapt.build.copy_project(False)
 
     generated = False
@@ -169,7 +196,12 @@ def generate_keys(interface, base):
         generated = True
 
     if generated:
-        interface.open_directory(base, __("I've opened the directory containing android.keystore and bundle.keystore. Please back them up, and keep them in a safe place."))
+        interface.open_directory(
+            base,
+            __(
+                "I've opened the directory containing android.keystore and bundle.keystore. Please back them up, and keep them in a safe place."
+            ),
+        )
 
 
 def update_project_keys(base):
@@ -203,8 +235,12 @@ def update_project_keys(base):
 
 def get_local_key_properties():
     return [
-        "--ks", get_property(local_properties, "key.store"),
-        "--ks-pass", "pass:" + get_property(local_properties, "key.store.password"),
-        "--ks-key-alias", get_property(local_properties, "key.alias"),
-        "--key-pass", "pass:" + get_property(local_properties, "key.alias.password"),
+        "--ks",
+        get_property(local_properties, "key.store"),
+        "--ks-pass",
+        "pass:" + get_property(local_properties, "key.store.password"),
+        "--ks-key-alias",
+        get_property(local_properties, "key.alias"),
+        "--key-pass",
+        "pass:" + get_property(local_properties, "key.alias.password"),
     ]

@@ -7,7 +7,6 @@ def clean(c: Context):
     c.clean()
 
 
-
 @task(kind="host", always=True)
 def gen_static3(c: Context):
 
@@ -26,8 +25,8 @@ def build(c: Context):
 
     gen = "gen3-static/"
 
-    modules = [ ]
-    sources = [ ]
+    modules = []
+    sources = []
 
     def read_setup(dn, suffix=""):
 
@@ -48,7 +47,7 @@ def build(c: Context):
                         i = i.replace("gen/", gen)
                     sources.append(dn / i)
 
-    read_setup(c.renpy / "src" )
+    read_setup(c.renpy / "src")
     read_setup(c.root / "extensions")
 
     if c.platform == "android":
@@ -65,12 +64,10 @@ def build(c: Context):
 
     read_setup(c.path("{{ source }}/brotli"))
 
-    objects = [ ]
+    objects = []
 
     with c.run_group() as g:
-
         for source in sources:
-
             name, _, ext = str(source.name).rpartition(".")
 
             object = name + ".o"

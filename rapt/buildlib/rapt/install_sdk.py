@@ -49,10 +49,20 @@ def check_java(interface):
     interface.info(__("I'm compiling a short test program, to see if you have a working JDK on your system."))
 
     if not run_slow(interface, plat.javac, plat.path("buildlib/CheckJDK.java"), use_path=True):
-        interface.fail(__("I was unable to use javac to compile a test file. If you haven't installed the Java Development Kit yet, please download it from:\n\n{a=https://adoptium.net}https://adoptium.net/{/a}\n\nThe JDK is different from the JRE, so it's possible you have Java without having the JDK. Please install JDK [JDK_REQUIREMENT], and add it to your PATH.\n\nWithout a working JDK, I can't continue."))
+        interface.fail(
+            __(
+                "I was unable to use javac to compile a test file. If you haven't installed the Java Development Kit yet, please download it from:\n\n{a=https://adoptium.net}https://adoptium.net/{/a}\n\nThe JDK is different from the JRE, so it's possible you have Java without having the JDK. Please install JDK [JDK_REQUIREMENT], and add it to your PATH.\n\nWithout a working JDK, I can't continue."
+            )
+        )
 
-    if not run_slow(interface, plat.java, "-classpath", plat.path("buildlib"), "CheckJDK", str(plat.jdk_requirement), use_path=True):
-        interface.fail(__("The version of Java on your computer does not appear to be JDK [JDK_REQUIREMENT], which is required to build Android apps. If you need to install a newer JDK, you can download it from:\n\n{a=https://adoptium.net/}https://adoptium.net/{/a}, and add it to your PATH.\n\nYou can also set the JAVA_HOME environment variable to use a different version of Java."))
+    if not run_slow(
+        interface, plat.java, "-classpath", plat.path("buildlib"), "CheckJDK", str(plat.jdk_requirement), use_path=True
+    ):
+        interface.fail(
+            __(
+                "The version of Java on your computer does not appear to be JDK [JDK_REQUIREMENT], which is required to build Android apps. If you need to install a newer JDK, you can download it from:\n\n{a=https://adoptium.net/}https://adoptium.net/{/a}, and add it to your PATH.\n\nYou can also set the JAVA_HOME environment variable to use a different version of Java."
+            )
+        )
 
     interface.success(__("The JDK is present and working. Good!"))
 
@@ -72,14 +82,14 @@ class _FixedZipFile(zipfile.ZipFile):
 
         # build the destination pathname, replacing
         # forward slashes to platform specific separators.
-        arcname = member.filename.replace('/', os.path.sep)
+        arcname = member.filename.replace("/", os.path.sep)
 
         if os.path.altsep:
             arcname = arcname.replace(os.path.altsep, os.path.sep)
         # interpret absolute pathname as relative, remove drive letter or
         # UNC path, redundant separators, "." and ".." components.
         arcname = os.path.splitdrive(arcname)[1]
-        invalid_path_parts = ('', os.path.curdir, os.path.pardir)
+        invalid_path_parts = ("", os.path.curdir, os.path.pardir)
         arcname = os.path.sep.join(x for x in arcname.split(os.path.sep) if x not in invalid_path_parts)
 
         targetpath = os.path.join(targetpath, arcname)
@@ -98,14 +108,12 @@ class _FixedZipFile(zipfile.ZipFile):
         attr = member.external_attr >> 16
 
         if stat.S_ISLNK(attr):
-
             with self.open(member, pwd=pwd) as source:
                 linkto = source.read()
 
             os.symlink(linkto, targetpath)
 
         else:
-
             with self.open(member, pwd=pwd) as source, open(targetpath, "wb") as target:
                 shutil.copyfileobj(source, target)
 
@@ -114,6 +122,7 @@ class _FixedZipFile(zipfile.ZipFile):
 
         return targetpath
 
+
 def unpack_sdk(interface):
 
     if os.path.exists(plat.sdkmanager):
@@ -121,7 +130,9 @@ def unpack_sdk(interface):
         return
 
     if "RAPT_NO_TERMS" not in os.environ:
-        interface.terms("https://developer.android.com/studio/terms", __("Do you accept the Android SDK Terms and Conditions?"))
+        interface.terms(
+            "https://developer.android.com/studio/terms", __("Do you accept the Android SDK Terms and Conditions?")
+        )
 
     if plat.windows:
         archive = "commandlinetools-win-{}.zip".format(plat.sdk_version)
@@ -143,7 +154,6 @@ def unpack_sdk(interface):
     old_cwd = os.getcwd()
     os.chdir(plat.path("."))
 
-
     zip = _FixedZipFile(archive)
     zip.extractall("Sdk")
     zip.close()
@@ -160,19 +170,18 @@ def unpack_sdk(interface):
 
 def get_packages(interface):
 
-    packages = [ ]
+    packages = []
 
     wanted_packages = [
         ("platform-tools", "platform-tools"),
         ("platforms;android-36", "platforms/android-36"),
-        ]
+    ]
 
     for i, j in wanted_packages:
         if not os.path.exists(os.path.join(plat.sdk, j)):
             packages.append(i)
 
     if packages:
-
         interface.info(__("I'm about to download and install the required Android packages. This might take a while."))
 
         if not run_slow(interface, plat.sdkmanager, "--update", yes=True):
@@ -187,12 +196,11 @@ def get_packages(interface):
     interface.success(__("I've finished installing the required Android packages."))
 
 
-
-
 def install_sdk(interface):
 
     # Create the project directory.
     import rapt.build
+
     rapt.build.copy_project(False)
 
     check_java(interface)

@@ -1,5 +1,5 @@
 from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode # *
+from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
 
 import xcodeprojer
 import shutil
@@ -10,6 +10,7 @@ import sys
 
 RENIOS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 def replace_name(o, template, replacement, path=()):
     if isinstance(o, dict):
         for k in list(o.keys()):
@@ -18,8 +19,7 @@ def replace_name(o, template, replacement, path=()):
         return o
 
     elif isinstance(o, list):
-
-        new_o = [ ]
+        new_o = []
 
         for i, v in enumerate(o):
             new_o.append(replace_name(v, template, replacement, path + (i,)))
@@ -72,10 +72,14 @@ def create_project(interface, dest, name=None, version="1.0"):
     if version is None:
         return
 
-    shortname = re.sub(r'[^-_A-Za-z0-9]', '', name) or "project"
+    shortname = re.sub(r"[^-_A-Za-z0-9]", "", name) or "project"
 
     if os.path.exists(dest):
-        interface.fail("{} already exists. If you would like to create an new project, please move the existing project out of the way.".format(dest))
+        interface.fail(
+            "{} already exists. If you would like to create an new project, please move the existing project out of the way.".format(
+                dest
+            )
+        )
 
     prototype = os.path.join(RENIOS, "prototype")
 
@@ -146,8 +150,8 @@ def create_project(interface, dest, name=None, version="1.0"):
         UISupportedInterfaceOrientations=[
             "UIInterfaceOrientationLandscapeRight",
             "UIInterfaceOrientationLandscapeLeft",
-            ]
-        )
+        ],
+    )
 
     plist_fn = os.path.join(dest, "Info.plist")
 

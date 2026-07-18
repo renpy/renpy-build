@@ -23,7 +23,7 @@ def set_property(properties, key, value, replace=False):
     replaces the value.
     """
 
-    lines = [ ]
+    lines = []
 
     try:
         with open(properties, "r") as f:
@@ -48,7 +48,7 @@ def set_property(properties, key, value, replace=False):
         f.write("{}={}\n".format(key, value))
 
 
-def get_property(properties, key, default=''): # type: (str, str, str) -> str
+def get_property(properties, key, default=""):  # type: (str, str, str) -> str
 
     with open(properties, "r") as f:
         for l in f:

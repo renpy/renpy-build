@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode # *
+from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
 
 import sys
 
@@ -38,7 +38,7 @@ class PatternList(object):
     """
 
     def __init__(self, *args):
-        self.patterns = [ ]
+        self.patterns = []
 
         for i in args:
             self.load(plat.path(i))
@@ -81,21 +81,21 @@ class PatternList(object):
 
         while pattern:
             if pattern.startswith("**"):
-                regexp += r'.*'
+                regexp += r".*"
                 pattern = pattern[2:]
             elif pattern[0] == "*":
-                regexp += r'[^/]*'
+                regexp += r"[^/]*"
                 pattern = pattern[1:]
-            elif pattern[0] == '[':
-                regexp += r'['
+            elif pattern[0] == "[":
+                regexp += r"["
                 pattern = pattern[1:]
 
-                while pattern and pattern[0] != ']':
+                while pattern and pattern[0] != "]":
                     regexp += pattern[0]
                     pattern = pattern[1:]
 
                 pattern = pattern[1:]
-                regexp += ']'
+                regexp += "]"
 
             else:
                 regexp += re.escape(pattern[0])
@@ -113,8 +113,9 @@ def should_autoescape(fn):
 
     return fn.endswith(".xml")
 
+
 # Used by render.
-environment = jinja2.Environment(loader=jinja2.FileSystemLoader(plat.path('')), autoescape=should_autoescape)
+environment = jinja2.Environment(loader=jinja2.FileSystemLoader(plat.path("")), autoescape=should_autoescape)
 
 
 def render(always, template, dest, **kwargs):
@@ -144,7 +145,7 @@ def make_tar(iface, fn, source_dirs):
     Make a zip file `fn` from the contents of source_dis.
     """
 
-    source_dirs = [ plat.path(i) for i in source_dirs ]
+    source_dirs = [plat.path(i) for i in source_dirs]
 
     def include(fn):
         rv = True
@@ -163,7 +164,7 @@ def make_tar(iface, fn, source_dirs):
 
     def add(fn, relfn):
 
-        adds = [ ]
+        adds = []
 
         while relfn:
             adds.append((fn, relfn))
@@ -173,17 +174,14 @@ def make_tar(iface, fn, source_dirs):
         adds.reverse()
 
         for fn, relfn in adds:
-
             if relfn not in added:
                 added.add(relfn)
                 tf.add(fn, relfn, recursive=False)
 
     for sd in source_dirs:
-
         sd = os.path.abspath(sd)
 
-        for dir, dirs, files in os.walk(sd): # @ReservedAssignment
-
+        for dir, dirs, files in os.walk(sd):  # @ReservedAssignment
             for _fn in dirs:
                 fn = os.path.join(dir, _fn)
                 relfn = os.path.relpath(fn, sd)
@@ -208,7 +206,7 @@ def make_tree(src, dest):
 
     def ignore(dir, files):
 
-        rv = [ ]
+        rv = []
 
         for basename in files:
             fn = os.path.join(dir, basename)
@@ -266,27 +264,24 @@ def make_bundle_tree(src):
         plat.path("project/ff2/src/main/assets"),
         plat.path("project/ff3/src/main/assets"),
         plat.path("project/ff4/src/main/assets"),
-        ]
+    ]
 
     # Write at least one file in each assets directory, to make sure that
     # all exist.
     for i in targets:
+        if os.path.isdir(i):
+            shutil.rmtree(i)
 
-            if os.path.isdir(i):
-                shutil.rmtree(i)
+        try:
+            os.makedirs(i, 0o777)
+        except:
+            pass
 
-            try:
-                os.makedirs(i, 0o777)
-            except:
-                pass
-
-            with open(os.path.join(i, "00_pack.txt"), "w") as f:
-                f.write("Shiro was here.\n")
+        with open(os.path.join(i, "00_pack.txt"), "w") as f:
+            f.write("Shiro was here.\n")
 
     for dirpath, _, filenames in os.walk(src):
-
         for fn in filenames:
-
             if fn[0] == ".":
                 continue
 
@@ -337,18 +332,17 @@ def edit_file(fn, pattern, line):
 
     fn = plat.path(fn)
 
-    lines = [ ]
+    lines = []
 
     with open(fn, "r") as f:
         for l in f:
-
             if re.match(pattern, l):
                 l = line + "\n"
 
             lines.append(l)
 
     with open(fn, "w") as f:
-        f.write(''.join(lines))
+        f.write("".join(lines))
 
 
 def zip_directory(zf, prefix, dn):
@@ -369,8 +363,7 @@ def copy_presplash(directory, name, default):
     Copies the presplash file.
     """
 
-    for ext in [ ".png", ".jpg" ]:
-
+    for ext in [".png", ".jpg"]:
         fn = os.path.join(directory, name + ext)
 
         if os.path.exists(fn):
@@ -531,6 +524,7 @@ def copy_libs():
 
         shutil.copytree(prototype, project)
 
+
 def size_tree(dn):
     """
     Returns the size of the tree `dn`, in bytes.
@@ -546,7 +540,9 @@ def size_tree(dn):
     return rv
 
 
-def build(iface, directory, base, install=False, bundle=False, launch=False, finished=None, permissions=[], version=None):
+def build(
+    iface, directory, base, install=False, bundle=False, launch=False, finished=None, permissions=[], version=None
+):
 
     if not os.path.isdir(directory):
         iface.fail(__("{} is not a directory.").format(directory))
@@ -565,11 +561,10 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
         iface.fail(__("Run configure before attempting to build the app."))
 
     if version is not None:
-
-        split_version = [ i for i in version.split(".") if i.isdigit() ]
+        split_version = [i for i in version.split(".") if i.isdigit()]
 
         if not split_version:
-            split_version = [ "1", "0" ]
+            split_version = ["1", "0"]
 
         config.version = ".".join(split_version)
 
@@ -616,18 +611,15 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     def make_assets():
 
         if big_bundle:
-
             os.mkdir(assets)
             make_bundle_tree(assets_dir)
 
         else:
-
             make_tree(assets_dir, assets)
 
             # Ren'Py uses a lot of names that don't work as assets. Auto-rename
             # them.
             for dirpath, dirnames, filenames in os.walk(assets, topdown=False):
-
                 # Sort names longest to shortest to ensure that adding the "x-"
                 # prefix will not overwrite an asset before it has been moved.
                 names = sorted(dirnames + filenames, key=len, reverse=True)
@@ -659,16 +651,14 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     iface.background(make_assets)
 
     # Copy assets out of the prototype, and into the project.
-    copy_into(
-        plat.path("prototype/app/src/main/assets"),
-        assets)
+    copy_into(plat.path("prototype/app/src/main/assets"), assets)
 
     if not os.path.exists(plat.path("bin")):
         os.mkdir(plat.path("bin"), 0o777)
 
     iface.info(__("Packaging internal data."))
 
-    private_dirs = [ 'project/renpyandroid/src/main/private' ]
+    private_dirs = ["project/renpyandroid/src/main/private"]
 
     if private_dir is not None:
         private_dirs.append(private_dir)
@@ -682,7 +672,6 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
         private_version = hashlib.md5(f.read()).hexdigest()
 
     for always, template, i in GENERATED:
-
         render(
             always or config.update_always,
             template,
@@ -692,7 +681,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
             bundle=bundle,
             big_bundle=big_bundle,
             sdkpath=plat.path("Sdk"),
-            )
+        )
 
     if config.update_icons:
         iconmaker.IconMaker(directory, config)
@@ -707,7 +696,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
 
     # Find and clean the apkdirs.
 
-    apkdirs = [ ]
+    apkdirs = []
 
     if not bundle:
         apkdirs.append(plat.path("project/app/build/outputs/apk/release"))
@@ -723,7 +712,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
 
     # This is a list of generated files that need to be copied over to the
     # dists folder.
-    files = [ ]
+    files = []
 
     if bundle:
         command = "bundleRelease"
@@ -733,19 +722,16 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
         command = "assembleRelease"
 
     try:
-
-        iface.call([ plat.gradlew, "-p", plat.path("project"), command ], cancel=True)
+        iface.call([plat.gradlew, "-p", plat.path("project"), command], cancel=True)
 
     except subprocess.CalledProcessError:
-
         iface.fail(__("The build seems to have failed."))
 
     # Copy everything to bin.
 
     for i in apkdirs:
         for j in os.listdir(i):
-
-            for k in [ ".apk", ".aab" ]:
+            for k in [".apk", ".aab"]:
                 if j.endswith(k):
                     break
             else:
@@ -753,11 +739,7 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
 
             sfn = os.path.join(i, j)
 
-            dfn = "bin/{}-{}-{}-{}".format(
-                config.package,
-                config.version,
-                config.numeric_version,
-                j[4:])
+            dfn = "bin/{}-{}-{}-{}".format(config.package, config.version, config.numeric_version, j[4:])
 
             dfn = plat.path(dfn)
 
@@ -767,35 +749,37 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
     # Install the bundle.
 
     if bundle and install:
-
         iface.info(__("I'm installing the bundle."))
 
         try:
+            iface.call(
+                [
+                    plat.java,
+                    "-jar",
+                    plat.path("bundletool.jar"),
+                    "build-apks",
+                    "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
+                    "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
+                    "--local-testing",
+                ]
+                + get_local_key_properties()
+            )
 
-            iface.call([
-                plat.java,
-                "-jar",
-                plat.path("bundletool.jar"),
-                "build-apks",
-                "--bundle=" + plat.path("project/app/build/outputs/bundle/release/app-release.aab"),
-                "--output=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
-                "--local-testing",
-            ] + get_local_key_properties())
-
-            iface.call([
-                plat.java,
-                "-jar",
-                plat.path("bundletool.jar"),
-                "install-apks",
-                "--apks=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
-                "--adb=" + plat.adb,
-            ])
+            iface.call(
+                [
+                    plat.java,
+                    "-jar",
+                    plat.path("bundletool.jar"),
+                    "install-apks",
+                    "--apks=" + plat.path("project/app/build/outputs/bundle/release/app-release.apks"),
+                    "--adb=" + plat.adb,
+                ]
+            )
 
         except subprocess.CalledProcessError:
-
             iface.fail(__("Installing the bundle appears to have failed."))
 
-# Launch.
+    # Launch.
 
     if launch:
         iface.info(__("Launching app."))
@@ -803,25 +787,27 @@ def build(iface, directory, base, install=False, bundle=False, launch=False, fin
         launch_activity = "PythonSDLActivity"
 
         try:
-
-            iface.call([
-                plat.adb, "shell",
-                "am", "start",
-                "-W",
-                "-a", "android.intent.action.MAIN",
-                "{}/org.renpy.android.{}".format(config.package, launch_activity),
-                ], cancel=True)
+            iface.call(
+                [
+                    plat.adb,
+                    "shell",
+                    "am",
+                    "start",
+                    "-W",
+                    "-a",
+                    "android.intent.action.MAIN",
+                    "{}/org.renpy.android.{}".format(config.package, launch_activity),
+                ],
+                cancel=True,
+            )
 
         except subprocess.CalledProcessError:
-
             iface.fail(__("Launching the app appears to have failed."))
 
     if finished is not None:
         finished(files)
 
-    iface.final_success(
-        __("The build seems to have succeeded.")
-        )
+    iface.final_success(__("The build seems to have succeeded."))
 
 
 def distclean(interface):

@@ -4,8 +4,8 @@ import shutil
 
 import renpy.pygame as pygame
 
-class IconMaker(object):
 
+class IconMaker(object):
     def __init__(self, directory, config):
 
         self.config = config
@@ -27,7 +27,7 @@ class IconMaker(object):
             ("xhdpi", 2),
             ("xxhdpi", 3),
             ("xxxhdpi", 4),
-            ]
+        ]
 
         for dpi, scale in sizes:
             self.write_dpi(dpi, scale)
@@ -52,13 +52,8 @@ class IconMaker(object):
 
     def load_image(self, fn):
 
-        for i in [
-                os.path.join(self.directory, fn),
-                os.path.join(plat.path("templates"), fn)
-                ]:
-
+        for i in [os.path.join(self.directory, fn), os.path.join(plat.path("templates"), fn)]:
             if os.path.exists(i):
-
                 surf = pygame.image.load(i)
                 surf = surf.convert_alpha()
                 return surf
@@ -81,7 +76,7 @@ class IconMaker(object):
 
         icon.blit(fg, (0, 0))
 
-        offset = int(.25 * size)
+        offset = int(0.25 * size)
 
         icon = icon.subsurface((offset, offset, size, size))
 

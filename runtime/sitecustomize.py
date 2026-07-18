@@ -42,7 +42,7 @@ PYTHON_SEARCH = [
     os.path.join(base, "python"),
     os.path.join(base, "pythonw.exe"),
     os.path.join(base, "python.exe"),
-    ]
+]
 
 for fn in PYTHON_SEARCH:
     if os.path.isfile(fn):
@@ -56,7 +56,7 @@ RENPY_SEARCH = [
     os.path.join(base, "lib", PY_RENPY_PLATFORM, "renpy.exe"),
     os.path.join(base, "renpy"),
     os.path.join(base, "renpy.exe"),
-    ]
+]
 
 for fn in RENPY_SEARCH:
     if os.path.isfile(fn):
@@ -71,7 +71,6 @@ import importlib.util
 
 
 class BuiltinSubmoduleImporter:
-
     @staticmethod
     def find_spec(fullname, path=None, target=None):
         if path is None:
@@ -92,6 +91,7 @@ sys.meta_path.append(BuiltinSubmoduleImporter)
 # Windows Startup ##############################################################
 
 import io
+
 
 class NullIOBase(io.RawIOBase):
     def fileno(self):
@@ -115,13 +115,14 @@ class NullIOBase(io.RawIOBase):
     def writable(self):
         return True
 
+
 null_io = NullIOBase()
 
 if sys.stdout is None:
-    sys.stdout = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
+    sys.stdout = io.TextIOWrapper(null_io, encoding="utf-8", line_buffering=True)
 
 if sys.stderr is None:
-    sys.stderr = io.TextIOWrapper(null_io, encoding='utf-8', line_buffering=True)
+    sys.stderr = io.TextIOWrapper(null_io, encoding="utf-8", line_buffering=True)
 
 
 # Android Startup ##############################################################
@@ -130,9 +131,8 @@ if RENPY_PLATFORM.startswith("android-"):
     import androidembed
 
     class LogFile(object):
-
         def __init__(self):
-            self.buffer = ''
+            self.buffer = ""
 
         def write(self, s):
             s = s.replace("\0", "\\0")
@@ -160,6 +160,7 @@ if RENPY_PLATFORM.startswith("ios-"):
 
 # Web ##########################################################################
 
+
 def unpack_web():
     """
     This unpacks the web archive.
@@ -184,11 +185,11 @@ def unpack_web():
         os.utime("/" + zi.filename, (mtime, mtime))
 
         if i % 25 == 0 or i == len(infolist) - 1:
-            emscripten.run_script("""progress(%d, %d);""" % (i+1, len(infolist)))
+            emscripten.run_script("""progress(%d, %d);""" % (i + 1, len(infolist)))
             emscripten.sleep(0)
 
-
     zf.close()
+
 
 def web_atexit():
     """
@@ -222,16 +223,18 @@ if RENPY_PLATFORM.startswith("web-"):
     unpack_web()
 
     import atexit
+
     atexit.register(web_atexit)
 
     import webbrowser
-    webbrowser.register('web', WebBrowserController, preferred=True)
+
+    webbrowser.register("web", WebBrowserController, preferred=True)
 
 # Platform specific python path. ###############################################
 
 
 pythonlib = os.path.dirname(__file__)
-sys.path = [ pythonlib + "/site-packages", pythonlib ]
+sys.path = [pythonlib + "/site-packages", pythonlib]
 
 sys.path.append(pythonlib + "/../" + PY_RENPY_PLATFORM)
 
@@ -239,4 +242,4 @@ sys.path.append(pythonlib + "/../" + PY_RENPY_PLATFORM)
 if RENPY_PLATFORM.startswith("mac-"):
     sys.path.append(os.path.dirname(sys.executable))
 
-sys.path = [ os.path.abspath(i) for i in sys.path ]
+sys.path = [os.path.abspath(i) for i in sys.path]

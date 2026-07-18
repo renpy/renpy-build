@@ -9,6 +9,7 @@ version = "3.12.8"
 win_version = "3.12.7"
 web_version = "3.12.8"
 
+
 @annotator
 def annotate(c: Context):
     c.var("pythonver", "python3.12")
@@ -36,6 +37,7 @@ def unpack_windows(c: Context):
         c.var("repo", "https://github.com/msys2-contrib/cpython-mingw")
 
     c.clone("{{ repo }}", "--branch mingw-v{{ version }}")
+
 
 @task(kind="arch", platforms="linux,mac,ios")
 def patch_posix(c: Context):
@@ -91,7 +93,6 @@ def common(c: Context):
         c.chdir("Python-{{ version }}")
 
     if c.platform != "web":
-
         with open(c.path("config.site"), "w") as f:
             f.write("ac_cv_file__dev_ptmx=no\n")
             f.write("ac_cv_file__dev_ptc=no\n")
@@ -107,12 +108,10 @@ def common_post(c: Context):
 
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
-    for i in [ "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+    for i in ["_sysconfigdata__linux_x86_64-linux-gnu.py"]:
         c.var("i", i)
 
-        c.copy(
-            "{{ host }}/lib/{{pythonver}}/{{ i }}",
-            "{{ install }}/lib/{{pythonver}}/{{ i }}")
+        c.copy("{{ host }}/lib/{{pythonver}}/{{ i }}", "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 
 @task(kind="arch", platforms="linux,mac")
@@ -201,6 +200,7 @@ def build_windows(c: Context):
 
     common_post(c)
 
+
 @task(kind="arch", platforms="web")
 def build_web(c: Context):
 
@@ -231,12 +231,10 @@ def build_web(c: Context):
     c.run("""{{ make }} install""")
     c.copy("{{ host }}/bin/python3", "{{ install }}/bin/hostpython3")
 
-    for i in [ "ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py" ]:
+    for i in ["ssl.py", "_sysconfigdata__linux_x86_64-linux-gnu.py"]:
         c.var("i", i)
 
-        c.copy(
-            "{{ host }}/lib/{{pythonver}}/{{ i }}",
-            "{{ install }}/lib/{{pythonver}}/{{ i }}")
+        c.copy("{{ host }}/lib/{{pythonver}}/{{ i }}", "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 
 def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
@@ -249,11 +247,8 @@ def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
     # uv.lock stores package information in a list of tables named [[package]]
     packages = lock_data.get("package", [])
 
-    return {
-        pkg["name"]: pkg["version"]
-        for pkg in packages
-        if "name" in pkg and "version" in pkg
-    }
+    return {pkg["name"]: pkg["version"] for pkg in packages if "name" in pkg and "version" in pkg}
+
 
 @task(kind="arch", platforms="all", always=True)
 def pip(c: Context):

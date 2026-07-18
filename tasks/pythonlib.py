@@ -6,7 +6,6 @@ import os
 import re
 
 
-
 PY3_MODULES = """
 asyncio/
 collections/
@@ -222,7 +221,7 @@ def python3(c: Context):
         c.path("{{ pytmp }}/pyobjus"),
         c.path("{{ pytmp }}/steam"),
         c.path("{{ source }}/brotli"),
-        ]
+    ]
 
     dist = c.path("{{ distlib }}/{{ pythonver }}")
     c.clean("{{ distlib }}/{{ pythonver }}")
@@ -231,15 +230,13 @@ def python3(c: Context):
         c.compile(base)
 
         for fn in base.glob(c.expand("**/*.cpython-{{ pycver }}.pyc")):
-
             short = str(fn.relative_to(base))
             short = short.replace("__pycache__/", "")
-            short = re.sub(r'\.cpython-.*.pyc$', '', short)
+            short = re.sub(r"\.cpython-.*.pyc$", "", short)
 
             matched = False
 
             for i in rules:
-
                 if i[-1] == "/":
                     if short.startswith(i):
                         used_rules.add(i)
@@ -264,6 +261,7 @@ def python3(c: Context):
     c.copy("{{ runtime }}/sitecustomize.py", "{{ distlib }}/{{ pythonver }}/sitecustomize.py")
 
     import socket
+
     with open(c.path("{{ distlib }}/{{ pythonver }}/sitecustomize.py"), "a") as f:
         f.write("\n")
         f.write("import site\n")
@@ -281,4 +279,6 @@ def python3(c: Context):
     with open(c.path("{{ distlib }}/{{ pythonver }}/lib-dynload/empty.txt"), "w") as f:
         f.write("lib-dynload needs to exist to stop an exec_prefix error.\n")
 
-    c.run("cp {{ install }}/lib/{{ pythonver }}/site-packages/certifi/cacert.pem {{ distlib }}/{{ pythonver }}/certifi/cacert.pem")
+    c.run(
+        "cp {{ install }}/lib/{{ pythonver }}/site-packages/certifi/cacert.pem {{ distlib }}/{{ pythonver }}/certifi/cacert.pem"
+    )

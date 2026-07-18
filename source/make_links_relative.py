@@ -23,7 +23,7 @@ def main():
         i.unlink()
         os.symlink(target, i)
 
-        print(i, "->" , target)
+        print(i, "->", target)
 
 
 if __name__ == "__main__":

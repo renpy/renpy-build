@@ -1,12 +1,12 @@
-
 from __future__ import division, absolute_import, with_statement, print_function, unicode_literals
-from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode # *
+from renpy.compat import PY2, basestring, bchr, bord, chr, open, pystr, range, str, tobytes, unicode  # *
 
 import os
 import argparse
 import json
 
 import renpy.pygame as pygame
+
 
 def smoothscale(surf, size):
 
@@ -36,11 +36,10 @@ def generate(source, destination, scale):
         contents = json.load(f)
 
     for i in contents["images"]:
-
         if "filename" not in i:
             continue
 
-        dfn = os.path.join(destination, i['filename'])
+        dfn = os.path.join(destination, i["filename"])
 
         dst = pygame.image.load(dfn)
         dst.convert_alpha()
@@ -48,11 +47,9 @@ def generate(source, destination, scale):
         w, h = dst.get_size()
 
         if scale:
-
             dst = smoothscale(src, (w, h))
 
         else:
-
             dst.fill(dst.get_at((0, 0)))
 
             xo = int(w / 2) - int(sw / 2)

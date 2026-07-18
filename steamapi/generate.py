@@ -6,7 +6,8 @@ import sys
 import argparse
 
 # The file that the generated code will be written to.
-out = None # type: io.TextIOBase
+out = None  # type: io.TextIOBase
+
 
 def p(s):
     """
@@ -16,46 +17,48 @@ def p(s):
     out.write(s + "\n")
     # sys.stdout.write(s + "\n")
 
+
 # A mapping from a type to the corresponding ctypes constructor.
 MAPPINGS = {
-    "char" : "c_byte",
-    "unsigned char" : "c_ubyte",
-    "signed char" : "c_byte",
-    "short" : "c_short",
-    "signed_short" : "c_short",
-    "unsigned short" : "c_ushort",
-    "int" : "c_int",
-    "signed int" : "c_int",
-    "unsigned int" : "c_uint",
-    "int32_t" : "c_int",
-    "intptr_t" : "POINTER(c_int)",
-    "long" : "c_long",
-    "signed long" : "c_long",
-    "unsigned long" : "c_ulong",
-    "long long" : "c_longlong",
-    "signed long long" : "c_longlong",
-    "int64_t" : "c_longlong",
-    "unsigned long long" : "c_ulonglong",
-    "char *" : "c_char_p",
-    "void *" : "c_void_p",
-    "CGameID" : "c_ulonglong",
-    "CSteamID" : "c_ulonglong",
-    "bool" : "c_bool",
-    "float" : "c_float",
-    "double" : "c_double",
-    "void" : "None",
-    "size_t" : "c_size_t",
-    "SteamAPIWarningMessageHook_t" : "c_void_p",
-    "ISteamHTMLSurface::EHTMLMouseButton" : "c_int",
-    "ISteamHTMLSurface::EHTMLKeyModifiers" : "c_int",
-    "SteamDatagramRelayAuthTicket *" : "c_void_p",
-    "ISteamNetworkingConnectionSignaling *" : "c_void_p",
-    "ISteamNetworkingSignalingRecvContext *" : "c_void_p",
-    "ScePadTriggerEffectParam *" : "c_void_p",
+    "char": "c_byte",
+    "unsigned char": "c_ubyte",
+    "signed char": "c_byte",
+    "short": "c_short",
+    "signed_short": "c_short",
+    "unsigned short": "c_ushort",
+    "int": "c_int",
+    "signed int": "c_int",
+    "unsigned int": "c_uint",
+    "int32_t": "c_int",
+    "intptr_t": "POINTER(c_int)",
+    "long": "c_long",
+    "signed long": "c_long",
+    "unsigned long": "c_ulong",
+    "long long": "c_longlong",
+    "signed long long": "c_longlong",
+    "int64_t": "c_longlong",
+    "unsigned long long": "c_ulonglong",
+    "char *": "c_char_p",
+    "void *": "c_void_p",
+    "CGameID": "c_ulonglong",
+    "CSteamID": "c_ulonglong",
+    "bool": "c_bool",
+    "float": "c_float",
+    "double": "c_double",
+    "void": "None",
+    "size_t": "c_size_t",
+    "SteamAPIWarningMessageHook_t": "c_void_p",
+    "ISteamHTMLSurface::EHTMLMouseButton": "c_int",
+    "ISteamHTMLSurface::EHTMLKeyModifiers": "c_int",
+    "SteamDatagramRelayAuthTicket *": "c_void_p",
+    "ISteamNetworkingConnectionSignaling *": "c_void_p",
+    "ISteamNetworkingSignalingRecvContext *": "c_void_p",
+    "ScePadTriggerEffectParam *": "c_void_p",
 }
 
+
 def unprefix(name):
-    """"
+    """ "
     Removes the SteamAPI_ prefix from a name.
     """
 
@@ -107,21 +110,16 @@ def map_type(name):
     return rv
 
 
-
 def typedef(typedefs):
     """
     Processes the typedef object in steam_api.json.
     """
 
-
     for d in typedefs:
-
-
         type = map_type(d["type"])
         typedef = d["typedef"]
 
         MAPPINGS[typedef] = type
-
 
 
 def consts(consts):
@@ -129,7 +127,7 @@ def consts(consts):
     Processes the constants object in steam_api.json.
     """
 
-    namespace = { }
+    namespace = {}
 
     for c in consts:
         constname = c["constname"]
@@ -160,6 +158,7 @@ def consts(consts):
         else:
             p(f"{constname} = {mapped}({value})")
 
+
 def enums(enums):
 
     p("")
@@ -183,6 +182,7 @@ def enums(enums):
 
         if "fqname" in e:
             MAPPINGS[e["fqname"]] = enumname
+
 
 def structs(structs):
 
@@ -213,7 +213,6 @@ def structs(structs):
             p(f"    callback_id = {s['callback_id']}")
 
         for m in methods:
-
             flat = m["methodname_flat"]
             flat = unprefix(flat)
 
@@ -225,8 +224,8 @@ def structs(structs):
             p(f"    def {methodname}(self, {params}):")
             p(f"        return {flat}(byref(self), {params}) # type: ignore")
 
-
         MAPPINGS[structname] = structname
+
 
 def callback_by_id(structs):
 
@@ -251,7 +250,7 @@ def flatmethod(m, methodname, flat, interface):
     p("")
     p(f"    global {short}")
     p(f"    {short} = dll.{flat}")
-    p(f"    {short}.argtypes = [ POINTER({ interface }), {paramtypes} ]")
+    p(f"    {short}.argtypes = [ POINTER({interface}), {paramtypes} ]")
     p(f"    {short}.restype = {returntype}")
 
 
@@ -278,8 +277,8 @@ def fixedmethod(name, argtypes, restype):
     p("")
     p(f"    global {short}")
     p(f"    {short} = dll.{name}")
-    p(f"    {short}.argtypes = [ { argtypes } ]")
-    p(f"    {short}.restype = { restype }")
+    p(f"    {short}.argtypes = [ {argtypes} ]")
+    p(f"    {short}.restype = {restype}")
 
 
 def stubmethod(m, methodname, flat):
@@ -350,7 +349,7 @@ def load(dll):
         for m in i.get("methods", []):
             name = m["methodname"]
             flat = m["methodname_flat"]
-            flatmethod(m, name, flat,  i["classname"])
+            flatmethod(m, name, flat, i["classname"])
 
         for a in i.get("accessors", []):
             name = a["name"]
@@ -381,7 +380,6 @@ def load(dll):
 
     for name, argtypes, restype in FIXED_METHODS:
         stubfixedmethod(name, argtypes, restype)
-
 
 
 HEADER = """\
@@ -512,8 +510,8 @@ def get_api_call_result(call, callback_type):
 def main():
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("api_json", default="sdk/public/steam/steam_api.json", nargs='?')
-    ap.add_argument("output", default="steamapi.py", nargs='?')
+    ap.add_argument("api_json", default="sdk/public/steam/steam_api.json", nargs="?")
+    ap.add_argument("output", default="steamapi.py", nargs="?")
     args = ap.parse_args()
 
     with open(args.api_json, "r") as f:

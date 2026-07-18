@@ -1,6 +1,7 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
+
 @task(kind="host", platforms="all")
 def download(c: Context):
     c.clean("{{ tmp }}/source/aom")
@@ -8,8 +9,9 @@ def download(c: Context):
 
     c.clone("https://aomedia.googlesource.com/aom", "--branch v3.5.0")
 
+
 @task(platforms="all")
-def build(c : Context):
+def build(c: Context):
     c.clean()
 
     c.run("""
