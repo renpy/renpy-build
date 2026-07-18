@@ -82,7 +82,7 @@ def build(args):
         if task is last_task:
             break
 
-    print("")
+    print()
     print("Build finished successfully.")
 
 

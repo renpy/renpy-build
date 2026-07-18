@@ -86,8 +86,6 @@ class Interface:
             elif choice == "" and default is not None:
                 return default
 
-        print
-
     def terms(self, url, prompt):
         """
         Displays `url` to the user, and then prompts the user to accept the
@@ -104,7 +102,7 @@ class Interface:
         if not self.yesno(prompt):
             self.fail("You must accept the terms and conditions to proceed.")
 
-    def input(self, prompt, empty=None):  # @ReservedAssignment
+    def input(self, prompt, empty=None):
         """
         Prompts the user for input. The input is expected to be a string, which
         is stripped of leading and trailing whitespace. If `empty` is true,
@@ -128,8 +126,6 @@ class Interface:
 
             if empty is not None:
                 return empty
-
-        print
 
     def choice(self, prompt, choices, default=None):
         """
@@ -181,8 +177,6 @@ class Interface:
 
             if choice >= 0 and choice < len(choices):
                 return choices[choice][0]
-
-        print
 
     def fail(self, prompt):
         """

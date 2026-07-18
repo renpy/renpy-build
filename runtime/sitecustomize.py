@@ -168,7 +168,7 @@ def unpack_web():
     import emscripten
     import calendar
 
-    print("")
+    print()
     print("Unpacking...")
 
     zf = zipfile.ZipFile("/game.zip", "r")

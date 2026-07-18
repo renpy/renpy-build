@@ -86,7 +86,7 @@ class Task:
 
         self.function(context)
 
-        print("")
+        print()
 
         ran_tasks.add(context.task_name)
 

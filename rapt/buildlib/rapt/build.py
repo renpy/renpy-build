@@ -1,30 +1,20 @@
-import sys
-
-import re
-import tarfile
-import os
-import shutil
-import time
-import gzip
-import subprocess
-import hashlib
 import collections
-
-from . import plat
-from . import iconmaker
-from .properties import set_property, local_properties, bundle_properties
-from .keys import update_project_keys, get_local_key_properties
-
-import rapt.plat as plat
-import rapt.iconmaker as iconmaker
-import rapt.install_sdk as install_sdk
-
-__ = plat.__
-
-sys.path.append(os.path.join(plat.RAPT_PATH, "buildlib", "jinja2.egg"))
+import gzip
+import hashlib
+import os
+import re
+import shutil
+import subprocess
+import tarfile
+import time
 
 import jinja2
-import rapt.configure as configure
+
+from . import configure, iconmaker, install_sdk, plat
+from .keys import get_local_key_properties, update_project_keys
+from .properties import bundle_properties, local_properties, set_property
+
+__ = plat.__
 
 
 class PatternList:
@@ -174,7 +164,7 @@ def make_tar(iface, fn, source_dirs):
     for sd in source_dirs:
         sd = os.path.abspath(sd)
 
-        for dir, dirs, files in os.walk(sd):  # @ReservedAssignment
+        for dir, dirs, files in os.walk(sd):
             for _fn in dirs:
                 fn = os.path.join(dir, _fn)
                 relfn = os.path.relpath(fn, sd)
