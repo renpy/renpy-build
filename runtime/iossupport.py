@@ -3,7 +3,7 @@ from pyobjus import autoclass, objc_str
 Log = autoclass("Log")
 
 
-class LogFile(object):
+class LogFile:
     def __init__(self):
         self.buffer = ""
 

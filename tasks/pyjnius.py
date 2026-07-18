@@ -46,7 +46,7 @@ cdef JNIEnv *get_platform_jnienv():
     parent_module = "jnius"
     parent_module_identifier = "jnius"
 
-    with open(c_fn, "r") as f:
+    with open(c_fn) as f:
         ccode = f.read()
     ccode = re.sub(r'Py_InitModule4\("([^"]+)"', 'Py_InitModule4("' + parent_module + '.\\1"', ccode)
     ccode = re.sub(

@@ -128,7 +128,7 @@ if sys.stderr is None:
 if RENPY_PLATFORM.startswith("android-"):
     import androidembed
 
-    class LogFile(object):
+    class LogFile:
         def __init__(self):
             self.buffer = ""
 
@@ -183,7 +183,7 @@ def unpack_web():
         os.utime("/" + zi.filename, (mtime, mtime))
 
         if i % 25 == 0 or i == len(infolist) - 1:
-            emscripten.run_script("""progress(%d, %d);""" % (i + 1, len(infolist)))
+            emscripten.run_script(f"""progress({i + 1}, {len(infolist)});""")
             emscripten.sleep(0)
 
     zf.close()
@@ -208,7 +208,7 @@ class WebBrowserController:
         import emscripten
         import json
 
-        emscripten.run_script("""window.open({}, '_blank');""".format(json.dumps(url)))
+        emscripten.run_script(f"""window.open({json.dumps(url)}, '_blank');""")
 
     def open_new(self, url):
         return self.open(url, new=1)

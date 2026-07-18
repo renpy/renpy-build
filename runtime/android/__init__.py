@@ -36,7 +36,7 @@ def wakelock(active):
 
 
 # Web browser support.
-class AndroidBrowser(object):
+class AndroidBrowser:
     def open(self, url, new=0, autoraise=True):
         open_url(url)
 

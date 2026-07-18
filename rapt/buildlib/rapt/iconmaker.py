@@ -5,7 +5,7 @@ import shutil
 import renpy.pygame as pygame
 
 
-class IconMaker(object):
+class IconMaker:
     def __init__(self, directory, config):
 
         self.config = config
@@ -59,7 +59,7 @@ class IconMaker(object):
                 return surf
 
         else:
-            raise Exception("Could not find {}.".format(fn))
+            raise Exception(f"Could not find {fn}.")
 
     def load_foreground(self, size):
         rv = self.load_image("android-icon_foreground.png")
@@ -89,7 +89,7 @@ class IconMaker(object):
 
     def write_icon(self, name, dpi, scale, size, generator):
 
-        dst = plat.path("project/app/src/main/res/mipmap-{}/{}.png".format(dpi, name))
+        dst = plat.path(f"project/app/src/main/res/mipmap-{dpi}/{name}.png")
 
         try:
             os.makedirs(os.path.dirname(dst))
@@ -97,7 +97,7 @@ class IconMaker(object):
             pass
 
         # Did the user provide the file?
-        src = os.path.join(self.directory, "android-{}-{}.png".format(name, dpi))
+        src = os.path.join(self.directory, f"android-{name}-{dpi}.png")
 
         if os.path.exists(src):
             shutil.copy(src, dst)

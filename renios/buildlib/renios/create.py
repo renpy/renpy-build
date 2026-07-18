@@ -29,7 +29,7 @@ def replace_name(o, template, replacement, path=()):
         return o.replace(template, replacement)
 
     else:
-        raise Exception("Unknown Xcode entry %r at %r." % (o, path))
+        raise Exception(f"Unknown Xcode entry {o!r} at {path!r}.")
 
 
 # Copytree - taken from shuiti
@@ -72,9 +72,7 @@ def create_project(interface, dest, name=None, version="1.0"):
 
     if os.path.exists(dest):
         interface.fail(
-            "{} already exists. If you would like to create an new project, please move the existing project out of the way.".format(
-                dest
-            )
+            f"{dest} already exists. If you would like to create an new project, please move the existing project out of the way."
         )
 
     prototype = os.path.join(RENIOS, "prototype")
@@ -102,7 +100,7 @@ def create_project(interface, dest, name=None, version="1.0"):
 
     pbxproj = os.path.join(dest, shortname + ".xcodeproj", "project.pbxproj")
 
-    with open(pbxproj, "r") as f:
+    with open(pbxproj) as f:
         root, _parseinfo = xcodeprojer.parse(f.read())
 
     if not "RENPY_TEST_IOS" in os.environ:
@@ -114,7 +112,7 @@ def create_project(interface, dest, name=None, version="1.0"):
         root = replace_name(root, "org.renpy.prototype", "org.renpy.prototype")
         root = replace_name(root, "prototype", "prototype")
 
-    root = replace_name(root, "-lpython2.7", "-lpython{}.{}".format(sys.version_info.major, sys.version_info.minor))
+    root = replace_name(root, "-lpython2.7", f"-lpython{sys.version_info.major}.{sys.version_info.minor}")
 
     output = xcodeprojer.unparse(root, format="xcode", projectname=name)
 

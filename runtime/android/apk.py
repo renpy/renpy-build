@@ -6,7 +6,7 @@ import io
 from renpy.pygame.iostream import IOStream
 
 
-class APK(object):
+class APK:
     def __init__(self, apk=None, prefix="assets/"):
         """
         Opens an apk file, and lets you read the assets out of it.
@@ -21,7 +21,7 @@ class APK(object):
 
         if apk is None:
             apk = os.environ["ANDROID_APK"]
-            print("Opening APK %r" % apk)
+            print(f"Opening APK {apk!r}")
 
         self.apk = apk
         self.prefix = prefix
@@ -71,7 +71,7 @@ class APK(object):
     def open(self, fn):
 
         if fn not in self.info:
-            raise IOError("{0} not found in apk.".format(fn))
+            raise OSError(f"{fn} not found in apk.")
 
         info = self.info[fn]
 

@@ -29,7 +29,7 @@ def generate(source, destination, scale):
     src = pygame.image.load(source).convert_alpha()
     sw, sh = src.get_size()
 
-    with open(os.path.join(destination, "Contents.json"), "r") as f:
+    with open(os.path.join(destination, "Contents.json")) as f:
         contents = json.load(f)
 
     for i in contents["images"]:

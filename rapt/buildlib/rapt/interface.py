@@ -7,7 +7,7 @@ import subprocess
 from . import plat
 
 
-class Interface(object):
+class Interface:
     def write(self, s, style=""):
         """
         Writes out s, in the given style and color.
@@ -99,7 +99,7 @@ class Interface(object):
         If the user doesn't accept, gives up.
         """
 
-        self.info("Opening {} in a web browser.".format(url))
+        self.info(f"Opening {url} in a web browser.")
 
         webbrowser.open_new(url)
         time.sleep(0.5)
@@ -119,7 +119,7 @@ class Interface(object):
 
         while True:
             if empty:
-                prompt = "[{}]> ".format(empty)
+                prompt = f"[{empty}]> "
             else:
                 prompt = "> "
 
@@ -158,14 +158,14 @@ class Interface(object):
             if value == default:
                 default_choice = i
 
-            self.write("{}) {}".format(i, label), Style.BRIGHT)
+            self.write(f"{i}) {label}", Style.BRIGHT)
 
         print()
 
         if default_choice is not None:
-            prompt = "1-{} [{}]> ".format(len(choices), default_choice)
+            prompt = f"1-{len(choices)} [{default_choice}]> "
         else:
-            prompt = "1-{}> ".format(len(choices))
+            prompt = f"1-{len(choices)}> "
 
         while True:
             try:

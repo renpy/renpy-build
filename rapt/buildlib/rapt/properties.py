@@ -19,7 +19,7 @@ def set_property(properties, key, value, replace=False):
     lines = []
 
     try:
-        with open(properties, "r") as f:
+        with open(properties) as f:
             for l in f:
                 k = l.partition("=")[0].strip()
 
@@ -38,12 +38,12 @@ def set_property(properties, key, value, replace=False):
         for l in lines:
             f.write(l)
 
-        f.write("{}={}\n".format(key, value))
+        f.write(f"{key}={value}\n")
 
 
 def get_property(properties, key, default=""):  # type: (str, str, str) -> str
 
-    with open(properties, "r") as f:
+    with open(properties) as f:
         for l in f:
             k, _, v = l.partition("=")
 

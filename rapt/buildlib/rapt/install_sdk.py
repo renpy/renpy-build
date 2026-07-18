@@ -133,11 +133,11 @@ def unpack_sdk(interface):
         )
 
     if plat.windows:
-        archive = "commandlinetools-win-{}.zip".format(plat.sdk_version)
+        archive = f"commandlinetools-win-{plat.sdk_version}.zip"
     elif plat.macintosh:
-        archive = "commandlinetools-mac-{}.zip".format(plat.sdk_version)
+        archive = f"commandlinetools-mac-{plat.sdk_version}.zip"
     elif plat.linux:
-        archive = "commandlinetools-linux-{}.zip".format(plat.sdk_version)
+        archive = f"commandlinetools-linux-{plat.sdk_version}.zip"
 
     url = "https://dl.google.com/android/repository/" + archive
 

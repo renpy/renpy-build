@@ -27,7 +27,7 @@ import jinja2
 import rapt.configure as configure
 
 
-class PatternList(object):
+class PatternList:
     """
     Used to load in the blocklist and keeplist patterns.
     """
@@ -55,7 +55,7 @@ class PatternList(object):
         return False
 
     def load(self, fn):
-        with open(fn, "r") as f:
+        with open(fn) as f:
             for l in f:
                 l = l.strip()
                 if not l:
@@ -324,7 +324,7 @@ def edit_file(fn, pattern, line):
 
     lines = []
 
-    with open(fn, "r") as f:
+    with open(fn) as f:
         for l in f:
             if re.match(pattern, l):
                 l = line + "\n"
@@ -460,7 +460,7 @@ def copy_project(update_always=False):
         fn = plat.path(fn)
 
         if os.path.exists(fn):
-            return open(fn, "r").read().strip()
+            return open(fn).read().strip()
         else:
             return None
 
@@ -725,7 +725,7 @@ def build(
 
             sfn = os.path.join(i, j)
 
-            dfn = "bin/{}-{}-{}-{}".format(config.package, config.version, config.numeric_version, j[4:])
+            dfn = f"bin/{config.package}-{config.version}-{config.numeric_version}-{j[4:]}"
 
             dfn = plat.path(dfn)
 
@@ -782,7 +782,7 @@ def build(
                     "-W",
                     "-a",
                     "android.intent.action.MAIN",
-                    "{}/org.renpy.android.{}".format(config.package, launch_activity),
+                    f"{config.package}/org.renpy.android.{launch_activity}",
                 ],
                 cancel=True,
             )
