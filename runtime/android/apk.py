@@ -46,7 +46,7 @@ class APK:
 
         import time
 
-        start = time.time()
+        time.time()
 
         for fn, info in self.info.items():
             f.seek(info.header_offset)
