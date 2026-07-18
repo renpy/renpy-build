@@ -264,7 +264,7 @@ def make_bundle_tree(src):
 
         try:
             os.makedirs(i, 0o777)
-        except:
+        except Exception:
             pass
 
         with open(os.path.join(i, "00_pack.txt"), "w") as f:
@@ -296,7 +296,7 @@ def make_bundle_tree(src):
 
             try:
                 os.makedirs(newdir, 0o777)
-            except:
+            except Exception:
                 pass
 
             plat.rename(old, new)
@@ -822,5 +822,5 @@ def distclean(interface):
 
     try:
         rmdir("Sdk")
-    except:
+    except Exception:
         rm("Sdk")

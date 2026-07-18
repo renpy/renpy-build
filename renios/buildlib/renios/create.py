@@ -121,7 +121,7 @@ def create_project(interface, dest, name=None, version="1.0"):
 
     try:
         os.unlink(pbxproj)
-    except:
+    except Exception:
         pass
 
     os.rename(pbxproj + ".new", pbxproj)

@@ -174,7 +174,7 @@ class Interface:
                         choice = default_choice
                     else:
                         continue
-            except:
+            except Exception:
                 continue
 
             choice -= 1

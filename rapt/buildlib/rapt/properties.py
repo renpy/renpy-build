@@ -31,7 +31,7 @@ def set_property(properties, key, value, replace=False):
 
                 lines.append(l)
 
-    except:
+    except Exception:
         pass
 
     with open(properties, "w") as f:

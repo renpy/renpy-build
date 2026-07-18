@@ -93,7 +93,7 @@ class IconMaker:
 
         try:
             os.makedirs(os.path.dirname(dst))
-        except:
+        except Exception:
             pass
 
         # Did the user provide the file?

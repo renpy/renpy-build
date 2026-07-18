@@ -69,7 +69,7 @@ def backup_keys(source):
 
         shutil.copy(source, keyfile)
 
-    except:
+    except Exception:
         pass
 
 

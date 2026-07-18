@@ -177,7 +177,7 @@ class Interface:
                         choice = default_choice
                     else:
                         continue
-            except:
+            except Exception:
                 continue
 
             choice -= 1
@@ -223,7 +223,7 @@ class Interface:
                     time.sleep(0.2)
                     p.stdin.write(b"y\n")
                     p.stdin.flush()
-            except:
+            except Exception:
                 pass
 
             p.wait()

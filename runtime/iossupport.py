@@ -34,7 +34,7 @@ def open_url(url):
 
         nsurl = NSURL.URLWithString_(objc_str(url))
         UIApplication.sharedApplication().openURL_options_completionHandler_(nsurl, {}, None)
-    except:
+    except Exception:
         import traceback
 
         traceback.print_exc()

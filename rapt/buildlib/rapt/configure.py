@@ -51,7 +51,7 @@ class Configuration:
 
                 self.__dict__.update(d)
                 break
-            except:
+            except Exception:
                 pass
 
         if self.orientation == "landscape":
