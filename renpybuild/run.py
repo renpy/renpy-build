@@ -459,7 +459,7 @@ def build_environment(c):
 
     c.env("PKG_CONFIG", "pkg-config --static")
 
-    c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD")
+    c.env("CFLAGS", "{{ CFLAGS }} -DRENPY_BUILD -DCYTHON_NO_PYINIT_EXPORT")
     c.env("CXXFLAGS", "{{ CFLAGS }}")
 
     if c.platform in ("mac", "ios"):

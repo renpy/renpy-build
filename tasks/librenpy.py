@@ -27,25 +27,25 @@ def build(c: Context):
 
     modules = []
     sources = []
+    source_module = {}
 
     def read_setup(dn, suffix=""):
-
         with open(dn / ("Setup" + suffix)) as f:
-            for l in f:
-                l = l.partition("#")[0]
-                l = l.strip()
-
-                if not l:
+            for line in f:
+                line = line.partition("#")[0].strip()
+                if not line:
                     continue
-
-                parts = l.split()
-
-                modules.append(parts[0])
+                parts = line.split()
+                module_name = parts[0]
+                modules.append(module_name)
 
                 for i in parts[1:]:
                     if "libhydrogen" not in i:
                         i = i.replace("gen/", gen)
-                    sources.append(dn / i)
+
+                    source = dn / i
+                    sources.append(source)
+                    source_module[source] = module_name
 
     read_setup(c.renpy / "src")
     read_setup(c.root / "extensions")
@@ -76,10 +76,16 @@ def build(c: Context):
             c.var("src", source)
             c.var("object", object)
 
+            c.var("pyinit_define", "")
+            if module_name := source_module.get(source):
+                mangled = module_name.replace(".", "_")
+                short = module_name.rpartition(".")[-1]
+                c.var("pyinit_define", f"-DPyInit_{short}=PyInit_{mangled}")
+
             if ext == "c":
-                g.run("{{ CC }} {{ CFLAGS }} -c {{ src }} -o {{ object }}")
+                g.run("{{ CC }} {{ CFLAGS }} {{ pyinit_define }} -c {{ src }} -o {{ object }}")
             else:
-                g.run("{{ CXX }} {{ CXXFLAGS }} -c {{ src }} -o {{ object }}")
+                g.run("{{ CXX }} {{ CXXFLAGS }} {{ pyinit_define }} -c {{ src }} -o {{ object }}")
 
         c.generate("{{ runtime }}/librenpy_inittab.c", "inittab.c", modules=modules)
         g.run("{{ CC }} {{ CFLAGS }} -c inittab.c -o inittab.o")
