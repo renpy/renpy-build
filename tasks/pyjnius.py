@@ -41,47 +41,12 @@ cdef JNIEnv *get_platform_jnienv():
 
     c.run("""cython jnius.pyx""")
 
-    c_fn = c.path("jnius.c")
-
-    parent_module = "jnius"
-    parent_module_identifier = "jnius"
-
-    with open(c_fn) as f:
-        ccode = f.read()
-    ccode = re.sub(r'Py_InitModule4\("([^"]+)"', 'Py_InitModule4("' + parent_module + '.\\1"', ccode)
-    ccode = re.sub(
-        r"^__Pyx_PyMODINIT_FUNC init",
-        "__Pyx_PyMODINIT_FUNC init" + parent_module_identifier + "_",
-        ccode,
-        0,
-        re.MULTILINE,
-    )  # Cython 0.28.2
-    ccode = re.sub(
-        r"^PyMODINIT_FUNC init", "PyMODINIT_FUNC init" + parent_module_identifier + "_", ccode, 0, re.MULTILINE
-    )  # Cython 0.25.2
-    ccode = re.sub(
-        r"^__Pyx_PyMODINIT_FUNC PyInit_",
-        "__Pyx_PyMODINIT_FUNC PyInit_" + parent_module_identifier + "_",
-        ccode,
-        0,
-        re.MULTILINE,
-    )  # Cython 0.28.2
-    ccode = re.sub(
-        r"^PyMODINIT_FUNC PyInit_", "PyMODINIT_FUNC PyInit_" + parent_module_identifier + "_", ccode, 0, re.MULTILINE
-    )  # Cython 0.25.2
-    with open(c_fn, "w") as f:
-        f.write(ccode)
-
     c.run("""install -d {{ pytmp }}/pyjnius/jnius""")
-    c.run("""install env.py  __init__.py  reflect.py  signatures.py {{ pytmp }}/pyjnius/jnius""")
+    c.run("""install env.py __init__.py reflect.py signatures.py {{ pytmp }}/pyjnius/jnius""")
     c.run("""install jnius.c {{ pytmp }}/pyjnius/""")
 
     with open(c.path("{{ pytmp }}/pyjnius/Setup"), "w") as f:
-        f.write(
-            c.expand("""\
-jnius.jnius jnius.c
-""")
-        )
+        f.write("jnius.jnius jnius.c\n")
 
 
 @task(kind="host", always=True)
