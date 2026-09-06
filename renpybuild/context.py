@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from pathlib import Path
 import subprocess
@@ -449,6 +450,13 @@ class Context:
 
         self.run(command, flags=flags, src=src)
 
+   def get_sysconfigdata_name(self):
+        return os.environ.get('_PYTHON_SYSCONFIGDATA_NAME',
+            '_sysconfigdata_{abi}_{platform}_{multiarch}'.format(
+            abi=sys.abiflags,
+            platform=sys.platform,
+            multiarch=getattr(sys.implementation, '_multiarch', ''),
+        ))
     def download(self, url: str, fn: str):
         """
         Downloads `url` to tmp/tars/`fn`.
