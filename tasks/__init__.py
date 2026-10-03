@@ -66,3 +66,4 @@ from . import renios as renios
 
 from . import nvdrs as nvdrs
 from . import sevenzip as sevenzip
+from . import renpython_deps as renpython_deps

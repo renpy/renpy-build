@@ -4,16 +4,17 @@ from renpybuild.task import task
 import os
 import shlex
 
-mingw_version = "20241217-ucrt-ubuntu-20.04-x86_64"
-
+mingw_version_tag = "20261006"
+mingw_version = f"llvm-mingw-{mingw_version_tag}-ucrt-ubuntu-22.04-x86_64"
 
 @task(kind="cross", platforms="windows")
 def download(c: Context):
 
+    c.var("mingw_version_tag", mingw_version_tag)
     c.var("mingw_version", mingw_version)
 
-    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/20241217/llvm-mingw-20241217-ucrt-ubuntu-20.04-x86_64.tar.xz"
-    dest = f"llvm-mingw-{mingw_version}.tar.xz"
+    url = "https://github.com/mstorsjo/llvm-mingw/releases/download/{{ mingw_version_tag }}/{{ mingw_version }}.tar.xz"
+    dest = f"{mingw_version}.tar.xz"
 
     c.download(url, dest)
 
@@ -25,8 +26,8 @@ def unpack(c: Context):
     c.clean("{{cross}}")
     c.chdir("{{cross}}")
 
-    c.run("tar xaf {{ tmp }}/tars/llvm-mingw-{{mingw_version}}.tar.xz")
-    c.run("ln -s llvm-mingw-{{mingw_version}} llvm-mingw")
+    c.run("tar xaf {{ tmp }}/tars/{{mingw_version}}.tar.xz")
+    c.run("ln -s {{mingw_version}} llvm-mingw")
 
 
 @task(kind="cross", platforms="android", always=True)
