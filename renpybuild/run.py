@@ -324,7 +324,7 @@ def build_environment(c):
 
         c.env("MACOSX_DEPLOYMENT_TARGET", "10.10")
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=10.10")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=10.10")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=10.10 -lmockrt")
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "x86_64")
@@ -341,7 +341,7 @@ def build_environment(c):
 
         c.env("MACOSX_DEPLOYMENT_TARGET", "11.0")
         c.env("CFLAGS", "{{ CFLAGS }} -mmacos-version-min=11.0")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=11.0")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mmacos-version-min=11.0 -lmockrt")
 
         c.var("cmake_system_name", "Darwin")
         c.var("cmake_system_processor", "aarch64")
