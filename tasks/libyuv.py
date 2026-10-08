@@ -30,6 +30,7 @@ def build(c : Context):
 
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         -DCMAKE_INSTALL_PREFIX={{install}}
         -DBUILD_SHARED_LIBS=0
         {% if platform == "web" %}
