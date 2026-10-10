@@ -6,22 +6,7 @@ import subprocess
 import jinja2
 import requests
 
-from typing import Any
-
-
-# Monkeypatch copytree to fix a problem with ignore_dangling_symlinks.
-old_copytree = shutil.copytree
-
-
-def copytree(*args, **kwargs):
-    if len(args) < 6:
-        # ignore_dangling_symlinks is not passed by pos
-        kwargs.setdefault("ignore_dangling_symlinks", True)
-
-    return old_copytree(*args, **kwargs)
-
-
-shutil.copytree = copytree
+from typing import Any, Literal, overload
 
 
 class Context:
@@ -281,7 +266,26 @@ class Context:
 
         self.cwd = self.cwd / self.expand(d)
 
-    def run(self, command: str, verbose: bool = False, quiet: bool = False, **kwargs):
+    @overload
+    def run(self, command: str, *, capture: Literal[True], **kwargs: Any) -> str: ...
+    @overload
+    def run(
+        self,
+        command: str,
+        verbose: bool = False,
+        quiet: bool = False,
+        capture: Literal[False] = False,
+        **kwargs: Any,
+    ) -> None: ...
+
+    def run(
+        self,
+        command: str,
+        verbose: bool = False,
+        quiet: bool = False,
+        capture: bool = False,
+        **kwargs: Any,
+    ):
         """
         Runs `command`, and checks that the result is 0.
 
@@ -298,7 +302,7 @@ class Context:
 
         from .run import run
 
-        run(command, self, verbose, quiet)
+        return run(command, self, verbose, quiet, capture)
 
     def run_group(self):
         """
@@ -387,20 +391,32 @@ class Context:
             self.env("CFLAGS", "{{ CFLAGS }} -I" + path)
             self.env("CXXFLAGS", "{{ CXXFLAGS }} -I" + path)
 
-    def copytree(self, src: str, dst: str):
+    def copytree(
+        self,
+        src: str,
+        dst: str,
+        *,
+        symlinks: bool = False,
+        ignore_dangling_symlinks: bool = True,
+    ):
         """
         Copies the directory `src` to `dst`. If `dst` exists, it is removed.
         """
 
         self.rmtree(dst)
 
-        srcpath = self.path(src)
-        dstpath = self.path(dst)
+        src_path = self.path(src)
+        dst_path = self.path(dst)
 
-        if srcpath.is_symlink():
-            srcpath = srcpath.readlink()
+        if src_path.is_symlink():
+            src_path = src_path.readlink()
 
-        shutil.copytree(srcpath, dstpath)
+        shutil.copytree(
+            src_path,
+            dst_path,
+            symlinks=symlinks,
+            ignore_dangling_symlinks=ignore_dangling_symlinks,
+        )
 
     def rmtree(self, d: str):
         """
