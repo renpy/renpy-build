@@ -27,6 +27,7 @@ def unpack(c: Context):
         c.chdir("SDL3-{{version}}")
         c.patch("sdl3-opengl-ios.diff")
         c.patch("sdl3-metalangle.diff")
+        c.patch("sdl3-windows-ime.diff")
 
 
 @task(platforms="all")
