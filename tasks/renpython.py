@@ -48,6 +48,7 @@ def link_linux(c: Context):
     -shared
     -static-libstdc++
     -Wl,-Bsymbolic
+    -Wl,--version-script={{ runtime }}/librenpython.map
 
     -o librenpython.so
     librenpython.o

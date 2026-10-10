@@ -1,0 +1,7 @@
+{
+    global:
+        launcher_main;
+        renpython_main;
+    local:
+        *;
+};
