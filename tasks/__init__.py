@@ -57,6 +57,8 @@ from . import angle as angle
 
 from . import steam as steam
 
+from . import prism as prism
+
 from . import librenpy as librenpy
 from . import pythonlib as pythonlib
 from . import renpython as renpython
