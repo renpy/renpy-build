@@ -4,11 +4,10 @@ from renpybuild.context import Context
 from renpybuild.task import task
 
 # Libraries the Ren'Py modules call directly; whole-archived into the deps DLL.
-# assimp is deliberately not here: only renpy.gl2.assimp uses it, so it is
-# linked statically into that module's pyd instead (module-private).
 WHOLE_ARCHIVE_LIBS = [
     "SDL3",
     "SDL3_image",
+    "assimp",
     "harfbuzz",
     "freetype",
     "fribidi",
@@ -62,7 +61,7 @@ def link(c: Context):
         """
         {{ CXX }} {{ LDFLAGS }}
         -shared
-        -Wl,--out-implib=librenpyall.dll.a
+        -static-libstdc++
         -o librenpyall.dll
         -Wl,--export-all-symbols
 
@@ -111,6 +110,7 @@ def link(c: Context):
         -luuid
         -lcrypt32
 
+        {{cross}}/llvm-mingw/{{host_platform}}/lib/libunwind.a
         librenpyall.def
         """,
         WHOLE_ARCHIVE_LIBS=WHOLE_ARCHIVE_LIBS,
@@ -118,12 +118,7 @@ def link(c: Context):
 
     # Install development files for librenpyall so it is possible to build pyd
     # that work with MSVC Python.
-    (dev / "lib").mkdir()
-    c.copy("librenpyall.dll", "{{ dlpa }}")
-    c.copy("librenpyall.dll.a", "{{ dlpa }}/dev/lib")
-
-    # assimp is the only C++ library we need to handle separately.
-    c.copy("{{ install }}/lib/libassimp.a", "{{ dlpa }}/dev/lib")
+    c.copy("librenpyall.dll", "{{ dlpa }}/dev")
 
     (dev / "include").mkdir()
     include_root = c.expand("{{ install }}/include")
