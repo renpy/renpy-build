@@ -482,17 +482,33 @@ def build_environment(c):
         c.var("ffi_cross_config", "--host={{ ffi_host_platform }} --build={{ build_platform }}")
 
 
-def run(command, context, verbose=False, quiet=False):
+def run(command, context, verbose=False, quiet=False, capture=False):
     args = shlex.split(command)
 
     if verbose:
         print(" ".join(shlex.quote(i) for i in args))
 
-    if not quiet:
-        p = subprocess.run(args, cwd=context.cwd, env=context.environ)
+    if capture:
+        p = subprocess.run(
+            args,
+            cwd=context.cwd,
+            env=context.environ,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    elif not quiet:
+        p = subprocess.run(args, cwd=context.cwd, env=context.environ, text=True)
     else:
         with open("/dev/null", "w") as f:
-            p = subprocess.run(args, cwd=context.cwd, env=context.environ, stdout=f, stderr=f)
+            p = subprocess.run(
+                args,
+                cwd=context.cwd,
+                env=context.environ,
+                stdout=f,
+                stderr=f,
+                text=True,
+            )
 
     if p.returncode != 0:
         print(f"{context.task_name}: process failed with {p.returncode}.")
@@ -502,6 +518,8 @@ def run(command, context, verbose=False, quiet=False):
 
         traceback.print_stack()
         sys.exit(1)
+
+    return p.stdout if capture else None
 
 
 class CommandResult:
