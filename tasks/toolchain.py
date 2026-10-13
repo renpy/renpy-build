@@ -4,8 +4,8 @@ from renpybuild.task import task
 import os
 import shlex
 
-mingw_version_tag = "20261006"
-mingw_version = f"llvm-mingw-{mingw_version_tag}-ucrt-ubuntu-22.04-x86_64"
+mingw_version_tag = "20241217"
+mingw_version = f"llvm-mingw-{mingw_version_tag}-ucrt-ubuntu-20.04-x86_64"
 
 @task(kind="cross", platforms="windows")
 def download(c: Context):
