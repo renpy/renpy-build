@@ -668,7 +668,15 @@ def build(
     private_dir, assets_dir = split_renpy(directory)
 
     # Pick the numeric version.
-    config.numeric_version = max(int(time.time()), int(config.numeric_version))
+
+    if int(config.numeric_version) == 1:
+        VERSION_CUTOFF_TIME = 1_800_000_000  # 'Fri Jan 15 03:00:00 2027'
+
+        numeric_version = int(time.time())
+        if numeric_version > VERSION_CUTOFF_TIME:
+            numeric_version = (numeric_version - VERSION_CUTOFF_TIME) // 8 + VERSION_CUTOFF_TIME
+
+        config.numeric_version = numeric_version
 
     # Annoying fixups.
     config.name = config.name.replace("'", "\\'")
