@@ -351,6 +351,7 @@ def link_windows(c: Context):
     -static-libstdc++
     -o librenpython.dll
     librenpython.o
+
     -lrenpy
 
     -lfribidi
@@ -405,6 +406,7 @@ def link_windows(c: Context):
     -lole32
     -loleaut32
     -lshell32
+    -lshlwapi
     -lsetupapi
     -lversion
     -luuid
@@ -413,36 +415,24 @@ def link_windows(c: Context):
     -Wl,--export-all-symbols
     """)
 
-    c.run("""
-    {{ WINDRES }} {{ runtime }}/renpy_resources.rc renpy_resources.o
-    """)
+    c.run("{{ WINDRES }} {{ runtime }}/renpy_resources.rc renpy_resources.o")
 
-    c.run("""
-    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mconsole -municode
-    -o python.exe
-    {{ runtime }}/renpython_win.c
-    renpy_resources.o
-    librenpython.dll
-    """)
-
-    c.run("""
-    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mwindows -municode
-    -o pythonw.exe
-    {{ runtime }}/renpython_win.c
-    renpy_resources.o
-    librenpython.dll
-    """)
-
-    c.run("""
-    {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
-    -mwindows -municode
-    -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
-    -o renpy.exe
-    {{ runtime }}/launcher_win.c
-    renpy_resources.o
-    """)
+    for expansion in (
+        ("-mconsole -o python.exe {{ runtime }}/renpython_win.c"),
+        ("-mwindows -o pythonw.exe {{ runtime }}/renpython_win.c"),
+        ("-mwindows -o renpy.exe {{ runtime }}/launcher_win.c"),
+    ):
+        c.var("expansion", expansion)
+        c.run("""
+        {{ CC }} {{ CDFLAGS }} {{ LDFLAGS }}
+        -DPLATFORM=\\"{{ c.platform }}\\" -DARCH=\\"{{ c.arch }}\\"
+        {{ expansion }}
+        {{ runtime }}/windows.c
+        renpy_resources.o
+        librenpython.dll
+        -lshlwapi
+        -Wl,--delayload=librenpython.dll
+        """)
 
     c.run("""install -m 755 {{install}}/bin/lib{{ pythonver }}.dll lib{{ pythonver }}.dll""")
 
