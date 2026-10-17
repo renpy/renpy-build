@@ -1,9 +1,11 @@
-#include <windows.h>
-#include <stdio.h>
-#include <wchar.h>
+__declspec(dllimport) int renpython_main(int argc, char **argv);
+int setup_dll_directory(void);
 
-int __declspec(dllimport) renpython_main_wide(int argc, wchar_t **argv);
+int main(int argc, char **argv) {
+    int result = setup_dll_directory();
+    if (result != 0) {
+        return result;
+    }
 
-int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] ) {
-    return renpython_main_wide(argc, argv);
+    return renpython_main(argc, argv);
 }
