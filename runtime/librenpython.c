@@ -25,7 +25,7 @@ typedef struct {
 static Runtime runtime;
 
 static void check_status(PyStatus status);
-static void initialize_runtime(int isolated, const char *argv0);
+static void initialize_runtime(int isolated, int argc, char **argv);
 static void initialize_python(void);
 static void clear_runtime(void);
 static void set_config_path(wchar_t **config_path, const char *path);
@@ -35,7 +35,7 @@ static void find_python_home(const char *path);
 static void find_pyname(const char *path);
 
 int EXPORT renpython_main(int argc, char **argv) {
-    initialize_runtime(0, argv[0]);
+    initialize_runtime(0, argc, argv);
 
     runtime.config.user_site_directory = 0;
     runtime.config.parse_argv = 1;
@@ -51,7 +51,7 @@ int EXPORT launcher_main(int argc, char **argv) {
     argv[0] = "./main";
 #endif
 
-    initialize_runtime(1, argv[0]);
+    initialize_runtime(1, argc, argv);
 
     runtime.config.user_site_directory = 0;
     runtime.config.parse_argv = 1;
@@ -106,7 +106,8 @@ static void check_status(PyStatus status) {
     }
 }
 
-static void initialize_runtime(int isolated, const char *argv0) {
+static void initialize_runtime(int isolated, int argc, char **argv) {
+    const char *argv0 = argv[0];
     PyPreConfig preconfig;
     if (isolated) {
         PyPreConfig_InitIsolatedConfig(&preconfig);
@@ -116,15 +117,13 @@ static void initialize_runtime(int isolated, const char *argv0) {
 
     preconfig.utf8_mode = 1;
     preconfig.use_environment = 0;
-    check_status(Py_PreInitialize(&preconfig));
+    check_status(Py_PreInitializeFromBytesArgs(&preconfig, argc, argv));
 
     if (isolated) {
         PyConfig_InitIsolatedConfig(&runtime.config);
     } else {
         PyConfig_InitPythonConfig(&runtime.config);
     }
-
-    runtime.config.use_environment = 0;
 
     init_librenpy();
     if (!getenv("RENPY_PLATFORM")) {
