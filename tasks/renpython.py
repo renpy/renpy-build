@@ -418,7 +418,7 @@ def link_windows(c: Context):
     c.run("{{ WINDRES }} {{ runtime }}/renpy_resources.rc renpy_resources.o")
 
     for expansion in (
-        ("-mconsole -o python.exe {{ runtime }}/renpython_win.c"),
+        ("-mconsole -DRENPY_CONSOLE -o python.exe {{ runtime }}/renpython_win.c"),
         ("-mwindows -o pythonw.exe {{ runtime }}/renpython_win.c"),
         ("-mwindows -o renpy.exe {{ runtime }}/launcher_win.c"),
     ):
@@ -430,7 +430,6 @@ def link_windows(c: Context):
         {{ runtime }}/windows.c
         renpy_resources.o
         librenpython.dll
-        -lshlwapi
         -Wl,--delayload=librenpython.dll
         """)
 
