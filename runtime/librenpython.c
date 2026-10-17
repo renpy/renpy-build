@@ -34,6 +34,33 @@ static char *format_runtime_path(const char *prefix, const char *suffix);
 static void find_python_home(const char *path);
 static void find_pyname(const char *path);
 
+#ifdef MS_WINDOWS
+/*
+ * Windows applies MAX_PATH to the unresolved string, so "lib/py3-x/../.."
+ * can push an otherwise short path over the limit. Collapse it here.
+ * Takes ownership of path; returns it unchanged on failure.
+ */
+static char *normalize_path(char *path) {
+    DWORD size = GetFullPathNameA(path, 0, NULL, NULL);
+    char *full = size ? (char *) malloc(size) : NULL;
+    if (full == NULL) {
+        return path;
+    }
+    DWORD length = GetFullPathNameA(path, size, full, NULL);
+    if (length == 0 || length >= size) {
+        free(full);
+        return path;
+    }
+
+    free(path);
+    return full;
+}
+#else
+static char *normalize_path(char *path) {
+    return path;
+}
+#endif
+
 int EXPORT renpython_main(int argc, char **argv) {
     initialize_runtime(0, argc, argv);
 
@@ -240,7 +267,7 @@ static char *format_runtime_path(const char *prefix, const char *suffix) {
         free(path);
         Py_ExitStatusException(PyStatus_Error("Unable to format a Ren'Py runtime path."));
     }
-    return path;
+    return normalize_path(path);
 }
 
 /*
