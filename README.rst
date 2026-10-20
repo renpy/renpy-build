@@ -107,6 +107,42 @@ A second build should be faster than the first, as it will only rebuild
 Ren'Py and other components that are likely to frequently
 change.
 
+Cleaning
+--------
+
+To repeat part of a build without removing installed dependencies, use ``clean``
+with a platform or architecture filter::
+
+    ./build.sh clean --platform ios
+    ./build.sh clean --platform ios --arch sim-arm64
+    ./build.sh clean --arch x86_64
+
+Filters can also appear before ``clean``. The plural aliases ``--platforms``
+and ``--archs`` are supported, and each filter accepts comma-separated values.
+If a filter is given both before and after ``clean``, the later value wins.
+Platform and architecture filters are combined: architecture-specific state must
+match both when both are supplied.
+
+Filtered cleanup removes only matching task build directories in ``tmp/build``
+and completion files in ``tmp/complete``, allowing those tasks to run again.
+With an explicit platform filter, it also removes platform-wide build state,
+even when an architecture filter is supplied. An architecture-only filter
+preserves platform-wide state.
+
+Host-wide and cross-toolchain build state is always preserved during filtered
+cleanup. Sources, installed dependencies, SDKs, compilers, and generated or
+packaged Ren'Py outputs are also preserved. If ``RENPY_BUILD_TMP`` is set, its
+directory is used instead of ``tmp``.
+
+Without either filter, ``./build.sh clean`` retains its full cleanup behavior:
+it removes all task build directories and completion files, host tools,
+unpacked sources, dependency installation directories, and the generated
+``renpy/tmp/gen``, ``renpy/web``, ``renpy/renios``, and ``renpy/rapt``
+directories. Cross-toolchain installation directories are not removed.
+
+Run the cleanup regression tests with ``python -m unittest discover -s tests``
+using a Python environment with the build system's dependencies installed.
+
 Updating
 ---------
 

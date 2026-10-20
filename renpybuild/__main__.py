@@ -1,4 +1,5 @@
 import argparse
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -41,7 +42,8 @@ Platform("ios", "sim-arm64")
 Platform("web", "wasm")
 
 
-def build(args):
+def parse_targets(args: argparse.Namespace) -> tuple[set[str], set[str]]:
+    """Parse and validate target filters before building or removing build state."""
 
     platforms = {i.strip() for i in args.platforms.split(",") if i}
     archs = {i.strip() for i in args.archs.split(",") if i}
@@ -57,6 +59,13 @@ def build(args):
         if i not in {j.arch for j in known_platforms}:
             print("Architecture", i, "is not known.", file=sys.stderr)
             sys.exit(1)
+
+    return platforms, archs
+
+
+def build(args):
+
+    platforms, archs = parse_targets(args)
 
     # Actually build everything.
 
@@ -110,11 +119,35 @@ def rebuild(args):
 
 def clean(args):
 
+    platforms, archs = parse_targets(args)
+
     def rmtree(p: Path):
         if p.exists():
             shutil.rmtree(p)
 
     tmp = root / os.environ.get("RENPY_BUILD_TMP", "tmp")
+
+    if platforms or archs:
+        scopes = {
+            f"{p.platform}-{p.arch}"
+            for p in known_platforms
+            if (not platforms or p.platform in platforms) and (not archs or p.arch in archs)
+        }
+        scopes.update(platforms)
+
+        build = tmp / "build"
+        if build.is_dir():
+            for directory in build.iterdir():
+                if directory.name.rpartition(".")[2] in scopes:
+                    rmtree(directory)
+
+        complete = tmp / "complete"
+        if complete.is_dir():
+            for marker in complete.iterdir():
+                if marker.name.rpartition(".")[2] in scopes:
+                    marker.unlink()
+
+        return
 
     rmtree(tmp / "build")
     rmtree(tmp / "complete")
@@ -155,6 +188,8 @@ def main():
     sp.set_defaults(function=rebuild)
 
     sp = subparsers.add_parser("clean")
+    sp.add_argument("--platforms", "--platform", default=argparse.SUPPRESS)
+    sp.add_argument("--archs", "--arch", default=argparse.SUPPRESS)
     sp.set_defaults(function=clean)
 
     global root
@@ -170,8 +205,6 @@ def main():
 
 
 if __name__ == "__main__":
-    import os
-
     if os.environ.get("PYTHONHASHSEED") is None:
         os.environ["PYTHONHASHSEED"] = "0"
         os.execv(sys.executable, sys.orig_argv)
