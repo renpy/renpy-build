@@ -69,6 +69,17 @@ def build_ios(c: Context):
     if not sdk_dir.exists():
         raise RuntimeError("Expected unpacked SDK directory missing: {{ cross }}/iPhoneOS.sdk")
 
+    for tbd in sdk_dir.rglob("*.tbd"):
+        if tbd.is_symlink():
+            continue
+
+        text = tbd.read_text(encoding="utf-8")
+        new_text = text.replace("[ arm64-ios, arm64e-ios, arm64e.x1-ios ]", "[ arm64-ios, arm64e-ios ]")
+        new_text = new_text.replace("[ arm64e-ios, arm64e.x1-ios ]", "[ arm64-ios, arm64e-ios ]")
+
+        if new_text != text:
+            tbd.write_text(new_text, encoding="utf-8")
+
     os.symlink("iPhoneOS.sdk", c.path("sdk"))
 
 

@@ -194,13 +194,13 @@ def build_environment(c):
         c.var("ffi_host_platform", "{{ host_platform }}")
 
     if (c.platform == "ios") and (c.arch == "arm64"):
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "15.0")
     elif (c.platform == "ios") and (c.arch == "armv7s"):
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "15.0")
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "15.0")
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
-        c.env("IPHONEOS_DEPLOYMENT_TARGET", "13.0")
+        c.env("IPHONEOS_DEPLOYMENT_TARGET", "15.0")
 
     c.env("PKG_CONFIG_PATH", "{{ install }}/lib/pkgconfig")
 
@@ -353,12 +353,12 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "arm64"):
         llvm(
             c,
-            clang_args="-target arm64-apple-ios13.0 --sysroot {{cross}}/sdk",
+            clang_args="-target arm64-apple-ios15.0 --sysroot {{cross}}/sdk",
         )
 
-        c.env("CFLAGS", "{{ CFLAGS }} -miphoneos-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
-        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -miphoneos-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
-        c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=13.0 -lmockrt")
+        c.env("CFLAGS", "{{ CFLAGS }} -miphoneos-version-min=15.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("OBJCFLAGS", "{{ OBJCFLAGS }} -miphoneos-version-min=15.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -miphoneos-version-min=15.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "aarch64")
@@ -370,14 +370,14 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-arm64"):
         llvm(
             c,
-            clang_args="-target arm64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
+            clang_args="-target arm64-apple-ios15.0-simulator --sysroot {{cross}}/sdk",
         )
 
-        c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=15.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
         c.env(
-            "OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks"
+            "OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=15.0 -F{{cross}}/sdk/System/Library/SubFrameworks"
         )
-        c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=13.0 -lmockrt")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mios-version-min=15.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "aarch64")
@@ -389,14 +389,14 @@ def build_environment(c):
     elif (c.platform == "ios") and (c.arch == "sim-x86_64"):
         llvm(
             c,
-            clang_args="-target x86_64-apple-ios13.0-simulator --sysroot {{cross}}/sdk",
+            clang_args="-target x86_64-apple-ios15.0-simulator --sysroot {{cross}}/sdk",
         )
 
-        c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
+        c.env("CFLAGS", "{{ CFLAGS }} -mios-simulator-version-min=15.0 -F{{cross}}/sdk/System/Library/SubFrameworks")
         c.env(
-            "OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=13.0 -F{{cross}}/sdk/System/Library/SubFrameworks"
+            "OBJCFLAGS", "{{ OBJCFLAGS }} -mios-simulator-version-min=15.0 -F{{cross}}/sdk/System/Library/SubFrameworks"
         )
-        c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=13.0 -lmockrt")
+        c.env("LDFLAGS", "{{ LDFLAGS }} -mios-simulator-version-min=15.0 -lmockrt")
 
         c.var("cmake_system_name", "iOS")
         c.var("cmake_system_processor", "x86_64")
