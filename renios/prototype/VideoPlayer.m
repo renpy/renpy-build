@@ -1,4 +1,5 @@
 #include <stdio.h>
+#import "RenpyUIKit.h"
 
 @import UIKit;
 @import AVFoundation;
@@ -9,7 +10,7 @@
 @end
 
 @interface VideoPlayer : NSObject {
-    UIWindow *window;
+    UIView *hostView;
     AVPlayer *player;
     VideoPlayerView *vpv;
     BOOL playing;
@@ -34,10 +35,12 @@
         return nil;
     }
 
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated"
-    window = [[ UIApplication sharedApplication] keyWindow];
-    #pragma clang diagnostic pop
+    UIWindow *window = RenpyUIKitGetWindow();
+    hostView = window.rootViewController.view;
+    if (!hostView) {
+        NSLog(@"Unable to start video without a foreground game view.");
+        return self;
+    }
 
     NSString *string = [NSString stringWithUTF8String: fn];
     NSURL *url = [ NSURL fileURLWithPath: string ];
@@ -49,9 +52,10 @@
     vpv.opaque = YES;
     vpv.backgroundColor = [ UIColor blackColor ];
 
-    vpv.frame = window.frame;
+    vpv.frame = hostView.bounds;
+    vpv.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
-    [ [ [ window subviews ]  objectAtIndex: 0 ] addSubview: vpv];
+    [hostView addSubview:vpv];
 
     printf("Initialized VP with file %s\n", fn);
 
@@ -76,10 +80,6 @@
         return;
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self->vpv.frame = self->window.frame;
-    });
-
     if (! player.rate) {
         [ self stop ];
     } else if (player.error) {
@@ -103,6 +103,10 @@
 }
 
 - (void) unpause {
+    if (!playing) {
+        return;
+    }
+
     [ player play ];
     paused = NO;
 }

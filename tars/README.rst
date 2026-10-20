@@ -13,10 +13,12 @@ Created as described at https://github.com/tpoechtrager/osxcross#packaging-the-s
 This old version is required to ensure that Ren'Py runs on older versions of
 macOS.
 
-* iPhoneOS14.0.sdk.tar.gz
-* iPhoneSimulator14.0.sdk.tar.gz
+* iPhoneOS.sdk.tar.gz
+* iPhoneSimulator.sdk.tar.gz
 
 Run ./ios_toolchains.sh /path/to/Xcode.app
+to package the device and simulator SDKs. The current iOS build uses SDK 27.1
+with an iOS 15.0 minimum deployment target.
 
 Android NDK
 -----------

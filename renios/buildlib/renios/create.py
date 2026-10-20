@@ -139,6 +139,17 @@ def create_project(interface, dest, name=None, version="1.0"):
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "Launch Screen",
         "LSRequiresIPhoneOS": True,
+        "UIApplicationSceneManifest": {
+            "UIApplicationSupportsMultipleScenes": False,
+            "UISceneConfigurations": {
+                "UIWindowSceneSessionRoleApplication": [
+                    {
+                        "UISceneConfigurationName": "SDLSceneConfiguration",
+                        "UISceneDelegateClassName": "SDLUIKitSceneDelegate",
+                    },
+                ],
+            },
+        },
         "UIRequiresFullScreen": True,
         "UIStatusBarHidden": True,
         "UISupportedInterfaceOrientations": [

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "RenpyUIKit.h"
 
 @import StoreKit;
 
@@ -39,6 +40,7 @@
 - (BOOL) isDeferred: (NSString *) identifier;
 - (NSString *) formatPrice: (NSString *) identifier;
 - (void) requestReview;
+- (BOOL) showDialog;
 @end;
 
 
@@ -86,7 +88,10 @@ UIAlertController *alert;
         return;
     }
 
-    [self showDialog];
+    if (![self showDialog]) {
+        self.finished = 1;
+        return;
+    }
 
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc]
                                           initWithProductIdentifiers:[NSSet setWithArray: self.productIdentifiers]];
@@ -119,10 +124,16 @@ UIAlertController *alert;
     printf("Validated product identifiers.\n");
 }
 
-- (void) showDialog {
+- (BOOL) showDialog {
 
     if (alert != nil) {
-        return;
+        return YES;
+    }
+
+    UIViewController *presenter = RenpyUIKitGetPresenter(RenpyUIKitGetWindow());
+    if (!presenter || !presenter.view.window || presenter.isBeingDismissed) {
+        NSLog(@"Unable to present the App Store progress dialog.");
+        return NO;
     }
 
     alert = [UIAlertController
@@ -139,10 +150,8 @@ UIAlertController *alert;
 
     [alert.view addSubview: indicator];
 
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated"
-    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alert animated:YES completion:nil];
-    #pragma clang diagnostic pop
+    [presenter presentViewController:alert animated:YES completion:nil];
+    return YES;
 
 }
 
@@ -162,7 +171,10 @@ UIAlertController *alert;
         return;
     }
 
-    [self showDialog];
+    if (![self showDialog]) {
+        self.finished = 1;
+        return;
+    }
 
     self.finished = 0;
 
@@ -174,7 +186,10 @@ UIAlertController *alert;
 }
 
 - (void) restorePurchases {
-    [self showDialog];
+    if (![self showDialog]) {
+        self.finished = 1;
+        return;
+    }
     [self initQueue];
 
     self.finished = 0;
@@ -271,7 +286,10 @@ UIAlertController *alert;
 }
 
 - (void) requestReview {
-    [SKStoreReviewController requestReview];
+    UIWindow *window = RenpyUIKitGetWindow();
+    if (window) {
+        [SKStoreReviewController requestReviewInScene:window.windowScene];
+    }
 }
 
 @end

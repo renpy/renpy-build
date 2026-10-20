@@ -71,6 +71,7 @@
 		E2BB98821A631363009C927E /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		E2C6A00130A1000000A0A001 /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Age.swift; sourceTree = "<group>"; };
 		E2C6A00330A1000000A0A001 /* DeclaredAgeRange.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeclaredAgeRange.framework; path = System/Library/Frameworks/DeclaredAgeRange.framework; sourceTree = SDKROOT; };
+		E2C6A00530A1000000A0A001 /* RenpyUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RenpyUIKit.h; sourceTree = "<group>"; };
 		E2EF82EE1B350A1D00A94E16 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		E2EF82F81B40D83600A94E16 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
 		E2F6E416241629FB00E81516 /* base */ = {isa = PBXFileReference; lastKnownFileType = folder; path = base; sourceTree = "<group>"; };
@@ -126,6 +127,7 @@
 				E2C6A00130A1000000A0A001 /* Age.swift */,
 				E218D27C1A69F7DF00698833 /* IAPHelper.m */,
 				E2EF82F81B40D83600A94E16 /* Log.m */,
+				E2C6A00530A1000000A0A001 /* RenpyUIKit.h */,
 				E2AFEA451A4A40F3001ED72C /* VideoPlayer.m */,
 				E20E170E1A34DF1900820124 /* Info.plist */,
 				E266353F2425BD61005FA50B /* LaunchImage-background.png */,
