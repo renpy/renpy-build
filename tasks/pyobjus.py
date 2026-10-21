@@ -21,6 +21,7 @@ def unpack(c: Context):
 
     c.run("git checkout {{ commit }}")
     c.patch("pyobjus-ffi-h.diff")
+    c.patch("pyobjus-ios-foundation.diff")
 
 
 @task(kind="host")

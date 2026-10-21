@@ -1,0 +1,23 @@
+--- a/pyobjus/_runtime.h
++++ b/pyobjus/_runtime.h
+@@ -4,13 +4,20 @@
+ #include <stdio.h>
+ #include <dlfcn.h>
+ #include <string.h>
++#include <TargetConditionals.h>
+ 
+ static void pyobjc_internal_init() {	
+ 
+     static void *foundation = NULL;
+     if ( foundation == NULL ) {
++#if TARGET_OS_IPHONE
++        // iOS frameworks are shallow bundles, without a Versions directory.
++        foundation = dlopen(
++        "/System/Library/Frameworks/Foundation.framework/Foundation", RTLD_LAZY);
++#else
+         foundation = dlopen(
+         "/System/Library/Frameworks/Foundation.framework/Versions/Current/Foundation", RTLD_LAZY);
++#endif
+         if ( foundation == NULL ) {
+            // Load from the most likely path fails. Log and try alternative
+             char *msg = dlerror();
