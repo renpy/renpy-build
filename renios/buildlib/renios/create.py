@@ -139,6 +139,7 @@ def create_project(interface, dest, name=None, version="1.0"):
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "Launch Screen",
         "LSRequiresIPhoneOS": True,
+        "UIApplicationSupportsIndirectInputEvents": True,
         "UIApplicationSceneManifest": {
             "UIApplicationSupportsMultipleScenes": False,
             "UISceneConfigurations": {
