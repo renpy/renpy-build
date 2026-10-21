@@ -1,0 +1,41 @@
+--- a/src/video/uikit/SDL_uikitappdelegate.m
++++ b/src/video/uikit/SDL_uikitappdelegate.m
+@@ -128,8 +128,12 @@
+     [self.storyboardViewController didMoveToParentViewController:self];
+ 
+ #ifndef SDL_PLATFORM_VISIONOS
+-    UIApplication.sharedApplication.statusBarHidden = self.prefersStatusBarHidden;
+-    UIApplication.sharedApplication.statusBarStyle = self.preferredStatusBarStyle;
++    // These are no-ops on iOS 27, where prefersStatusBarHidden and preferredStatusBarStyle are used instead.
++    if (@available(iOS 27.0, *)) {
++    } else {
++        UIApplication.sharedApplication.statusBarHidden = self.prefersStatusBarHidden;
++        UIApplication.sharedApplication.statusBarStyle = self.preferredStatusBarStyle;
++    }
+ #endif
+ }
+ 
+--- a/src/video/uikit/SDL_uikitwindow.m
++++ b/src/video/uikit/SDL_uikitwindow.m
+@@ -162,7 +162,9 @@
+             }
+         }
+ 
+-        if (data.uiscreen == [UIScreen mainScreen]) {
++        // This is a no-op on iOS 27, where the view controller's prefersStatusBarHidden is used instead.
++        if (@available(iOS 27.0, *)) {
++        } else if (data.uiscreen == [UIScreen mainScreen]) {
+             if (window->flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS)) {
+                 [UIApplication sharedApplication].statusBarHidden = YES;
+             } else {
+@@ -277,7 +279,9 @@
+ 
+ #if !defined(SDL_PLATFORM_TVOS) && !defined(SDL_PLATFORM_VISIONOS)
+     if (data.uiwindow.screen == [UIScreen mainScreen]) {
+-        if (window->flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS)) {
++        // This is a no-op on iOS 27, where the view controller's prefersStatusBarHidden is used instead.
++        if (@available(iOS 27.0, *)) {
++        } else if (window->flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS)) {
+             [UIApplication sharedApplication].statusBarHidden = YES;
+         } else {
+             [UIApplication sharedApplication].statusBarHidden = NO;
