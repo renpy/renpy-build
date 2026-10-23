@@ -6,7 +6,7 @@ import hashlib
 from pathlib import Path
 
 version = "3.12.8"
-win_version = "3.12.7"
+win_version = "3.12.8"
 web_version = "3.12.8"
 
 
