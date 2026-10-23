@@ -812,7 +812,7 @@ def build(
 
             sfn = os.path.join(i, j)
 
-            dfn = f"bin/{config.package}-{config.version}-{config.numeric_version}-{j[4:]}"
+            dfn = f"bin/{config.package}-{config.version}-{j[4:]}"
 
             dfn = plat.path(dfn)
 
