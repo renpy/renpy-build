@@ -237,17 +237,57 @@ def build_web(c: Context):
         c.copy("{{ host }}/lib/{{pythonver}}/{{ i }}", "{{ install }}/lib/{{pythonver}}/{{ i }}")
 
 
-def get_uv_lock_versions(lock_path: str | Path) -> dict[str, str]:
+def get_uv_lock_requirements(lock_path: str | Path) -> list[str]:
     """
-    Parses a uv.lock file and returns a dictionary mapping package names to versions.
+    Parses a uv.lock file and returns pinned requirements ("name==version") for the main (non-dev)
+    dependencies of the project at the lock file's root, including transitive dependencies.
     """
     with open(lock_path, "rb") as f:
         lock_data = tomllib.load(f)
 
     # uv.lock stores package information in a list of tables named [[package]]
-    packages = lock_data.get("package", [])
+    packages: dict[str, list[dict]] = {}
 
-    return {pkg["name"]: pkg["version"] for pkg in packages if "name" in pkg and "version" in pkg}
+    for pkg in lock_data.get("package", []):
+        packages.setdefault(pkg["name"], []).append(pkg)
+
+    roots = [
+        pkg
+        for pkgs in packages.values()
+        for pkg in pkgs
+        if pkg.get("source", {}).get("virtual") == "." or pkg.get("source", {}).get("editable") == "."
+    ]
+
+    if len(roots) != 1:
+        raise RuntimeError(f"Expected exactly one root project in {lock_path}, found {len(roots)}.")
+
+    def find(dep: dict) -> dict:
+        candidates = packages.get(dep["name"], [])
+
+        # When a package is locked at multiple versions, the dependency names the version it uses.
+        if "version" in dep:
+            candidates = [pkg for pkg in candidates if pkg["version"] == dep["version"]]
+
+        if len(candidates) != 1:
+            raise RuntimeError(f"Could not find a unique locked version of {dep['name']!r} in {lock_path}.")
+
+        return candidates[0]
+
+    # Only "dependencies" is followed; dev dependencies live in "dev-dependencies" and are skipped.
+    found: dict[tuple[str, str], dict] = {}
+    pending = list(roots[0].get("dependencies", []))
+
+    while pending:
+        pkg = find(pending.pop())
+        key = (pkg["name"], pkg["version"])
+
+        if key in found:
+            continue
+
+        found[key] = pkg
+        pending.extend(pkg.get("dependencies", []))
+
+    return [f"{name}=={version}" for name, version in sorted(found)]
 
 
 @task(kind="arch", platforms="all", always=True)
@@ -265,31 +305,10 @@ def pip(c: Context):
             if f.read().strip() == lock_hash:
                 return
 
-    package_versions = get_uv_lock_versions(lock_path)
-
-    def v(name):
-        if name not in package_versions:
-            raise RuntimeError(f"Package '{name}' was not found in uv.lock package_versions.")
-
-        return f"{name}=={package_versions[name]}"
+    c.var("requirements", " ".join(get_uv_lock_requirements(lock_path)))
 
     c.run("{{ install }}/bin/hostpython3 -s -m ensurepip")
-    c.run(f"""{{{{ install }}}}/bin/hostpython3 -s -m pip install --no-compile --upgrade
-        {v("future")}
-        {v("six")}
-        {v("rsa")}
-        {v("pyasn1")}
-        {v("urllib3")}
-        {v("charset-normalizer")}
-        certifi
-        {v("idna")}
-        {v("requests")}
-        {v("pefile")}
-        {v("websockets")}
-        {v("setuptools")}
-        {v("pysocks")}
-        {v("truststore")}
-        """)
+    c.run("{{ install }}/bin/hostpython3 -s -m pip install --no-compile --upgrade {{ requirements }}")
 
     with open(hash_path, "w") as f:
         f.write(lock_hash)
