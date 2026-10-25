@@ -288,6 +288,7 @@ def pip(c: Context):
         {v("websockets")}
         {v("setuptools")}
         {v("pysocks")}
+        {v("truststore")}
         """)
 
     with open(hash_path, "w") as f:

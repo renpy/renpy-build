@@ -200,6 +200,8 @@ ordlookup/
 steamapi
 
 brotli
+
+truststore/
 """
 
 
