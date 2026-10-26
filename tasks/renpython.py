@@ -609,6 +609,8 @@ def link_web(c: Context):
         """
     {{ CXX }} {{ LDFLAGS }}
 
+    -fexceptions
+
     {% if debug_asyncify %}
     -g2 -gsource-map --source-map-base ./
     {% else %}

@@ -22,6 +22,10 @@ def build(c: Context):
     if (c.arch == "wasm") or ("clang++-22" in c.environ.get("CXX", "")):
         c.env("CXXFLAGS", "{{CXXFLAGS}} -Wno-nontrivial-memcall")
 
+    if c.platform == "web":
+        # Assimp uses exceptions even when probing valid model formats.
+        c.env("CXXFLAGS", "{{CXXFLAGS}} -fexceptions")
+
     c.run("""
         {{ cmake_configure }} {{ cmake_args }}
         -DCMAKE_INSTALL_PREFIX={{install}}
