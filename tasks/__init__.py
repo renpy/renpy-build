@@ -33,6 +33,7 @@ from . import python3 as python3
 from . import emscripten_pyx as emscripten_pyx
 
 from . import live2d as live2d
+from . import spine as spine
 
 from . import rapt as rapt
 from . import pyjnius as pyjnius
