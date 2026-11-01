@@ -49,6 +49,7 @@ export RENPY_SIMPLE_EXCEPTIONS=1
 ./renpy.sh tutorial quit
 
 # Build the documentation.
+./lib/py3-linux-x86_64/python distribute.py --vc-version-only --nightly
 pushd $BASE/renpy/sphinx
 ./build.sh
 popd
@@ -56,7 +57,7 @@ popd
 # Get the versions.
 PY3_VERSION=$(./lib/py3-linux-x86_64/python -O distribute.py --print-version --nightly)
 
-if [ -e renpy/dl/$PY3_VERSION/branch.txt ]; then
+if [ -e dl/$PY3_VERSION/branch.txt ]; then
     echo "Already built."
 else
     # Build the distribution.
