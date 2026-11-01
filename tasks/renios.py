@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 import subprocess
 import zipfile
 
@@ -25,6 +26,15 @@ def unpack(c: Context):
 
 @task(kind="host", always=True)
 def copytree(c: Context):
+    # This task runs on every build, including ones that don't include iOS and so won't
+    # recreate the prebuilt libraries. Keep them outside of renios while it's replaced.
+    prebuilt = c.path("{{ renios }}/prototype/prebuilt")
+    saved = c.path("{{ tmp }}/renios-prebuilt")
+
+    if prebuilt.exists():
+        c.rmtree("{{ tmp }}/renios-prebuilt")
+        shutil.move(prebuilt, saved)
+
     c.copytree("{{ root }}/renios", "{{ renios }}")
 
     c.copy("{{ tmp }}/source/xcodeprojer-master/xcodeprojer.py", "{{ renios }}/buildlib/xcodeprojer.py")
@@ -36,6 +46,9 @@ def copytree(c: Context):
     c.rmtree("{{ renios }}/prototype/prototype.xcodeproj/xcuserdata")
 
     c.run("""find {{ renios }}/prototype/ -name ._* -delete""")
+
+    if saved.exists():
+        shutil.move(saved, prebuilt)
 
 
 def check_sdk(c: Context, name, paths):
@@ -135,8 +148,10 @@ def lipo(c: Context, namefilter):
         os.chmod(c.path("{{ renios }}/prototype/prebuilt/debug/{{ i }}"), 0o755)
 
 
-@task(kind="platform", platforms="ios")
+@task(kind="platform", platforms="ios", always=True)
 def lipo_all(c: Context):
+    # Start empty, so libraries that are no longer built don't linger.
+    c.rmtree("{{ renios }}/prototype/prebuilt")
 
     def namefilter(i):
 
@@ -146,11 +161,6 @@ def lipo_all(c: Context):
         return True
 
     lipo(c, namefilter)
-
-
-@task(kind="platform", platforms="ios", always=True)
-def lipo_renpy(c: Context):
-    lipo(c, lambda n: "librenpy" in n)
 
 
 @task(kind="platform", platforms="ios", always=True)
