@@ -51,6 +51,16 @@
 
   </application>
 
+  <!-- ⬇️ ADICIONADO: Suporte ao Storage Access Framework (SAF) para Android 11+ -->
+  <queries>
+      <intent>
+          <action android:name="android.intent.action.OPEN_DOCUMENT" />
+          <category android:name="android.intent.category.OPENABLE" />
+          <data android:mimeType="*/*" />
+      </intent>
+  </queries>
+  <!-- ⬆️ FIM DA ADIÇÃO -->
+
   <uses-feature android:glEsVersion="0x00030000" android:required="true"/>
 
   <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
