@@ -6,7 +6,7 @@ can build the binary components of Ren'Py and all its dependencies, in
 the same manner that is used to make official Ren'Py releases.
 
 Requirements
--------------
+-----------
 
 Ren'Py Build requires a computer running Ubuntu 24.04. While it can run on
 a desktop computer, portions of the build process must run at root, and the
