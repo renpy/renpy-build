@@ -1,0 +1,28 @@
+When updating grab state, only activate windows that are grabbed, fullscreen, and shown.
+
+From: Sam Lantinga <slouken@libsdl.org>
+Upstream: https://github.com/libsdl-org/SDL/commit/4e784fce431d588a949517fafece5903d1acae44
+
+Fixes SDL #5371. Backported for renpy/renpy#7501.
+---
+diff --git a/src/video/windows/SDL_windowswindow.c b/src/video/windows/SDL_windowswindow.c
+--- a/src/video/windows/SDL_windowswindow.c
++++ b/src/video/windows/SDL_windowswindow.c
+@@ -859,13 +859,10 @@ WIN_SetWindowMouseGrab(_THIS, SDL_Window * window, SDL_bool grabbed)
+ {
+     WIN_UpdateClipCursor(window);
+ 
+-    if (window->flags & SDL_WINDOW_FULLSCREEN) {
+-        UINT flags = SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOSIZE;
+-
+-        if (!(window->flags & SDL_WINDOW_SHOWN)) {
+-            flags |= SWP_NOACTIVATE;
+-        }
+-        WIN_SetWindowPositionInternal(_this, window, flags);
++    if (grabbed &&
++        (window->flags & SDL_WINDOW_FULLSCREEN) &&
++        (window->flags & SDL_WINDOW_SHOWN)) {
++        WIN_SetWindowPositionInternal(_this, window, SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOSIZE);
+     }
+ }
+ 
