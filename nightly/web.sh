@@ -35,8 +35,9 @@ fi
 
 popd
 
-# Upload the fix documentation to the server, in the main location.
+# Upload the documentation to the server, in the main location, if this build's major.minor version matches
+# the current release.
 
-if [ "$BRANCH" = "fix" ]; then
+if $SCRIPTS/is_release_version.py "$PY3_VERSION"; then
     rsync -a $BASE/renpy/doc-web/ tom@abagail.onegeek.org:/home/tom/WWW.renpyorg/doc/html/
 fi
