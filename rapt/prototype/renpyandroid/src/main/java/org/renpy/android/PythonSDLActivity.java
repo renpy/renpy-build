@@ -30,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ProgressBar;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -336,6 +338,8 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         // Initalize the store support.
         createStore();
 
+        registerBackCallback();
+
         boolean allPacksReady = true;
 
         if (Constants.assetPacks.length > 0) {
@@ -413,9 +417,57 @@ public class PythonSDLActivity extends SDLActivity implements AssetPackStateUpda
         });
     }
 
+    // Back handling. //////////////////////////////////////////////////////
+
+    /**
+     * The callback that receives back presses when predictive back is
+     * enabled, or null if it has not been registered. This is an Object so
+     * that loading this class does not require the API 33 interface.
+     */
+    Object mBackCallback = null;
+
+    /**
+     * When predictive back is enabled (the default when targeting API 36
+     * on Android 16+), onBackPressed is not called and KEYCODE_BACK is not
+     * dispatched, so the system would finish the activity. Register a
+     * callback that sends KEYCODE_BACK to SDL instead, so Ren'Py can roll
+     * back. When predictive back is disabled, the system ignores this
+     * callback and the key event is delivered as before.
+     */
+    void registerBackCallback() {
+        if (Build.VERSION.SDK_INT < 33) {
+            return;
+        }
+
+        OnBackInvokedCallback callback = new OnBackInvokedCallback() {
+            @Override
+            public void onBackInvoked() {
+                SDLActivity.onNativeKeyDown(KeyEvent.KEYCODE_BACK);
+                SDLActivity.onNativeKeyUp(KeyEvent.KEYCODE_BACK);
+            }
+        };
+
+        getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback);
+        mBackCallback = callback;
+    }
+
+    /**
+     * Unregisters the callback registered by registerBackCallback, if any.
+     */
+    void unregisterBackCallback() {
+        if (Build.VERSION.SDK_INT < 33 || mBackCallback == null) {
+            return;
+        }
+
+        getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) mBackCallback);
+        mBackCallback = null;
+    }
+
     @Override
     protected void onDestroy() {
         Log.v("python", "onDestroy()");
+
+        unregisterBackCallback();
 
         super.onDestroy();
 
