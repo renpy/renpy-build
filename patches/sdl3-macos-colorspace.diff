@@ -1,0 +1,43 @@
+--- a/include/SDL3/SDL_hints.h
++++ b/include/SDL3/SDL_hints.h
+@@ -3832,6 +3832,25 @@
+ #define SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES "SDL_VIDEO_MAC_FULLSCREEN_SPACES"
+ 
+ /**
++ * A variable controlling whether windows on macOS are tagged with the sRGB
++ * colorspace.
++ *
++ * When a window is tagged as sRGB, macOS color-manages its contents from sRGB
++ * into the display's colorspace. When it isn't, the window uses the screen's
++ * colorspace and its contents are displayed without conversion.
++ *
++ * The variable can be set to the following values:
++ *
++ * - "0": Don't tag windows with a colorspace. (default)
++ * - "1": Tag windows with the sRGB colorspace.
++ *
++ * This hint should be set before creating a window.
++ *
++ * This hint is added by a Ren'Py patch, and is not part of upstream SDL.
++ */
++#define SDL_HINT_RENPY_VIDEO_MAC_SRGB_COLORSPACE "SDL_RENPY_VIDEO_MAC_SRGB_COLORSPACE"
++
++/**
+  * A variable that specifies the menu visibility when a window is fullscreen
+  * in Spaces on macOS.
+  *
+--- a/src/video/cocoa/SDL_cocoawindow.m
++++ b/src/video/cocoa/SDL_cocoawindow.m
+@@ -2495,7 +2495,11 @@
+                 return SDL_SetError("%s", [[e reason] UTF8String]);
+             }
+ 
+-            [nswindow setColorSpace:[NSColorSpace sRGBColorSpace]];
++            // Ren'Py: Only tag the window as sRGB when requested, so by default macOS doesn't color-manage
++            // the output (matching SDL2, which left the window in the screen's colorspace).
++            if (SDL_GetHintBoolean(SDL_HINT_RENPY_VIDEO_MAC_SRGB_COLORSPACE, false)) {
++                [nswindow setColorSpace:[NSColorSpace sRGBColorSpace]];
++            }
+ 
+             [nswindow setTabbingMode:NSWindowTabbingModeDisallowed];
+ 
