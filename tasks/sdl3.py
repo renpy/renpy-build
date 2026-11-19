@@ -29,6 +29,8 @@ def unpack(c: Context):
         c.patch("sdl3-metalangle.diff")
         c.patch("sdl3-ios27-orientation.diff")
         c.patch("sdl3-ios27-statusbar.diff")
+        c.patch("sdl3-macos-colorspace.diff")
+        c.patch("sdl3-windows-ime-candidates.diff")
 
 
 @task(platforms="all")
