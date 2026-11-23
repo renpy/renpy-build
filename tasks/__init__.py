@@ -22,7 +22,7 @@ from . import libjpeg_turbo as libjpeg_turbo
 from . import libwebp as libwebp
 
 from . import libyuv as libyuv
-from . import aom as aom
+from . import dav1d as dav1d
 from . import libavif as libavif
 
 from . import ffmpeg as ffmpeg

@@ -73,7 +73,7 @@ def link(c: Context):
 
         -lopengl32
         -lavif
-        -laom
+        -ldav1d
         -lyuv
         -ljpeg
         -lpng16
