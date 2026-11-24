@@ -1,7 +1,13 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "2.14.02"
+version = "3.02"
+
+
+@task(kind="host", platforms="all")
+def download(c: Context):
+    c.var("version", version)
+    c.download("https://www.nasm.us/pub/nasm/releasebuilds/{{ version }}/nasm-{{ version }}.tar.xz", "nasm-{{ version }}.tar.xz")
 
 
 @task(kind="host", platforms="all")
@@ -9,7 +15,7 @@ def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
-    c.run("tar xaf {{source}}/nasm-{{version}}.tar.gz")
+    c.run("tar xaf {{ tmp }}/tars/nasm-{{version}}.tar.xz")
 
 
 @task(kind="host", platforms="all")

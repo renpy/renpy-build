@@ -1,7 +1,13 @@
 from renpybuild.context import Context
 from renpybuild.task import task
 
-version = "4.3.1"
+version = "9.1"
+
+
+@task(kind="host", platforms="all")
+def download(c: Context):
+    c.var("version", version)
+    c.download("https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.xz", "ffmpeg-{{ version }}.tar.xz")
 
 
 @task(platforms="all")
@@ -9,13 +15,7 @@ def unpack(c: Context):
     c.clean()
 
     c.var("version", version)
-    c.run("tar xzf {{source}}/ffmpeg-{{version}}.tar.gz")
-
-    c.var("version", version)
-    c.chdir("ffmpeg-{{version}}")
-
-    c.patch("ffmpeg-4.3.1-sse.diff")
-    c.patch("ffmpeg-4.3.1-ff_seek_frame_binary.diff")
+    c.run("tar xJf {{ tmp }}/tars/ffmpeg-{{version}}.tar.xz")
 
 
 @task()
@@ -58,6 +58,8 @@ def build(c: Context):
     c.var("version", version)
     c.chdir("ffmpeg-{{version}}")
 
+    # With schannel, configure enables the dtls and udp protocols even with
+    # --disable-everything, so it's disabled below.
     c.run("""
     {{configure}}
         --prefix="{{ install }}"
@@ -105,8 +107,7 @@ def build(c: Context):
         --enable-swresample
         --enable-swscale
         --enable-avfilter
-        --enable-avresample
-        --enable-libaom
+        --enable-libdav1d
 
         --disable-bzlib
 
@@ -149,11 +150,12 @@ def build(c: Context):
         --enable-decoder=vp3
         --enable-decoder=vp8
         --enable-decoder=vp9
-        --enable-decoder=libaom_av1
+        --enable-decoder=libdav1d
 
         --enable-parser=mpegaudio
         --enable-parser=mpegvideo
         --enable-parser=mpeg4video
+        --enable-parser=h263
         --enable-parser=vp3
         --enable-parser=vp8
         --enable-parser=vp9
@@ -161,6 +163,7 @@ def build(c: Context):
 
         --disable-iconv
         --disable-alsa
+        --disable-libdrm
         --disable-libxcb
         --disable-lzma
         --disable-sndio
@@ -171,6 +174,7 @@ def build(c: Context):
         --disable-audiotoolbox
         --disable-cuda-llvm
         --disable-d3d11va
+        --disable-d3d12va
         --disable-dxva2
         --disable-ffnvcodec
         --disable-nvdec
@@ -179,6 +183,9 @@ def build(c: Context):
         --disable-vaapi
         --disable-vdpau
         --disable-videotoolbox
+        --disable-vulkan
+
+        --disable-schannel
     """)
 
     c.run("""{{ make }} V=1""")
@@ -231,7 +238,6 @@ def build_web(c: Context):
         --enable-swresample
         --enable-swscale
         --enable-avfilter
-        --enable-avresample
 
         --disable-bzlib
 

@@ -46,7 +46,7 @@ sudo apt-get install --no-install-recommends -y \
     libgmp-dev libmpfr-dev libmpc-dev \
     libssl-dev libbz2-dev liblzma-dev \
     bc \
-    cmake ninja-build \
+    cmake ninja-build meson \
     libassimp-dev \
     libavcodec-dev \
     libavformat-dev \
